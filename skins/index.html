@@ -1,0 +1,648 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><link href="https://assets0.github.com/stylesheets/bundle_common.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link href="https://assets3.github.com/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="jquery.treeview/jquery.treeview.css" /><link href="http://test.development.grinfo.net/Luca/datadict/style.css" media="screen" rel="stylesheet" type="text/css" /><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> <script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> <link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" /><script> 
+(function(){
+ 
+var URL = "http://test.development.grinfo.net/Luca/datadict";
+var roots_loaded = false;
+ 
+function tooltip() {
+    // tool tip
+    //
+    $('.minibutton').poshytip({
+        className: 'tip-twitter',
+        showTimeout: 1,
+        alignTo: 'target',
+        alignX: 'center',
+        offsetY: 5,
+        allowTipHover: false,
+        fade: false,
+        slide: false
+    });
+}
+ 
+/*
+ * takes care of assigning proper
+ * click events for expanding this li
+ */
+function expand_collapse(li) {
+    var div = li.find(".hitarea");
+ 
+    div.click(function() {
+ 
+        var parent = li.find("ul").first();
+ 
+ 
+        // check whether we need to expand or collapse
+        if(li.hasClass("collapsable")) { // collapsing
+            li.removeClass("collapsable");
+            li.addClass("expandable");
+            var hitarea = li.find(".hitarea").first();
+            hitarea.removeClass("collapsable-hitarea");
+            hitarea.addClass("expandable-hitarea");
+            if(li.hasClass("lastCollapsable")) {
+                li.removeClass("lastCollapsable");
+                li.addClass("lastExpandable");
+                hitarea.removeClass("lastCollapsable-hitarea");
+                hitarea.addClass("lastExpandable-hitarea");
+            }
+ 
+            // let's clear the ul contents
+            parent.hide();
+ 
+ 
+        } else if(li.hasClass("expandable")) { // expanding
+            li.removeClass("expandable");
+            li.addClass("collapsable");
+            var hitarea = li.find(".hitarea").first();
+            hitarea.removeClass("expandable-hitarea");
+            hitarea.addClass("collapsable-hitarea");
+            if(li.hasClass("lastExpandable")) {
+                li.removeClass("lastExpandable");
+                li.addClass("lastCollapsable");
+                hitarea.removeClass("lastExpandable-hitarea");
+                hitarea.addClass("lastCollapsable-hitarea");
+            }
+ 
+            // if parent contains a filled UL, dont run the ajax call again, just show it
+            if(parent.children().length) {
+                parent.show();
+            } else {
+ 
+                var id = li.find(".id").val();
+                // TODO - fix this - for now we just have a global variable tracking if we
+                // need to load the root ontology (only the first time) and nodes for the rest
+                if(roots_loaded) {
+                    load_branch(parent, URL+"/OntologyDataWrapperProxy.php?out-format=json&command=GetNodeChildren&NodeID="+id);
+                } else {
+                    load_branch(parent, URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListOntologyRoots&NodeOntology="+id);
+                    // roots loaded
+                    roots_loaded = true;
+                }
+            }
+ 
+        }
+ 
+    });
+ 
+}
+ 
+// load comments on the right side
+var comments = (function(){
+    var template;
+ 
+    function make_comment(data) {
+        var clone = template.clone()
+ 
+        var link = clone.find("strong.author a");
+        link.attr("href", "#");
+        link.text(data.user);
+ 
+        clone.find(".date .relatize").text(data.date);
+ 
+        clone.find(".body .content-body p").text(data.comment);
+ 
+        return clone;
+    }
+    function load(data) {
+        if(!template)
+            template = $(".comment").first().clone();
+        
+        // clear comment list
+        $(".comment-list").html("");
+ 
+        for(var i=0; i<data.length; i++) {
+            $(".comment-list").append(make_comment(data[i]));
+        }
+ 
+    }
+ 
+    return {
+        load: load
+    };
+})();
+ 
+function term_loader(show) {
+    var context = $(".context-loader");
+    if(show) {
+        //fade.fadeTo("fast", 0.5);
+        $(".error").hide();
+        context.show();
+ 
+ 
+    } else {
+        context.hide();
+        //fade.fadeTo("fast", 1);
+    }
+ 
+}
+ 
+function show_attributes(data) {
+ 
+    var attributes = data.data.Node ? data.data.Node.NodeTerm.Attributes  : data.data.Attributes;
+ 
+ 
+    var str = "";
+    $.each(attributes, function(i) {
+        var attr = this;
+        str += "<b>"+attr.Term.TermGlobalIdentifier + "</b>: "+ attr.Qualifier+"<br>";
+ 
+    });
+    $("#pages .general").html(str);
+ 
+}
+ 
+// click event function
+// must load data for this specifict
+function load_term(li) {
+    // get info for this specific term name located under /datadict/TermName/json
+    term_loader(true);
+ 
+    var id = li.find(".id").val();
+ 
+ 
+    var parent = li.parent();
+ 
+    var url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=GetNodeInfo&NodeID="+id;
+    if(parent.attr("id") == "root") {
+        url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=GetTermInfo&TermID="+id;
+ 
+    }
+ 
+    /* get node info (attributes) */
+    $.getJSON(url, function(data){
+        show_attributes(data);
+        //$(".browser-content .filters li a").text(data.code).attr("href", "http://test.development.grinfo.net/Luca/datadict/"+data.code);
+        
+ 
+        // load comments
+        //comments.load(data.comments);
+ 
+        term_loader(false);
+    });
+ 
+    /* get comments */
+    var comm_url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListTopics&CommentNode="+id;
+    $.getJSON(comm_url, function(data){
+        console.log(data);
+        //comments.load(data.comments);
+ 
+    });
+ 
+}
+ 
+/*
+ *
+ * @returns a jquery dom element
+ */
+function make_li(obj, last) {
+ 
+    // generic attributes
+    var id = (obj.Term) ? obj.Term.TermID : obj.Node.NodeID;
+    var name = (obj.Term) ? obj.Term.TermGlobalIdentifier : obj.Node.NodeTerm.TermGlobalIdentifier;
+    var label = (obj.Attributes.Label) ? obj.Attributes.Label.Qualifier : obj.Node.NodeTerm.Attributes.Label.Qualifier;
+    var summary = (obj.Attributes.Summary) ? obj.Attributes.Summary.Qualifier : (obj.Node.NodeTerm.Attributes.Summary) ? obj.Node.NodeTerm.Attributes.Summary.Qualifier : "none";
+ 
+    var has_children = false,
+        hitarea;
+    if(obj.Term || (obj.Node && obj.Node.NodeSiblings > 0)) 
+        has_children = true;
+ 
+    var li = $("<li></li>");
+    if(last)
+        li.addClass("last");
+ 
+ 
+    // add a hidden input to track the id of this node
+    li.append('<input type="hidden" class="id" value="'+id+'" />');
+ 
+    if(has_children){
+        li.addClass("expandable");
+        hitarea = $('<div class="hitarea expandable-hitarea"></div>'); 
+        li.append(hitarea);
+    }
+    if(last && has_children) {
+        li.addClass("lastExpandable");
+        hitarea.addClass("lastExpandable-hitarea");
+    }
+ 
+    var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+name+'</span></a>');
+ 
+    link.click(function(e) {
+        load_term(li);
+        e.preventDefault();
+        e.stopPropagation();
+    });
+ 
+    li.append(link);
+ 
+    if(label)
+        li.append('<div class="meta">'+label+'</div>');
+ 
+    // last child
+    if(has_children){
+        li.append('<ul style="display:none;"></ul>');
+ 
+        // assign click events for expansion/collapse
+        expand_collapse(li);
+    }
+ 
+    return li;
+}
+ 
+function loader(parent, show) {
+    var jimg = $("<img>").attr("src", "https://assets3.github.com/images/modules/pagehead/metabox_loader.gif");
+ 
+    if(show) {
+        jimg.insertBefore(parent);
+    } else { // hide
+        $(parent).prev().remove();
+    }
+ 
+}
+ 
+/*
+ * loads a single branch given an array of objects
+ * @parent - the container of the branch, a jquery DOM element; 
+ *           this gets populated with the elements
+ * @url - the json array of objects to do an AJAX request to
+ */
+function load_branch(parent, url) {
+    var obj, li;
+ 
+    // insert before the parent a loading image
+    loader(parent, true);
+ 
+    parent.show();
+ 
+    $.getJSON(url, function(data) {
+        // hide the loading image
+        loader(parent, false);
+ 
+        var status_code = data.status.code;
+ 
+        if(status_code != 0) return;
+ 
+        var data = data.data; // based on milkos new data formatting
+        for(var i=0; i<data.length; i++) {
+            obj = data[i];
+ 
+            if(i == data.length-1) // last
+                li = make_li(obj, true);
+            else
+                li = make_li(obj);
+            
+            parent.append(li);
+        }
+        
+        // assign tooltip hovering
+        tooltip();
+ 
+    });
+}
+ 
+function mylogin() {
+    var jmylogin = $("#mylogin");
+    var jmain = $("#main");
+ 
+    if(jmylogin.is(":visible")) {
+        jmylogin.hide();
+        jmain.css("opacity", "1");
+ 
+ 
+    } else { // show it
+        jmylogin.show();
+        jmain.css("opacity", "0.2");
+ 
+ 
+    }
+ 
+}
+ 
+/*
+ * Events assignment
+ * clicks, mouseovers etc etc..
+ */
+var events = function(){
+    // right navigation
+    $("ul.sorts li").click(function(){
+        var $this = $(this);
+ 
+        // deselect all navigation buttons
+        $("ul.sorts li").removeClass("desc");
+ 
+        // select this nav button
+        $this.addClass("desc");
+ 
+        // get the id of this node
+        var id = $this.attr("id");
+ 
+        // hide all pages
+        $("#pages").children().hide();
+ 
+        // load page pased on this id
+        $("."+id).show();
+ 
+    });
+ 
+    
+ 
+    // mousedown event
+    $(".minibutton, .classy").live("mousedown", function() {
+        $(this).addClass("mousedown");
+    });
+    $(".minibutton, .classy").live("mouseup", function() {
+        $(this).removeClass("mousedown");
+    });
+    $(".minibutton, .classy").live("mouseout", function() {
+        $(this).removeClass("mousedown");
+    });
+ 
+    // comment post
+    $(".new-comments .form-actions button").click(function(e) {
+        var comment = $(".new-comments .comment-form textarea").val();
+        var term_id = $(".browser-content .filters li a").text();
+ 
+        term_loader(true);
+ 
+        $.ajax({
+          type: 'POST',
+          url: 'http://test.development.grinfo.net/Luca/datadict/google-login',
+          data: {
+            "term_id" : term_id,
+            "text" :comment
+          },
+          success: function(data) {
+            term_loader(false);
+            // load comments of this term again
+            // simulate click on this, rather ugly
+            //load_term(term_id);
+            // clear textarea
+            $(".new-comments .comment-form textarea").val("");
+          }
+        });
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    $("#login-close").click(function(e){
+ 
+        mylogin();
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+ 
+    $("#login_form").submit(function(e){
+        $(".context-loader").show();
+        $.ajax({
+          type: 'POST',
+          url: 'http://test.development.grinfo.net/Luca/datadict/google-login',
+          data: {
+            "username":$("#login_form input[name=username]").val(),
+            "password":$("#login_form input[name=password]").val()
+          },
+          success: function(data){
+            $(".error").hide();
+            $(".error_box").hide();
+            term_loader(false);
+ 
+ 
+          }
+        });
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+ 
+};
+ 
+$(document).ready(function(){
+ 
+    /* load initial root branch - left-side */
+    load_branch($("#root"), URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListOntologies");
+ 
+    /* assign some events for ui */
+    events();
+ 
+    /* global ajax setup thing */
+    $.ajaxSetup({
+        "success": function() {   
+            $(".error").hide();
+            $(".error_box").hide();
+            term_loader(false);
+        },
+        "error": function() {   
+            term_loader(false);
+            $(".error").show();
+            $(".error_box").show();
+        }
+    });
+ 
+});
+ 
+})();
+ 
+</script> 
+ 
+ 
+<style> 
+.right {
+    width: 500px;
+}
+.cont {
+padding: 20px; background-color: white;
+width: 360px;
+height: 400px;
+overflow-x: auto;
+overflow-y: auto;
+ 
+}
+.meta {
+    font-weight: bold;
+    margin-left: 11px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.55);
+text-shadow:none !important;
+}
+li.collapsable > a.minibutton{
+    color:#fff;
+    text-decoration:none;
+    text-shadow:-1px -1px 0 rgba(0,0,0,0.3);
+    border-color:#518cc6;
+    border-bottom-color:#2a65a0;
+    background:#599bdc;
+    filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#599bdc',endColorstr='#3072b3');
+    background:-webkit-gradient(linear,left top,left bottom,from(#599bdc),to(#3072b3));
+    background:-moz-linear-gradient(top,#599bdc,#3072b3);
+}
+ 
+#login-close {
+    background: url("http://pilu.github.com/web-app-theme/images/icons/cross.png") no-repeat top left;
+    width: 16px;
+    height: 16px;
+    display: block;
+    float: right;
+    cursor: pointer;
+}
+</style> 
+</head> 
+ 
+<body class="explore"> 
+    <div id="main" class=""> 
+        <div id="header" style="height: 100px;"> 
+ 
+            
+            <div id="logo"> 
+                <a href="#"><img src="http://test.development.grinfo.net/Luca/datadict/images/singer.png"/></a> 
+            </div> 
+        </div> 
+        <div class="site"> 
+<div class="pagehead"> 
+    <h2 style="margin:5px; border-bottom:0 !important; padding:0;"> 
+ 
+          <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
+    </h2> 
+  <h1>Warehouse Data Dictionary</h1> 
+</div> 
+ 
+            <div class="left browser-content"> 
+                <div class="cont"> 
+                    <!--<div class="filterbox">
+                          <input type="search" placeholder="Find a term">
+                    </div>--> 
+ 
+                    <ul class="treeview" id="root"> 
+ 
+                    </ul> 
+                </div> 
+            </div><!-- end left --> 
+<div class="right"> 
+ 
+<div class="browser-content browser" style="margin:0;"> 
+  <div class="filterbar"> 
+    <ul class="filters"> 
+      <li data-filter="read" ><a href="#">Name</a></li> 
+    </ul> 
+ 
+    <ul class="sorts"> 
+      <li data-sort="created" class="desc" id="general">General</li> 
+      <li data-sort="popularity" id="new-comments">Comments</li> 
+    </ul> 
+  </div> 
+  <div style="display: none;" class="context-loader">Sending Request...</div> 
+  <div class="none" style="display: none; opacity: 1;"> 
+    <p>No pull requests to show</p> 
+  </div> 
+  <div style="display: none;" class="error"> 
+    <p>There was an error with the request</p> 
+  </div> 
+<div id="pages"> 
+ 
+    <div class="new-comments" style="margin: 0px 10px; display: none;"> 
+ 
+    <div class="comment-list"> 
+        <div class="comment normal-comment" id="issuecomment-711523"> 
+          <div class="cmeta"> 
+            <p class="author" style="width: 250px;"> 
+              <span class="gravatar"><img width="20" height="20" alt="" src="https://secure.gravatar.com/avatar/ffe68d6f71b225f7661d33f2a8908281?s=140&amp;d=https%3A%2F%2Fgithub.com%2Fimages%2Fgravatars%2Fgravatar-140.png"></span> 
+              <strong class="author"><a href="/paulirish">paulirish</a></strong> 
+              <em class="action-text"> 
+                <a href="#issuecomment-711523"> 
+                commented
+                </a> 
+              </em> 
+              
+            </p> 
+            <p class="info"> 
+              <em class="date"><abbr title="2011-01-26 15:47:04" class="relatize relatized">about 8 hours ago</abbr></em> 
+              <span class="icon"></span> 
+            </p> 
+          </div> 
+ 
+          
+ 
+          <div class="body"> 
+            
+            <div class="formatted-content"> 
+              
+              
+              <div class="content-body wikistyle"> 
+                <p>Does this patch change <code>foo/stuff.html</code> to <code>foo/stuff.html/</code> ?</p> 
+              </div> 
+            </div> 
+            
+          </div> 
+        </div><!-- /comment --> 
+    </div><!-- /comment-list --> 
+ 
+ 
+    <h3>Comment</h3> 
+    <div class="comment-form previewable-comment-form"> 
+        
+        <textarea id="comment_body_430" tabindex="1" name="comment[body]"></textarea> 
+ 
+    </div><!-- /comment-form --> 
+    <div class="form-actions"> 
+        <button tabindex="2" class="classy" type="submit"><span>Comment</span></button> 
+    </div> 
+    <br> 
+ 
+ 
+    </div><!-- end new-comments --> 
+ 
+    <div class="general description" style="margin: 20px; "> 
+ 
+        </div><!-- end general --> 
+</div><!-- /pages --> 
+</div><!-- /browser-content --> 
+</div><!-- end right --> 
+ 
+ 
+ 
+        </div> 
+    <div style="clear:both;"></div> 
+    </div><!-- /main --> 
+ 
+ 
+<div id="mylogin" style="position: absolute; top:50%; left: 50%; margin-top: -200px; margin-left: -200px; display: none;"> 
+ 
+    <div class="login_form" id="login" style=""> 
+      <form method="post" id="login_form" action="/session"><div style="margin: 0pt; padding: 0pt;"><input type="hidden" value="5cdd9e664d321b89797b0ed43576d21152bc53e9" name="authenticity_token"></div>      <h1>Log in<a id="login-close"></a></h1> 
+      <div class="formbody"> 
+        
+            <div class="context-loader" style="display: none; top:107px;">Sending Request...</div> 
+        <div class="error_box" style="display: none;">Incorrect login or password.</div> 
+        
+        <label for="login"> 
+            Login or Email<br> 
+            <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="login_field" class="text"> 
+        </label> 
+ 
+        <label for="password"> 
+            Password 
+            <br> 
+            <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="password" class="text"> 
+        </label> 
+ 
+        <label class="submit_btn"> 
+                                    <input type="submit" value="Log in" tabindex="3" name="commit"> 
+        </label> 
+      </div> 
+    </form>  </div> 
+ 
+</div><!-- /mylogin --> 
+ 
+ 
+<!--[if IE 8]>
+<script type="text/javascript" charset="utf-8">
+  $(document.body).addClass("ie8")
+</script>
+<![endif]--> 
+ 
+<!--[if IE 7]>
+<script type="text/javascript" charset="utf-8">
+  $(document.body).addClass("ie7")
+</script>
+<![endif]--> 
+ 
+</body> 
+</html> 
