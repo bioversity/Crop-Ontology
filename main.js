@@ -20,7 +20,9 @@ apejs.urls = {
 
             var json = "[";
             for(var i=0; i<res.length; i++) {
-                json += "{ \""+res[i].getKey().getName().replace("\"","\\\"") + "\":\""+res[i].getProperty("value").getValue().replace("\"","\\\"") + "\"} ";
+                if(i != 0)
+                    json += ",";
+                json += "{ \"key\":\""+res[i].getKey().getName().replace("\"","\\\"") + "\", \"value\":\""+res[i].getProperty("value").getValue().replace("\"","\\\"") + "\"} ";
             }
             json += "]";
             response.getWriter().println(json);

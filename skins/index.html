@@ -160,7 +160,7 @@ function show_attributes(id, name, attributes) {
  
     });
     if(!attributes.length)
-        str += "<tr class='last'><td class='error'>No additional information available.</td></tr>";
+        str += "<tr class='last'><td class='error'>No additional information available.</td><td></td></tr>";
 
     str += "</table>";
 
@@ -197,13 +197,23 @@ function load_term(li) {
                 value: $(this).find("value").text()
             });
         });
-        show_attributes(id, name, attributes);
+        // let's also load the attributes stored locally for this term
+        $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
+            $.each(this_attrs, function(i) {
+                // push this obj inside the parent scope 'attributes'
+                attributes.push(this_attrs[i]);
+            });
+
+            // let's show the attributes
+            show_attributes(id, name, attributes);
+            term_loader(false);
+        });
         //$(".browser-content .filters li a").text(data.code).attr("href", "http://test.development.grinfo.net/Luca/datadict/"+data.code);
         
         // load comments
         //comments.load(data.comments);
+
  
-        term_loader(false);
     }, "xml");
  
     /* get comments */
@@ -555,7 +565,11 @@ var events = function(){
         term_loader(true);
         $.post("/add-attribute", {term_id:term_id,key:key, value:value}, function(data) {
             term_loader(false);
-            console.log(data);
+            // great term was saved, let's reload this term
+            // to reload the term re-using load_term(li) we need to find the li object
+            var li = $("li.expandable input.id[value=\""+term_id+"\"]").parent();
+            load_term(li);
+
         });
 
         e.preventDefault();
