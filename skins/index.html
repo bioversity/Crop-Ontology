@@ -1,4 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><link href="https://assets0.github.com/stylesheets/bundle_common.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link href="https://assets3.github.com/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="jquery.treeview/jquery.treeview.css" /><link href="http://test.development.grinfo.net/Luca/datadict/style.css" media="screen" rel="stylesheet" type="text/css" /><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> <script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> <link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" /><script> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+
+<title>Crop Ontology - Curation tool demo</title>
+<link href="https://assets0.github.com/stylesheets/bundle_common.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link href="https://assets3.github.com/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="/jquery.treeview.css" /><link href="http://test.development.grinfo.net/Luca/datadict/style.css" media="screen" rel="stylesheet" type="text/css" /><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> <script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> <link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" /><script> 
 (function(){
  
 var URL = "http://test.development.grinfo.net/Luca/datadict";
@@ -68,15 +71,20 @@ function expand_collapse(li) {
             } else {
  
                 var id = li.find(".id").val();
+
+                load_branch(parent, "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+id.split(":")[0]+"&id="+id);
                 // TODO - fix this - for now we just have a global variable tracking if we
                 // need to load the root ontology (only the first time) and nodes for the rest
+                /*
                 if(roots_loaded) {
+
                     load_branch(parent, URL+"/OntologyDataWrapperProxy.php?out-format=json&command=GetNodeChildren&NodeID="+id);
                 } else {
                     load_branch(parent, URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListOntologyRoots&NodeOntology="+id);
                     // roots loaded
                     roots_loaded = true;
                 }
+                */
             }
  
         }
@@ -135,17 +143,17 @@ function term_loader(show) {
  
 }
  
-function show_attributes(data) {
- 
-    var attributes = data.data.Node ? data.data.Node.NodeTerm.Attributes  : data.data.Attributes;
- 
- 
+// attributes is an array of key:value pairs
+function show_attributes(attributes) {
     var str = "";
     $.each(attributes, function(i) {
         var attr = this;
-        str += "<b>"+attr.Term.TermGlobalIdentifier + "</b>: "+ attr.Qualifier+"<br>";
+        str += "<b>"+attr.key + "</b>: "+ attr.value+"<br>";
  
     });
+    if(str == "")
+        str = "No additional information available.";
+
     $("#pages .general").html(str);
  
 }
@@ -155,38 +163,43 @@ function show_attributes(data) {
 function load_term(li) {
     // get info for this specific term name located under /datadict/TermName/json
     term_loader(true);
+
  
     var id = li.find(".id").val();
  
- 
     var parent = li.parent();
  
-    var url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=GetNodeInfo&NodeID="+id;
-    if(parent.attr("id") == "root") {
-        url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=GetTermInfo&TermID="+id;
- 
-    }
+    var ontology_name = id.split(":")[0];
+    var url = "http://cropontology.org/ontology-lookup/definition.view?&termid="+id+"&ontologyname="+ontology_name+"&q=termmetadata&_=";
  
     /* get node info (attributes) */
-    $.getJSON(url, function(data){
-        show_attributes(data);
+    $.get("/httpget", {url:url}, function(xml){
+        var jxml = $(xml);
+        var attributes = [];
+        jxml.find("item").each(function(){
+            attributes.push({
+                key: $(this).find("name").text(),
+                value: $(this).find("value").text()
+            });
+        });
+        show_attributes(attributes);
         //$(".browser-content .filters li a").text(data.code).attr("href", "http://test.development.grinfo.net/Luca/datadict/"+data.code);
         
- 
         // load comments
         //comments.load(data.comments);
  
         term_loader(false);
-    });
+    }, "xml");
  
     /* get comments */
+    /*
     var comm_url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListTopics&CommentNode="+id;
     $.getJSON(comm_url, function(data){
         console.log(data);
         //comments.load(data.comments);
  
     });
- 
+    */
 }
  
 /*
@@ -196,16 +209,13 @@ function load_term(li) {
 function make_li(obj, last) {
  
     // generic attributes
-    var id = (obj.Term) ? obj.Term.TermID : obj.Node.NodeID;
-    var name = (obj.Term) ? obj.Term.TermGlobalIdentifier : obj.Node.NodeTerm.TermGlobalIdentifier;
-    var label = (obj.Attributes.Label) ? obj.Attributes.Label.Qualifier : obj.Node.NodeTerm.Attributes.Label.Qualifier;
-    var summary = (obj.Attributes.Summary) ? obj.Attributes.Summary.Qualifier : (obj.Node.NodeTerm.Attributes.Summary) ? obj.Node.NodeTerm.Attributes.Summary.Qualifier : "none";
- 
-    var has_children = false,
+    var id = obj.id;
+    var name = obj.name;
+    var label = obj.label;
+    var summary = obj.summary;
+    var has_children = obj.has_children,
         hitarea;
-    if(obj.Term || (obj.Node && obj.Node.NodeSiblings > 0)) 
-        has_children = true;
- 
+
     var li = $("<li></li>");
     if(last)
         li.addClass("last");
@@ -258,6 +268,22 @@ function loader(parent, show) {
     }
  
 }
+function get_id_desc(ontologyName, func) {
+    // first get id
+    $.get("/httpget", {url: "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+ontologyName}, function(xml) {
+        var id = $(xml).find("node").attr("accession");
+        var has_children = $(xml).find("node").attr("has_children");
+        // then get  of root
+        $.get("/httpget", {url: "http://cropontology.org/ontology-lookup/ontologydef.view?&targetid=ontologyDefinition&ontologyname="+ontologyName+"&q=ontologydef&_="}, function(cxml) {
+            var description = $(cxml).find("value").text();
+
+            // call the callback
+            func(id, description, has_children);
+            
+        }, "xml");
+
+    }, "xml");
+}
  
 /*
  * loads a single branch given an array of objects
@@ -273,30 +299,54 @@ function load_branch(parent, url) {
  
     parent.show();
  
-    $.getJSON(url, function(data) {
+    $.get("/httpget", {url: url}, function(xml) {
         // hide the loading image
         loader(parent, false);
- 
-        var status_code = data.status.code;
- 
-        if(status_code != 0) return;
- 
-        var data = data.data; // based on milkos new data formatting
-        for(var i=0; i<data.length; i++) {
-            obj = data[i];
- 
-            if(i == data.length-1) // last
-                li = make_li(obj, true);
-            else
-                li = make_li(obj);
-            
-            parent.append(li);
+        var jxml = $(xml);
+
+        var items = jxml.find("item");
+        if(items.length) { // it's a root branch we're loading
+            items.each(function(i) {
+                var onto_name = $(this).find("name").text();
+                var onto_id = $(this).find("value").text();
+                // get ontology id and description
+                get_id_desc(onto_id, function(id, description, has_children){
+                    obj = {
+                        id: id,
+                        name: onto_name,
+                        has_children: (has_children == "1" ? true : false)
+                    };
+                    if(i == items.length-1) // last
+                        li = make_li(obj, true);
+                    else
+                        li = make_li(obj);
+                    
+                    parent.append(li);
+
+                });
+            });
+        } else { // it's a inner branch we're loading
+            var nodes = jxml.find("node");
+            nodes.each(function(i) {
+                var $this = $(this);
+                obj = {
+                    id: $this.attr("accession"),
+                    name: $this.attr("name"),
+                    has_children: ($this.attr("has_children") == "1" ? true : false)
+                };
+                if(i == nodes.length-1) // last
+                    li = make_li(obj, true);
+                else
+                    li = make_li(obj);
+                
+                parent.append(li);
+            });
         }
         
         // assign tooltip hovering
-        tooltip();
+        //tooltip();
  
-    });
+    }, "xml");
 }
  
 function mylogin() {
@@ -418,7 +468,7 @@ var events = function(){
 $(document).ready(function(){
  
     /* load initial root branch - left-side */
-    load_branch($("#root"), URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListOntologies");
+    load_branch($("#root"), "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter");
  
     /* assign some events for ui */
     events();
@@ -483,6 +533,11 @@ li.collapsable > a.minibutton{
     float: right;
     cursor: pointer;
 }
+#logo h1{
+    color:#444444;
+    font-style:italic;
+    line-height:90px;
+}
 </style> 
 </head> 
  
@@ -492,7 +547,7 @@ li.collapsable > a.minibutton{
  
             
             <div id="logo"> 
-                <a href="#"><img src="http://test.development.grinfo.net/Luca/datadict/images/singer.png"/></a> 
+                <h1>Crop Ontology - Curation tool demo</h1>
             </div> 
         </div> 
         <div class="site"> 
