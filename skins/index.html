@@ -164,6 +164,8 @@ function show_attributes(name, attributes) {
 
     str += "</table>";
 
+    str += '<span class="add_attribute">Add a new attribute</span>';
+
     $(".right ul.filters li a").text(name);
     $("#pages .general").html(str);
  
@@ -382,6 +384,26 @@ function mylogin() {
     }
  
 }
+
+function add_attribute(){
+    var jattributes = $(".attributes");
+    var last = jattributes.find(".last");
+    last.removeClass("last");
+
+    // check if 'last' is even or not by checking the class
+    var islasteven = true;
+    if(last.attr("class").indexOf("even") == -1) // even not found
+        islasteven = false;
+
+
+    var str = "<tr class='last " +(islasteven ? "" : "even")+"'><td class='key'><input type='text' /></td><td class='value'><p><textarea></textarea></p>\
+        <p><select class='textimage-switch'><option>Text</option>\
+            <option>Image</option>\
+            </select></p><p><button type='submit' tabindex='2'>Save</button></p>\
+    </td></tr>";
+
+    $(".attributes").append(str);
+}
  
 /*
  * Events assignment
@@ -477,6 +499,25 @@ var events = function(){
  
         e.preventDefault();
         e.stopPropagation();
+    });
+
+
+    // adding new attribute
+    $(".add_attribute").live("click",function(e) {
+        add_attribute();
+    });
+
+    //
+    $(".textimage-switch").live("change",function(e) {
+        var str = "";
+        if($(this).val() == "Image")
+            str = "<input type='file' />" 
+        else 
+            str = "<textarea></textarea>" 
+
+        $(this).parent() // <p>
+            .prev() // the <p> before the top
+            .html(str);
     });
  
 };
@@ -585,6 +626,36 @@ table.attributes {
 .attributes td.error {
     padding:20px;
     text-align: center;
+}
+.add_attribute {
+    border-top:1px solid #D9D9D9;
+    color:#4183C4;
+    cursor:pointer;
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    height:30px;
+    line-height:32px;
+    padding:0 10px 0 32px;
+
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.add_attribute:hover {
+    background-color:#4183C4;
+    border-top: 1px solid #175790;
+    color:#FFFFFF;
+}
+.attributes input {
+    border: 1px solid #919191;
+    padding: 3px;
+}
+.attributes textarea {
+    width: 100%;
 }
 </style> 
 </head> 
