@@ -144,16 +144,27 @@ function term_loader(show) {
 }
  
 // attributes is an array of key:value pairs
-function show_attributes(attributes) {
-    var str = "";
+function show_attributes(name, attributes) {
+    var str = '<table cellspacing="0" cellpadding="0" class="attributes">';
     $.each(attributes, function(i) {
-        var attr = this;
-        str += "<b>"+attr.key + "</b>: "+ attr.value+"<br>";
+        var attr = this,
+            class_name = "";
+        if(i == attributes.length-1) // last
+            class_name = "last";
+
+        var iseven = false;
+        if(i%2 === 0) // is even
+            iseven = true;
+            
+        str += "<tr class='"+class_name+ " " +(iseven ? "even" : "")+"'><td class='key'>"+attr.key + "</td><td class='value'>"+ attr.value+"</td></tr>";
  
     });
-    if(str == "")
-        str = "No additional information available.";
+    if(!attributes.length)
+        str += "<tr class='last'><td class='error'>No additional information available.</td></tr>";
 
+    str += "</table>";
+
+    $(".right ul.filters li a").text(name);
     $("#pages .general").html(str);
  
 }
@@ -166,6 +177,7 @@ function load_term(li) {
 
  
     var id = li.find(".id").val();
+    var name = li.find("a.minibutton span").text();
  
     var parent = li.parent();
  
@@ -182,7 +194,7 @@ function load_term(li) {
                 value: $(this).find("value").text()
             });
         });
-        show_attributes(attributes);
+        show_attributes(name, attributes);
         //$(".browser-content .filters li a").text(data.code).attr("href", "http://test.development.grinfo.net/Luca/datadict/"+data.code);
         
         // load comments
@@ -301,11 +313,11 @@ function load_branch(parent, url) {
  
     $.get("/httpget", {url: url}, function(xml) {
         // hide the loading image
-        loader(parent, false);
         var jxml = $(xml);
 
         var items = jxml.find("item");
         if(items.length) { // it's a root branch we're loading
+            var count = 0;
             items.each(function(i) {
                 var onto_name = $(this).find("name").text();
                 var onto_id = $(this).find("value").text();
@@ -323,6 +335,9 @@ function load_branch(parent, url) {
                     
                     parent.append(li);
 
+                    count++;
+                    if(count == items.length)
+                        loader(parent, false);
                 });
             });
         } else { // it's a inner branch we're loading
@@ -341,6 +356,7 @@ function load_branch(parent, url) {
                 
                 parent.append(li);
             });
+            loader(parent, false);
         }
         
         // assign tooltip hovering
@@ -534,9 +550,41 @@ li.collapsable > a.minibutton{
     cursor: pointer;
 }
 #logo h1{
-    color:#444444;
-    font-style:italic;
     line-height:90px;
+
+    
+    color:#495961;
+    font-size:30px;
+    font-weight:normal;
+    letter-spacing:-1px;
+    text-shadow:1px 1px 0 #FFFFFF;
+}
+table.attributes {
+    width: 100%;
+}
+.attributes tr td{
+    border-bottom: 1px solid #ddd;
+}
+.attributes tr.last td{
+    border:0;
+}
+.attributes tr td{
+    background-color: #ededed;
+}
+.attributes tr.even td{
+    background-color: #f6f6f6;
+}
+.attributes td.key {
+    font-weight: bold;
+    text-align: right;
+    padding: 20px 10px 20px 20px;
+}
+.attributes td.value {
+    padding: 20px 10px 20px 0px;
+}
+.attributes td.error {
+    padding:20px;
+    text-align: center;
 }
 </style> 
 </head> 
@@ -556,7 +604,7 @@ li.collapsable > a.minibutton{
  
           <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
     </h2> 
-  <h1>Warehouse Data Dictionary</h1> 
+  <h1>Curation Tool</h1> 
 </div> 
  
             <div class="left browser-content"> 
@@ -644,7 +692,7 @@ li.collapsable > a.minibutton{
  
     </div><!-- end new-comments --> 
  
-    <div class="general description" style="margin: 20px; "> 
+    <div class="general description" > 
  
         </div><!-- end general --> 
 </div><!-- /pages --> 
