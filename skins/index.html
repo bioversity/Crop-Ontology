@@ -144,7 +144,7 @@ function term_loader(show) {
 }
  
 // attributes is an array of key:value pairs
-function show_attributes(name, attributes) {
+function show_attributes(id, name, attributes) {
     var str = '<table cellspacing="0" cellpadding="0" class="attributes">';
     $.each(attributes, function(i) {
         var attr = this,
@@ -167,6 +167,7 @@ function show_attributes(name, attributes) {
     str += '<span class="add_attribute">Add a new attribute</span>';
 
     $(".right ul.filters li a").text(name);
+    $("#term_id").text(id);
     $("#pages .general").html(str);
  
 }
@@ -196,7 +197,7 @@ function load_term(li) {
                 value: $(this).find("value").text()
             });
         });
-        show_attributes(name, attributes);
+        show_attributes(id, name, attributes);
         //$(".browser-content .filters li a").text(data.code).attr("href", "http://test.development.grinfo.net/Luca/datadict/"+data.code);
         
         // load comments
@@ -396,11 +397,26 @@ function add_attribute(){
         islasteven = false;
 
 
-    var str = "<tr class='last " +(islasteven ? "" : "even")+"'><td class='key'><input type='text' /></td><td class='value'><p><textarea></textarea></p>\
-        <p><select class='textimage-switch'><option>Text</option>\
-            <option>Image</option>\
-            </select></p><p><button type='submit' tabindex='2'>Save</button></p>\
-    </td></tr>";
+    var str = '\
+            <tr class="inline-edit last ' +(islasteven ? '' : 'even')+'">\
+                <td class="key">\
+                    <p>\
+                        <input type="text" class="textfield" name="value" value="">\
+                    </p>\
+                </td>\
+                <td class="value">\
+                    <p><textarea class="textfield"></textarea><input style="display: none" type="file" /></p>\
+                    <p>\
+                        <select class="textimage-switch">\
+                            <option>Text</option>\
+                            <option>Image</option>\
+                        </select>\
+                    </p>\
+                    <div class="form-actions">\
+                        <button class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\
+                    </div>\
+                </td>\
+            </tr>';
 
     $(".attributes").append(str);
 }
@@ -509,15 +525,41 @@ var events = function(){
 
     //
     $(".textimage-switch").live("change",function(e) {
-        var str = "";
-        if($(this).val() == "Image")
-            str = "<input type='file' />" 
-        else 
-            str = "<textarea></textarea>" 
+        var $this = $(this);
+        var cont = $this.parent().prev();
+        if($this.val() == "Image") {
+            cont.find("input").show();
+            cont.find("textarea").hide();
+        } else { 
+            cont.find("input").hide();
+            cont.find("textarea").show();
+        }
+    });
 
-        $(this).parent() // <p>
-            .prev() // the <p> before the top
-            .html(str);
+    $(".attributes tr.inline-edit a.cancel").live("click", function(e) {
+        var $this = $(this);
+        var table = $this.parents("table.attributes");
+        $this.parents(".inline-edit").remove();
+        table.find("tr").last().addClass("last");
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    // submitting a new attribute
+    $(".attributes tr.inline-edit button.minibutton").live("click", function(e) {
+        var parent_tr = $(this).parents("tr.inline-edit");
+        var key = parent_tr.find("td.key input").val();
+        var value = parent_tr.find("td.value textarea").val();
+        var term_id = $("#term_id").text();
+
+        term_loader(true);
+        $.post("/add-attribute", {term_id:term_id,key:key, value:value}, function(data) {
+            term_loader(false);
+            console.log(data);
+        });
+
+        e.preventDefault();
+        e.stopPropagation();
     });
  
 };
@@ -650,12 +692,14 @@ table.attributes {
     border-top: 1px solid #175790;
     color:#FFFFFF;
 }
-.attributes input {
-    border: 1px solid #919191;
-    padding: 3px;
+.attributes tr.inline-edit td {
+    vertical-align: top;
+}
+.attributes input  {
+    width: auto !important;
 }
 .attributes textarea {
-    width: 100%;
+    width: 290px !important;
 }
 </style> 
 </head> 
@@ -694,6 +738,7 @@ table.attributes {
 <div class="browser-content browser" style="margin:0;"> 
   <div class="filterbar"> 
     <ul class="filters"> 
+        <span id="term_id" style="display: none;"></span>
       <li data-filter="read" ><a href="#">Name</a></li> 
     </ul> 
  
