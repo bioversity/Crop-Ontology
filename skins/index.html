@@ -160,7 +160,7 @@ function show_attributes(id, name, attributes) {
  
     });
     if(!attributes.length)
-        str += "<tr class='last'><td class='error'>No additional information available.</td><td></td></tr>";
+        str += "<tr class='last'><td class='error' colspan=2>No additional information available.</td><td></td></tr>";
 
     str += "</table>";
 
@@ -331,7 +331,10 @@ function load_branch(parent, url) {
         var items = jxml.find("item");
         if(items.length) { // it's a root branch we're loading
             var count = 0;
+            var devcount = 0;
             items.each(function(i) {
+                devcount++; if(devcount > 5) return; // to make dev faster
+
                 var onto_name = $(this).find("name").text();
                 var onto_id = $(this).find("value").text();
                 // get ontology id and description
@@ -415,18 +418,22 @@ function add_attribute(){
                     </p>\
                 </td>\
                 <td class="value">\
-                    <p><textarea class="textfield"></textarea><input style="display: none" type="file" /></p>\
-                    <p>\
-                        <select class="textimage-switch">\
-                            <option>Text</option>\
-                            <option>Image</option>\
-                        </select>\
-                    </p>\
-                    <div class="form-actions">\
-                        <button class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\
-                    </div>\
+                    <form enctype="multipart/form-data" method="post" action="/add-attribute" id="form_add_attribute" target="upload_iframe">\
+                        <input type="hidden" name="key" />\
+                        <p><textarea class="textfield" name="value"></textarea></p>\
+                        <p>\
+                            <select class="textimage-switch">\
+                                <option>Text</option>\
+                                <option>Image</option>\
+                            </select>\
+                        </p>\
+                        <div class="form-actions">\
+                            <button type="submit" class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\
+                        </div>\
+                    </form>\
                 </td>\
-            </tr>';
+            </tr>\
+            ';
 
     $(".attributes").append(str);
 }
@@ -535,14 +542,14 @@ var events = function(){
 
     //
     $(".textimage-switch").live("change",function(e) {
+        var text = '<textarea class="textfield" name="value"></textarea>';
+        var img = '<input name="value" type="file" />';
         var $this = $(this);
         var cont = $this.parent().prev();
         if($this.val() == "Image") {
-            cont.find("input").show();
-            cont.find("textarea").hide();
+            cont.html(img);
         } else { 
-            cont.find("input").hide();
-            cont.find("textarea").show();
+            cont.html(text);
         }
     });
 
@@ -556,6 +563,7 @@ var events = function(){
     });
 
     // submitting a new attribute
+    /*
     $(".attributes tr.inline-edit button.minibutton").live("click", function(e) {
         var parent_tr = $(this).parents("tr.inline-edit");
         var key = parent_tr.find("td.key input").val();
@@ -567,13 +575,22 @@ var events = function(){
             term_loader(false);
             // great term was saved, let's reload this term
             // to reload the term re-using load_term(li) we need to find the li object
-            var li = $("li.expandable input.id[value=\""+term_id+"\"]").parent();
+            var li = $("input.id[value=\""+term_id+"\"]").parent();
             load_term(li);
 
         });
 
         e.preventDefault();
         e.stopPropagation();
+    });
+    */
+    $("#form_add_attribute").live("submit",function(e) {
+        // add the key to the form
+        var parent_tr = $(this).parents("tr.inline-edit"),
+            key = parent_tr.find("td.key input").val();
+        $(this).find("input[name=key]").val(key);
+        // start upload by target
+        
     });
  
 };
@@ -604,6 +621,10 @@ $(document).ready(function(){
  
 })();
  
+
+function fileupload_done() {
+    alert(1);
+}
 </script> 
  
  
@@ -675,9 +696,11 @@ table.attributes {
     font-weight: bold;
     text-align: right;
     padding: 20px 10px 20px 20px;
+    width: 30%;
 }
 .attributes td.value {
     padding: 20px 10px 20px 0px;
+    width: 70%;
 }
 .attributes td.error {
     padding:20px;
@@ -710,7 +733,7 @@ table.attributes {
     vertical-align: top;
 }
 .attributes input  {
-    width: auto !important;
+    width: 100px !important;
 }
 .attributes textarea {
     width: 290px !important;
@@ -864,6 +887,8 @@ table.attributes {
  
 </div><!-- /mylogin --> 
  
+<iframe name="upload_iframe" src="/add-attribute" style="display: none;"></iframe>
+
  
 <!--[if IE 8]>
 <script type="text/javascript" charset="utf-8">
