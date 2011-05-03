@@ -1,7 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
 
 <title>Crop Ontology - Curation tool demo</title>
-<link href="https://assets0.github.com/stylesheets/bundle_common.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link href="https://assets3.github.com/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="/jquery.treeview.css" /><link href="http://test.development.grinfo.net/Luca/datadict/style.css" media="screen" rel="stylesheet" type="text/css" /><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> <script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> <link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" /><script> 
+<link href="/stylesheets/bundle_common.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/jquery.treeview.css" />
+<link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+<!--<script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> 
+<link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" />-->
+<script> 
 (function(){
  
 var URL = "http://test.development.grinfo.net/Luca/datadict";
@@ -128,7 +135,8 @@ var comments = (function(){
     };
 })();
  
-function term_loader(show) {
+// global, blah
+term_loader = function(show) {
     var context = $(".context-loader");
     if(show) {
         //fade.fadeTo("fast", 0.5);
@@ -146,17 +154,23 @@ function term_loader(show) {
 // attributes is an array of key:value pairs
 function show_attributes(id, name, attributes) {
     var str = '<table cellspacing="0" cellpadding="0" class="attributes">';
+
+
     $.each(attributes, function(i) {
         var attr = this,
             class_name = "";
         if(i == attributes.length-1) // last
             class_name = "last";
 
+        var storedLocallyClass = "";
+        if(attr.local)
+            storedLocallyClass = "storedLocally";
+
         var iseven = false;
         if(i%2 === 0) // is even
             iseven = true;
             
-        str += "<tr class='"+class_name+ " " +(iseven ? "even" : "")+"'><td class='key'>"+attr.key + "</td><td class='value'>"+ attr.value+"</td></tr>";
+        str += "<tr class='"+class_name+ " " +(iseven ? "even" : "")+" "+storedLocallyClass+"'><td class='key'>"+attr.key + "</td><td class='value'>"+ attr.value+"</td></tr>";
  
     });
     if(!attributes.length)
@@ -174,7 +188,7 @@ function show_attributes(id, name, attributes) {
  
 // click event function
 // must load data for this specifict
-function load_term(li) {
+load_term = function(li) {
     // get info for this specific term name located under /datadict/TermName/json
     term_loader(true);
 
@@ -200,7 +214,7 @@ function load_term(li) {
         // let's also load the attributes stored locally for this term
         $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
             $.each(this_attrs, function(i) {
-                // push this obj inside the parent scope 'attributes'
+                this_attrs[i].local = true;
                 attributes.push(this_attrs[i]);
             });
 
@@ -284,7 +298,7 @@ function make_li(obj, last) {
 }
  
 function loader(parent, show) {
-    var jimg = $("<img>").attr("src", "https://assets3.github.com/images/modules/pagehead/metabox_loader.gif");
+    var jimg = $("<img>").attr("src", "/images/metabox_loader.gif");
  
     if(show) {
         jimg.insertBefore(parent);
@@ -331,9 +345,10 @@ function load_branch(parent, url) {
         var items = jxml.find("item");
         if(items.length) { // it's a root branch we're loading
             var count = 0;
-            var devcount = 0;
+
             items.each(function(i) {
-                devcount++; if(devcount > 5) return; // to make dev faster
+                /*devcount++; if(devcount > 5) return; // to make dev faster*/
+
 
                 var onto_name = $(this).find("name").text();
                 var onto_id = $(this).find("value").text();
@@ -399,6 +414,34 @@ function mylogin() {
  
 }
 
+
+var row_edit_template = '\
+        <tr class="inline-edit">\
+            <td class="key">\
+                <p>\
+                    <input type="text" class="textfield" name="value" value="">\
+                </p>\
+            </td>\
+            <td class="value">\
+                <form enctype="multipart/form-data" method="post" action="/add-attribute" id="form_add_attribute" target="upload_iframe">\
+                    <input type="hidden" name="term_id" />\
+                    <input type="hidden" name="key" />\
+                    <p><textarea class="textfield" name="value"></textarea></p>\
+                    <p>\
+                        <select class="textimage-switch">\
+                            <option>Text</option>\
+                            <option>Image</option>\
+                        </select>\
+                    </p>\
+                    <div class="form-actions">\
+                        <button type="submit" class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\
+                    </div>\
+                </form>\
+            </td>\
+        </tr>\
+        ';
+
+
 function add_attribute(){
     var jattributes = $(".attributes");
     var last = jattributes.find(".last");
@@ -409,33 +452,12 @@ function add_attribute(){
     if(last.attr("class").indexOf("even") == -1) // even not found
         islasteven = false;
 
+    var new_attr = $(row_edit_template);
+    new_attr.addClass("last");
+    if(!islasteven)
+        new_attr.addClass("even");
 
-    var str = '\
-            <tr class="inline-edit last ' +(islasteven ? '' : 'even')+'">\
-                <td class="key">\
-                    <p>\
-                        <input type="text" class="textfield" name="value" value="">\
-                    </p>\
-                </td>\
-                <td class="value">\
-                    <form enctype="multipart/form-data" method="post" action="/add-attribute" id="form_add_attribute" target="upload_iframe">\
-                        <input type="hidden" name="key" />\
-                        <p><textarea class="textfield" name="value"></textarea></p>\
-                        <p>\
-                            <select class="textimage-switch">\
-                                <option>Text</option>\
-                                <option>Image</option>\
-                            </select>\
-                        </p>\
-                        <div class="form-actions">\
-                            <button type="submit" class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\
-                        </div>\
-                    </form>\
-                </td>\
-            </tr>\
-            ';
-
-    $(".attributes").append(str);
+    $(".attributes").append(new_attr);
 }
  
 /*
@@ -558,6 +580,8 @@ var events = function(){
         var table = $this.parents("table.attributes");
         $this.parents(".inline-edit").remove();
         table.find("tr").last().addClass("last");
+
+        if(jcurrHoveredTr)jcurrHoveredTr.show();
         e.preventDefault();
         e.stopPropagation();
     });
@@ -585,12 +609,73 @@ var events = function(){
     });
     */
     $("#form_add_attribute").live("submit",function(e) {
-        // add the key to the form
+        // add the key and term_id to the form
         var parent_tr = $(this).parents("tr.inline-edit"),
-            key = parent_tr.find("td.key input").val();
+            key = parent_tr.find("td.key input").val(),
+            term_id = $("#term_id").text();
         $(this).find("input[name=key]").val(key);
+        $(this).find("input[name=term_id]").val(term_id);
         // start upload by target
+        term_loader(true);
         
+    });
+
+    
+    var toolbar = $(".toolbar");
+    var jcurrHoveredTr;
+    $(".storedLocally").live("mouseover", function(){
+        function showToolbar(row) {
+            var p = row.offset();
+            toolbar.show();
+            toolbar.css("top", p.top+"px");
+            toolbar.css("left", p.left + row.width()+"px");
+        }
+        jcurrHoveredTr = $(this);
+
+        showToolbar($(this));
+    });
+    $(".storedLocally").live("mouseout", function(){
+        toolbar.hide();
+
+    });
+
+    toolbar.live("mouseover", function(){
+        $(this).show();
+    });
+    toolbar.live("mouseout", function(){
+        $(this).hide();
+    });
+
+    $(".toolbar_edit").live("click", function() {
+        var edit_row = $(row_edit_template);
+        edit_row.addClass("even");
+        // make sure the template has all the right inputs filled up of jcurrHoveredTr
+        var key = jcurrHoveredTr.find("td.key").text();
+        var value = jcurrHoveredTr.find("td.value").text()
+        edit_row.find("td.key input").val(key);
+        edit_row.find("td.value textarea").val(value);
+
+        edit_row.insertAfter(jcurrHoveredTr);
+        jcurrHoveredTr.hide();
+
+    });
+    $(".toolbar_remove").live("click", function() {
+        var key = jcurrHoveredTr.find("td.key").text();
+        var term_id = $("#term_id").text();
+        term_loader(true);
+        var answer = confirm("Are you sure you want to delete this attribute?");
+        if(answer) {
+            $.post("/remove-attribute",{key:key, term_id: term_id}, function(){
+
+                term_loader(false);
+                // great term was saved, let's reload this term
+                // to reload the term re-using load_term(li) we need to find the li object
+                var li = $("input.id[value=\""+term_id+"\"]").parent();
+                load_term(li);
+
+            });
+        } else{ term_loader(false); }
+
     });
  
 };
@@ -623,7 +708,12 @@ $(document).ready(function(){
  
 
 function fileupload_done() {
-    alert(1);
+    var term_id = $("#term_id").text();
+    term_loader(false);
+    // great term was saved, let's reload this term
+    // to reload the term re-using load_term(li) we need to find the li object
+    var li = $("input.id[value=\""+term_id+"\"]").parent();
+    load_term(li);
 }
 </script> 
  
@@ -689,6 +779,14 @@ table.attributes {
 .attributes tr td{
     background-color: #ededed;
 }
+/*
+.attributes tr.storedLocally td{
+    background-color: #D2E1FF;
+}
+.attributes tr.even.storedLocally td{
+    background-color: #E4EDFF;
+}
+*/
 .attributes tr.even td{
     background-color: #f6f6f6;
 }
@@ -737,6 +835,29 @@ table.attributes {
 }
 .attributes textarea {
     width: 290px !important;
+}
+.attributes a img {
+    max-width: 300px;
+    border: 0;
+}
+
+.toolbar {
+    cursor: pointer;
+    background: #eee;
+}
+.toolbar div:hover {
+    background-color:#4183C4;
+}
+.toolbar_edit {
+    width: 30px;
+    height: 30px;
+    background: url(/images/edit_icon.png) no-repeat center center;
+}
+.toolbar_remove {
+    width: 30px;
+    height: 30px;
+    background: url(/images/remove_icon.png) no-repeat center center;
+
 }
 </style> 
 </head> 
@@ -887,6 +1008,10 @@ table.attributes {
  
 </div><!-- /mylogin --> 
  
+<div class="toolbar" style="display: none; position: absolute; top:0; left:0;">
+    <div class="toolbar_edit"></div>
+    <div class="toolbar_remove"></div>
+</div>
 <iframe name="upload_iframe" src="/add-attribute" style="display: none;"></iframe>
 
  

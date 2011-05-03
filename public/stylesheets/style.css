@@ -1,0 +1,59 @@
+.description ul{
+    padding-left:40px;
+}
+.bar {
+    width: 420px;
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+div.comment_post {
+    margin-top:5px;
+    padding:0 1px;
+    width:500px;
+}
+div.comment_post textarea {
+    height:100px;
+    width:500px;
+}
+.comment_buttons button {
+    margin:5px 5px 10px 0;
+}
+
+#logo {
+    float: right;
+}
+#user {
+    padding-top: 20px;
+}
+
+button {
+    padding: 5px 10px;
+}
+
+.commentarea form {
+    margin-bottom: 10px;
+}
+
+.comment {
+    margin-bottom: 20px;
+}
+
+.comment p {
+    margin:5px 0;
+}
+.comment_info a {
+    color: #336699;
+    font-weight: bold;
+}
+.comment_date {
+    color: #888888;
+    font-size: x-small;
+}
+
+.comment_reply a {
+    color:#888888;
+    font-weight:bold;
+    font-size: 12px;
+}
