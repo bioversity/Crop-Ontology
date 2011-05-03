@@ -15,8 +15,8 @@ apejs.urls = {
             if(!term_id) return response.getWriter().println("No term_id");
 
             var q = googlestore.query("attribute");
-            q.queryFilter("term_id", "=", term_id);
-            var res = q.result();
+            q.addFilter("term_id", "=", term_id);
+            var res = q.fetch(50);
 
             var json = "[";
             for(var i=0; i<res.length; i++) {
@@ -41,7 +41,7 @@ apejs.urls = {
                 value: new Text(value),
                 term_id: term_id
             });
-            googlestore.datastore.put(attribute);
+            googlestore.put(attribute);
 
         }
     },
