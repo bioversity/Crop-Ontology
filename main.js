@@ -37,6 +37,7 @@ apejs.urls = {
         }
     },
     "/add-attribute": {
+        get: function(){},
         post: function(request, response) {
             function err(msg) { response.getWriter().println(msg); }
             // get the multipart form data from the request

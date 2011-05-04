@@ -5,7 +5,7 @@
 <link href="/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="/jquery.treeview.css" />
 <link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <!--<script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> 
 <link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" />-->
 <script> 
@@ -346,8 +346,9 @@ function load_branch(parent, url) {
         if(items.length) { // it's a root branch we're loading
             var count = 0;
 
+            var devcount = 0;
             items.each(function(i) {
-                /*devcount++; if(devcount > 5) return; // to make dev faster*/
+                devcount++; if(devcount > 5) return; // to make dev faster
 
 
                 var onto_name = $(this).find("name").text();
@@ -699,7 +700,8 @@ $(document).ready(function(){
             term_loader(false);
             $(".error").show();
             $(".error_box").show();
-        }
+        },
+        "cache": false
     });
  
 });
@@ -769,6 +771,7 @@ li.collapsable > a.minibutton{
 }
 table.attributes {
     width: 100%;
+    table-layout: fixed;
 }
 .attributes tr td{
     border-bottom: 1px solid #ddd;

@@ -532,7 +532,7 @@ ul.features li{list-style-type:none;margin:5px 0;padding:2px 0 0 20px;background
 .comments-wrapper>.comment:last-child{margin-bottom:0;}
 .new-comments .comment{margin:10px 0;border:1px solid #cacaca;}
 .new-comments .comment.adminable:hover{border-color:#aaa;}
-.new-comments .comment .cmeta{height:33px;padding:0 6px;border-bottom:1px solid #ccc;background:url(/images/modules/comments/metabar.gif) 0 0 repeat-x;}
+.new-comments .comment .cmeta{height:33px;padding:0 6px;border-bottom:1px solid #ccc;background:url(/images/metabar.gif) 0 0 repeat-x;}
 .new-comments .commit-comment .cmeta,.new-comments .review-comment .cmeta,.new-comments .file-commit-comment .cmeta,.new-comments .gist-comment .cmeta,.new-comments .commit-list-comment .cmeta{background-position:0 -33px;}
 .new-comments .repo-owner-tag .cmeta,.new-comments .gist-owner-tag .cmeta{background-position:0 -66px;}
 .new-comments .comment .cmeta p.author{margin:0;float:left;font-size:12px;height:33px;line-height:33px;text-shadow:1px 1px 0 rgba(255,255,255,0.7);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
@@ -544,7 +544,7 @@ ul.features li{list-style-type:none;margin:5px 0;padding:2px 0 0 20px;background
 .new-comments .comment .cmeta p.info{float:right;margin:0;font-size:11px;height:33px;line-height:33px;}
 .new-comments .comment .cmeta p.info em.date{display:inline;font-style:normal;color:#777;text-shadow:1px 1px 0 rgba(255,255,255,0.7);}
 .new-comments .comment .cmeta p.info em.date,.comment .cmeta p.info em.date abbr{line-height:33px;}
-.new-comments .comment .cmeta .icon{display:inline-block;margin-top:-2px;margin-left:5px;width:16px;height:16px;vertical-align:middle;background:url(/images/modules/comments/icons.png?v3) 0 0 no-repeat;}
+.new-comments .comment .cmeta .icon{display:inline-block;margin-top:-2px;margin-left:5px;width:16px;height:16px;vertical-align:middle;background:url(/images/icons.png?v3) 0 0 no-repeat;}
 .new-comments .comment .cmeta .author .icon{margin-left:0;}
 .new-comments .commit-comment .cmeta .icon,.new-comments .gist-comment .cmeta .icon,.new-comments .review-comment .cmeta .icon,.new-comments .gist-comment .cmeta .icon{background-position:0 -100px;}
 .new-comments .file-commit-comment .cmeta .icon{background-position:0 -200px;}
