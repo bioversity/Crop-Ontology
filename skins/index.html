@@ -182,6 +182,7 @@ function show_attributes(id, name, attributes) {
 
     $(".right ul.filters li a").text(name);
     $("#term_id").text(id);
+    $(".term_id").attr("href", "/terms/"+name+"/"+id);
     $("#pages .general").html(str);
  
 }
@@ -900,7 +901,7 @@ table.attributes {
   <div class="filterbar"> 
     <ul class="filters"> 
         <span id="term_id" style="display: none;"></span>
-      <li data-filter="read" ><a href="#">Name</a></li> 
+      <li data-filter="read" ><a target="_blank" href="#" class="term_id">Name</a></li> 
     </ul> 
  
     <ul class="sorts"> 

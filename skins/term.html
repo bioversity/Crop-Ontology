@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en">
+<head>
+    <title>Github R&eacute;sum&eacute;</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" media="all" /> 
+    <link rel="stylesheet" type="text/css" href="http://resume.github.com/css/resume.css" media="all" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+
+<script>
+var term_name = "{{term_name}}";
+var term_id = "{{term_id}}";
+$(function(){
+
+function loader(show) {
+    if(show)
+        $(".loader").show();
+    else
+        $(".loader").hide();
+}
+
+function show_attributes(attributes) {
+    $.each(attributes, function(i) {
+        $(".yui-b").append('\
+            <div class="yui-gf">\
+                <div class="yui-u first">\
+                    <h2>'+this.key+'</h2>\
+                </div>\
+                <div class="yui-u">\
+                    <p class="enlarge">'+this.value+'</p>\
+                    <p id="languages" class="enlarge"></p>\
+                </div>\
+            </div>\
+        ');
+
+    });
+}
+
+// load all the attributes retrieved from the ols (XML)
+function load_ols(func) {
+    var id = term_id;
+    var ontology_name = id.split(":")[0];
+    var url = "http://cropontology.org/ontology-lookup/definition.view?&termid="+id+"&ontologyname="+ontology_name+"&q=termmetadata&_=";
+ 
+    /* get node info (attributes) */
+    loader(true);
+    $.get("/httpget", {url:url}, function(xml){
+        var jxml = $(xml);
+        var attributes = [];
+        jxml.find("item").each(function(){
+            attributes.push({
+                key: $(this).find("name").text(),
+                value: $(this).find("value").text()
+            });
+        });
+        // let's also load the attributes stored locally for this term
+        $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
+            $.each(this_attrs, function(i) {
+                this_attrs[i].local = true;
+                attributes.push(this_attrs[i]);
+            });
+
+            // let's show the attributes
+            show_attributes(attributes);
+            loader(false);
+        });
+    }, "xml");
+}
+
+// START
+
+
+load_ols();
+
+});
+
+</script>
+
+<style>
+.yui-gc div.first, .yui-gd .yui-u {
+    width: 100%;
+}
+#ft {
+    border: 0;
+}
+</style>
+</head>
+<body id="resume">
+<div class="yui-t7" id="doc2">
+    <div id="inner">
+
+        <div id="hd">
+            <div class="yui-gc">
+                <div class="yui-u first">
+                    <hgroup>
+                        <h1>{{term_name}}</h1>
+                        <h2></h2>
+                    </hgroup>
+                </div>
+
+            </div><!--// .yui-gc -->
+        </div><!--// hd -->
+
+        <div id="bd">
+            <div id="yui-main">
+                <div class="yui-b">
+                    <img src="/images/metabox_loader.gif" class="loader" style="display: none" />
+                </div><!--// .yui-b -->
+            </div><!--// yui-main -->
+        </div><!--// bd -->
+
+
+    </div><!-- // inner -->
+
+</div>
+</body>
+</html>
+

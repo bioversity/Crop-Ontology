@@ -112,5 +112,13 @@ apejs.urls = {
             response.getOutputStream().write(imageBytes);
 
         }
+    },
+    "/terms/(.*)/([a-zA-Z0-9_\: ]+)" : {
+        get: function(request, response, matches) {
+            var skin = render("skins/term.html")
+                        .replace(/{{term_name}}/g, matches[1])
+                        .replace(/{{term_id}}/g, matches[2]);
+            response.getWriter().println(skin);
+        }
     }
 };
