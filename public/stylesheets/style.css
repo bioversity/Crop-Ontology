@@ -57,3 +57,201 @@ button {
     font-weight:bold;
     font-size: 12px;
 }
+
+.right {
+    width: 500px;
+}
+.cont {
+padding: 20px; background-color: white;
+width: 360px;
+height: 400px;
+overflow-x: auto;
+overflow-y: auto;
+ 
+}
+.meta {
+    font-weight: bold;
+    margin-left: 11px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.55);
+text-shadow:none !important;
+}
+li.collapsable > a.minibutton{
+    color:#fff;
+    text-decoration:none;
+    text-shadow:-1px -1px 0 rgba(0,0,0,0.3);
+    border-color:#518cc6;
+    border-bottom-color:#2a65a0;
+    background:#599bdc;
+    filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#599bdc',endColorstr='#3072b3');
+    background:-webkit-gradient(linear,left top,left bottom,from(#599bdc),to(#3072b3));
+    background:-moz-linear-gradient(top,#599bdc,#3072b3);
+}
+ 
+#login-close {
+    background: url("http://pilu.github.com/web-app-theme/images/icons/cross.png") no-repeat top left;
+    width: 16px;
+    height: 16px;
+    display: block;
+    float: right;
+    cursor: pointer;
+}
+#logo h1{
+    line-height:90px;
+
+    
+    color:#495961;
+    font-size:30px;
+    font-weight:normal;
+    letter-spacing:-1px;
+    text-shadow:1px 1px 0 #FFFFFF;
+}
+table.attributes {
+    width: 100%;
+    table-layout: fixed;
+}
+.attributes tr td{
+    border-bottom: 1px solid #ddd;
+}
+.attributes tr.last td{
+    border:0;
+}
+.attributes tr td{
+    background-color: #ededed;
+}
+/*
+.attributes tr.storedLocally td{
+    background-color: #D2E1FF;
+}
+.attributes tr.even.storedLocally td{
+    background-color: #E4EDFF;
+}
+*/
+.attributes tr.even td{
+    background-color: #f6f6f6;
+}
+.attributes td.key {
+    font-weight: bold;
+    text-align: right;
+    padding: 20px 10px 20px 20px;
+    width: 30%;
+}
+.attributes td.value {
+    padding: 20px 10px 20px 0px;
+    width: 70%;
+}
+.attributes td.error {
+    padding:20px;
+    text-align: center;
+}
+.add_attribute {
+    color:#4183C4;
+    cursor:pointer;
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    height:30px;
+    line-height:32px;
+    padding:0 10px 0 32px;
+
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.add_attribute:hover {
+    background-color:#4183C4;
+    border-top: 1px solid #175790;
+    color:#FFFFFF;
+}
+.attributes tr.inline-edit td {
+    vertical-align: top;
+}
+.attributes input  {
+    width: 100px !important;
+}
+.attributes textarea {
+    width: 290px !important;
+}
+.attributes a img {
+    max-width: 300px;
+    border: 0;
+}
+
+.toolbar {
+    cursor: pointer;
+    background: #eee;
+    border: 1px solid #ddd;
+    border-left:0;
+    width: 30px;
+-webkit-border-top-right-radius: 15px;
+-webkit-border-bottom-right-radius: 10px;
+-moz-border-radius-topright: 15px;
+-moz-border-radius-bottomright: 10px;
+border-top-right-radius: 15px;
+border-bottom-right-radius: 10px;
+}
+.toolbar_edit {
+    background:url("/images/sprite.png") no-repeat scroll 2px center transparent;
+    height:30px;
+    margin:auto;
+    width:17px;
+}
+.toolbar_edit:hover {
+    background-position: -14px center; 
+}
+.toolbar_remove {
+    background:url("/images/sprite.png") no-repeat scroll -30px center transparent;
+    height:30px;
+    margin:auto;
+    width: 17px;
+}
+.toolbar_remove:hover {
+    background-position: -46px center; 
+
+}
+
+#pages div.attribute {
+    clear:both;
+    overflow:hidden;
+    line-height:150%;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+#pages div.attribute:hover, #pages div.attribute.hovered {
+    background-color: #ededed;
+}
+#pages div.attribute label {
+    width:120px;
+    float:left;
+    font-weight:bold;
+    padding-top:10px;
+    text-align:right;
+    width:118px;
+}
+#pages div.attribute label input{
+    padding:3px;
+    width:93px;
+}
+#pages div.attribute textarea {
+    width: 300px;
+    height: 80px;
+    padding:5px;
+}
+#pages div.attribute button.minibutton {
+    float: left;
+    margin-right: 10px;
+}
+#pages div.attribute span.value {
+    display:block;
+    float:left;
+    padding-left:10px;
+    padding-top:10px;
+    width:300px;
+}
+#pages div.attribute span.value img{
+    border:0;
+    max-width: 300px;
+}
