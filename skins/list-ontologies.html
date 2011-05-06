@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+
+<title>Crop Ontology - Curation tool demo</title>
+<link href="/stylesheets/bundle_common.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/bundle_github.css?677c14c4c0026f1b894c1fe68b5a6549bff32c5a" media="screen" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/jquery.treeview.css" />
+<link href="/stylesheets/style.css" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+
+<script>
+$(function(){
+
+var url = "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter",
+    parent = $(".list-ontologies");
+
+$.get("/httpget", {url: url}, function(xml) {
+    var jxml = $(xml);
+    var items = jxml.find("item");
+    items.each(function(i) {
+        var onto_name = $(this).find("name").text();
+        var onto_id = $(this).find("value").text();
+
+        parent.append('<p><a class="minibutton btn-watch" title="undefined" href="/ontology/'+onto_id+'"><span>'+onto_name+'</span></a></p>');
+        
+        $(".loader").hide();
+    });
+
+});
+
+});
+
+</script>
+ 
+</head> 
+ 
+<body class="explore"> 
+    <div id="main" class=""> 
+        <div id="header" style="height: 100px;"> 
+ 
+            
+            <div id="logo"> 
+                <h1>Crop Ontology - Curation tool demo</h1>
+            </div> 
+        </div> 
+        <div class="site"> 
+<div class="pagehead"> 
+    <h2 style="margin:5px; border-bottom:0 !important; padding:0;"> 
+ 
+          <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
+    </h2> 
+  <h1>Curation Tool</h1> 
+</div> 
+ 
+            <div class="list-ontologies"> 
+                <img src="/images/metabox_loader.gif" class="loader"/>
+            </div><!-- end left --> 
+ 
+ 
+ 
+        </div> 
+    <div style="clear:both;"></div> 
+    </div><!-- /main --> 
+ 
+ 
+<div id="mylogin" style="position: absolute; top:50%; left: 50%; margin-top: -200px; margin-left: -200px; display: none;"> 
+ 
+    <div class="login_form" id="login" style=""> 
+      <form method="post" id="login_form" action="/session"><div style="margin: 0pt; padding: 0pt;"><input type="hidden" value="5cdd9e664d321b89797b0ed43576d21152bc53e9" name="authenticity_token"></div>      <h1>Log in<a id="login-close"></a></h1> 
+      <div class="formbody"> 
+        
+            <div class="context-loader" style="display: none; top:107px;">Sending Request...</div> 
+        <div class="error_box" style="display: none;">Incorrect login or password.</div> 
+        
+        <label for="login"> 
+            Login or Email<br> 
+            <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="login_field" class="text"> 
+        </label> 
+ 
+        <label for="password"> 
+            Password 
+            <br> 
+            <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="password" class="text"> 
+        </label> 
+ 
+        <label class="submit_btn"> 
+                                    <input type="submit" value="Log in" tabindex="3" name="commit"> 
+        </label> 
+      </div> 
+    </form>  </div> 
+ 
+</div><!-- /mylogin --> 
+ 
+<div class="toolbar" style="display: none; position: absolute; top:0; left:0;">
+    <div class="toolbar_edit"></div>
+    <div class="toolbar_remove"></div>
+</div>
+<iframe name="upload_iframe" src="/add-attribute" style="display: none;"></iframe>
+
+ 
+<!--[if IE 8]>
+<script type="text/javascript" charset="utf-8">
+  $(document.body).addClass("ie8")
+</script>
+<![endif]--> 
+ 
+<!--[if IE 7]>
+<script type="text/javascript" charset="utf-8">
+  $(document.body).addClass("ie7")
+</script>
+<![endif]--> 
+ 
+</body> 
+</html> 

@@ -143,9 +143,12 @@ term_loader = function(show) {
 // attributes is an object of key:value pairs
 function show_attributes(id, name, attributes) {
     var str = "", count = 0;;
+    // identifier is first
+    str += '<div class="attribute"><label for="">Identifier</label><span class="value">'+id+'</span></div>';
+
     $.each(attributes, function(i){
         count++;
-        str += '<div class="attribute"><label for="'+i+'">'+i+'</label><span class="value">'+attributes[i]+'</span></div>';
+        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+attributes[i]+'</span></div>';
     });
     if(count == 0)
         str += "<div class='error'>No additional information available.</div>";
@@ -208,7 +211,10 @@ load_term = function(li) {
             var key = $(this).find("name").text(),
                 value = $(this).find("value").text();
 
-            attributes[key] = value;
+            if(attributes[key]) // if attribute already exists, add it as a comma separated
+                attributes[key] += ", "+value;
+            else
+                attributes[key] = value;
         });
         // let's also load the attributes stored locally for this term
         $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
@@ -343,24 +349,28 @@ function load_branch(parent, url) {
         if(items.length) { // it's a root branch we're loading
             var count = 0;
 
+            var devcount = 0;
             items.each(function(i) {
-                //devcount++; if(devcount > 3) return;
+                devcount++; if(devcount > 10) return;
 
 
                 var onto_name = $(this).find("name").text();
                 var onto_id = $(this).find("value").text();
+
+
                 // get ontology id and description
                 get_id_desc(onto_id, function(id, description, has_children){
-                    obj = {
+                    var obj = {
                         id: id,
                         name: onto_name,
                         has_children: (has_children == "1" ? true : false)
-                    };
+                    }, li;
+                    
                     if(i == items.length-1) // last
                         li = make_li(obj, true);
                     else
                         li = make_li(obj);
-                    
+
                     parent.append(li);
 
                     count++;
@@ -422,7 +432,7 @@ var row_edit_template = '\
                 <p>\
                     <select class="textimage-switch">\
                         <option>Text</option>\
-                        <option>Image</option>\
+                        <option>File</option>\
                     </select>\
                 </p>\
                 <div class="form-actions">\
@@ -544,7 +554,7 @@ var events = function(){
         if(jcurrEditing || jcurrAdding) return;
         jcurrAdding = true;
         var new_attr = $(row_edit_template);
-        $("#pages div.attribute").die();
+        $("#pages div.editable").die();
         toolbar.die();
         new_attr.insertBefore($(this));
     });
@@ -555,7 +565,7 @@ var events = function(){
         var img = '<input name="value" type="file" />';
         var $this = $(this);
         var cont = $this.parent().prev();
-        if($this.val() == "Image") {
+        if($this.val() == "File") {
             cont.replaceWith(img);
         } else { 
             cont.replaceWith(text);
@@ -589,7 +599,7 @@ var events = function(){
         jcurrEditing = false;
 
     bind_attributes_events = function() {
-        $("#pages div.attribute").live("mouseover", function(){
+        $("#pages div.editable").live("mouseover", function(){
             var $this = $(this);
             jcurrHovered = $this;
 
@@ -599,7 +609,7 @@ var events = function(){
             toolbar.css("left", p.left + $this.width()+"px");
 
         });
-        $("#pages div.attribute").live("mouseout", function(){
+        $("#pages div.editable").live("mouseout", function(){
             toolbar.hide();
         });
 
@@ -627,7 +637,7 @@ var events = function(){
 
         // the toolbar needs to be visible until we click cancel/or remove the attribute
         // so let's unbind the mouseover for the attributes
-        $("#pages div.attribute").die();
+        $("#pages div.editable").die();
         toolbar.die();
 
         var edit_row = $(row_edit_template);
@@ -674,7 +684,8 @@ var events = function(){
 $(document).ready(function(){
  
     /* load initial root branch - left-side */
-    load_branch($("#root"), "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter");
+    //load_branch($("#root"), "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter");
+    load_branch($("#root"), "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+ontologyname);
  
     /* assign some events for ui */
     events();

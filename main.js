@@ -6,7 +6,14 @@ require("./fileupload.js");
 apejs.urls = {
     "/": {
         get: function(request, response) {
-            var skin = render("skins/index.html");
+            var skin = render("skins/list-ontologies.html");
+            response.getWriter().println(skin);
+        }
+    },
+    "/ontology/([a-zA-Z0-9_\: ]+)": {
+        get: function(request, response, matches) {
+            var skin = render("skins/index.html")
+                    .replace(/{{ontologyname}}/g, matches[1]);
             response.getWriter().println(skin);
         }
     },
@@ -25,9 +32,16 @@ apejs.urls = {
                     json += ",";
 
                 var value = res[i].getProperty("value");
-                if(value instanceof Blob)
-                    value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+".png'><img src='/serve/"+res[i].getKey().getName()+".png' /></a>";
-                else
+                if(value instanceof Blob) {
+                    var filename = res[i].getProperty("filename");
+                    var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
+                    // based on the mime type we need to figure out which image to show
+                    if(mimeType.startsWith("image")) {
+                        value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'><img src='/serve/"+res[i].getKey().getName()+"' /></a>";
+                    } else {
+                        value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'>"+filename+"</a>";
+                    }
+                } else
                     value = value.getValue();
 
                 json += "{ \"key\":\""+res[i].getProperty("key").replace("\"","\\\"") + "\", \"value\":\""+value.replace("\"","\\\"") + "\"} ";
@@ -42,7 +56,7 @@ apejs.urls = {
             function err(msg) { response.getWriter().println(msg); }
             // get the multipart form data from the request
 
-            var key = "", value = "", term_id = "";
+            var key = "", value = "", term_id = "", filename = "";
             var data = fileupload.getData(request);
 
             for(var i=0; i<data.length; i++) {
@@ -52,6 +66,7 @@ apejs.urls = {
 
                 if(isFile) {
                     //err("Got file with name: "+fieldName+"<br>");
+                    filename = fieldName;
                     value = fieldValue;
                 } else {
                     if(fieldName == "key") key = fieldValue; 
@@ -67,6 +82,7 @@ apejs.urls = {
             // the key is just key_GO:0000
             var attribute = googlestore.entity("attribute", key+"_"+term_id, {
                 key: key,
+                filename: filename,
                 value: (value instanceof Blob ? value : new Text(value)),
                 term_id: term_id
             });
@@ -96,20 +112,33 @@ apejs.urls = {
             response.getWriter().println(ret);
         }
     },
-    "/serve/([a-zA-Z0-9_\: ]+).png" : {
+    "/serve/([a-zA-Z0-9_\: ]+)" : {
         get: function(request, response, matches) {
-            response.setHeader("Cache-Control", "max-age=315360000");
-            response.setContentType("image/png");
+            //response.setHeader("Cache-Control", "max-age=315360000");
 
             var keyName = matches[1],
                 // create key from the user id
                 attrKey = googlestore.createKey("attribute", keyName),
                 attr = googlestore.get(attrKey);
 
-            var imageBlob = attr.getProperty("value"),
-                imageBytes = imageBlob.getBytes();
+            var value = attr.getProperty("value");
 
-            response.getOutputStream().write(imageBytes);
+            if(value instanceof Blob) {
+                var bytes = value.getBytes();
+                var filename = attr.getProperty("filename");
+                var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
+                response.setContentType(mimeType);
+                
+                if(!mimeType.startsWith("image")) // if it's not an image, download it
+                    response.setHeader("Content-Disposition", "attachment; filename=\"" + filename+"\"");
+                response.getOutputStream().write(bytes);
+            } else if (value instanceof Text) { // plain text
+                response.setContentType("text/plain");
+                response.getWriter().println(value.getValue());
+            } else {
+                response.setContentType("text/plain");
+                response.getWriter().println(value);
+            }
 
         }
     },
