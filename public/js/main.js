@@ -327,6 +327,38 @@ function get_id_desc(ontologyName, func) {
     }, "xml");
 }
  
+function do_search() {
+    // just replace the text value
+    $("#search").val(searchQuery);
+
+    var url = "http://cropontology.org/ontology-lookup/term.view?&termname="+encodeURIComponent(searchQuery)+"&ontologyname=null&obsolete=true&q=termautocomplete&_=",
+        parent = $("#root");
+
+    loader(parent, true);
+
+    $.get("/httpget", {url: url}, function(xml) {
+        // hide the loading image
+        var jxml = $(xml);
+
+        var items = jxml.find("item");
+
+        items.each(function(i) {
+            var $this = $(this);
+            obj = {
+                id: $this.find("value").text(),
+                name: $this.find("name").text(),
+                has_children: false
+            };
+            if(i == items.length-1) // last
+                li = make_li(obj, true);
+            else
+                li = make_li(obj);
+            
+            parent.append(li);
+        });
+        loader(parent, false);
+    });
+}
 /*
  * loads a single branch given an array of objects
  * @parent - the container of the branch, a jquery DOM element; 
@@ -685,7 +717,11 @@ $(document).ready(function(){
  
     /* load initial root branch - left-side */
     //load_branch($("#root"), "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter");
-    load_branch($("#root"), "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+ontologyname);
+    if(ontologyname != "{{ontologyname}}") {
+        load_branch($("#root"), "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+ontologyname);
+    } else if(searchQuery != "") {
+        do_search();
+    }
  
     /* assign some events for ui */
     events();

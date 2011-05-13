@@ -24,6 +24,9 @@ div.comment_post textarea {
 #logo {
     float: right;
 }
+#logo a{
+    line-height: 100px;
+}
 #user {
     padding-top: 20px;
 }

@@ -149,5 +149,17 @@ apejs.urls = {
                         .replace(/{{term_id}}/g, matches[2]);
             response.getWriter().println(skin);
         }
+    },
+    "/search" : {
+        get: function(request, response, matches) {
+            /*
+            var skin = render("skins/index.html")
+                    .replace(/{{ontologyname}}/g, matches[1]);
+            response.getWriter().println(skin);
+            */
+            var skin = render("skins/index.html")
+                        .replace(/{{searchQuery}}/g, request.getParameter("q"));
+            response.getWriter().println(skin);
+        }
     }
 };

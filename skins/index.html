@@ -8,6 +8,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 <script>
 var ontologyname = "{{ontologyname}}";
+var searchQuery = "{{searchQuery}}";
 </script>
 <script type="text/javascript" src="/js/main.js"></script>
 <!--<script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> 
@@ -21,7 +22,7 @@ var ontologyname = "{{ontologyname}}";
  
             
             <div id="logo"> 
-                <h1>Crop Ontology - Curation tool demo</h1>
+                <h1><a href="/">Crop Ontology - Curation tool demo</a></h1>
             </div> 
         </div> 
         <div class="site"> 
@@ -30,7 +31,9 @@ var ontologyname = "{{ontologyname}}";
  
           <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
     </h2> 
-  <h1>Curation Tool</h1> 
+    <form action="/search" method="get">
+  <h1><input id="search" type="text" name="q" /><button type="submit" class="minibutton">Search</button></h1> 
+  </form>
 </div> 
  
             <div class="left browser-content"> 
