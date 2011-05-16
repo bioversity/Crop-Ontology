@@ -106,9 +106,14 @@ apejs.urls = {
     "/httpget": {
         get: function(request, response) {
             require("./httpget.js");
-            var url = request.getParameter("url");
+            var url = request.getParameter("url"),
+                contentType = request.getParameter("contentType");
             var ret = httpget(url);
             response.setContentType("text/xml");
+
+            if(contentType && contentType != "")
+                response.setContentType(contentType);
+
             response.getWriter().println(ret);
         }
     },

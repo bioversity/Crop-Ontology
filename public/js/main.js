@@ -1,6 +1,7 @@
 (function(){
  
 var URL = "http://test.development.grinfo.net/Luca/datadict";
+var OLS_MAINURL = "http://cropontology.org";
 var roots_loaded = false;
  
 function tooltip() {
@@ -242,6 +243,32 @@ load_term = function(li) {
  
     });
     */
+
+
+    /* get relationship */
+    $.get("/httpget", {url:"http://cropontology.org/ontology-lookup/termsgraph.view?&graphId=random&termId="+encodeURIComponent(id)+"&termName="+encodeURIComponent(name)+"&ontologyName="+encodeURIComponent(ontology_name)+"&graphType=root&realPath=/usr/local/tomcat-dev/webapps/ontology-lookup&q=termsgraph&_=", contentType : "text/html"}, function(html){
+        // adjust the html - fuck
+        var $html = $("<div class='wrap'></div>").append(html),
+            img = $html.find("img"),
+            area = $html.find("area");
+
+        area.each(function(){
+            var $area = $(this),
+                termName = "",
+                termId = "";
+            // the last word of the title is the term_id
+            var title = $area.attr("title");
+            var words = title.split(" ");
+            termId = words[words.length-1];
+            termName = title.replace(termId, "");
+
+            $area.attr("href", "/terms/"+termName+"/"+termId);
+        });
+
+        img.attr("src", OLS_MAINURL + img.attr("src"));
+
+        $(".relationships").html($html);
+    });
 }
  
 /*

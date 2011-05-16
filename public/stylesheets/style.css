@@ -258,3 +258,8 @@ border-bottom-right-radius: 10px;
     border:0;
     max-width: 300px;
 }
+
+.relationships div.wrap {
+    padding: 10px;
+    text-align: center;
+}
