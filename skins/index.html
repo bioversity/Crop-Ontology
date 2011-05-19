@@ -29,6 +29,10 @@ var searchQuery = "{{searchQuery}}";
 <div class="pagehead"> 
     <h2 style="margin:5px; border-bottom:0 !important; padding:0;"> 
  
+          <a href="#" id="dologin" class="feed" style="background: none">Login</a>
+          <a href="#" id="doregister" class="feed" style="background: none">Register</a>
+          <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
+          <a href="#" id="dologout" class="feed" style="background: none; display: none;">Logout</a>
           <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
     </h2> 
     <form action="/search" method="get">
@@ -149,7 +153,7 @@ var searchQuery = "{{searchQuery}}";
         <div class="error_box" style="display: none;">Incorrect login or password.</div> 
         
         <label for="login"> 
-            Login or Email<br> 
+            Username<br> 
             <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="login_field" class="text"> 
         </label> 
  
@@ -166,6 +170,37 @@ var searchQuery = "{{searchQuery}}";
     </form>  </div> 
  
 </div><!-- /mylogin --> 
+<div id="myregister" style="position: absolute; top:50%; left: 50%; margin-top: -200px; margin-left: -200px; display: none;"> 
+ 
+    <div class="login_form" id="login" style=""> 
+      <form method="post" id="register_form" action=""><div style="margin: 0pt; padding: 0pt;"><input type="hidden" value="5cdd9e664d321b89797b0ed43576d21152bc53e9" name="authenticity_token"></div>      <h1>Register<a id="register-close"></a></h1> 
+      <div class="formbody"> 
+        
+            <div class="context-loader" style="display: none; top:107px;">Sending Request...</div> 
+        <div class="error_box" style="display: none;">Incorrect login or password.</div> 
+        
+        <label for="login"> 
+            Username<br> 
+            <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="login_field" class="text"> 
+        </label> 
+        <label for="email"> 
+            Email<br> 
+            <input type="text" value="" tabindex="1" style="width: 21em;" name="email" class="text"> 
+        </label> 
+ 
+        <label for="password"> 
+            Password 
+            <br> 
+            <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="password" class="text"> 
+        </label> 
+ 
+        <label class="submit_btn"> 
+            <input type="submit" value="Register" tabindex="3" name="commit"> 
+        </label> 
+      </div> 
+    </form>  </div> 
+ 
+</div><!-- /myregister --> 
  
 <div class="toolbar" style="display: none; position: absolute; top:0; left:0;">
     <div class="toolbar_edit"></div>

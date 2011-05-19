@@ -1916,7 +1916,7 @@ height: 30px;
 }
 .filterbar ul.filters{float:left;margin:4px 0 0 5px;
 height:23px;
-max-width:360px;
+max-width:290px;
 overflow:hidden;
 }
 .filterbar ul.filters li{list-style-type:none;float:left;margin-right:4px;line-height:13px;padding:0 4px;font-size:10px;color:#666;background:#f6f6f6;border:1px solid #f6f6f6;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px;cursor:pointer;-moz-user-select:none;-khtml-user-select:none;user-select:none;

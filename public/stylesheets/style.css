@@ -26,6 +26,7 @@ div.comment_post textarea {
 }
 #logo a{
     line-height: 100px;
+    color: black;
 }
 #user {
     padding-top: 20px;
@@ -91,7 +92,7 @@ li.collapsable > a.minibutton{
     background:-moz-linear-gradient(top,#599bdc,#3072b3);
 }
  
-#login-close {
+#login-close, #register-close {
     background: url("http://pilu.github.com/web-app-theme/images/icons/cross.png") no-repeat top left;
     width: 16px;
     height: 16px;

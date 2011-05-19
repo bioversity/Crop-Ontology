@@ -18,6 +18,29 @@ function tooltip() {
         slide: false
     });
 }
+
+// does login WOW this code is so messy it's not even funny
+// but there's a demo in 2 weeks and i have to build facebook like interface
+function Login() {
+    // reach /login and see if there's a session
+    $.get("/login", function(data) {
+        if(data.username != "") {
+            $("#dologin").hide();
+            $("#doregister").hide();
+
+            $("#doprofile").show().html(data.username);
+            $("#dologout").show();
+        } else {
+            $("#dologin").show();
+            $("#doregister").show();
+
+            $("#doprofile").hide();
+            $("#dologout").hide();
+
+        }
+            
+    }, "json");
+}
  
 /*
  * takes care of assigning proper
@@ -235,14 +258,11 @@ load_term = function(li) {
     }, "xml");
  
     /* get comments */
-    /*
-    var comm_url = URL+"/OntologyDataWrapperProxy.php?out-format=json&command=ListTopics&CommentNode="+id;
-    $.getJSON(comm_url, function(data){
-        console.log(data);
+    $.post("/get-comments", {termId: id}, function(data){
+        //console.log(data);
         //comments.load(data.comments);
  
-    });
-    */
+    }, "json");
 
 
     /* get relationship */
@@ -469,16 +489,24 @@ function mylogin() {
     if(jmylogin.is(":visible")) {
         jmylogin.hide();
         jmain.css("opacity", "1");
- 
- 
     } else { // show it
         jmylogin.show();
         jmain.css("opacity", "0.2");
- 
- 
     }
- 
 }
+function myregister() {
+    var jmyregister = $("#myregister");
+    var jmain = $("#main");
+ 
+    if(jmyregister.is(":visible")) {
+        jmyregister.hide();
+        jmain.css("opacity", "1");
+    } else { // show it
+        jmyregister.show();
+        jmain.css("opacity", "0.2");
+    }
+}
+
 
 
 var row_edit_template = '\
@@ -551,16 +579,16 @@ var events = function(){
     // comment post
     $(".new-comments .form-actions button").click(function(e) {
         var comment = $(".new-comments .comment-form textarea").val();
-        var term_id = $(".browser-content .filters li a").text();
+        var term_id = $("#term_id").text();
  
         term_loader(true);
  
         $.ajax({
           type: 'POST',
-          url: 'http://test.development.grinfo.net/Luca/datadict/google-login',
+          url: '/add-comment',
           data: {
-            "term_id" : term_id,
-            "text" :comment
+            "termId" : term_id,
+            "comment" :comment
           },
           success: function(data) {
             term_loader(false);
@@ -568,7 +596,8 @@ var events = function(){
             // simulate click on this, rather ugly
             //load_term(term_id);
             // clear textarea
-            $(".new-comments .comment-form textarea").val("");
+            //$(".new-comments .comment-form textarea").val("");
+            fileupload_done();
           }
         });
  
@@ -582,22 +611,82 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
+    $("#register-close").click(function(e){
+ 
+        myregister();
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    $("#dologin").click(function(e){
+        mylogin();
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    $("#dologout").click(function(e){
+        $.get("/logout", function() {
+            Login(); 
+        });
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    $("#doregister").click(function(e){
+        myregister();
+ 
+        e.preventDefault();
+        e.stopPropagation();
+    });
  
     $("#login_form").submit(function(e){
         $(".context-loader").show();
         $.ajax({
           type: 'POST',
-          url: 'http://test.development.grinfo.net/Luca/datadict/google-login',
+          url: '/login',
+          dataType: 'json',
           data: {
             "username":$("#login_form input[name=username]").val(),
             "password":$("#login_form input[name=password]").val()
           },
           success: function(data){
-            $(".error").hide();
-            $(".error_box").hide();
+            if(data && data.error) {
+                $(".error_box").show(); 
+                $(".error_box").html(data.error); 
+            } else {
+                Login();
+                mylogin();
+                $(".error").hide();
+                $(".error_box").hide();
+            }
+            
             term_loader(false);
+          }
+        });
  
- 
+        e.preventDefault();
+        e.stopPropagation();
+    });
+    $("#register_form").submit(function(e){
+        $(".context-loader").show();
+        $.ajax({
+          type: 'POST',
+          url: '/register',
+            dataType: 'json',
+          data: {
+            "username":$("#register_form input[name=username]").val(),
+            "email":$("#register_form input[name=email]").val(),
+            "password":$("#register_form input[name=password]").val()
+          },
+          success: function(data){
+            if(data && data.error) {
+                $(".error_box").show(); 
+                $(".error_box").html(data.error); 
+            } else {
+                $(".error").hide();
+                $(".error_box").hide();
+            }
+            term_loader(false);
           }
         });
  
@@ -742,6 +831,7 @@ var events = function(){
  
 $(document).ready(function(){
  
+    Login();
     /* load initial root branch - left-side */
     //load_branch($("#root"), "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter");
     if(ontologyname != "{{ontologyname}}") {

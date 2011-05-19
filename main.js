@@ -1,6 +1,8 @@
 require("apejs.js");
 require("googlestore.js");
+
 require("./fileupload.js");
+require("./usermodel.js");
 
 
 apejs.urls = {
@@ -165,6 +167,139 @@ apejs.urls = {
             var skin = render("skins/index.html")
                         .replace(/{{searchQuery}}/g, request.getParameter("q"));
             response.getWriter().println(skin);
+        }
+    },
+    "/login" : {
+        get: function(request, response) {
+            // start the session
+            var session = request.getSession(true);
+            var userKey = session.getAttribute("userKey");
+
+            // find user with this key and return its data
+            var user = googlestore.get(userKey),
+                username = "";
+            if(user)
+                username = user.getProperty("username");
+            response.getWriter().println('{"username":"'+username+'"}');
+        },
+        post: function(request, response) {
+            var username = request.getParameter("username"),
+                password = request.getParameter("password");
+
+            var q = googlestore.query("user");
+            q.addFilter("username", "=", username);
+            q.addFilter("password", "=", usermodel.sha1(password));
+
+            var res = q.fetch(1);
+            if(!res.length) { // user not found 
+                response.getWriter().println("Username or password is wrong!");
+            } else {
+                var userKey = res[0].getKey();
+                var session = request.getSession(true);
+                session.setAttribute("userKey", userKey);
+            }
+        }
+    },
+    "/logout": {
+        get: function(request, response) {
+            var session = request.getSession(true);
+            session.invalidate(); 
+        }
+    },
+    "/register": {
+        post: function(request, response) {
+            var user = {
+                created: new java.util.Date(),
+                username: request.getParameter("username"),
+                email: request.getParameter("email"),
+                password: request.getParameter("password")
+            }, o = {}, error = false;
+
+            for(var i in user)
+                if(user[i] == "") error = "Complete the entire form!";
+
+
+            if(usermodel.emailExists(user.email))
+                error = "This email doesn't exist!";
+
+            // check email format
+            if(!usermodel.validateEmail(user.email))
+                error = "Email is formatted incorrectly";
+
+            if(usermodel.usernameExists(user.username))
+                error = "This username already exists";
+                
+            if(!usermodel.validUsername(user.username))
+                error = "The username is not of valid format";
+
+            if(error) {
+                response.getWriter().println('{"error":"'+error+'"}');
+            } else {
+                // sha1 the password
+                user.password = usermodel.sha1(user.password);
+
+                var entity = googlestore.entity("user", user);
+                var userKey = googlestore.put(entity);
+
+                // store the actualy key in the session
+                var session = request.getSession(true);
+                session.setAttribute("userKey", userKey);
+
+            }
+                
+        }
+    },
+    "/add-comment" : {
+        post: function(request, response) {
+            var session = request.getSession(true);
+            var userKey = session.getAttribute("userKey");
+            if(!userKey) {
+                response.sendError(response.SC_BAD_REQUEST, "not logged in");
+                return;
+            }
+            var termId = request.getParameter("termId"),
+                comment = request.getParameter("comment");
+
+            if(comment == "" || termId == "") {
+                response.sendError(response.SC_BAD_REQUEST, "missing paramaters");
+                return;
+            }
+
+            var comment = googlestore.entity("comment", {
+                termId: termId,
+                userKey: userKey,
+                created: new java.util.Date(),
+                comment: new Text(comment)
+            });
+
+            googlestore.put(comment);
+        }
+    },
+    "/get-comments" : {
+        post: function(request, response) {
+            var termId = request.getParameter("termId");
+            if(termId == "" || !termId) {
+                response.sendError(response.SC_BAD_REQUEST, "missing paramaters");
+                return;
+            }
+            // get comments for this term id
+            try {
+                var q = googlestore.query("comment");
+                q.addFilter("termId", "=", termId);
+                var comments = q.fetch(50); // FIXME limiting comments to 50
+                var ret = [];
+                for(var i=0; i<comments.length; i++) {
+                    var comment = comments[i];
+                    ret.push({
+                        "created": comment.getProperty("created"),
+                        "author": googlestore.get(comment.getProperty("userKey")).getProperty("username"),
+                        "comment": comment.getProperty("comment").getValue()
+
+                    });
+                }
+                response.getWriter().println(JSON.stringify(ret));
+            } catch(e) {
+            }
         }
     }
 };
