@@ -126,7 +126,7 @@ apejs.urls = {
             response.getWriter().println(ret);
         }
     },
-    "/serve/([a-zA-Z0-9_\: ]+)" : {
+    "/serve/([a-zA-Z0-9_\: \-]+)" : {
         get: function(request, response, matches) {
             //response.setHeader("Cache-Control", "max-age=315360000");
 
@@ -141,9 +141,12 @@ apejs.urls = {
                 var bytes = value.getBytes();
                 var filename = attr.getProperty("filename");
                 var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
+                if(!mimeType) // default to plain text
+                    mimeType = "text/plain";
+
                 response.setContentType(mimeType);
                 
-                if(!mimeType.startsWith("image")) // if it's not an image, download it
+                if(mimeType != "text/plain" && !mimeType.startsWith("image")) // if it's not an image, download it
                     response.setHeader("Content-Disposition", "attachment; filename=\"" + filename+"\"");
                 response.getOutputStream().write(bytes);
             } else if (value instanceof Text) { // plain text
