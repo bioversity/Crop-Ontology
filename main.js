@@ -38,10 +38,10 @@ apejs.urls = {
                     var filename = res[i].getProperty("filename");
                     var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
                     // based on the mime type we need to figure out which image to show
-                    if(mimeType.startsWith("image")) {
-                        value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'><img src='/serve/"+res[i].getKey().getName()+"' /></a>";
-                    } else {
+                    if(!mimeType || !mimeType.startsWith("image")) { // default to plain text
                         value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'>"+filename+"</a>";
+                    } else {
+                        value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'><img src='/serve/"+res[i].getKey().getName()+"' /></a>";
                     }
                 } else
                     value = value.getValue();
