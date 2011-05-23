@@ -118,15 +118,15 @@ var comments = (function(){
     var template;
  
     function make_comment(data) {
-        var clone = template.clone()
+        var clone = template.clone();
  
         var link = clone.find("strong.author a");
         link.attr("href", "#");
-        link.text(data.user);
+        link.text(data.author);
  
-        clone.find(".date .relatize").text(data.date);
+        clone.find(".date .relatize").text(data.created);
  
-        clone.find(".body .content-body p").text(data.comment);
+        clone.find(".body .content-body p").html(data.comment.replace(new RegExp("(\n)\\1+","g"), "</p><p>").replace(new RegExp("\n", "g"),"<br />"));
  
         return clone;
     }
@@ -259,9 +259,7 @@ load_term = function(li) {
  
     /* get comments */
     $.post("/get-comments", {termId: id}, function(data){
-        //console.log(data);
-        //comments.load(data.comments);
- 
+        comments.load(data);
     }, "json");
 
 

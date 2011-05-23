@@ -260,7 +260,7 @@ apejs.urls = {
             var termId = request.getParameter("termId"),
                 comment = request.getParameter("comment");
 
-            if(comment == "" || termId == "") {
+            if(!comment || comment == "" || !termId || termId == "") {
                 response.sendError(response.SC_BAD_REQUEST, "missing paramaters");
                 return;
             }
@@ -290,10 +290,11 @@ apejs.urls = {
                 var ret = [];
                 for(var i=0; i<comments.length; i++) {
                     var comment = comments[i];
+                    // conver them all to JS strings so the JSON.stringify can read them
                     ret.push({
-                        "created": comment.getProperty("created"),
-                        "author": googlestore.get(comment.getProperty("userKey")).getProperty("username"),
-                        "comment": comment.getProperty("comment").getValue()
+                        "created": ""+comment.getProperty("created"),
+                        "author": ""+googlestore.get(comment.getProperty("userKey")).getProperty("username"),
+                        "comment": ""+comment.getProperty("comment").getValue()
 
                     });
                 }
