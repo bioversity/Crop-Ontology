@@ -41,6 +41,10 @@ function Login() {
             
     }, "json");
 }
+
+function markdown(str) {
+    return str.replace(new RegExp("(\n)\\1+","g"), "</p><p>").replace(new RegExp("\n", "g"),"<br />");
+}
  
 /*
  * takes care of assigning proper
@@ -126,7 +130,7 @@ var comments = (function(){
  
         clone.find(".date .relatize").text(data.created);
  
-        clone.find(".body .content-body p").html(data.comment.replace(new RegExp("(\n)\\1+","g"), "</p><p>").replace(new RegExp("\n", "g"),"<br />"));
+        clone.find(".body .content-body p").html(markdown(data.comment));
  
         return clone;
     }
@@ -176,7 +180,7 @@ function show_attributes(id, name, attributes) {
 
     $.each(attributes, function(i){
         count++;
-        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+attributes[i]+'</span></div>';
+        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(attributes[i])+'</span></div>';
     });
     if(count == 0)
         str += "<div class='error'>No additional information available.</div>";

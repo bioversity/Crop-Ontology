@@ -28,10 +28,8 @@ apejs.urls = {
             q.addFilter("term_id", "=", term_id);
             var res = q.fetch(50);
 
-            var json = "[";
+            var attributes = [];
             for(var i=0; i<res.length; i++) {
-                if(i != 0)
-                    json += ",";
 
                 var value = res[i].getProperty("value");
                 if(value instanceof Blob) {
@@ -46,10 +44,13 @@ apejs.urls = {
                 } else
                     value = value.getValue();
 
-                json += "{ \"key\":\""+res[i].getProperty("key").replace("\"","\\\"") + "\", \"value\":\""+value.replace("\"","\\\"") + "\"} ";
+                attributes.push({
+                    "key": ""+ res[i].getProperty("key"),
+                    "value": ""+value
+                });
+
             }
-            json += "]";
-            response.getWriter().println(json);
+            response.getWriter().println(JSON.stringify(attributes));
         }
     },
     "/add-attribute": {
@@ -103,6 +104,14 @@ apejs.urls = {
     },
     "/remove-attribute": {
         post: function(request, response) {
+            function err(msg) { response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>'); }
+            // only if logged in
+            var session = request.getSession(true);
+            var userKey = session.getAttribute("userKey");
+            if(!userKey) {
+                return err("Not logged in");
+            }
+
             var key = request.getParameter("key"),
                 term_id = request.getParameter("term_id");
             if(key == "" || term_id == "")
