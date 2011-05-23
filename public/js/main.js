@@ -134,6 +134,10 @@ var comments = (function(){
         if(!template)
             template = $(".comment").first().clone();
         
+        // add the number in the comments tab
+        var nc = $("#new-comments");
+
+        nc.text( data.length + " Comments" );
         // clear comment list
         $(".comment-list").html("");
  
@@ -483,6 +487,8 @@ function load_branch(parent, url) {
 function mylogin() {
     var jmylogin = $("#mylogin");
     var jmain = $("#main");
+
+    $(".error_box").hide();
  
     if(jmylogin.is(":visible")) {
         jmylogin.hide();
@@ -848,9 +854,15 @@ $(document).ready(function(){
             $(".error_box").hide();
             term_loader(false);
         },
-        "error": function() {   
+        "error": function(e) {   
             term_loader(false);
-            $(".error").show();
+            var msg = "";
+            if(e.status == 400)
+                msg = "Complete all fields";
+            else if (e.status == 403)
+                msg = "Must log in";
+
+            $(".error").show().first().text(msg);
             $(".error_box").show();
         },
         "cache": false
@@ -861,7 +873,12 @@ $(document).ready(function(){
 })();
  
 
-function fileupload_done() {
+function fileupload_done(error) {
+    if(error) {
+        term_loader(false);
+        $(".error").show().first().text(error);
+        return;
+    }
     var term_id = $("#term_id").text();
     term_loader(false);
     // great term was saved, let's reload this term

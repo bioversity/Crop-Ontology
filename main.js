@@ -55,7 +55,13 @@ apejs.urls = {
     "/add-attribute": {
         get: function(){},
         post: function(request, response) {
-            function err(msg) { response.getWriter().println(msg); }
+            function err(msg) { response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>'); }
+            // only if logged in
+            var session = request.getSession(true);
+            var userKey = session.getAttribute("userKey");
+            if(!userKey) {
+                return err("Not logged in");
+            }
             // get the multipart form data from the request
 
             var key = "", value = "", term_id = "", filename = "";
@@ -88,9 +94,10 @@ apejs.urls = {
                 value: (value instanceof Blob ? value : new Text(value)),
                 term_id: term_id
             });
+            // only if logged in and has permissions
             googlestore.put(attribute);
 
-            err("<script>window.top.fileupload_done();</script>");
+            err("");
 
         }
     },
@@ -254,7 +261,7 @@ apejs.urls = {
             var session = request.getSession(true);
             var userKey = session.getAttribute("userKey");
             if(!userKey) {
-                response.sendError(response.SC_BAD_REQUEST, "not logged in");
+                response.sendError(response.SC_FORBIDDEN);
                 return;
             }
             var termId = request.getParameter("termId"),
