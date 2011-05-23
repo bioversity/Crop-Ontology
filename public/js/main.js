@@ -43,7 +43,7 @@ function Login() {
 }
 
 function markdown(str) {
-    return str.replace(new RegExp("(\n)\\1+","g"), "</p><p>").replace(new RegExp("\n", "g"),"<br />");
+    return str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
 }
  
 /*
