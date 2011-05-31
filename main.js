@@ -24,9 +24,9 @@ apejs.urls = {
             var term_id = request.getParameter("term_id");
             if(!term_id) return response.getWriter().println("No term_id");
 
-            var q = googlestore.query("attribute");
-            q.addFilter("term_id", "=", term_id);
-            var res = q.fetch(50);
+            var res = googlestore.query("attribute")
+                    .filter("term_id", "=", term_id)
+                    .fetch();
 
             var attributes = [];
             for(var i=0; i<res.length; i++) {
@@ -205,11 +205,11 @@ apejs.urls = {
             var username = request.getParameter("username"),
                 password = request.getParameter("password");
 
-            var q = googlestore.query("user");
-            q.addFilter("username", "=", username);
-            q.addFilter("password", "=", usermodel.sha1(password));
+            var res = googlestore.query("user")
+                .filter("username", "=", username)
+                .filter("password", "=", usermodel.sha1(password))
+                .fetch(1);
 
-            var res = q.fetch(1);
             if(!res.length) { // user not found 
                 response.getWriter().println("Username or password is wrong!");
             } else {
@@ -303,9 +303,9 @@ apejs.urls = {
             }
             // get comments for this term id
             try {
-                var q = googlestore.query("comment");
-                q.addFilter("termId", "=", termId);
-                var comments = q.fetch(50); // FIXME limiting comments to 50
+                var comments = googlestore.query("comment")
+                    .filter("termId", "=", termId)
+                    .fetch();
                 var ret = [];
                 for(var i=0; i<comments.length; i++) {
                     var comment = comments[i];

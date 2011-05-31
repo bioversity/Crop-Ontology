@@ -2,18 +2,18 @@ importPackage(java.lang);
 
 var usermodel = {
     emailExists: function(email) {
-        var q = googlestore.query("user");
-        q.addFilter("email", "=", email);
-        var result = q.fetch(1);
+        var result = googlestore.query("user")
+            .filter("email", "=", email)
+            .fetch(1);
         if(result.length)
             return true;
         else 
             return false;
     },
     usernameExists: function(username) {
-        var q = googlestore.query("user");
-        q.addFilter("username", "=", username);
-        var result = q.fetch(1);
+        var result = googlestore.query("user")
+            .filter("username", "=", username)
+            .fetch(1);
         if(result.length)
             return true;
         else 
