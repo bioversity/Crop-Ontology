@@ -264,3 +264,10 @@ border-bottom-right-radius: 10px;
     padding: 10px;
     text-align: center;
 }
+
+.treeview input {
+    padding: 3px;
+}
+.buttons {
+    margin: 20px 0;
+}

@@ -320,5 +320,28 @@ apejs.urls = {
             } catch(e) {
             }
         }
+    },
+    "/add-ontology" : {
+        get: function(request, response) {
+            var html = render("./skins/add-ontology.html");
+            response.getWriter().println(html);
+        },
+        post: function(request, response) {
+            var json = request.getParameter("json");
+
+            try {
+                // let's parse it so we know it's fine
+                var obj = JSON.parse(json),
+                    ontoName = "";
+                for(var i in obj) {
+                    ontoName = i;
+
+                    break; // only 1 ontology for now
+                }
+            } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        
+        }
     }
 };
