@@ -42,8 +42,19 @@
             <div class="left browser-content" style="width: 100%;"> 
                 <div class="cont" style="width: 877px;"> 
 
-                    <h3>Add an ontology</h3>
+                    <h3>Upload an OBO file</h3>
                     <div id="error" style="display: none; margin-bottom: 10px;"></div>
+
+                    <form action="/obo-to-json" method="post" enctype="multipart/form-data">
+                        <input name="obofile" type="file" /> 
+                        <input type="submit" value="Upload OBO" />
+                    </form>
+
+
+                    <br>
+                    <h3>Or create the ontology</h3>
+                    <br>
+                    <br>
  
                     <ul class="treeview" id="cont"> 
                         <li class="last" id="ontology">

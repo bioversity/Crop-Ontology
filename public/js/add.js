@@ -39,36 +39,21 @@ function removeTerm(parentUl) {
 function getPars(o, $cont) {
     var name = $cont.find("input[name=name]:first").val();
 
-    o[name] = {};
+    var term = {
+        id: 0,
+        name: name,
+        relation_name: "is_a",
+
+        children: []
+    };
+    
+    o.push(term);
 
     // children() returns only the top most elements
     $cont.find("li:first").children("ul").each(function(){
-        getPars(o[name], $(this)); 
+        getPars(term.child_terms, $(this)); 
     });
 
-
-    /*
-    var ret = {};
-    var ontology = $cont.find("li#ontology [name=name]:first").val();
-
-    ret["ontology"] = ontology;
-
-
-    // each li.term represents a term
-    $cont.find("li.term").each(function(){
-        var $this = $(this);
-
-        var name = $this.find("input[name=name]:first").val();
-
-        var parentName = $this.parent().parent().find("input[name=name]:first").val();
-
-        console.log($this, name, parentName);
-    });
-
-    //console.log(ret);
-
-    return ret;
-    */
 }
 
 /**
@@ -103,7 +88,7 @@ var bindEvents = function() {
 
     // save the "state" of the ontology
     $("#save").click(function(e){
-        var ret = {};
+        var ret = [];
         getPars(ret, $("#cont"));
 
         var $this = $(this);
@@ -112,6 +97,9 @@ var bindEvents = function() {
 
             $this.show();
 
+        }).error(function(e) {
+            err("Something went wrong. Retry!");
+            $this.show();
         });
         
         e.preventDefault();

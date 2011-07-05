@@ -331,17 +331,78 @@ apejs.urls = {
 
             try {
                 // let's parse it so we know it's fine
-                var obj = JSON.parse(json),
-                    ontoName = "";
-                for(var i in obj) {
-                    ontoName = i;
+                var arr = JSON.parse(json);
 
-                    break; // only 1 ontology for now
-                }
+                var ontoName = arr[0].name;
+
+                var ontoEntity = googlestore.entity("ontology", ontoName, {
+                    created: new java.util.Date(),
+                    name: ontoName,
+                    json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
+                                                        // processing but it's worth the checking.
+                                                        // XXX Text is 1mb
+                });
+                googlestore.put(ontoEntity);
             } catch(e) {
                 return response.sendError(response.SC_BAD_REQUEST, e);
             }
         
+        }
+    },
+    "/edit-ontology" : {
+        get: function(request, response) {
+            var html = render("./skins/add-ontology.html");
+            response.getWriter().println(html);
+        }
+    },
+    "/obo-to-json": {
+        post: function(request, response) {
+            require("./fileupload.js");
+            require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
+
+            try {
+                var data = fileupload.getData(request);
+
+                var filename = "",
+                    filevalue = "";
+                for(var i=0; i<data.length; i++) {
+                    var fieldName = data[i].fieldName,
+                        fieldValue = data[i].fieldValue,
+                        isFile = data[i].file;
+
+                    if(isFile) {
+                        filename = fieldName;
+                        filevalue = fieldValue;
+                    }
+                }
+
+                if(filename == "" || filevalue == "")
+                    return response.sendError(response.SC_BAD_REQUEST, "must specificy a file");
+                    
+
+                // convert the Blob of OBO to text
+                var bytes = filevalue.getBytes(),
+                    oboString = new java.lang.String(bytes);
+
+                // convert the OBO to JSON
+                var arr = jsonobo.obotojson(oboString);
+
+                var ontoName = arr[0].name;
+
+                var ontoEntity = googlestore.entity("ontology", ontoName, {
+                    created: new java.util.Date(),
+                    name: ontoName,
+                    obo: new Text(oboString),
+                    json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
+                                                        // processing but it's worth the checking.
+                                                        // XXX Text is 1mb
+                });
+                googlestore.put(ontoEntity);
+
+                response.sendRedirect("/");
+            } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
+            }
         }
     }
 };
