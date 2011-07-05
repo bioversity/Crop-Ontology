@@ -10,20 +10,15 @@
 <script>
 $(function(){
 
-var url = "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter",
+var url = "/ontologies",
     parent = $(".list-ontologies");
 
-$.get("/httpget", {url: url}, function(xml) {
-    var jxml = $(xml);
-    var items = jxml.find("item");
-    items.each(function(i) {
-        var onto_name = $(this).find("name").text();
-        var onto_id = $(this).find("value").text();
+$.getJSON(url, function(json) {
+    $.each(json, function() {
 
-        parent.append('<p><a class="minibutton btn-watch" title="undefined" href="/ontology/'+onto_id+'"><span>'+onto_name+'</span></a></p>');
-        
-        $(".loader").hide();
+        parent.append('<p><a class="minibutton btn-watch" title="undefined" href="/ontology/'+this.id+'"><span>'+this.name+'</span></a></p>');
     });
+    $(".loader").hide();
 
 });
 

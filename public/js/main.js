@@ -308,7 +308,7 @@ function make_li(obj, last) {
     var name = obj.name;
     var label = obj.label;
     var summary = obj.summary;
-    var has_children = obj.has_children,
+    var has_children = obj.children.length,
         hitarea;
 
     var li = $("<li></li>");
@@ -836,18 +836,38 @@ var events = function(){
     });
  
 };
+
+/**
+ * out of JSON data we make a UI tree
+ * recursion is the basis of all this logic
+ */
+function MakeTree(jel, arr) {
+    for(var i=0, len=arr.length; i<len; i++) {
+        var last = false;
+        if(i == (arr.length-1))
+            last = true;
+        var li = make_li(arr[i], last);
+        jel.append(li);
+
+
+        MakeTree(li, arr[i].children);
+    }
+}
+
+function LoadOntology(ontoId) {
+
+    $.getJSON("/get-ontology/"+ontoId, function(jsonTree) {
+       
+        MakeTree($("#root"), jsonTree);
+    });
+}
  
 $(document).ready(function(){
  
     Login();
-    /* load initial root branch - left-side */
-    //load_branch($("#root"), "http://cropontology.org/ontology-lookup/direct.view?q=ontologyfilter");
-    if(ontologyname != "{{ontologyname}}") {
-        load_branch($("#root"), "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+ontologyname);
-    } else if(searchQuery != "") {
-        do_search();
-    }
- 
+
+    LoadOntology(ontologyid);
+
     /* assign some events for ui */
     events();
  

@@ -12,11 +12,45 @@ apejs.urls = {
             response.getWriter().println(skin);
         }
     },
+    "/ontologies": {
+        get: function(request, response) {
+            var ontologies = googlestore.query("ontology")
+                    .fetch();
+
+            var res = [];
+            ontologies.forEach(function(onto){
+                res.push({
+                    id: ""+onto.getProperty("id"),
+                    name: ""+onto.getProperty("name")
+                });
+            });
+
+            response.getWriter().println(JSON.stringify(res));
+            
+        }
+    },
     "/ontology/([a-zA-Z0-9_\: ]+)": {
         get: function(request, response, matches) {
             var skin = render("skins/index.html")
-                    .replace(/{{ontologyname}}/g, matches[1]);
+                    .replace(/{{ontologyid}}/g, matches[1]);
             response.getWriter().println(skin);
+        }
+    },
+    "/get-ontology/([a-zA-Z0-9_\: ]+)": {
+        get: function(request, response, matches) {
+            var ontoId = matches[1];
+            try {
+                // get this ontology data from it's id
+                var ontoKey = googlestore.createKey("ontology", ontoId),
+                    ontoEntity = googlestore.get(ontoKey);
+
+                var jsonString = ontoEntity.getProperty("json").getValue();
+                    
+                response.getWriter().println(jsonString);
+
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
         }
     },
     "/get-attribute": {
@@ -333,10 +367,13 @@ apejs.urls = {
                 // let's parse it so we know it's fine
                 var arr = JSON.parse(json);
 
-                var ontoName = arr[0].name;
+                var ontoName = arr[0].name,
+                    ontoId = arr[0].id;
 
-                var ontoEntity = googlestore.entity("ontology", ontoName, {
+
+                var ontoEntity = googlestore.entity("ontology", ontoId, {
                     created: new java.util.Date(),
+                    id: ontoId,
                     name: ontoName,
                     json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
                                                         // processing but it's worth the checking.
@@ -387,10 +424,12 @@ apejs.urls = {
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString);
 
-                var ontoName = arr[0].name;
+                var ontoName = arr[0].name,
+                    ontoId = arr[0].id;
 
-                var ontoEntity = googlestore.entity("ontology", ontoName, {
+                var ontoEntity = googlestore.entity("ontology", ontoId, {
                     created: new java.util.Date(),
+                    id: ontoId,
                     name: ontoName,
                     obo: new Text(oboString),
                     json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
