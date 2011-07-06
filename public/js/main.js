@@ -50,11 +50,15 @@ function markdown(str) {
  * takes care of assigning proper
  * click events for expanding this li
  */
-function expand_collapse(li) {
-    var div = li.find(".hitarea");
+function expand_collapse() {
+    var div = $(".hitarea");
  
     div.click(function() {
  
+        var $this = $(this);
+
+        var li = $this.parent();
+
         var parent = li.find("ul").first();
  
  
@@ -96,7 +100,7 @@ function expand_collapse(li) {
  
                 var id = li.find(".id").val();
 
-                load_branch(parent, "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+id.split(":")[0]+"&id="+id);
+                //load_branch(parent, "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+id.split(":")[0]+"&id="+id);
                 // TODO - fix this - for now we just have a global variable tracking if we
                 // need to load the root ontology (only the first time) and nodes for the rest
                 /*
@@ -347,7 +351,7 @@ function make_li(obj, last) {
         li.append('<ul style="display:none;"></ul>');
  
         // assign click events for expansion/collapse
-        expand_collapse(li);
+        //expand_collapse(li);
     }
  
     return li;
@@ -840,17 +844,20 @@ var events = function(){
 /**
  * out of JSON data we make a UI tree
  * recursion is the basis of all this logic
+ *
+ * jel is the UI element
  */
 function MakeTree(jel, arr) {
     for(var i=0, len=arr.length; i<len; i++) {
         var last = false;
         if(i == (arr.length-1))
             last = true;
+
         var li = make_li(arr[i], last);
         jel.append(li);
 
 
-        MakeTree(li, arr[i].children);
+        MakeTree(li.find("ul:first"), arr[i].children);
     }
 }
 
@@ -859,6 +866,9 @@ function LoadOntology(ontoId) {
     $.getJSON("/get-ontology/"+ontoId, function(jsonTree) {
        
         MakeTree($("#root"), jsonTree);
+
+        // events
+        expand_collapse();
     });
 }
  

@@ -10,7 +10,11 @@ var jsonobo = (function(){
     };
 
     function splitter(oboString) {
-        return oboString.split("\n\n");
+        // remove all the \r from obostring
+        // so we only worry about \n when parsing
+        var tempString = ""+oboString,
+            tempString = tempString.replace(/\r/g, ""); 
+        return tempString.split("\n\n");
     }
 
     /**
@@ -126,7 +130,7 @@ var jsonobo = (function(){
     };
 
     /**
-     * Finds children of currTerm.
+     * Finds children of currTerm in recursion.
      * so it traverses the entire terms array 
      * to find a term with "is_a" or "relationship" the same as "id" of currTerm.
      * being recursive, currTerm changes based on which level of the 
@@ -137,23 +141,19 @@ var jsonobo = (function(){
         for(var i=0, len=terms.length; i<len; i++) {
             var term = terms[i];
 
-            // XXX we need to take care of other relations, not only is_a
             var r = rel(term);
             if(r.hasRelationship()) { // there's a parent
 
                 // loop through all the relationship ids
                 // and see if they match this currTerm id
                 var ids = r.getIds();
-
                 if(r.findMatch(ids, currTerm)) {
-                    currTerm.children.push(term);
+                    currTerm.children.push(term); // push makes a copy (i think)
 
                     // run the function again to find children for this child term
                     findChildren(terms, term);
                 }
-
             }
-
         }
     }
 

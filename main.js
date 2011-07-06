@@ -425,6 +425,8 @@ apejs.urls = {
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString);
 
+                //return response.getWriter().println(JSON.stringify(arr));
+
                 var ontoName = arr[0].name,
                     ontoId = arr[0].id;
 
@@ -435,7 +437,7 @@ apejs.urls = {
                     obo: new Text(oboString),
                     json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
                                                         // processing but it's worth the checking.
-                                                        // XXX Text is 1mb
+                                                        // XXX Text is 1mb limit
                 });
                 googlestore.put(ontoEntity);
 
