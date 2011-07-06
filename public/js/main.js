@@ -231,43 +231,23 @@ load_term = function(li) {
     term_loader(true);
 
  
-    var id = li.find(".id").val();
-    var name = li.find("a.minibutton span").text();
+    var id = li.find(".id:first").val();
+    var name = li.find("a.minibutton:first span").text();
  
     var parent = li.parent();
  
-    var ontology_name = id.split(":")[0];
-    var url = "http://cropontology.org/ontology-lookup/definition.view?&termid="+id+"&ontologyname="+ontology_name+"&q=termmetadata&_=";
  
-    /* get node info (attributes) */
-    $.get("/httpget", {url:url}, function(xml){
-        var jxml = $(xml);
-        var attributes = {};
-        jxml.find("item").each(function(){
-            var key = $(this).find("name").text(),
-                value = $(this).find("value").text();
-
-            if(attributes[key]) // if attribute already exists, add it as a comma separated
-                attributes[key] += ", "+value;
-            else
-                attributes[key] = value;
+    var attributes = {};
+    // let's also load the attributes stored locally for this term
+    $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
+        $.each(this_attrs, function(i) {
+            attributes[this_attrs[i].key] = this_attrs[i].value;
         });
-        // let's also load the attributes stored locally for this term
-        $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
-            $.each(this_attrs, function(i) {
-                attributes[this_attrs[i].key] = this_attrs[i].value;
-            });
 
-            // let's show the attributes
-            show_attributes(id, name, attributes);
-            term_loader(false);
-        });
-        
-        // load comments
-        //comments.load(data.comments);
-
- 
-    }, "xml");
+        // let's show the attributes
+        show_attributes(id, name, attributes);
+        term_loader(false);
+    });
  
     /* get comments */
     $.post("/get-comments", {termId: id}, function(data){
@@ -276,6 +256,7 @@ load_term = function(li) {
 
 
     /* get relationship */
+    /*
     $.get("/httpget", {url:"http://cropontology.org/ontology-lookup/termsgraph.view?&graphId=random&termId="+encodeURIComponent(id)+"&termName="+encodeURIComponent(name)+"&ontologyName="+encodeURIComponent(ontology_name)+"&graphType=root&realPath=/usr/local/tomcat-dev/webapps/ontology-lookup&q=termsgraph&_=", contentType : "text/html"}, function(html){
         // adjust the html - fuck
         var $html = $("<div class='wrap'></div>").append(html),
@@ -299,6 +280,7 @@ load_term = function(li) {
 
         $(".relationships").html($html);
     });
+    */
 }
  
 /*

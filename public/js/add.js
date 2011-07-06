@@ -40,7 +40,7 @@ function getPars(o, $cont) {
     var name = $cont.find("input[name=name]:first").val();
 
     var term = {
-        id: 0,
+        id: name,
         name: name,
         relation_name: "is_a",
 
@@ -51,7 +51,7 @@ function getPars(o, $cont) {
 
     // children() returns only the top most elements
     $cont.find("li:first").children("ul").each(function(){
-        getPars(term.child_terms, $(this)); 
+        getPars(term.children, $(this)); 
     });
 
 }
@@ -96,6 +96,8 @@ var bindEvents = function() {
         $.post("/add-ontology", {json: JSON.stringify(ret)}, function(data) {
 
             $this.show();
+
+            window.location.href = "/";
 
         }).error(function(e) {
             err("Something went wrong. Retry!");
