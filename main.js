@@ -421,6 +421,7 @@ apejs.urls = {
                 var bytes = filevalue.getBytes(),
                     oboString = new java.lang.String(bytes);
 
+
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString);
 
