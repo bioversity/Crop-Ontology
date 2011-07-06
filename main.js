@@ -5,10 +5,13 @@ require("./fileupload.js");
 require("./usermodel.js");
 
 
+var VERSION = "0.0.1";
+
 apejs.urls = {
     "/": {
         get: function(request, response) {
-            var skin = render("skins/list-ontologies.html");
+            var skin = render("skins/list-ontologies.html")
+                        .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(skin);
         }
     },
@@ -32,6 +35,7 @@ apejs.urls = {
     "/ontology/([a-zA-Z0-9_\: ]+)": {
         get: function(request, response, matches) {
             var skin = render("skins/index.html")
+                    .replace(/{{VERSION}}/g, VERSION)
                     .replace(/{{ontologyid}}/g, matches[1]);
             response.getWriter().println(skin);
         }
@@ -217,6 +221,7 @@ apejs.urls = {
             response.getWriter().println(skin);
             */
             var skin = render("skins/index.html")
+                        .replace(/{{VERSION}}/g, VERSION)
                         .replace(/{{searchQuery}}/g, request.getParameter("q"));
             response.getWriter().println(skin);
         }
@@ -357,7 +362,8 @@ apejs.urls = {
     },
     "/add-ontology" : {
         get: function(request, response) {
-            var html = render("./skins/add-ontology.html");
+            var html = render("./skins/add-ontology.html")
+                        .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);
         },
         post: function(request, response) {
@@ -388,7 +394,8 @@ apejs.urls = {
     },
     "/edit-ontology" : {
         get: function(request, response) {
-            var html = render("./skins/add-ontology.html");
+            var html = render("./skins/add-ontology.html")
+                        .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);
         }
     },

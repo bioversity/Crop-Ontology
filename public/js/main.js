@@ -43,6 +43,7 @@ function Login() {
 }
 
 function markdown(str) {
+    var str = ""+str;
     return str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
 }
  
@@ -238,6 +239,16 @@ load_term = function(li) {
  
  
     var attributes = {};
+    
+    // put in the attributes the stuff that's in the dom (hidden)
+    // which is actually part of the OBO file
+    attributes = $.data(li[0], "oboData");
+
+    // children is definitely not needed
+    delete attributes["children"];
+    // also ID is already shown
+    delete attributes["id"];
+
     // let's also load the attributes stored locally for this term
     $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
         $.each(this_attrs, function(i) {
@@ -301,6 +312,9 @@ function make_li(obj, last) {
     if(last)
         li.addClass("last");
  
+    // add the "obj" which is the OBO term inside this DOM element itself
+    // so we can reference later when we click on it
+    $.data(li[0], "oboData", obj);
  
     // add a hidden input to track the id of this node
     li.append('<input type="hidden" class="id" value="'+id+'" />');
