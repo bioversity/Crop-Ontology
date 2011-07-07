@@ -5,7 +5,7 @@ require("./fileupload.js");
 require("./usermodel.js");
 
 
-var VERSION = "0.0.1";
+var VERSION = "0.0.2";
 
 apejs.urls = {
     "/": {
@@ -42,15 +42,18 @@ apejs.urls = {
     },
     "/get-ontology/([a-zA-Z0-9_\: ]+)": {
         get: function(request, response, matches) {
+            require("./blobstore.js");
+
             var ontoId = matches[1];
             try {
                 // get this ontology data from it's id
                 var ontoKey = googlestore.createKey("ontology", ontoId),
                     ontoEntity = googlestore.get(ontoKey);
 
-                var jsonString = ontoEntity.getProperty("json").getValue();
+                var jsonBlobKey = ontoEntity.getProperty("jsonBlobKey");
                     
-                response.getWriter().println(jsonString);
+                // just use serve() to get the jsonString from the blobstore
+                blobstore.blobstoreService.serve(jsonBlobKey, response);
 
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
@@ -362,7 +365,10 @@ apejs.urls = {
     },
     "/add-ontology" : {
         get: function(request, response) {
+            require("./blobstore.js");
+            var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
             var html = render("./skins/add-ontology.html")
+                        .replace(/{{UPLOAD_URL}}/g, UPLOAD_URL)
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);
         },
@@ -399,10 +405,85 @@ apejs.urls = {
             response.getWriter().println(html);
         }
     },
+    "/serve" : {
+        get: function(request, response) {
+            require("./blobstore.js");
+            var blobKey = new BlobKey(request.getParameter("blob-key"));
+
+            blobstore.blobstoreService.serve(blobKey, response);
+        }
+    },
+    "/obo-upload" : {
+        post: function(request, response) {
+            require("./blobstore.js");
+
+            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+                oboBlobKey = blobs.get("obofile");
+
+            if(oboBlobKey == null) {
+                return response.sendRedirect("/");
+            }
+
+            // redirect to obo-to-json which takes this oboBlobKey as a parameter
+            response.sendRedirect("/obo-to-json?oboBlobKey="+oboBlobKey.getKeyString());
+        }
+    },
+    /**
+     * looks up the ontology entity, finds the OBO blob and converts it to a JSON
+     * blob which is also then inserted in the blob store and a reference of it
+     * is added to the ontology entity
+     */
     "/obo-to-json": {
+        get: function(request, response) {
+            require("./blobstore.js");
+            require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
+
+            var oboBlobKey = new BlobKey(request.getParameter("oboBlobKey"));
+            if(!oboBlobKey)
+                return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+
+            try {
+                // get the string of the blob
+                // XXX be sure MAX_BLOB_FETCH_SIZE is good and we're fetching the correct way from blobstore
+                var oboString = new java.lang.String(blobstore.blobstoreService.fetchData(oboBlobKey, 0,  (blobstore.blobstoreService.MAX_BLOB_FETCH_SIZE - 1) ));
+
+                // convert the OBO to JSON
+                var arr = jsonobo.obotojson(oboString),
+                    jsonString = JSON.stringify(arr);
+
+                // now i need to put this JSON inside the blobstore.
+                // use the blobstore api to put data inside store. there's no
+                // bandwith transfer so don't need to go through servlet. it's just
+                // processing CPU power
+                var jsonBlobKey = blobstore.writeString(jsonString);
+
+                // now that both the jsonString and oboString are inside the blobstore
+                // create the ontology entity
+                var ontoName = arr[0].name,
+                    ontoId = arr[0].id;
+
+                var ontoEntity = googlestore.entity("ontology", ontoId, {
+                    created: new java.util.Date(),
+                    id: ontoId,
+                    name: ontoName,
+                    // references to the blobstore data
+                    oboBlobKey: oboBlobKey,
+                    jsonBlobKey: jsonBlobKey
+                });
+                googlestore.put(ontoEntity);
+
+                response.sendRedirect("/");
+            } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
+            }
+
+        }
+    },
+    "/obo-to-json2": {
         post: function(request, response) {
             require("./fileupload.js");
             require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
+
 
             try {
                 var data = fileupload.getData(request);
@@ -428,25 +509,28 @@ apejs.urls = {
                 var bytes = filevalue.getBytes(),
                     oboString = new java.lang.String(bytes);
 
-
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString);
-
-                //return response.getWriter().println(JSON.stringify(arr));
 
                 var ontoName = arr[0].name,
                     ontoId = arr[0].id;
 
+                // store the obo as another entity
+                var oboEntity = googlestore.entity("obo", {
+                    data: new Text(oboString)
+                });
+                var oboKey = googlestore.put(oboEntity);
+
+                // store the ontology which contains the raw json
                 var ontoEntity = googlestore.entity("ontology", ontoId, {
                     created: new java.util.Date(),
                     id: ontoId,
                     name: ontoName,
-                    obo: new Text(oboString),
-                    json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
-                                                        // processing but it's worth the checking.
-                                                        // XXX Text is 1mb limit
+                    oboKey: oboKey
+                    /*json: new Text(JSON.stringify(arr))*/
                 });
                 googlestore.put(ontoEntity);
+
 
                 response.sendRedirect("/");
             } catch(e) {

@@ -858,9 +858,12 @@ function MakeTree(jel, arr) {
 }
 
 function LoadOntology(ontoId) {
+    var $root = $("#root");
+    loader($root, true);
     $.getJSON("/get-ontology/"+ontoId, function(jsonTree) {
+        loader($root, false);
        
-        MakeTree($("#root"), jsonTree);
+        MakeTree($root, jsonTree);
 
         // events
         expand_collapse();
