@@ -373,6 +373,7 @@ apejs.urls = {
             response.getWriter().println(html);
         },
         post: function(request, response) {
+            require("./blobstore.js");
             var json = request.getParameter("json");
 
             try {
@@ -382,14 +383,14 @@ apejs.urls = {
                 var ontoName = arr[0].name,
                     ontoId = arr[0].id;
 
+                // let's create the JSON in the blobstore
+                var jsonBlobKey = blobstore.writeString(JSON.stringify(arr));
 
                 var ontoEntity = googlestore.entity("ontology", ontoId, {
                     created: new java.util.Date(),
                     id: ontoId,
                     name: ontoName,
-                    json: new Text(JSON.stringify(arr)) // let's stringify it again, a little more
-                                                        // processing but it's worth the checking.
-                                                        // XXX Text is 1mb
+                    jsonBlobKey: jsonBlobKey
                 });
                 googlestore.put(ontoEntity);
             } catch(e) {
