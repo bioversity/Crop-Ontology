@@ -919,7 +919,7 @@ ol.download-list li.ctype-tag{background-image:url(/images/icons/tag.png);}
 .explore h2.trending-heading .updated{font-size:12px;color:#aaa;float:right;}
 .explore h2.trending-heading .times{font-size:12px;font-weight:normal;color:#000;float:right;}
 .explore h2.trending-heading .times a{color:#4183C4;font-weight:bold;}
-.explore h2.featured-heading{padding-left:22px;background:url(/images/modules/explore/featured_icon.png) 0 3px no-repeat;}
+.explore h2.featured-heading{padding-left:22px;background:url(/images/featured_icon.png) 0 3px no-repeat;}
 .explore h2 .feed{float:right;padding-left:24px;height:14px;line-height:14px;font-size:12px;background:url(/images/feed.png) 5px 50% no-repeat #fff;}
 .ranked-repositories{margin:0 0 10px 0;}
 .ranked-repositories>li{position:relative;list-style-type:none;margin:0;padding:5px 0;min-height:30px;border-bottom:1px solid #ddd;}
@@ -2337,7 +2337,7 @@ ul.repo-stats li:first-child a{border-left:none;margin-right:-3px;}
 ul.repo-stats li a:hover{color:#fff!important;background:#4183c4;text-decoration:none;background-repeat:no-repeat;background-position:5px -27px;}
 ul.repo-stats li:first-child a:hover{-webkit-border-top-left-radius:3px;-webkit-border-bottom-left-radius:3px;-moz-border-radius-topleft:3px;-moz-border-radius-bottomleft:3px;}
 ul.repo-stats li:last-child a:hover{-webkit-border-top-right-radius:3px;-webkit-border-bottom-right-radius:3px;-moz-border-radius-topright:3px;-moz-border-radius-bottomright:3px;}
-ul.repo-stats li.watchers a{background-image:url(/images/modules/pagehead/repostat_watchers.png);}
+ul.repo-stats li.watchers a{background-image:url(/images/repostat_watchers.png);}
 ul.repo-stats li.watchers.watching a{background-image:url(/images/modules/pagehead/repostat_watchers-watching.png);color:#333;}
 ul.repo-stats li.forks a{background-image:url(/images/modules/pagehead/repostat_forks.png);}
 ul.repo-stats li.forks.forked a{background-image:url(/images/modules/pagehead/repostat_forks-forked.png);color:#333;}

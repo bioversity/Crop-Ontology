@@ -7,16 +7,29 @@
 <link href="/stylesheets/style.css?{{VERSION}}" media="screen" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
 
+<script type="text/javascript" src="/js/main.js?{{VERSION}}"></script>
 <script>
 $(function(){
 
 var url = "/ontologies",
-    parent = $(".list-ontologies");
+    parent = $(".list-ontologies .bar");
 
 $.getJSON(url, function(json) {
     $.each(json, function() {
 
-        parent.append('<p><a class="minibutton btn-watch" title="undefined" href="/ontology/'+this.id+'"><span>'+this.name+'</span></a></p>');
+        var $row = $("#row").clone();
+        $row.attr("id", "");
+        $row[0].id = "";
+
+        $row.show();
+
+
+        // replace stuff
+        $row.find("h3 a").attr("title", this.name)
+                    .attr("href", "/ontology/"+this.id)
+                    .text(this.name);
+
+        parent.append($row);
     });
     $(".loader").hide();
 
@@ -41,7 +54,12 @@ $.getJSON(url, function(json) {
 <div class="pagehead"> 
     <h2 style="margin:5px; border-bottom:0 !important; padding:0;"> 
  
-          <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
+          <a href="#" id="dologin" class="feed" style="background: none">Login</a>
+          <a href="#" id="doregister" class="feed" style="background: none">Register</a>
+          <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
+          <a href="#" id="dologout" class="feed" style="background: none; display: none;">Logout</a>
+          <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments"></a> 
+
           <a href="http://annotation-tool.appspot.com/" class="feed" style="background: none; padding-right: 20px;">Annotation Tool</a>
           <a href="http://www.screencast.com/users/sktrdie/folders/Jing/media/744c1610-b716-46cb-bcdd-ddc9752111d1" class="feed" style="background: none; padding-right: 20px;">Video Tutorial</a>
           <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add an ontology</a>
@@ -52,7 +70,24 @@ $.getJSON(url, function(json) {
 </div> 
  
             <div class="list-ontologies"> 
-                <img src="/images/metabox_loader.gif" class="loader"/>
+                <div class="bar left">
+                    <h2 class="featured-heading"><a class="feed" href="http://singerdatadictionary.disqus.com/latest.rss">Subscribe</a>Crop Ontologies</h2>
+                    <img src="/images/metabox_loader.gif" class="loader"/>
+
+                    <ol class="ranked-repositories" id="row" style="display: none;">
+                        <li>
+                            <ul class="repo-stats">
+                                <li class="watchers">
+                                    <a title="Comments" href="http://singer.cgiar.org/data-dictionary/AccessionLocalUniqueIdentifier#disqus_thread">0</a>    
+                                </li>
+                            </ul>
+                            <h3>
+                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a>
+                            </h3>
+                            <p class="description">Here's a test of an ontology</p>
+                        </li>
+                    </ol>
+                </div>
             </div><!-- end left --> 
  
  

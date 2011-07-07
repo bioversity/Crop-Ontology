@@ -12,9 +12,7 @@ var ontologyname = "{{ontologyname}}";
 var searchQuery = "";
 </script>
 <script type="text/javascript" src="/js/main.js?{{VERSION}}"></script>
-<!--<script type="text/javascript" src="http://vadikom.com/demos/poshytip/src/jquery.poshytip.js"></script> 
-<link href="http://vadikom.com/demos/poshytip/src/tip-twitter/tip-twitter.css" media="screen" rel="stylesheet" type="text/css" />-->
- 
+
 </head> 
  
 <body class="explore"> 
@@ -34,10 +32,11 @@ var searchQuery = "";
           <a href="#" id="doregister" class="feed" style="background: none">Register</a>
           <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
           <a href="#" id="dologout" class="feed" style="background: none; display: none;">Logout</a>
-          <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments">Subscribe to all comments</a> 
+          <a class="feed" href="http://test.development.grinfo.net/Luca/datadict/comments"></a> 
 
           <a href="http://annotation-tool.appspot.com/" class="feed" style="background: none; padding-right: 20px;">Annotation Tool</a>
           <a href="http://www.screencast.com/users/sktrdie/folders/Jing/media/744c1610-b716-46cb-bcdd-ddc9752111d1" class="feed" style="background: none; padding-right: 20px;">Video Tutorial</a>
+          <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add an ontology</a>
     </h2> 
     <form action="/search" method="get">
   <h1><input id="search" type="text" name="q" /><button type="submit" class="minibutton">Search</button></h1> 
@@ -66,7 +65,6 @@ var searchQuery = "";
  
     <ul class="sorts"> 
       <li data-sort="created" class="desc" id="general">General</li> 
-      <li data-sort="created" id="relationships">Relationships</li> 
       <li data-sort="popularity" id="new-comments">Comments</li> 
     </ul> 
   </div> 
@@ -134,8 +132,6 @@ var searchQuery = "";
     <div class="general description" > 
     </div><!-- end general --> 
 
-    <div class="relationships" style="display:none">
-    </div><!--/relationships-->
 </div><!-- /pages --> 
 </div><!-- /browser-content --> 
 </div><!-- end right --> 

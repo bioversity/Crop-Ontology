@@ -858,7 +858,6 @@ function MakeTree(jel, arr) {
 }
 
 function LoadOntology(ontoId) {
-
     $.getJSON("/get-ontology/"+ontoId, function(jsonTree) {
        
         MakeTree($("#root"), jsonTree);
@@ -872,7 +871,8 @@ $(document).ready(function(){
  
     Login();
 
-    LoadOntology(ontologyid);
+    if(typeof ontologyid !== "undefined")
+        LoadOntology(ontologyid);
 
     /* assign some events for ui */
     events();
