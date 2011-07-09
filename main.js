@@ -280,7 +280,7 @@ apejs.urls = {
 
 
             if(usermodel.emailExists(user.email))
-                error = "This email doesn't exist!";
+                error = "This email already exists!";
 
             // check email format
             if(!usermodel.validateEmail(user.email))

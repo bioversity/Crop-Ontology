@@ -834,8 +834,50 @@ var events = function(){
         } else{ term_loader(false); }
 
     });
+
  
 };
+
+
+// Search weeee
+var Search = (function() {
+    var query = "",
+        searchFields = ["id", "name", "def"];
+
+    function RunSearch(result, arr) {
+        for(var i=0, len=arr.length; i<len; i++) {
+            var curr = arr[i];
+
+            for(var x=0,slen=searchFields.length; x<slen; x++) {
+                var field = searchFields[x];
+                if(typeof curr[field] !== "undefined") {
+                    if(curr[field].match(new RegExp(query, "i")))
+                        result.push(curr);
+                }
+            }
+
+            RunSearch(result, curr.children);
+        }
+    }
+
+    function init(first) {
+        $("#dosearch").click(function(e){
+            query = $("#search").val().trim();
+
+            var result = [];
+            RunSearch(result, first);
+
+            //console.log(result);
+
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    }
+
+    return {
+        init: init
+    };
+})();
 
 /**
  * out of JSON data we make a UI tree
@@ -862,6 +904,7 @@ function LoadOntology(ontoId) {
     loader($root, true);
     $.getJSON("/get-ontology/"+ontoId, function(jsonTree) {
         loader($root, false);
+        Search.init(jsonTree);
        
         MakeTree($root, jsonTree);
 
