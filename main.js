@@ -4,15 +4,16 @@ require("googlestore.js");
 require("./fileupload.js");
 require("./usermodel.js");
 
-
-var VERSION = "0.0.2";
+var VERSION = "0.0.3";
 
 apejs.urls = {
     "/": {
         get: function(request, response) {
-            var skin = render("skins/list-ontologies.html")
+            var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/list-ontologies.html"))
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(skin);
+            
         }
     },
     "/ontologies": {
@@ -35,6 +36,7 @@ apejs.urls = {
     "/ontology/([a-zA-Z0-9_\: ]+)": {
         get: function(request, response, matches) {
             var skin = render("skins/index.html")
+                    .replace(/{{CONTENT}}/g, render("skins/onto.html"))
                     .replace(/{{VERSION}}/g, VERSION)
                     .replace(/{{ontologyid}}/g, matches[1]);
             response.getWriter().println(skin);
@@ -218,11 +220,6 @@ apejs.urls = {
     },
     "/search" : {
         get: function(request, response, matches) {
-            /*
-            var skin = render("skins/index.html")
-                    .replace(/{{ontologyname}}/g, matches[1]);
-            response.getWriter().println(skin);
-            */
             var skin = render("skins/index.html")
                         .replace(/{{VERSION}}/g, VERSION)
                         .replace(/{{searchQuery}}/g, request.getParameter("q"));
@@ -367,7 +364,8 @@ apejs.urls = {
         get: function(request, response) {
             require("./blobstore.js");
             var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
-            var html = render("./skins/add-ontology.html")
+            var html = render("./skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/add-ontology.html"))
                         .replace(/{{UPLOAD_URL}}/g, UPLOAD_URL)
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);

@@ -1682,7 +1682,7 @@ ul.grouplist>li ul.actions li{display:inline-block;margin:0 0 0 5px;}
 #facebox .change-gravatar-email button{margin-top:12px;margin-left:0;}
 #facebox .change-gravatar-email .spinner{margin-left:10px;}
 #facebox .change-gravatar-email .error{color:#900;font-weight:bold;}
-.pagehead{position:relative;margin:-20px 0 10px -25px;width:920px;padding:20px 25px 0;background:url(/images/background-white.png) 0 0 no-repeat;}
+.pagehead{position:relative;margin:-20px 0 10px -25px;width:920px;padding:20px 25px 0;background:none;}
 .logged_out .pagehead{margin-top:-25px;}
 .pagehead.mine,.pagehead.vis-private{background-image:url(/images/modules/pagehead/background-yellow.png?v2);}
 .admin .pagehead{background-image:url(/images/modules/pagehead/background-green.png);}

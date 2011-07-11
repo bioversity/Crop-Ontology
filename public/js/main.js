@@ -490,7 +490,7 @@ function load_branch(parent, url) {
  
 function mylogin() {
     var jmylogin = $("#mylogin");
-    var jmain = $("#main");
+    var jmain = $("#main, footer");
 
     $(".error_box").hide();
  
@@ -917,7 +917,7 @@ $(document).ready(function(){
  
     Login();
 
-    if(typeof ontologyid !== "undefined")
+    if(ontologyid !== "{{ontologyid}}")
         LoadOntology(ontologyid);
 
     /* assign some events for ui */

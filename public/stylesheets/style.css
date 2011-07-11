@@ -271,3 +271,12 @@ border-bottom-right-radius: 10px;
 .buttons {
     margin: 20px 0;
 }
+
+footer {
+    margin-bottom: 30px;
+    margin-top: 30px;
+    display: block;
+    color: #666;
+    font-size: 11px;
+    text-align: center;
+}
