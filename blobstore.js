@@ -13,7 +13,23 @@ var blobstore = {
      * this reads a blob into a string without the 1mb limit
      */
     read: function(blobKey) {
-        var blobIs = new BlobstoreInputStream(blobKey);
+        var is = new BlobstoreInputStream(blobKey);
+
+        var writer = new StringWriter();
+        var buffer = java.lang.reflect.Array.newInstance(java.lang.Character.TYPE, 1024); // char[] buffer = new char[1024];
+
+        try {
+            var reader = new BufferedReader(
+                    new InputStreamReader(is, "UTF-8"));
+            var n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+        } finally {
+            is.close();
+        }
+        return writer.toString();
+        /*
         var reader = new BufferedReader(new InputStreamReader(blobIs));
         var sb = new StringBuilder();
         var line = null;
@@ -23,6 +39,7 @@ var blobstore = {
         blobIs.close();
         var str = sb.toString();
         return str;
+        */
     },
 
     /**

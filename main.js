@@ -444,18 +444,8 @@ apejs.urls = {
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
             try {
-                // get the string of the blob
-                // XXX be sure MAX_BLOB_FETCH_SIZE is good and we're fetching the correct way from blobstore.
-                // MAX_BLOB_FETCH_SIZE is 1015808 bytes. How can it read an OBO that is 20mb????
-                // also, since it's all loaded into memory, be sure it's not too big
-                //
-                // FIXME indeed it's truncated to 1mb
-                //var oboString = new java.lang.String(blobstore.blobstoreService.fetchData(oboBlobKey, 0,  (blobstore.blobstoreService.MAX_BLOB_FETCH_SIZE - 1) ));
-
                 // let's use BlobstoreInputStream to read more than 1mb at a time
                 var oboString = blobstore.read(oboBlobKey);
-
-                return response.getWriter().println(oboString);
 
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString),
