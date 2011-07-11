@@ -10,6 +10,22 @@ var blobstore = {
     },
 
     /**
+     * this reads a blob into a string without the 1mb limit
+     */
+    read: function(blobKey) {
+        var blobIs = new BlobstoreInputStream(blobKey);
+        var reader = new BufferedReader(new InputStreamReader(blobIs));
+        var sb = new StringBuilder();
+        var line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        blobIs.close();
+        var str = sb.toString();
+        return str;
+    },
+
+    /**
      * writes a string to the blobstore
      * and returns the key reference of it
      */

@@ -430,7 +430,7 @@ apejs.urls = {
         }
     },
     /**
-     * looks up the ontology entity, finds the OBO blob and converts it to a JSON
+     * finds the OBO blob and converts it to a JSON
      * blob which is also then inserted in the blob store and a reference of it
      * is added to the ontology entity
      */
@@ -445,8 +445,17 @@ apejs.urls = {
 
             try {
                 // get the string of the blob
-                // XXX be sure MAX_BLOB_FETCH_SIZE is good and we're fetching the correct way from blobstore
-                var oboString = new java.lang.String(blobstore.blobstoreService.fetchData(oboBlobKey, 0,  (blobstore.blobstoreService.MAX_BLOB_FETCH_SIZE - 1) ));
+                // XXX be sure MAX_BLOB_FETCH_SIZE is good and we're fetching the correct way from blobstore.
+                // MAX_BLOB_FETCH_SIZE is 1015808 bytes. How can it read an OBO that is 20mb????
+                // also, since it's all loaded into memory, be sure it's not too big
+                //
+                // FIXME indeed it's truncated to 1mb
+                //var oboString = new java.lang.String(blobstore.blobstoreService.fetchData(oboBlobKey, 0,  (blobstore.blobstoreService.MAX_BLOB_FETCH_SIZE - 1) ));
+
+                // let's use BlobstoreInputStream to read more than 1mb at a time
+                var oboString = blobstore.read(oboBlobKey);
+
+                return response.getWriter().println(oboString);
 
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString),
@@ -478,65 +487,6 @@ apejs.urls = {
                 return response.sendError(response.SC_BAD_REQUEST, e);
             }
 
-        }
-    },
-    "/obo-to-json2": {
-        post: function(request, response) {
-            require("./fileupload.js");
-            require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
-
-
-            try {
-                var data = fileupload.getData(request);
-
-                var filename = "",
-                    filevalue = "";
-                for(var i=0; i<data.length; i++) {
-                    var fieldName = data[i].fieldName,
-                        fieldValue = data[i].fieldValue,
-                        isFile = data[i].file;
-
-                    if(isFile) {
-                        filename = fieldName;
-                        filevalue = fieldValue;
-                    }
-                }
-
-                if(filename == "" || filevalue == "")
-                    return response.sendError(response.SC_BAD_REQUEST, "must specificy a file");
-                    
-
-                // convert the Blob of OBO to text
-                var bytes = filevalue.getBytes(),
-                    oboString = new java.lang.String(bytes);
-
-                // convert the OBO to JSON
-                var arr = jsonobo.obotojson(oboString);
-
-                var ontoName = arr[0].name,
-                    ontoId = arr[0].id;
-
-                // store the obo as another entity
-                var oboEntity = googlestore.entity("obo", {
-                    data: new Text(oboString)
-                });
-                var oboKey = googlestore.put(oboEntity);
-
-                // store the ontology which contains the raw json
-                var ontoEntity = googlestore.entity("ontology", ontoId, {
-                    created: new java.util.Date(),
-                    id: ontoId,
-                    name: ontoName,
-                    oboKey: oboKey
-                    /*json: new Text(JSON.stringify(arr))*/
-                });
-                googlestore.put(ontoEntity);
-
-
-                response.sendRedirect("/");
-            } catch(e) {
-                return response.sendError(response.SC_BAD_REQUEST, e);
-            }
         }
     }
 };
