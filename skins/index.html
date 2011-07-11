@@ -17,16 +17,21 @@ var searchQuery = "";
  
 <body class="explore"> 
     <div id="main" class=""> 
-        <div id="header" style="height: 100px;"> 
- 
-            
-            <div id="logo"> 
-                <h1><a href="/">Crop Ontology - Curation tool demo</a></h1>
+        <div id="header_outer">
+            <div id="header" style="height: 100px;"> 
+     
+                
+                <div id="logo"> 
+                    <h1><a href="/">Crop Ontology - Curation tool demo</a></h1>
+                </div> 
             </div> 
-        </div> 
+        </div>
         <div class="site"> 
 <div class="pagehead"> 
-    <h2 style="margin:5px; border-bottom:0 !important; padding:0;"> 
+    <div class="head_left">
+        <input id="search" type="text" name="q" /><button id="dosearch" class="minibutton">Search</button>
+    </div> 
+    <div class="head_right"> 
  
           <a href="#" id="dologin" class="feed" style="background: none">Login</a>
           <a href="#" id="doregister" class="feed" style="background: none">Register</a>
@@ -37,8 +42,7 @@ var searchQuery = "";
           <a href="http://annotation-tool.appspot.com/" class="feed" style="background: none; padding-right: 20px;">Annotation Tool</a>
           <a href="http://www.screencast.com/users/sktrdie/folders/Jing/media/744c1610-b716-46cb-bcdd-ddc9752111d1" class="feed" style="background: none; padding-right: 20px;">Video Tutorial</a>
           <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add an ontology</a>
-    </h2> 
-  <h1><input id="search" type="text" name="q" /><button id="dosearch" class="minibutton">Search</button></h1> 
+    </div> 
 </div> 
  
 {{CONTENT}} 

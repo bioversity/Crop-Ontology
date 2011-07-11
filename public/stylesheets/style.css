@@ -1,6 +1,11 @@
 .description ul{
     padding-left:40px;
 }
+
+#header_outer {
+    background: #F1F1F1;
+    border-bottom: 1px solid #D2D2D2;
+}
 .bar {
     width: 420px;
     float: left;
@@ -279,4 +284,26 @@ footer {
     color: #666;
     font-size: 11px;
     text-align: center;
+}
+.pagehead {
+
+height: 42px;
+margin-bottom: 0;
+}
+.pagehead .head_left {
+font-size: 20px;
+float: left;
+margin-top: 8px;
+}
+.pagehead .head_right {
+    margin-top: 15px !important;
+}
+.pagehead .head_right a{
+    float: right;
+    padding-left: 24px;
+    height: 14px;
+    line-height: 14px;
+    font-size: 12px;
+    font-weight: bold;
+    display: block;
 }

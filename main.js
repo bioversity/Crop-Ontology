@@ -4,7 +4,7 @@ require("googlestore.js");
 require("./fileupload.js");
 require("./usermodel.js");
 
-var VERSION = "0.0.3";
+var VERSION = "0.0.5";
 
 apejs.urls = {
     "/": {
