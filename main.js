@@ -16,6 +16,15 @@ apejs.urls = {
             
         }
     },
+    "/develop": {
+        get: function(request, response) {
+            var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/develop.html"))
+                        .replace(/{{VERSION}}/g, VERSION);
+            response.getWriter().println(skin);
+            
+        }
+    },
     "/ontologies": {
         get: function(request, response) {
             var ontologies = googlestore.query("ontology")

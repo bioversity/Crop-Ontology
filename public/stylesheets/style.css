@@ -6,6 +6,9 @@
     background: #F1F1F1;
     border-bottom: 1px solid #D2D2D2;
 }
+#header {
+    position: relative;
+}
 .bar {
     width: 420px;
     float: left;
@@ -306,4 +309,45 @@ margin-top: 8px;
     font-size: 12px;
     font-weight: bold;
     display: block;
+}
+a.button {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    border: 1px solid transparent;
+    color: white;
+    text-transform: uppercase;
+    background-color: #D14836;
+    background-image: -webkit-linear-gradient(top,#DD4B39,#D14836);
+    background-image: -moz-linear-gradient(top,#DD4B39,#D14836);
+    background-image: -ms-linear-gradient(top,#DD4B39,#D14836);
+    background-image: -o-linear-gradient(top,#DD4B39,#D14836);
+    background-image: linear-gradient(top,#DD4B39,#D14836);
+    text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    text-align: center;
+    margin-right: 16px;
+    height: 27px;
+    line-height: 27px;
+    min-width: 54px;
+    outline: 0;
+    padding: 0 8px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    display: block;
+}
+
+.api {
+    width: 100px;
+    float: left;
+    position: absolute;
+    top: 40px;
+    left: 40px;
+}
+.api a {
+    font-size: 15px;
 }
