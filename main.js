@@ -145,7 +145,7 @@ apejs.urls = {
                     value = entry.getValue();
 
                 // let's skip certain keys
-                if(key.equals("id") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || value.equals(""))
+                if(key.equals("id") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("oboBlobKey")|| value.equals(""))
                     continue;
 
                 if(value instanceof Blob) {
