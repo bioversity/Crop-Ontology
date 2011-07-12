@@ -351,3 +351,11 @@ a.button {
 .api a {
     font-size: 15px;
 }
+
+.add_title {
+    margin-bottom: 20px;
+}
+
+.add_title a{
+   font-size: 14px; 
+}

@@ -2,21 +2,28 @@
             <div class="left browser-content" style="width: 100%;"> 
                 <div class="cont" style="width: 877px;"> 
 
-                    <h3>Upload an OBO file</h3>
-                    <div id="error" style="display: none; margin-bottom: 10px;"></div>
+                    <div class="add_title">
+                        <a title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch selected"><span>Upload an OBO File</span></a>
+                        or
+                        <a title="Generate Ontology" cont="create_ontology_cont" class="minibutton btn-watch"><span>Create an Ontology</span></a>
+                    </div>
 
-                    <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data">
-                        <p>
-                        <input name="ontology_name" type="text" placeholder="Ontology Name" />
-                        <input name="ontology_id" type="text" placeholder="Ontology ID" />
-                        </p>
-                        <p>
-                        <input name="obofile" type="file" /> 
-                        </p>
-                        <p>
-                        <input type="submit" value="Upload OBO" />
-                        </p>
-                    </form>
+                    <a class="button" id="error" style="display: none; margin-bottom: 10px;"></a>
+
+                    <div id="upload_obo_cont">
+
+                        <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data">
+                            <p>
+                            <input name="ontology_name" type="text" placeholder="Ontology Name" />
+                            <input name="ontology_id" type="text" placeholder="Ontology ID" />
+                            </p>
+                            <p>
+                            <input name="obofile" type="file" /> 
+                            </p>
+                            <p>
+                            <input type="submit" value="Upload OBO" />
+                            </p>
+                        </form>
 
 <!--
 <script type="text/javascript" src="/js/jsonobo.js"></script>
@@ -38,26 +45,25 @@ $(function(){
 <textarea id="obo"></textarea>
 <input type="button" id="obobtn" />
 -->
+                    </div><!-- upload obo -->
 
-                    <br>
-                    <h3>Or create the ontology</h3>
-                    <br>
-                    <br>
- 
-                    <ul class="treeview" id="cont"> 
-                        <li class="last" id="ontology">
-                            <input type="text" id="ontology_name" name="name" placeholder="Ontology Name" />
-                            <input type="text" id="ontology_id" name="id" placeholder="Ontology ID" />
-                            <a title="Add" class="add minibutton btn-watch"><span>+</span></a>
 
-                            
-                        </li>
-                    </ul> 
-                    
-                    
-                    <div class="buttons">
-                        <a title="Save" id="save" class="minibutton btn-watch"><span>Save</span></a>
+                    <div id="create_ontology_cont" style="display: none">
+                        <ul class="treeview" id="cont"> 
+                            <li class="last" id="ontology">
+                                <input type="text" id="ontology_name" name="name" placeholder="Ontology Name" />
+                                <input type="text" id="ontology_id" name="id" placeholder="Ontology ID" />
+                                <a title="Add" class="add minibutton btn-watch"><span>+</span></a>
+
+                                
+                            </li>
+                        </ul> 
+                        <div class="buttons">
+                            <a title="Save" id="save" class="minibutton btn-watch"><span>Save</span></a>
+                        </div>
                     </div>
+                    
+                    
                 </div> 
             </div><!-- end left --> 
 <ul class="treeview" id="term_tmpl" style="display: none;"> 

@@ -39,19 +39,22 @@ function removeTerm(parentUl) {
 var counter = 0,
     ontoId;
 function getPars(o, $cont, parent) {
-    var name = $cont.find("input[name=name]:first").val();
+    var term = {};
+    if($cont.attr("id") != "cont") { // we dont want to save the root
+        var name = $cont.find("input[name=name]:first").val();
 
-    var term = {
-        id: ontoId+":"+counter++,
-        name: name,
-        parent: parent
-    };
-    
-    o.push(term);
+        term = {
+            id: ontoId+":"+counter++,
+            name: name,
+            parent: parent
+        };
+        
+        o.push(term);
+    }
 
     // children() returns only the top most elements
     $cont.find("li:first").children("ul").each(function(){
-        getPars(o, $(this), term.id); 
+        getPars(o, $(this), term.id || null); 
     });
 
 }
@@ -88,7 +91,7 @@ var bindEvents = function() {
 
     // save the "state" of the ontology
     $("#save").click(function(e){
-        ontoId = $("#onto_id").val();
+        ontoId = $("#ontology_id").val();
         counter = 0;
         var ret = [];
         getPars(ret, $("#cont"));
@@ -97,14 +100,18 @@ var bindEvents = function() {
         // the tree is given by referencing each id
         // so the developer needs to give us IDs for us to know about
         // relation logic
-
-        var $this = $(this);
-        $this.hide();
-        $.post("/add-ontology", {
+        var pars = {
             ontology_name: $("#ontology_name").val(),
             ontology_id: $("#ontology_id").val(),
             json: JSON.stringify(ret)
-         }, function(data) {
+        };
+
+        if(!pars.ontology_name || !pars.ontology_id)
+            return err("Must insert the name of ontology and its ID");
+
+        var $this = $(this);
+        $this.hide();
+        $.post("/add-ontology", pars, function(data) {
 
             $this.show();
 
@@ -115,6 +122,25 @@ var bindEvents = function() {
             $this.show();
         });
         
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+
+    //
+    $(".add_title a").click(function(e) {
+        var $this = $(this);
+        var cont = $this.attr("cont");
+
+        $("#upload_obo_cont, #create_ontology_cont").hide(); // hide all
+
+        $(".add_title a").removeClass("selected");
+
+        $this.addClass("selected");
+
+        // show this cont
+        $("#"+cont).show();
+
         e.preventDefault();
         e.stopPropagation();
     });
