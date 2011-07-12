@@ -192,9 +192,57 @@ var jsonobo = (function(){
         return obj;
     }
 
+    //////// NEW CODE
+    function isEmpty(line) {
+        if(!line || line == "" || line == null)
+            return true;
+
+        return false;
+    }
+
+    var termRec = false,
+        currTerm = {};
+    function findTerm(line, func) {
+        // if term recording is on
+        // and the current line is empty, then
+        // we found a *complete* term
+        if(termRec && isEmpty(line))
+            func(currTerm);
+
+        // if the line is empty, turn term recording OFF
+        if(isEmpty(line))
+            termRec = false;
+
+        if(termRec) {
+            var keyVal = getKeyValue(line);
+            // if this key exists already, make it an array and push into it
+            if(currTerm[keyVal.key]) {
+                // start the array only if it's not an array
+                if(!(currTerm[keyVal.key] instanceof Array)) {
+                    currTerm[keyVal.key] = [currTerm[keyVal.key]]; // start array put in what was there before
+                }
+
+                currTerm[keyVal.key].push(keyVal.value);
+            } else { // otherwise just add it as an object property
+                currTerm[keyVal.key] = keyVal.value;
+            }
+
+            // find out parent
+            var r = rel(currTerm);
+            if(r.hasRelationship()) {
+                currTerm["parent"] = r.getIds()[0]; // only 1 parent XXX
+            }
+        }
+
+        if(startsWith(line, "[Term]")) { // term recording ON
+            termRec = true;
+            currTerm = {}; // restart the object
+        }
+    }
 
     return {
-        obotojson: obotojson
+        obotojson: obotojson,
+        findTerm: findTerm
     };
 
 })();

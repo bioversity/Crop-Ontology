@@ -451,8 +451,17 @@ apejs.urls = {
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
             try {
-                // let's use BlobstoreInputStream to read more than 1mb at a time
-                var oboString = blobstore.read(oboBlobKey);
+                // let's use BlobstoreInputStream to read more than 1mb at a time.
+                // we read and parse line by line because we don't want to allocate
+                // memory - keeping it light
+                blobstore.readLine(oboBlobKey, function(line) {
+                    // the callback is called when a complete Term is found
+                    jsonobo.findTerm(line, function(term) {
+                        response.getWriter().println(term.id + "<br>");                    
+                    });
+                });
+
+                return;
 
                 // convert the OBO to JSON
                 var arr = jsonobo.obotojson(oboString),

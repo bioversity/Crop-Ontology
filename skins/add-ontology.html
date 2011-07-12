@@ -10,19 +10,24 @@
                         <input type="submit" value="Upload OBO" />
                     </form>
 
-<!--
 <script type="text/javascript" src="/js/jsonobo.js"></script>
 <script>
 $(function(){
     $("#obobtn").click(function(){
-        var arr = jsonobo.obotojson($("#obo").val());
-        console.log(arr);
+        //var arr = jsonobo.obotojson($("#obo").val());
+        //console.log(arr);
+
+        var lines = $("#obo").val().split("\n");
+        for(var i=0,len=lines.length; i<len; i++) {
+            jsonobo.findTerm(lines[i], function(term) {
+                console.log(term);
+            });
+        }
     }); 
 });
 </script>
 <textarea id="obo"></textarea>
 <input type="button" id="obobtn" />
--->
 
                     <br>
                     <h3>Or create the ontology</h3>
