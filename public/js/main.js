@@ -431,7 +431,7 @@ function load_branch(parent, url) {
  
 function mylogin() {
     var jmylogin = $("#mylogin");
-    var jmain = $("#main, footer");
+    var jmain = $("#main, .footer");
 
     $(".error_box").hide();
  

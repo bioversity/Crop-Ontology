@@ -447,6 +447,8 @@ apejs.urls = {
 
             try {
                 // let's parse it so we know it's fine
+                // maybe it can be a CSV of JSON objects
+                // that would it very memory friendly
                 var arr = JSON.parse(json);
 
                 var ontoName = arr[0].name,
@@ -527,6 +529,8 @@ apejs.urls = {
 
                         if(term.comment)
                             term.comment = new Text(term.comment);
+                        if(term.def)
+                            term.def = new Text(term.def);
 
                         var termEntity = googlestore.entity("term", term.id, term);
 

@@ -36,22 +36,22 @@ function removeTerm(parentUl) {
  *
  * $cont is an UL element
  */
-function getPars(o, $cont) {
+var counter = 0,
+    ontoId;
+function getPars(o, $cont, parent) {
     var name = $cont.find("input[name=name]:first").val();
 
     var term = {
-        id: name,
+        id: ontoId+":"+counter++,
         name: name,
-        relation_name: "is_a",
-
-        children: []
+        parent: parent
     };
     
     o.push(term);
 
     // children() returns only the top most elements
     $cont.find("li:first").children("ul").each(function(){
-        getPars(term.children, $(this)); 
+        getPars(o, $(this), term.id); 
     });
 
 }
@@ -88,8 +88,18 @@ var bindEvents = function() {
 
     // save the "state" of the ontology
     $("#save").click(function(e){
+        ontoId = $("[name=ontology_id]").val();
+        counter = 0;
         var ret = [];
         getPars(ret, $("#cont"));
+
+        console.log(ret);
+        return;
+
+        // we need to obey the API which is a list of objects.
+        // the tree is given by referencing each id
+        // so the developer needs to give us IDs for us to know about
+        // relation logic
 
         var $this = $(this);
         $this.hide();
