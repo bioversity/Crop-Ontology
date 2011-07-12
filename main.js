@@ -82,9 +82,10 @@ apejs.urls = {
                 var ret = [];
 
                 rootTerms.forEach(function(term) {
+                    var name = term.getProperty("name");
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+term.getProperty("name")
+                        "name": ""+(name instanceof Text ? name.getValue() : name)
                     });
                 });
 
@@ -143,8 +144,12 @@ apejs.urls = {
                     key = entry.getKey(),
                     value = entry.getValue();
 
-                /*
+                // let's skip certain keys
+                if(key.equals("id") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name"))
+                    continue;
+
                 if(value instanceof Blob) {
+                    /*
                     var filename = res[i].getProperty("filename");
                     var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
                     // based on the mime type we need to figure out which image to show
@@ -153,9 +158,10 @@ apejs.urls = {
                     } else {
                         value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'><img src='/serve/"+res[i].getKey().getName()+"' /></a>";
                     }
-                } else
-                */
-                if(value instanceof Text)
+                    */
+                    value = "<a target='_blank' href='/serve/"+term_id+"'>file</a>";
+
+                } else if(value instanceof Text)
                     value = value.getValue();
 
                 attributes.push({
@@ -202,8 +208,17 @@ apejs.urls = {
             if(key == "" || value == "" || term_id == "")
                 return err("Must complete all fields");
 
+            // get this term from it's id
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            // set this property value
+            termEntity.setProperty(key, (value instanceof Blob ? value : new Text(value)));
+            googlestore.put(termEntity);
+
+            /*
             // the key is just key_GO:0000
-            var attribute = googlestore.entity("attribute", key+"_"+term_id, {
+            var attribute = googlestore.entity("term", term_id, {
                 key: key,
                 filename: filename,
                 value: (value instanceof Blob ? value : new Text(value)),
@@ -211,6 +226,7 @@ apejs.urls = {
             });
             // only if logged in and has permissions
             googlestore.put(attribute);
+            */
 
             err("");
 
