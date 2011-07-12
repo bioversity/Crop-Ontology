@@ -15,9 +15,9 @@ $.getJSON(url, function(json) {
 
 
         // replace stuff
-        $row.find("h3 a").attr("title", this.name)
-                    .attr("href", "/ontology/"+this.id)
-                    .text(this.name);
+        $row.find("h3 a").attr("title", this.ontology_name)
+                    .attr("href", "/ontology/"+this.ontology_id)
+                    .text(this.ontology_name);
 
         parent.append($row);
     });

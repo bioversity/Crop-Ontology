@@ -230,7 +230,7 @@ var jsonobo = (function(){
             // find out parent
             var r = rel(currTerm);
             if(r.hasRelationship()) {
-                currTerm["parent"] = r.getIds()[0]; // only 1 parent XXX
+                currTerm["parent"] = r.getIds();
             }
         }
 

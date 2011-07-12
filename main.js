@@ -33,8 +33,8 @@ apejs.urls = {
             var res = [];
             ontologies.forEach(function(onto){
                 res.push({
-                    id: ""+onto.getProperty("id"),
-                    name: ""+onto.getProperty("name")
+                    ontology_id: ""+onto.getProperty("ontology_id"),
+                    ontology_name: ""+onto.getProperty("ontology_name")
                 });
             });
 
@@ -71,19 +71,79 @@ apejs.urls = {
             }
         }
     },
-    "/get-attribute": {
-        get: function(request, response) {
-            var term_id = request.getParameter("term_id");
+    "/get-ontology-roots/([a-zA-Z0-9_\: ]+)": {
+        get: function(request, response, matches) {
+            var ontoId = matches[1];
+            try {
+                var rootTerms = googlestore.query("term")
+                                .filter("parent", "=", null)
+                                .filter("ontology_id", "=", ontoId)
+                                .fetch();
+                var ret = [];
+
+                rootTerms.forEach(function(term) {
+                    ret.push({
+                        "id": ""+term.getProperty("id"),
+                        "name": ""+term.getProperty("name")
+                    });
+                });
+
+                response.getWriter().println(JSON.stringify(ret));
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        }
+    },
+    "/get-children/([a-zA-Z0-9_\: ]+)": {
+        get: function(request, response, matches) {
+            var parentId = matches[1];
+            if(!parentId)
+                return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
+
+            try {
+                var children = googlestore.query("term")
+                                .filter("parent", "=", parentId)
+                                .fetch();
+                var ret = [];
+
+                children.forEach(function(term) {
+                    // figure out if this term has children
+                    var q = googlestore.query("term")
+                            .filter("parent","=", term.getProperty("id"))
+                            .fetch(1);
+
+                    ret.push({
+                        "id": ""+term.getProperty("id"),
+                        "name": ""+term.getProperty("name"),
+                        "has_children": q.length
+                    });
+                });
+
+                response.getWriter().println(JSON.stringify(ret));
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        }
+    },
+    "/get-attributes/([a-zA-Z0-9_\: ]+)": {
+        get: function(request, response, matches) {
+            var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
 
-            var res = googlestore.query("attribute")
-                    .filter("term_id", "=", term_id)
-                    .fetch();
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            var properties = termEntity.getProperties(),
+                entries = properties.entrySet().iterator();
 
             var attributes = [];
-            for(var i=0; i<res.length; i++) {
 
-                var value = res[i].getProperty("value");
+            while(entries.hasNext()) {
+                var entry = entries.next(),
+                    key = entry.getKey(),
+                    value = entry.getValue();
+
+                /*
                 if(value instanceof Blob) {
                     var filename = res[i].getProperty("filename");
                     var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
@@ -94,14 +154,16 @@ apejs.urls = {
                         value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'><img src='/serve/"+res[i].getKey().getName()+"' /></a>";
                     }
                 } else
+                */
+                if(value instanceof Text)
                     value = value.getValue();
 
                 attributes.push({
-                    "key": ""+ res[i].getProperty("key"),
+                    "key": ""+ key,
                     "value": ""+value
                 });
-
             }
+
             response.getWriter().println(JSON.stringify(attributes));
         }
     },
@@ -424,16 +486,59 @@ apejs.urls = {
     "/obo-upload" : {
         post: function(request, response) {
             require("./blobstore.js");
+            require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 oboBlobKey = blobs.get("obofile");
 
             if(oboBlobKey == null) {
-                return response.sendRedirect("/");
+                return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+            }
+            try {
+                var ontologyName = request.getParameter("ontology_name"),
+                    ontologyId = request.getParameter("ontology_id");
+
+                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "")
+                    return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+
+                // first create ontology
+                var ontoEntity = googlestore.entity("ontology", ontologyId, {
+                    created_at: new java.util.Date(),
+                    ontology_id: ontologyId,
+                    ontology_name: ontologyName,
+                });
+
+                googlestore.put(ontoEntity);
+
+
+                // let's use BlobstoreInputStream to read more than 1mb at a time.
+                // we read and parse line by line because we don't want to allocate
+                // memory - keeping it light
+                blobstore.readLine(oboBlobKey, function(line) {
+                    // the callback is called when a complete Term is found
+                    jsonobo.findTerm(line, function(term) {
+                        // we found a term, let's save it in datastore
+                        term.created_at = new java.util.Date();
+                        term.ontology_name = ontologyName;
+                        term.ontology_id = ontologyId;
+                        term.oboBlobKey = oboBlobKey;
+
+                        term.parent = term.parent || null; // important to track the roots
+
+                        if(term.comment)
+                            term.comment = new Text(term.comment);
+
+                        var termEntity = googlestore.entity("term", term.id, term);
+
+                        googlestore.put(termEntity);
+                    });
+                });
+
+                response.sendRedirect("/");
+            } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
             }
 
-            // redirect to obo-to-json which takes this oboBlobKey as a parameter
-            response.sendRedirect("/obo-to-json?oboBlobKey="+oboBlobKey.getKeyString());
         }
     },
     /**
@@ -444,54 +549,11 @@ apejs.urls = {
     "/obo-to-json": {
         get: function(request, response) {
             require("./blobstore.js");
-            require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
             var oboBlobKey = new BlobKey(request.getParameter("oboBlobKey"));
             if(!oboBlobKey)
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
-            try {
-                // let's use BlobstoreInputStream to read more than 1mb at a time.
-                // we read and parse line by line because we don't want to allocate
-                // memory - keeping it light
-                blobstore.readLine(oboBlobKey, function(line) {
-                    // the callback is called when a complete Term is found
-                    jsonobo.findTerm(line, function(term) {
-                        response.getWriter().println(term.id + "<br>");                    
-                    });
-                });
-
-                return;
-
-                // convert the OBO to JSON
-                var arr = jsonobo.obotojson(oboString),
-                    jsonString = JSON.stringify(arr);
-
-                // now i need to put this JSON inside the blobstore.
-                // use the blobstore api to put data inside store. there's no
-                // bandwith transfer so don't need to go through servlet. it's just
-                // processing CPU power
-                var jsonBlobKey = blobstore.writeString(jsonString);
-
-                // now that both the jsonString and oboString are inside the blobstore
-                // create the ontology entity
-                var ontoName = arr[0].name,
-                    ontoId = arr[0].id;
-
-                var ontoEntity = googlestore.entity("ontology", ontoId, {
-                    created: new java.util.Date(),
-                    id: ontoId,
-                    name: ontoName,
-                    // references to the blobstore data
-                    oboBlobKey: oboBlobKey,
-                    jsonBlobKey: jsonBlobKey
-                });
-                googlestore.put(ontoEntity);
-
-                response.sendRedirect("/");
-            } catch(e) {
-                return response.sendError(response.SC_BAD_REQUEST, e);
-            }
 
         }
     }

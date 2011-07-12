@@ -54,7 +54,7 @@ function markdown(str) {
 function expand_collapse() {
     var div = $(".hitarea");
  
-    div.click(function() {
+    div.live("click", function() {
  
         var $this = $(this);
 
@@ -101,7 +101,7 @@ function expand_collapse() {
  
                 var id = li.find(".id").val();
 
-                //load_branch(parent, "http://cropontology.org/ontology-lookup/tree.view?q=treebuilder&ontologyname="+id.split(":")[0]+"&id="+id);
+                load_branch(parent, "/get-children/"+id);
                 // TODO - fix this - for now we just have a global variable tracking if we
                 // need to load the root ontology (only the first time) and nodes for the rest
                 /*
@@ -179,7 +179,7 @@ term_loader = function(show) {
  
 // attributes is an object of key:value pairs
 function show_attributes(id, name, attributes) {
-    var str = "", count = 0;;
+    var str = "", count = 0;
     // identifier is first
     str += '<div class="attribute"><label for="">Identifier</label><span class="value">'+id+'</span></div>';
 
@@ -240,17 +240,7 @@ load_term = function(li) {
  
     var attributes = {};
     
-    // put in the attributes the stuff that's in the dom (hidden)
-    // which is actually part of the OBO file
-    attributes = $.data(li[0], "oboData");
-
-    // children is definitely not needed
-    delete attributes["children"];
-    // also ID is already shown
-    delete attributes["id"];
-
-    // let's also load the attributes stored locally for this term
-    $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
+    $.getJSON("/get-attributes/"+id, function(this_attrs) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
         });
@@ -305,16 +295,12 @@ function make_li(obj, last) {
     var name = obj.name;
     var label = obj.label;
     var summary = obj.summary;
-    var has_children = obj.children.length,
+    var has_children = obj.has_children,
         hitarea;
 
     var li = $("<li></li>");
     if(last)
         li.addClass("last");
- 
-    // add the "obj" which is the OBO term inside this DOM element itself
-    // so we can reference later when we click on it
-    $.data(li[0], "oboData", obj);
  
     // add a hidden input to track the id of this node
     li.append('<input type="hidden" class="id" value="'+id+'" />');
@@ -426,66 +412,21 @@ function load_branch(parent, url) {
  
     parent.show();
  
-    $.get("/httpget", {url: url}, function(xml) {
-        // hide the loading image
-        var jxml = $(xml);
-
-        var items = jxml.find("item");
-        if(items.length) { // it's a root branch we're loading
-            var count = 0;
-
-            var devcount = 0;
-            items.each(function(i) {
-                devcount++; if(devcount > 10) return;
-
-
-                var onto_name = $(this).find("name").text();
-                var onto_id = $(this).find("value").text();
-
-
-                // get ontology id and description
-                get_id_desc(onto_id, function(id, description, has_children){
-                    var obj = {
-                        id: id,
-                        name: onto_name,
-                        has_children: (has_children == "1" ? true : false)
-                    }, li;
-                    
-                    if(i == items.length-1) // last
-                        li = make_li(obj, true);
-                    else
-                        li = make_li(obj);
-
-                    parent.append(li);
-
-                    count++;
-                    if(count == items.length)
-                        loader(parent, false);
-                });
-            });
-        } else { // it's a inner branch we're loading
-            var nodes = jxml.find("node");
-            nodes.each(function(i) {
-                var $this = $(this);
-                obj = {
-                    id: $this.attr("accession"),
-                    name: $this.attr("name"),
-                    has_children: ($this.attr("has_children") == "1" ? true : false)
-                };
-                if(i == nodes.length-1) // last
-                    li = make_li(obj, true);
-                else
-                    li = make_li(obj);
-                
-                parent.append(li);
-            });
-            loader(parent, false);
-        }
+    $.getJSON(url, function(children) {
         
-        // assign tooltip hovering
-        //tooltip();
- 
-    }, "xml");
+        for(var i=0,len=children.length; i<len; i++) {
+            var child = children[i];
+            var last = false;
+            if(i == (children.length-1))
+                last = true;
+
+            var li = make_li(child, last);
+            parent.append(li);
+            
+        }
+         
+        loader(parent, false);
+    });
 }
  
 function mylogin() {
@@ -902,11 +843,21 @@ function MakeTree(jel, arr) {
 function LoadOntology(ontoId) {
     var $root = $("#root");
     loader($root, true);
-    $.getJSON("/get-ontology/"+ontoId, function(jsonTree) {
+    $.getJSON("/get-ontology-roots/"+ontoId, function(roots) {
         loader($root, false);
-        Search.init(jsonTree);
+        //Search.init(jsonTree);
        
-        MakeTree($root, jsonTree);
+        for(var i=0, len=roots.length; i<len; i++) {
+            var last = false;
+            if(i == (roots.length-1))
+                last = true;
+
+            // roots always have children :)
+            roots[i].has_children = true;
+
+            var li = make_li(roots[i], last);
+            $root.append(li);
+        }
 
         // events
         expand_collapse();

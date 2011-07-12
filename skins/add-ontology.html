@@ -6,10 +6,19 @@
                     <div id="error" style="display: none; margin-bottom: 10px;"></div>
 
                     <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data">
+                        <p>
+                        <input name="ontology_name" type="text" placeholder="Ontology Name" />
+                        <input name="ontology_id" type="text" placeholder="Ontology ID" />
+                        </p>
+                        <p>
                         <input name="obofile" type="file" /> 
+                        </p>
+                        <p>
                         <input type="submit" value="Upload OBO" />
+                        </p>
                     </form>
 
+<!--
 <script type="text/javascript" src="/js/jsonobo.js"></script>
 <script>
 $(function(){
@@ -28,6 +37,7 @@ $(function(){
 </script>
 <textarea id="obo"></textarea>
 <input type="button" id="obobtn" />
+-->
 
                     <br>
                     <h3>Or create the ontology</h3>
