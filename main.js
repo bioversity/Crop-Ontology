@@ -128,6 +128,8 @@ apejs.urls = {
     },
     "/get-attributes/([a-zA-Z0-9_\: ]+)": {
         get: function(request, response, matches) {
+            require("./blobstore.js");
+
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
 
@@ -148,18 +150,16 @@ apejs.urls = {
                 if(key.equals("id") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("oboBlobKey")|| value.equals(""))
                     continue;
 
-                if(value instanceof Blob) {
-                    /*
-                    var filename = res[i].getProperty("filename");
-                    var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
+                if(value instanceof BlobKey) {
+                    // get metadata
+                    var blobInfo = new BlobInfoFactory().loadBlobInfo(value),
+                        contentType = blobInfo.getContentType();
                     // based on the mime type we need to figure out which image to show
-                    if(!mimeType || !mimeType.startsWith("image")) { // default to plain text
-                        value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'>"+filename+"</a>";
+                    if(!contentType.startsWith("image")) { // default to plain text
+                        value = "<a target='_blank' href='/serve/"+value.getKeyString()+"'>"+blobInfo.getFilename()+"</a>";
                     } else {
-                        value = "<a target='_blank' href='/serve/"+res[i].getKey().getName()+"'><img src='/serve/"+res[i].getKey().getName()+"' /></a>";
+                        value = "<a target='_blank' href='/serve/"+value.getKeyString()+"'><img src='/serve/"+value.getKeyString()+"' /></a>";
                     }
-                    */
-                    value = "<a target='_blank' href='/serve/"+term_id+"'>file</a>";
 
                 } else if(value instanceof Text)
                     value = value.getValue();
@@ -267,6 +267,18 @@ apejs.urls = {
     },
     "/serve/([a-zA-Z0-9_\: \-]+)" : {
         get: function(request, response, matches) {
+            require("./blobstore.js");
+            var blobKeyString = matches[1];
+
+            var blobKey = new BlobKey(blobKeyString);
+
+            // get metadata
+            var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+            response.setHeader("Cache-Control", "max-age=315360000");
+            response.setContentType(blobInfo.getContentType());
+
+            blobstore.blobstoreService.serve(blobKey, response);
+            /*
             //response.setHeader("Cache-Control", "max-age=315360000");
 
             var keyName = matches[1],
@@ -294,6 +306,7 @@ apejs.urls = {
                 response.setContentType("text/plain");
                 response.getWriter().println(value);
             }
+            */
 
         }
     },
@@ -595,6 +608,75 @@ apejs.urls = {
             if(!oboBlobKey)
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
+
+        }
+    },
+    "/attribute-upload-url": {
+        get: function(request, response) {
+            require("./blobstore.js");
+            var uploadUrl = blobstore.createUploadUrl("/attribute-upload");
+            response.getWriter().println(uploadUrl);
+        }
+    },
+    "/attribute-redirect": {
+        get: function(request, response) {
+
+            var msg = request.getParameter("msg");
+            response.getWriter().println(msg);
+        }
+    },
+    "/attribute-upload": {
+        post: function(request, response) {
+            require("./blobstore.js");
+
+
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg=<script>window.top.fileupload_done("'+msg+'");</script>'); }
+
+            // only if logged in
+            var session = request.getSession(true);
+            var userKey = session.getAttribute("userKey");
+            if(!userKey) {
+                return err("Not logged in");
+            }
+
+            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+                blobKey = blobs.get("value");
+                
+            var value = request.getParameter("value");
+            var term_id = request.getParameter("term_id"); 
+            var key = request.getParameter("key");
+
+            if(!term_id || term_id == "" || !key || key == "")
+                return err("Must complete all fields");
+
+            if(blobKey)
+                value = blobKey;
+
+            if(!value || value == "")
+                return err("Must complete all fields");
+
+
+            // get this term from it's id
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            // set this property value
+            termEntity.setProperty(key, (value instanceof BlobKey ? value : new Text(value)));
+            googlestore.put(termEntity);
+
+            /*
+            // the key is just key_GO:0000
+            var attribute = googlestore.entity("term", term_id, {
+                key: key,
+                filename: filename,
+                value: (value instanceof Blob ? value : new Text(value)),
+                term_id: term_id
+            });
+            // only if logged in and has permissions
+            googlestore.put(attribute);
+            */
+
+            err("");
 
         }
     }

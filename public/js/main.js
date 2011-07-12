@@ -479,6 +479,13 @@ var row_edit_template = '\
     </div>\
         ';
  
+function createUploadUrl(jcont) {
+    var form = jcont.find("form:first");
+    $.get("/attribute-upload-url", function(str) {
+        form.attr("action", str); 
+    });
+}
+
 /*
  * Events assignment
  * clicks, mouseovers etc etc..
@@ -651,6 +658,8 @@ var events = function(){
         if(jcurrEditing || jcurrAdding) return;
         jcurrAdding = true;
         var new_attr = $(row_edit_template);
+        createUploadUrl(new_attr);
+
         $("#pages div.editable").die();
         toolbar.die();
         new_attr.insertBefore($(this));
@@ -738,6 +747,7 @@ var events = function(){
         toolbar.die();
 
         var edit_row = $(row_edit_template);
+        createUploadUrl(edit_row);
         jcurrEditing = jcurrHovered;
 
         edit_row.addClass("hovered");
