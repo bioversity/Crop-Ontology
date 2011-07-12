@@ -622,7 +622,7 @@ apejs.urls = {
         get: function(request, response) {
 
             var msg = request.getParameter("msg");
-            response.getWriter().println(msg);
+            response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>');
         }
     },
     "/attribute-upload": {
@@ -630,7 +630,7 @@ apejs.urls = {
             require("./blobstore.js");
 
 
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg=<script>window.top.fileupload_done("'+msg+'");</script>'); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 
             // only if logged in
             var session = request.getSession(true);
