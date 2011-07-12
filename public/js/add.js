@@ -88,13 +88,10 @@ var bindEvents = function() {
 
     // save the "state" of the ontology
     $("#save").click(function(e){
-        ontoId = $("[name=ontology_id]").val();
+        ontoId = $("#onto_id").val();
         counter = 0;
         var ret = [];
         getPars(ret, $("#cont"));
-
-        console.log(ret);
-        return;
 
         // we need to obey the API which is a list of objects.
         // the tree is given by referencing each id
@@ -103,7 +100,11 @@ var bindEvents = function() {
 
         var $this = $(this);
         $this.hide();
-        $.post("/add-ontology", {json: JSON.stringify(ret)}, function(data) {
+        $.post("/add-ontology", {
+            ontology_name: $("#ontology_name").val(),
+            ontology_id: $("#ontology_id").val(),
+            json: JSON.stringify(ret)
+         }, function(data) {
 
             $this.show();
 

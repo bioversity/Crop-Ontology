@@ -451,19 +451,40 @@ apejs.urls = {
                 // that would it very memory friendly
                 var arr = JSON.parse(json);
 
-                var ontoName = arr[0].name,
-                    ontoId = arr[0].id;
+                var ontologyName = request.getParameter("ontology_name"),
+                    ontologyId = request.getParameter("ontology_id");
 
-                // let's create the JSON in the blobstore
-                var jsonBlobKey = blobstore.writeString(JSON.stringify(arr));
+                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "")
+                    return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
-                var ontoEntity = googlestore.entity("ontology", ontoId, {
-                    created: new java.util.Date(),
-                    id: ontoId,
-                    name: ontoName,
-                    jsonBlobKey: jsonBlobKey
+                // create ontology
+                var ontoEntity = googlestore.entity("ontology", ontologyId, {
+                    created_at: new java.util.Date(),
+                    ontology_id: ontologyId,
+                    ontology_name: ontologyName,
                 });
+
                 googlestore.put(ontoEntity);
+
+                // now create the terms
+                for(var i=0,len=arr.length; i<len; i++) {
+                    var term = arr[i];
+                    term.created_at = new java.util.Date();
+                    term.ontology_name = ontologyName;
+                    term.ontology_id = ontologyId;
+
+                    term.parent = term.parent || null; // important to track the roots
+
+                    if(term.comment)
+                        term.comment = new Text(term.comment);
+                    if(term.def)
+                        term.def = new Text(term.def);
+
+                    var termEntity = googlestore.entity("term", term.id, term);
+
+                    googlestore.put(termEntity);
+                }
+
             } catch(e) {
                 return response.sendError(response.SC_BAD_REQUEST, e);
             }
