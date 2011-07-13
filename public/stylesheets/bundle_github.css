@@ -4,7 +4,9 @@
 .ac_results li{margin:0;padding:2px 5px;cursor:default;display:block;font:menu;font-size:12px;overflow:hidden;text-align:left;}
 */
 .ac_loading{background:Window url('/images/indicator.gif') right center no-repeat;}
+/*
 .ac_over{background-color:Highlight;color:HighlightText;text-align:left;}
+*/
 .date_selector,.date_selector *{width:auto;height:auto;border:none;background:none;margin:0;padding:0;text-align:left;text-decoration:none;}
 .date_selector{-webkit-box-shadow:0 0 13px rgba(0,0,0,0.31);-moz-box-shadow:0 0 13px rgba(0,0,0,0.31);background:#fff;border:1px solid #c1c1c1;padding:5px;margin-top:10px;z-index:9;width:240px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;display:none;}
 .date_selector.no_shadow{-webkit-box-shadow:none;-moz-box-shadow:none;}

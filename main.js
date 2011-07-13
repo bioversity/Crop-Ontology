@@ -5,7 +5,7 @@ require("./fileupload.js");
 require("./usermodel.js");
 require("./auth.js");
 
-var VERSION = "0.1.0";
+var VERSION = "0.1.1";
 
 var print = function(response) {
     return {

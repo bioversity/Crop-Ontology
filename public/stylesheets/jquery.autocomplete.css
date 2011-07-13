@@ -34,9 +34,11 @@
 	font: menu;
 	font-size: 12px;
 	overflow: hidden;
+    background: #fff;
+    color: #000;
 }
 
 .ac_over {
-	background-color: Highlight;
-	color: HighlightText;
+	background-color: #3875d7 !important;
+	color: #fff !important;
 }
