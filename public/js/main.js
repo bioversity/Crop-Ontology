@@ -21,7 +21,7 @@ function tooltip() {
 
 // does login WOW this code is so messy it's not even funny
 // but there's a demo in 2 weeks and i have to build facebook like interface
-function Login() {
+function Login(func) {
     // reach /login and see if there's a session
     $.get("/login", function(data) {
         if(data.username != "") {
@@ -30,6 +30,7 @@ function Login() {
 
             $("#doprofile").show().html(data.username);
             $("#dologout").show();
+            func(data);
         } else {
             $("#dologin").show();
             $("#doregister").show();
@@ -873,14 +874,103 @@ function LoadOntology(ontoId) {
         expand_collapse();
     });
 }
+
+/**
+ * Checks if this login user can edit this ontology
+ * and shows appropriate stuff to edit it
+ */
+var Editable = (function(){
+    function editToggle(ontology){
+        var $this = $(".edit-button");
+        if($this.text() == "EDIT") {
+            $this.addClass("editing");
+            $this.text("EDITING");
+            editBox(ontology);
+        } else {
+            $this.removeClass("editing");
+            $this.text("EDIT");
+            editBox(false);
+        }
+
+    }
+    function saveEdits() {
+        var $editbox = $(".edit_box");
+
+        $.post("/edit-ontology", {
+            ontology_id: ontologyid,
+            ontology_name: $editbox.find("[name=ontology_name]").val(),
+            ontology_summary: $editbox.find("[name=ontology_summary]").val()
+        }, function(data) {
+            editToggle(false);
+        });
+
+    }
+
+    function editBox(ontology) {
+
+        var $editbox = $(".edit_box");
+        if(!ontology)
+            return $editbox.hide();
+
+        $editbox.show();
+
+        $editbox.find("[name=ontology_name]").val(ontology.ontology_name);
+        $editbox.find("[name=ontology_summary]").val(ontology.ontology_summary);
+    }
+
+    function showUi(ontology) {
+        var $editbutton = $(".edit-button");
+        $editbutton.show();
+
+
+        $editbutton.click(function(e) {
+            editToggle(ontology); 
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $(".edit_box .cancel").click(function(e) {
+            editToggle(ontology); 
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $(".edit_box .minibutton").click(function(e) {
+            saveEdits();
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+    }
+    function init(ontologyId) {
+        $.getJSON("/curruser-ontologies", function(data) {
+
+            $.each(data, function(){
+                if(this.ontology_id == ontologyId) {
+                    // we own this ontology
+                    showUi(this);
+
+                }
+            });
+            
+        });
+    }
+
+    return {
+        init: init
+    };
+})();
  
 $(document).ready(function(){
  
-    Login();
+    Login(function(user) {
+        if(ontologyid !== "{{ontologyid}}")
+            Editable.init(ontologyid);
+    });
 
-    if(ontologyid !== "{{ontologyid}}")
+    if(ontologyid !== "{{ontologyid}}") {
         LoadOntology(ontologyid);
-
+    }
     /* assign some events for ui */
     events();
  

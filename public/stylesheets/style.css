@@ -359,3 +359,56 @@ a.button {
 .add_title a{
    font-size: 14px; 
 }
+
+
+.list-ontologies a.username {
+    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+    background: #4183C4;
+    color: white;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    padding: 2px 3px;
+    font-size: 9px;
+    line-height: normal;
+    text-decoration: none;
+
+    margin-left: 10px;
+}
+.rounded-button {
+    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+    background: #4183C4;
+    color: white;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    padding: 2px 3px;
+    font-size: 9px;
+    line-height: normal;
+    text-decoration: none;
+}
+.rounded-button:hover {
+    text-decoration: none;
+}
+.edit-button {
+    position: absolute;
+    top:0;
+    left: 50%;
+}
+.edit-button.editing {
+    background:#da4a38;
+}
+.edit_box {
+    padding: 10px;
+    border-bottom: 1px solid #DDDDDD;
+}
+.edit_box textarea, .edit_box input {
+    padding: 5px;
+}
+.edit_box label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}

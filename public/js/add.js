@@ -103,6 +103,7 @@ var bindEvents = function() {
         var pars = {
             ontology_name: $("#ontology_name").val(),
             ontology_id: $("#ontology_id").val(),
+            ontology_summary: $("#ontology_summary").val(),
             json: JSON.stringify(ret)
         };
 

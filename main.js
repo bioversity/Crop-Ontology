@@ -3,6 +3,7 @@ require("googlestore.js");
 
 require("./fileupload.js");
 require("./usermodel.js");
+require("./auth.js");
 
 var VERSION = "0.0.7";
 
@@ -32,9 +33,16 @@ apejs.urls = {
 
             var res = [];
             ontologies.forEach(function(onto){
+
+                var username = "";
+                if(onto.getProperty("user_key")) {
+                    username = googlestore.get(onto.getProperty("user_key")).getProperty("username"); 
+                }
                 res.push({
                     ontology_id: ""+onto.getProperty("ontology_id"),
-                    ontology_name: ""+onto.getProperty("ontology_name")
+                    ontology_name: ""+onto.getProperty("ontology_name"),
+                    ontology_summary: ""+onto.getProperty("ontology_summary"),
+                    username: ""+username
                 });
             });
 
@@ -178,11 +186,10 @@ apejs.urls = {
         post: function(request, response) {
             function err(msg) { response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>'); }
             // only if logged in
-            var session = request.getSession(true);
-            var userKey = session.getAttribute("userKey");
-            if(!userKey) {
+            var currUser = auth.getUser(request);
+            if(!currUser)
                 return err("Not logged in");
-            }
+
             // get the multipart form data from the request
 
             var key = "", value = "", term_id = "", filename = "";
@@ -472,6 +479,12 @@ apejs.urls = {
         },
         post: function(request, response) {
             require("./blobstore.js");
+            
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+                
+
             var json = request.getParameter("json");
 
             try {
@@ -481,16 +494,19 @@ apejs.urls = {
                 var arr = JSON.parse(json);
 
                 var ontologyName = request.getParameter("ontology_name"),
-                    ontologyId = request.getParameter("ontology_id");
+                    ontologyId = request.getParameter("ontology_id"),
+                    ontologySummary = request.getParameter("ontology_summary");
 
-                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "")
+                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "")
                     return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
                 // create ontology
                 var ontoEntity = googlestore.entity("ontology", ontologyId, {
                     created_at: new java.util.Date(),
+                    user_key: currUser.getKey(),
                     ontology_id: ontologyId,
                     ontology_name: ontologyName,
+                    ontology_summary: ontologySummary
                 });
 
                 googlestore.put(ontoEntity);
@@ -525,6 +541,39 @@ apejs.urls = {
             var html = render("./skins/add-ontology.html")
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);
+        },
+        post: function(request, response) {
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+
+            try {
+                var ontologyId = request.getParameter("ontology_id");
+                var ontoKey = googlestore.createKey("ontology", ontologyId),
+                    ontoEntity = googlestore.get(ontoKey);
+
+                // check that we own this ontology
+                if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                    return response.sendError(response.SC_BAD_REQUEST, "you can't edit this ontology");
+
+
+                // now edit it
+                var ontologyName = request.getParameter("ontology_name"),
+                    ontologySummary = request.getParameter("ontology_summary");
+
+                if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
+                    return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
+
+                googlestore.set(ontoEntity, {
+                    ontology_name: ontologyName,
+                    ontology_summary: ontologySummary
+                });
+                googlestore.put(ontoEntity);
+
+            } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
+            }
+
         }
     },
     "/serve" : {
@@ -540,6 +589,10 @@ apejs.urls = {
             require("./blobstore.js");
             require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 oboBlobKey = blobs.get("obofile");
 
@@ -548,16 +601,19 @@ apejs.urls = {
             }
             try {
                 var ontologyName = request.getParameter("ontology_name"),
-                    ontologyId = request.getParameter("ontology_id");
+                    ontologyId = request.getParameter("ontology_id"),
+                    ontologySummary = request.getParameter("ontology_summary");
 
-                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "")
+                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "")
                     return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
                 // first create ontology
                 var ontoEntity = googlestore.entity("ontology", ontologyId, {
                     created_at: new java.util.Date(),
+                    user_key: currUser.getKey(),
                     ontology_id: ontologyId,
                     ontology_name: ontologyName,
+                    ontology_summary: ontologySummary
                 });
 
                 googlestore.put(ontoEntity);
@@ -633,11 +689,10 @@ apejs.urls = {
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 
             // only if logged in
-            var session = request.getSession(true);
-            var userKey = session.getAttribute("userKey");
-            if(!userKey) {
+            var currUser = auth.getUser(request);
+            if(!currUser)
                 return err("Not logged in");
-            }
+
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("value");
@@ -677,6 +732,27 @@ apejs.urls = {
             */
 
             err("");
+
+        }
+    },
+    "/curruser-ontologies": {
+        get: function(request, response) {
+            var currUser = auth.getUser(request);
+            
+            var ontos = googlestore.query("ontology")
+                            .filter("user_key", "=", currUser.getKey())
+                            .fetch();
+
+            var ret = [];
+            ontos.forEach(function(onto) {
+                ret.push({
+                    ontology_id: ""+onto.getProperty("ontology_id"),
+                    ontology_name: ""+onto.getProperty("ontology_name"),
+                    ontology_summary: ""+onto.getProperty("ontology_summary")
+                });
+            });
+
+            response.getWriter().println(JSON.stringify(ret));
 
         }
     }

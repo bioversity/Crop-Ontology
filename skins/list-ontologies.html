@@ -15,9 +15,12 @@ $.getJSON(url, function(json) {
 
 
         // replace stuff
-        $row.find("h3 a").attr("title", this.ontology_name)
+        $row.find("h3 a.term").attr("title", this.ontology_name)
                     .attr("href", "/ontology/"+this.ontology_id)
                     .text(this.ontology_name);
+        $row.find("a.username").text(this.username);
+
+        $row.find("p span.description").text(this.ontology_summary);
 
         parent.append($row);
     });
@@ -43,9 +46,9 @@ $.getJSON(url, function(json) {
                                 </li>
                             </ul>
                             <h3>
-                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a>
+                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a><a href="#" class="username">Ciao</a>
                             </h3>
-                            <p class="description">Here's a test of an ontology</p>
+                            <p class="description"><span class="description">Here's a test of an ontology</span> </p>
                         </li>
                     </ol>
                 </div>
