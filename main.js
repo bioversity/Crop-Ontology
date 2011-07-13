@@ -5,7 +5,7 @@ require("./fileupload.js");
 require("./usermodel.js");
 require("./auth.js");
 
-var VERSION = "0.0.9";
+var VERSION = "0.1.0";
 
 var print = function(response) {
     return {
@@ -821,10 +821,11 @@ apejs.urls = {
                 var parentKey = googlestore.createKey("term", parentId),
                     parentEntity = googlestore.get(parentKey);
 
-                var id = ""+parentEntity.getProperty("id");
+                var id = ""+parentEntity.getProperty("id"),
+                    name = parentEntity.getProperty("name");
                 arr.push({
                     id: id,
-                    name: ""+parentEntity.getProperty("name")
+                    name: ""+(name instanceof Text ? name.getValue() : name)
                 });
 
                 // now look for parents of this parent

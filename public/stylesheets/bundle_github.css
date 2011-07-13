@@ -1,7 +1,9 @@
+/*
 .ac_results{padding:0;border:1px solid WindowFrame;background-color:Window;overflow:hidden;z-index:1000;}
 .ac_results ul{list-style-position:outside;list-style:none;padding:0;margin:0;}
 .ac_results li{margin:0;padding:2px 5px;cursor:default;display:block;font:menu;font-size:12px;overflow:hidden;text-align:left;}
-.ac_loading{background:Window url('/images/modules/ajax/indicator.gif') right center no-repeat;}
+*/
+.ac_loading{background:Window url('/images/indicator.gif') right center no-repeat;}
 .ac_over{background-color:Highlight;color:HighlightText;text-align:left;}
 .date_selector,.date_selector *{width:auto;height:auto;border:none;background:none;margin:0;padding:0;text-align:left;text-decoration:none;}
 .date_selector{-webkit-box-shadow:0 0 13px rgba(0,0,0,0.31);-moz-box-shadow:0 0 13px rgba(0,0,0,0.31);background:#fff;border:1px solid #c1c1c1;padding:5px;margin-top:10px;z-index:9;width:240px;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;display:none;}
@@ -2947,10 +2949,12 @@ ul.members{list-style:none;}
 #language_table th{background:#f0f0f0;padding:.5em;}
 #language_table td{padding:.5em;}
 #language_table tr.dark{background:#fafafa;}
+/*
 .ac_results{-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px;padding:3px;}
 .ac_results ul li:first-child{-moz-border-radius-topright:8px;-moz-border-radius-topleft:8px;-webkit-border-top-right-radius:8px;-webkit-border-top-left-radius:8px;border-top-right-radius:8px;border-top-left-radius:8px;}
 .ac_results ul li:last-child{-moz-border-radius-bottomright:8px;-moz-border-radius-bottomleft:8px;-webkit-border-bottom-right-radius:8px;-webkit-border-bottom-left-radius:8px;border-bottom-right-radius:8px;border-bottom-left-radius:8px;}
 .ac_results img{padding:1px;background-color:white;border:1px solid #ccc;vertical-align:middle;}
+*/
 .error-notice{margin:15px 0;text-align:center;font-size:14px;font-weight:bold;color:#900;}
 .error-notice span{padding-left:30px;background:url(/images/icons/error_notice.png) 0 50% no-repeat;}
 .inline-edit textarea{width:100%;height:50px;}

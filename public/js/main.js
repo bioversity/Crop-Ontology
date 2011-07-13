@@ -808,6 +808,26 @@ var events = function(){
 
     });
 
+    // search
+    function selectItem(li) {
+        var $li = $(li);
+        window.location.href = "/terms/"+$li.attr("term_id")+"/"+$li.attr("term_name");
+    }
+    function formatItem(term) {
+        return term.name + " ("+term.ontology_name+")";
+    }
+    $("#search").autocomplete(
+        "/search",
+        {
+            delay:10,
+            minChars:2,
+            matchSubset:1,
+            matchContains:1,
+            onItemSelect:selectItem,
+            formatItem:formatItem,
+            //autoFill:true
+        }
+    );
  
 };
 
@@ -1025,6 +1045,9 @@ $(document).ready(function(){
     if(termid !== "{{termid}}") {
         Term.init(termid);
     }
+
+
+
     /* assign some events for ui */
     events();
  
