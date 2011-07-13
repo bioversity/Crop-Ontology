@@ -88,7 +88,7 @@ overflow-y: auto;
     color: rgba(0, 0, 0, 0.55);
 text-shadow:none !important;
 }
-li.collapsable > a.minibutton{
+a.minibutton.selected{
     color:#fff;
     text-decoration:none;
     text-shadow:-1px -1px 0 rgba(0,0,0,0.3);

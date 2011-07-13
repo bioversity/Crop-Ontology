@@ -194,7 +194,7 @@ function show_attributes(id, name, attributes) {
 
     $(".right ul.filters li a").text(name);
     $("#term_id").text(id);
-    $(".term_id").attr("href", "/terms/"+name+"/"+id);
+    $(".term_id").attr("href", "/terms/"+id+"/"+name);
     $("#pages .general").html(str);
     /*
     var str = '<table cellspacing="0" cellpadding="0" class="attributes">';
@@ -225,12 +225,30 @@ function show_attributes(id, name, attributes) {
  
     */
 }
+
+function highlight(li) {
+    var className = "selected";
+    // first deselect everything
+    $(".minibutton").removeClass(className);
+
+    var $mini = li.find(".minibutton:first");
+    $mini.addClass(className);
+
+    // for each parent li, also select
+    li.parents("li").each(function() {
+        var $this = $(this); 
+        $this.find(".minibutton:first").addClass(className);
+
+    });
+}
  
 // click event function
 // must load data for this specifict
 load_term = function(li) {
     // get info for this specific term name located under /datadict/TermName/json
     term_loader(true);
+
+    highlight(li);
 
  
     var id = li.find(".id:first").val();
@@ -963,6 +981,35 @@ var Editable = (function(){
         init: init
     };
 })();
+
+var Term = (function(){
+
+    function init(termId) {
+        // get parents up till root
+        $.getJSON("/get-term-parents/"+termId, function(data) {
+            var parent = $("#root");
+            var li;
+            for(var i=0, len=data.length; i<len; i++) {
+                data[i].has_children = true;
+                if(i == (data.length-1))
+                    data[i].has_children = false;
+
+                li = make_li(data[i], true);
+                parent.append(li);
+                // parent becomes the first ul inside this li
+                parent = li.find("ul:first");
+                parent.show();
+            }
+
+            // great now laod the right sidebar with this current termId
+            load_term(li);
+        });
+    }
+
+    return {
+        init: init
+    };
+})();
  
 $(document).ready(function(){
  
@@ -973,6 +1020,10 @@ $(document).ready(function(){
 
     if(ontologyid !== "{{ontologyid}}") {
         LoadOntology(ontologyid);
+    }
+
+    if(termid !== "{{termid}}") {
+        Term.init(termid);
     }
     /* assign some events for ui */
     events();

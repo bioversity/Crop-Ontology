@@ -6,9 +6,15 @@
 <link rel="stylesheet" href="/jquery.treeview.css?{{VERSION}}" />
 <link href="/stylesheets/style.css?{{VERSION}}" media="screen" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+
+<!-- autocomplete -->
+
+
+
 <script>
 var ontologyid = "{{ontologyid}}";
 var ontologyname = "{{ontologyname}}";
+var termid = "{{termid}}";
 var searchQuery = "";
 </script>
 <script type="text/javascript" src="/js/main.js?{{VERSION}}"></script>
@@ -32,7 +38,7 @@ var searchQuery = "";
         <div class="site"> 
 <div class="pagehead"> 
     <div class="head_left">
-        <input id="search" type="text" name="q" /><button id="dosearch" class="minibutton">Search</button>
+        <input id="search" type="text" name="q" placeholder="Search" /><!--<button id="dosearch" class="minibutton">Search</button>-->
     </div> 
     <div class="head_right"> 
  

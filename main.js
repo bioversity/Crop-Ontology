@@ -5,7 +5,15 @@ require("./fileupload.js");
 require("./usermodel.js");
 require("./auth.js");
 
-var VERSION = "0.0.8";
+var VERSION = "0.0.9";
+
+var print = function(response) {
+    return {
+        json: function(j) {
+            response.getWriter().println(JSON.stringify(j));
+        }
+    };
+}
 
 apejs.urls = {
     "/": {
@@ -317,20 +325,53 @@ apejs.urls = {
 
         }
     },
-    "/terms/(.*)/([a-zA-Z0-9_\: ]+)" : {
+    "/terms/([a-zA-Z0-9_\: ]+)/(.*)" : {
         get: function(request, response, matches) {
-            var skin = render("skins/term.html")
-                        .replace(/{{term_name}}/g, matches[1])
-                        .replace(/{{term_id}}/g, matches[2]);
+            var termId = matches[1],
+                termName = matches[2];
+
+            // find the ontologyid form this term
+            /*
+            var termKey = googlestore.createKey("term", termId),
+                termEntity = googlestore.get(termKey);
+
+            // get ontology
+            var ontologyId = termEntity.getProperty("ontology_id");
+            */
+
+
+            var skin = render("skins/index.html")
+                    .replace(/{{CONTENT}}/g, render("skins/onto.html"))
+                    .replace(/{{VERSION}}/g, VERSION)
+                    .replace(/{{termid}}/g, termId);
             response.getWriter().println(skin);
+            /*
+            var skin = render("skins/term.html")
+                        .replace(/{{term_name}}/g, matches[2])
+                        .replace(/{{term_id}}/g, matches[1]);
+            response.getWriter().println(skin);
+            */
         }
     },
     "/search" : {
         get: function(request, response, matches) {
-            var skin = render("skins/index.html")
-                        .replace(/{{VERSION}}/g, VERSION)
-                        .replace(/{{searchQuery}}/g, request.getParameter("q"));
-            response.getWriter().println(skin);
+            var q = request.getParameter("q");
+            var ret = [];
+
+            if(!q || q == "") return print(response).json(ret);
+
+            q = q.toLowerCase();
+
+            var searchField = "name";
+            var terms = googlestore.query("term")
+                            .filter(searchField, ">=", q)
+                            .filter(searchField, "<", q + "\ufffd")
+                            .fetch();
+            terms.forEach(function(t) {
+                ret.push(googlestore.toJS(t));
+            });
+            
+            return print(response).json(ret);
         }
     },
     "/login" : {
@@ -760,6 +801,52 @@ apejs.urls = {
             });
 
             response.getWriter().println(JSON.stringify(ret));
+
+        }
+    },
+    "/get-term-parents/([a-zA-Z0-9_\: ]+)": {
+        get: function(request, response, matches) {
+            function getParent(arr, termId) {
+                var termKey = googlestore.createKey("term", termId),
+                    termEntity = googlestore.get(termKey);
+                
+                // XXX default to first in array - so not showing if has many parents
+                var parentArr = termEntity.getProperty("parent"),
+                    parentId = parentArr ? ""+parentArr.get(0) : false;
+
+                if(!parentId) // reached a root term, stop
+                    return;
+
+                // we have parent. get parent information
+                var parentKey = googlestore.createKey("term", parentId),
+                    parentEntity = googlestore.get(parentKey);
+
+                var id = ""+parentEntity.getProperty("id");
+                arr.push({
+                    id: id,
+                    name: ""+parentEntity.getProperty("name")
+                });
+
+                // now look for parents of this parent
+                getParent(arr, id);
+
+            }
+
+            var arr = [];
+            var termId = matches[1];
+            // start the array with the current term
+            var termKey = googlestore.createKey("term", termId),
+                termEntity = googlestore.get(termKey);
+            arr.push({
+                id: ""+termEntity.getProperty("id"),
+                name: ""+termEntity.getProperty("name")
+            })
+
+            getParent(arr, termId);
+
+
+            // reverse() so the forst element is actually the first parent (root)
+            print(response).json(arr.reverse());
 
         }
     }
