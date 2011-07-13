@@ -611,7 +611,10 @@ var events = function(){
                 $(".error_box").show(); 
                 $(".error_box").html(data.error); 
             } else {
-                Login();
+                Login(function(user) {
+                    if(ontologyid !== "{{ontologyid}}")
+                        Editable.init(ontologyid);
+                });
                 mylogin();
                 $(".error").hide();
                 $(".error_box").hide();

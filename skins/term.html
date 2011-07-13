@@ -38,33 +38,13 @@ function show_attributes(attributes) {
 
 // load all the attributes retrieved from the ols (XML)
 function load_ols(func) {
-    var id = term_id;
-    var ontology_name = id.split(":")[0];
-    var url = "http://cropontology.org/ontology-lookup/definition.view?&termid="+id+"&ontologyname="+ontology_name+"&q=termmetadata&_=";
- 
-    /* get node info (attributes) */
     loader(true);
-    $.get("/httpget", {url:url}, function(xml){
-        var jxml = $(xml);
-        var attributes = [];
-        jxml.find("item").each(function(){
-            attributes.push({
-                key: $(this).find("name").text(),
-                value: $(this).find("value").text()
-            });
-        });
-        // let's also load the attributes stored locally for this term
-        $.getJSON("/get-attribute", {term_id: id}, function(this_attrs) {
-            $.each(this_attrs, function(i) {
-                this_attrs[i].local = true;
-                attributes.push(this_attrs[i]);
-            });
+    $.getJSON("/get-attributes/"+term_id, function(attributes) {
 
-            // let's show the attributes
-            show_attributes(attributes);
-            loader(false);
-        });
-    }, "xml");
+        // let's show the attributes
+        show_attributes(attributes);
+        loader(false);
+    });
 }
 
 // START

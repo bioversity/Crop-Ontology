@@ -5,7 +5,7 @@ require("./fileupload.js");
 require("./usermodel.js");
 require("./auth.js");
 
-var VERSION = "0.0.7";
+var VERSION = "0.0.8";
 
 apejs.urls = {
     "/": {
@@ -685,13 +685,13 @@ apejs.urls = {
         post: function(request, response) {
             require("./blobstore.js");
 
-
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 
             // only if logged in
             var currUser = auth.getUser(request);
             if(!currUser)
                 return err("Not logged in");
+
 
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
@@ -714,6 +714,13 @@ apejs.urls = {
             // get this term from it's id
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
+
+            // check if own this term
+            var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
+                ontoEntity = googlestore.get(ontoKey);
+
+            if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                return err("You don't have the permissions to edit this attribute");
 
             // set this property value
             termEntity.setProperty(key, (value instanceof BlobKey ? value : new Text(value)));
