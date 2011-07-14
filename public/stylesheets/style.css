@@ -415,3 +415,24 @@ a.button {
 #search {
     outline: none;
 }
+
+.api_left {
+    width: 549px;
+    float: left;
+    border-right: 1px solid #ddd;
+}
+.api_left h2 {
+    padding-top: 5px;
+    border-bottom:0 !important;
+    border-top: 1px solid #ddd;
+}
+.api_left label {
+    font-weight: bold;
+}
+.api_right {
+    width: 350px;
+    float: left;
+    background: #f5f5f5;
+    padding: 10px;
+
+}
