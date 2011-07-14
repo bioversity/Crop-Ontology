@@ -559,7 +559,9 @@ apejs.urls = {
                 // a term is each item in the JSON array
                 for(var i=0,len=arr.length; i<len; i++) {
                     var term = arr[i];
-                    termmodel.createTerm(term, ontologyId, ontologyName);
+                    term.ontology_id = ontologyId;
+                    term.ontology_name = ontologyName;
+                    termmodel.createTerm(term);
                 }
 
             } catch(e) {
@@ -620,6 +622,7 @@ apejs.urls = {
         post: function(request, response) {
             require("./blobstore.js");
             require("./termmodel.js");
+            require("./taskqueue.js");
             require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
             var currUser = auth.getUser(request);
@@ -655,22 +658,52 @@ apejs.urls = {
                 // let's use BlobstoreInputStream to read more than 1mb at a time.
                 // we read and parse line by line because we don't want to allocate
                 // memory - keeping it light
+                var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
+                    ontologyIdString = ""+ontologyId,
+                    ontologyNameString = ""+ontologyName;
+
                 blobstore.readLine(oboBlobKey, function(line) {
                     // the callback is called when a complete Term is found
                     jsonobo.findTerm(line, function(term) {
                         // need a reference to the obo we just created
-                        term.oboBlobKey = oboBlobKey;
+                        term.obo_blob_key = oboBlobKeyString;
+                        // also need reference to the ontology
+                        term.ontology_id = ontologyIdString;
+                        term.ontology_name = ontologyNameString;
 
-                        // we found a term, let's save it in datastore
-                        termmodel.createTerm(term, ontologyId, ontologyName);
+                        // we found a term, let's save it in datastore.
+                        // XXX, the .put() in here is expensive - takes more than 30secs
+                        // spawn a Task or something else
+                        // pass the data as a JSON string
+                        taskqueue.createTask("/create-term", JSON.stringify(term));
                     });
                 });
+
 
                 response.sendRedirect("/");
             } catch(e) {
                 return response.sendError(response.SC_BAD_REQUEST, e);
             }
 
+        }
+    },
+    "/create-term": {
+        post: function(request, response) {
+            require("./termmodel.js");
+            /*
+            importPackage(java.util.logging);
+            var logger = Logger.getLogger("org.whatever.Logtest");
+
+            var jsonTerm = request.getParameter("jsonTerm");
+            logger.info("== RAN TASK - JSON TERM: "+jsonTerm);
+            */
+
+            // parse the JSON
+            var jsonTerm = request.getParameter("jsonTerm");
+            var term = JSON.parse(jsonTerm);
+            
+            // add it to datastore
+            termmodel.createTerm(term);
         }
     },
     /**

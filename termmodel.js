@@ -39,10 +39,10 @@ var termmodel = (function(){
      * Create a new term
      * term is a JS object from the API
      */
-    function createTerm(term, ontologyId, ontologyName) {
+    function createTerm(term) {
         term.created_at = new java.util.Date();
-        term.ontology_id = ontologyId;
-        term.ontology_name = ontologyName;
+        if(!term.ontology_id || !term.ontology_name)
+            throw new Error("Missing references to ontology");
 
         term.parent = term.parent || null; // important to track the roots
 
