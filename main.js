@@ -162,8 +162,10 @@ apejs.urls = {
                     key = entry.getKey(),
                     value = entry.getValue();
 
+                if(!key || !value) continue;
+
                 // let's skip certain keys
-                if(key.equals("id") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("oboBlobKey")|| value.equals(""))
+                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("oboBlobKey")|| value.equals(""))
                     continue;
 
                 if(value instanceof BlobKey) {
@@ -362,7 +364,7 @@ apejs.urls = {
 
             q = q.toLowerCase();
 
-            var searchField = "name";
+            var searchField = "normalized";
             var terms = googlestore.query("term")
                             .filter(searchField, ">=", q)
                             .filter(searchField, "<", q + "\ufffd")
@@ -520,6 +522,7 @@ apejs.urls = {
         },
         post: function(request, response) {
             require("./blobstore.js");
+            require("./termmodel.js");
             
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -531,7 +534,7 @@ apejs.urls = {
             try {
                 // let's parse it so we know it's fine
                 // maybe it can be a CSV of JSON objects
-                // that would it very memory friendly
+                // that would be very memory friendly
                 var arr = JSON.parse(json);
 
                 var ontologyName = request.getParameter("ontology_name"),
@@ -552,23 +555,11 @@ apejs.urls = {
 
                 googlestore.put(ontoEntity);
 
-                // now create the terms
+                // now create the terms.
+                // a term is each item in the JSON array
                 for(var i=0,len=arr.length; i<len; i++) {
                     var term = arr[i];
-                    term.created_at = new java.util.Date();
-                    term.ontology_name = ontologyName;
-                    term.ontology_id = ontologyId;
-
-                    term.parent = term.parent || null; // important to track the roots
-
-                    if(term.comment)
-                        term.comment = new Text(term.comment);
-                    if(term.def)
-                        term.def = new Text(term.def);
-
-                    var termEntity = googlestore.entity("term", term.id, term);
-
-                    googlestore.put(termEntity);
+                    termmodel.createTerm(term, ontologyId, ontologyName);
                 }
 
             } catch(e) {
@@ -628,6 +619,7 @@ apejs.urls = {
     "/obo-upload" : {
         post: function(request, response) {
             require("./blobstore.js");
+            require("./termmodel.js");
             require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
             var currUser = auth.getUser(request);
@@ -666,22 +658,11 @@ apejs.urls = {
                 blobstore.readLine(oboBlobKey, function(line) {
                     // the callback is called when a complete Term is found
                     jsonobo.findTerm(line, function(term) {
-                        // we found a term, let's save it in datastore
-                        term.created_at = new java.util.Date();
-                        term.ontology_name = ontologyName;
-                        term.ontology_id = ontologyId;
+                        // need a reference to the obo we just created
                         term.oboBlobKey = oboBlobKey;
 
-                        term.parent = term.parent || null; // important to track the roots
-
-                        if(term.comment)
-                            term.comment = new Text(term.comment);
-                        if(term.def)
-                            term.def = new Text(term.def);
-
-                        var termEntity = googlestore.entity("term", term.id, term);
-
-                        googlestore.put(termEntity);
+                        // we found a term, let's save it in datastore
+                        termmodel.createTerm(term, ontologyId, ontologyName);
                     });
                 });
 
@@ -725,6 +706,7 @@ apejs.urls = {
     "/attribute-upload": {
         post: function(request, response) {
             require("./blobstore.js");
+            require("./termmodel.js");
 
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 
@@ -765,22 +747,12 @@ apejs.urls = {
 
             // set this property value
             termEntity.setProperty(key, (value instanceof BlobKey ? value : new Text(value)));
+            googlestore.set(termEntity, {
+                "normalized": termmodel.normalize(googlestore.toJS(termEntity))
+            });
             googlestore.put(termEntity);
 
-            /*
-            // the key is just key_GO:0000
-            var attribute = googlestore.entity("term", term_id, {
-                key: key,
-                filename: filename,
-                value: (value instanceof Blob ? value : new Text(value)),
-                term_id: term_id
-            });
-            // only if logged in and has permissions
-            googlestore.put(attribute);
-            */
-
             err("");
-
         }
     },
     "/curruser-ontologies": {
