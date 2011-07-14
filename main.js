@@ -165,7 +165,7 @@ apejs.urls = {
                 if(!key || !value) continue;
 
                 // let's skip certain keys
-                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("oboBlobKey")|| value.equals(""))
+                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals(""))
                     continue;
 
                 if(value instanceof BlobKey) {

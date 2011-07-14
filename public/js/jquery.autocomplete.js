@@ -110,19 +110,34 @@ jQuery.autocomplete = function(input, options) {
 
 	hideResultsNow();
 
+    var firstType = true;
 	function onChange() {
-		// ignore if the following keys are pressed: [del] [shift] [capslock]
-		if( lastKeyPressCode == 46 || (lastKeyPressCode > 8 && lastKeyPressCode < 32) ) return $results.hide();
-		var v = $input.val();
-		if (v == prev) return;
-		prev = v;
-		if (v.length >= options.minChars) {
-			$input.addClass(options.loadingClass);
-			requestData(v);
-		} else {
-			$input.removeClass(options.loadingClass);
-			$results.hide();
-		}
+        function makeRequest() {
+            // ignore if the following keys are pressed: [del] [shift] [capslock]
+            if( lastKeyPressCode == 46 || (lastKeyPressCode > 8 && lastKeyPressCode < 32) ) return $results.hide();
+            var v = $input.val();
+            if (v == prev) return;
+            prev = v;
+            if (v.length >= options.minChars) {
+                $input.addClass(options.loadingClass);
+                requestData(v);
+            } else {
+                $input.removeClass(options.loadingClass);
+                $results.hide();
+            }
+        }
+
+        // simple timer logic so that search 
+        // doesn't happen everytime we hit a key
+        if(firstType) {
+            setTimeout(function() {
+                firstType = true;
+
+                makeRequest();
+            }, 1000); // 1 second
+        }
+        firstType = false;
+
 	};
 
  	function moveSelect(step) {
