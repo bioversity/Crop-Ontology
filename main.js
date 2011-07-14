@@ -5,7 +5,7 @@ require("./fileupload.js");
 require("./usermodel.js");
 require("./auth.js");
 
-var VERSION = "0.1.1";
+var VERSION = "0.1.2";
 
 var print = function(response) {
     return {
@@ -25,10 +25,10 @@ apejs.urls = {
             
         }
     },
-    "/develop": {
+    "/api": {
         get: function(request, response) {
             var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/develop.html"))
+                        .replace(/{{CONTENT}}/g, render("skins/api.html"))
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(skin);
             
