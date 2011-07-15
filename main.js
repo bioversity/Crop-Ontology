@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.1.3";
+var VERSION = "0.1.4";
 
 var print = function(response) {
     return {
@@ -252,21 +252,37 @@ apejs.urls = {
     },
     "/remove-attribute": {
         post: function(request, response) {
-            function err(msg) { response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>'); }
-            // only if logged in
-            var session = request.getSession(true);
-            var userKey = session.getAttribute("userKey");
-            if(!userKey) {
-                return err("Not logged in");
+            function err(msg) { 
+                response.sendError(response.SC_BAD_REQUEST, msg);
             }
+            // only if logged in
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return err("Not logged in");
 
             var key = request.getParameter("key"),
                 term_id = request.getParameter("term_id");
-            if(key == "" || term_id == "")
-                return;
+            if(key == "" || !key || !term_id || term_id == "")
+                return err("Missing parameters");
 
+            // get this term from it's id
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            // check if we own this term
+            var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
+                ontoEntity = googlestore.get(ontoKey);
+            if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                return err("You don't have the permissions to remove this attribute");
+
+            // set it to null
+            termEntity.setProperty(key, null);
+            googlestore.put(termEntity);
+
+            /*
             var k = googlestore.createKey("attribute", key + "_" + term_id);
             googlestore.del(k);
+            */
         }
     },
     "/httpget": {
@@ -451,12 +467,10 @@ apejs.urls = {
     },
     "/add-comment" : {
         post: function(request, response) {
-            var session = request.getSession(true);
-            var userKey = session.getAttribute("userKey");
-            if(!userKey) {
-                response.sendError(response.SC_FORBIDDEN);
-                return;
-            }
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return response.sendError(response.SC_FORBIDDEN);
+
             var termId = request.getParameter("termId"),
                 comment = request.getParameter("comment");
 
@@ -467,7 +481,7 @@ apejs.urls = {
 
             var comment = googlestore.entity("comment", {
                 termId: termId,
-                userKey: userKey,
+                userKey: currUser.getKey(),
                 created: new java.util.Date(),
                 comment: new Text(comment)
             });

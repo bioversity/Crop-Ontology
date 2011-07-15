@@ -923,16 +923,35 @@ function LoadOntology(ontoId) {
  * and shows appropriate stuff to edit it
  */
 var Editable = (function(){
+    function bindHoverEvents() {
+        var currTarget;
+        $(".treeview li").live("click", function(e) {
+            if(currTarget == e.target)
+                return;
+
+            console.log(e.target);
+
+            currTarget = e.target;
+        });
+    }
+
+    function unbindHoverEvents() {
+
+        $(".treeview li").die("click");
+
+    }
     function editToggle(ontology){
         var $this = $(".edit-button");
         if($this.text() == "EDIT") {
             $this.addClass("editing");
             $this.text("EDITING");
             editBox(ontology);
+            bindHoverEvents();
         } else {
             $this.removeClass("editing");
             $this.text("EDIT");
             editBox(false);
+            unbindHoverEvents();
         }
 
     }
@@ -1060,13 +1079,8 @@ $(document).ready(function(){
             $(".error_box").hide();
             term_loader(false);
         },
-        "error": function(e) {   
+        "error": function(e, type, msg) {   
             term_loader(false);
-            var msg = "";
-            if(e.status == 400)
-                msg = "Complete all fields";
-            else if (e.status == 403)
-                msg = "Must log in";
 
             $(".error").show().first().text(msg);
             $(".error_box").show();
