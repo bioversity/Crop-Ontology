@@ -663,6 +663,8 @@ var events = function(){
             } else {
                 $(".error").hide();
                 $(".error_box").hide();
+                myregister();
+                Login(function(){});
             }
             term_loader(false);
           }

@@ -442,9 +442,8 @@ apejs.urls = {
                 var entity = googlestore.entity("user", user);
                 var userKey = googlestore.put(entity);
 
-                // store the actualy key in the session
-                var session = request.getSession(true);
-                session.setAttribute("userKey", userKey);
+                // ok just login
+                auth.login(response, user.username, user.password);
 
             }
                 
