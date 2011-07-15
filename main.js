@@ -4,8 +4,9 @@ require("googlestore.js");
 require("./fileupload.js");
 require("./usermodel.js");
 require("./auth.js");
+require("./log.js");
 
-var VERSION = "0.1.2";
+var VERSION = "0.1.3";
 
 var print = function(response) {
     return {
@@ -378,12 +379,8 @@ apejs.urls = {
     },
     "/login" : {
         get: function(request, response) {
-            // start the session
-            var session = request.getSession(true);
-            var userKey = session.getAttribute("userKey");
-
             // find user with this key and return its data
-            var user = googlestore.get(userKey),
+            var user = auth.getUser(request),
                 username = "";
             if(user)
                 username = user.getProperty("username");
@@ -393,24 +390,21 @@ apejs.urls = {
             var username = request.getParameter("username"),
                 password = request.getParameter("password");
 
-            var res = googlestore.query("user")
-                .filter("username", "=", username)
-                .filter("password", "=", usermodel.sha1(password))
-                .fetch(1);
+            var l = auth.login(response, username, usermodel.sha1(password));
 
-            if(!res.length) { // user not found 
+            if(!l)
                 response.getWriter().println("Username or password is wrong!");
-            } else {
-                var userKey = res[0].getKey();
-                var session = request.getSession(true);
-                session.setAttribute("userKey", userKey);
-            }
+
         }
     },
     "/logout": {
         get: function(request, response) {
-            var session = request.getSession(true);
-            session.invalidate(); 
+            // just delete it on the server
+            var userEntity = auth.getUser(request);
+            if(userEntity) {
+                userEntity.setProperty("token", null); 
+                googlestore.put(userEntity);
+            }
         }
     },
     "/register": {
