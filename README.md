@@ -35,6 +35,6 @@ just downloaded into your `apejs` folder framework under `apejs/war/WEB-INF/lib`
 
 Great now start the app! To do this run App Engine's development server to point to your `war` directory:
 
-   sh appengine-sdk/bin/dev_appserver.sh apejs/war
+    sh appengine-sdk/bin/dev_appserver.sh apejs/war
 
 That's it! Email me if you need help: lmatteis@gmail.com
