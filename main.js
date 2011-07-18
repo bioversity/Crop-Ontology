@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.1.4";
+var VERSION = "0.1.5";
 
 var print = function(response) {
     return {
@@ -130,9 +130,10 @@ apejs.urls = {
                             .filter("parent","=", term.getProperty("id"))
                             .fetch(1);
 
+                    var name = term.getProperty("name");
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+term.getProperty("name"),
+                        "name": ""+(name instanceof Text ? name.getValue() : name),
                         "has_children": q.length
                     });
                 });
