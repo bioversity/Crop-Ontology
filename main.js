@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.1.5";
+var VERSION = "0.1.6";
 
 var print = function(response) {
     return {
@@ -873,7 +873,13 @@ apejs.urls = {
                 
                 // XXX default to first in array - so not showing if has many parents
                 var parentArr = termEntity.getProperty("parent"),
+                    parentId;
+
+                if(parentArr instanceof java.util.List) {
                     parentId = parentArr ? ""+parentArr.get(0) : false;
+                } else {
+                    parentId = parentArr ? ""+parentArr : false;;
+                }
 
                 if(!parentId) // reached a root term, stop
                     return;
@@ -906,10 +912,8 @@ apejs.urls = {
 
             getParent(arr, termId);
 
-
             // reverse() so the forst element is actually the first parent (root)
             print(response).json(arr.reverse());
-
         }
     }
 };
