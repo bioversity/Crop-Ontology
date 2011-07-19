@@ -948,6 +948,10 @@ var Editable = (function(){
             }
 
             var cont = targetLi.find("ul:first");
+            if(!cont.length) {// if it doesn't exist an inner UL, create one
+                cont = $("<ul></ul>");
+                targetLi.append(cont);
+            }
 
             var last = true;
             if(hitarea.length)

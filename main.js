@@ -742,7 +742,7 @@ apejs.urls = {
                     biggestInt = idInt;
 
             });
-            print(response).json({"id": biggestInt});
+            print(response).json({"id": biggestInt+1});
         }
     },
 
