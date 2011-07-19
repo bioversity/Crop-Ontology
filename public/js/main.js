@@ -346,7 +346,7 @@ function make_li(obj, last) {
     li.append(link);
 
     if(relationship) {
-        var rel = $("<span class='relationship "+relationship+"' title='"+relationship+"'>"+relationship.charAt(0).toUpperCase()+"</span>");
+        var rel = $("<span class='relationship "+relationship+"' title='"+relationship+"'>"+relationship+"</span>");
 
         li.append(rel);
 
