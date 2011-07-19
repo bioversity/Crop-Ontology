@@ -13,6 +13,9 @@ var auth = (function(){
      */
     function getUser(request) {
         var cookies = request.getCookies();
+
+        if(!cookies)
+            return false;
         
         // find the user cookie
         var userCookie = false;
