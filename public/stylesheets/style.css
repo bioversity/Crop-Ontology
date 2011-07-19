@@ -454,11 +454,5 @@ a.button {
     cursor: pointer;
 }
 .relationship.part_of {
-    background: #00A0B0;
-}
-.relationship.is_a {
-    background: #CC333F;
-}
-.relationship.derives_from {
-    background: #6A4A3C;
+    background: #D14836;
 }
