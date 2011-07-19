@@ -923,21 +923,86 @@ function LoadOntology(ontoId) {
  * and shows appropriate stuff to edit it
  */
 var Editable = (function(){
+    var targetLi = null;
+
+    function makeEditInput(id, parentId, last) {
+
+        var li = $("<li class='editable_input'></li>");
+        if(last)
+            li.addClass("last");
+
+        li.append('<input type="hidden" name="id" class="id" value="'+ontologyid+':'+id+'" />');
+        li.append('<input type="hidden" name="parent" value="'+parentId+'" />');
+        li.append('<input type="text" name="name" />');
+        li.append('<ul style="display:none;"></ul>');
+
+        return li;
+    }
+    function addTerm() {
+        // make an ajax call to find an available ID for a new term of this ontology
+        loader(targetLi, true);
+        $.getJSON("/next-id", {ontology_id: ontologyid}, function(data) {
+            var hitarea = targetLi.find(".hitarea:first");
+            if(hitarea.length) { // expand it
+                hitarea.click();
+            }
+
+            var cont = targetLi.find("ul:first");
+
+            var last = true;
+            if(hitarea.length)
+                last = false;
+                
+            var parentId = targetLi.find("input.id:first").val();
+
+            // the id is whatever the server returns PLUS all the editable_input
+            var id = $(".editable_input:visible").length + data.id;
+            var li = makeEditInput(id, parentId, last);
+            cont.prepend(li);
+            cont.show();
+            loader(targetLi, false);
+        });
+    }
+    function showButtons(target) {
+        targetLi = target;
+        var el = $(".editable_add");
+
+        var p = target.offset();
+
+        var left = p.left + target.width() - 10,
+            top = p.top + 3;
+
+        el.css("top", top+"px");
+        el.css("left", left+"px");
+        el.show();
+    }
     function bindHoverEvents() {
         var currTarget;
-        $(".treeview li").live("click", function(e) {
-            if(currTarget == e.target)
+        $(".treeview li").live("hover", function(e) {
+            var target;
+            if(e.target.nodeName != "LI") {
+                target = $(e.target).parents("li:first"); 
+            } else {
+                target = $(e.target);
+            }
+            if(currTarget == target.get(0))
                 return;
 
-            console.log(e.target);
 
-            currTarget = e.target;
+            showButtons(target); 
+
+            currTarget = target.get(0);
         });
+
     }
 
     function unbindHoverEvents() {
 
-        $(".treeview li").die("click");
+        $(".treeview li").die("hover");
+
+        $(".editable_add").hide();
+
+        $(".editable_input").hide();
 
     }
     function editToggle(ontology){
@@ -963,7 +1028,25 @@ var Editable = (function(){
             ontology_name: $editbox.find("[name=ontology_name]").val(),
             ontology_summary: $editbox.find("[name=ontology_summary]").val()
         }, function(data) {
+            // now create the terms
+            // for each input editable_input that is visible, it's a term
+            //
+            //
+            $(".editable_input:visible").each(function() {
+                var $this = $(this);
+                var jsonTerm = {
+                    ontology_id: ontologyid,
+                    ontology_name: $("[name=ontology_name]").val(),
+                    name: $this.find("input[name=name]:first").val(),
+                    parent: $this.find("input[name=parent]:first").val(),
+                    id: $this.find("input[name=id]:first").val()
+                };
+                
+                $.post("/create-term", {jsonTerm: JSON.stringify(jsonTerm)}, function(data) {
+                });
+            });
             editToggle(false);
+
         });
 
     }
@@ -999,6 +1082,12 @@ var Editable = (function(){
 
         $(".edit_box .minibutton").click(function(e) {
             saveEdits();
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $(".editable_add").click(function(e) {
+            addTerm();
             e.preventDefault();
             e.stopPropagation();
         });

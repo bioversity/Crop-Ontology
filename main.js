@@ -714,6 +714,38 @@ apejs.urls = {
             termmodel.createTerm(term);
         }
     },
+    "/next-id": {
+        get: function(request, response) {
+            var ontologyId = request.getParameter("ontology_id");
+            if(!ontologyId || ontologyId == "")
+                return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+
+            // find all terms with this ontology_id
+            var terms = googlestore.query("term")
+                        .filter("ontology_id", "=", ontologyId)
+                        .fetch();
+
+            var ret = [],
+                biggestInt = 0;
+            terms.forEach(function(term) {
+                // find biggest id
+                var id = term.getProperty("id"),
+                    idInt = id.split(":");
+                if(idInt.length > 1)
+                    idInt = idInt[1];
+                else
+                    idInt = idInt[0];
+
+                idInt = parseInt(idInt, 10);
+
+                if(idInt > biggestInt)
+                    biggestInt = idInt;
+
+            });
+            print(response).json({"id": biggestInt});
+        }
+    },
+
     /**
      * finds the OBO blob and converts it to a JSON
      * blob which is also then inserted in the blob store and a reference of it

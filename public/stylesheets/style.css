@@ -436,3 +436,8 @@ a.button {
     padding: 10px;
 
 }
+.editable_add {
+    position: absolute;
+    top:0;
+    left:0;
+}
