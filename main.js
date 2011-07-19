@@ -131,9 +131,25 @@ apejs.urls = {
                             .fetch(1);
 
                     var name = term.getProperty("name");
+
+                    var relationship = term.getProperty("relationship");
+                    // relationship could be an array
+                    if(relationship && (relationship instanceof java.util.List))
+                        relationship = relationship.get(0);
+
+                    if(relationship instanceof Text)
+                        relationship = relationship.getValue();
+
+                    if(!relationship || relationship.equals("")) {
+                        relationship = "is_a";
+                    } else {
+                        relationship = ""+relationship.trim().split(" ")[0];
+                    }
+
                     ret.push({
                         "id": ""+term.getProperty("id"),
                         "name": ""+(name instanceof Text ? name.getValue() : name),
+                        "relationship": relationship,
                         "has_children": q.length
                     });
                 });

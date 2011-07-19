@@ -441,3 +441,24 @@ a.button {
     top:0;
     left:0;
 }
+
+.relationship {
+    background: #4183C4;
+    color: white;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    font-size: 8px;
+    padding: 2px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.relationship.part_of {
+    background: #00A0B0;
+}
+.relationship.is_a {
+    background: #CC333F;
+}
+.relationship.derives_from {
+    background: #6A4A3C;
+}

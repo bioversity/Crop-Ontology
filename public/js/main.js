@@ -315,6 +315,7 @@ function make_li(obj, last) {
     var label = obj.label;
     var summary = obj.summary;
     var has_children = obj.has_children,
+        relationship = obj.relationship,
         hitarea;
 
     var li = $("<li></li>");
@@ -343,6 +344,13 @@ function make_li(obj, last) {
     });
  
     li.append(link);
+
+    if(relationship) {
+        var rel = $("<span class='relationship "+relationship+"' title='"+relationship+"'>"+relationship.charAt(0).toUpperCase()+"</span>");
+
+        li.append(rel);
+
+    }
  
     if(label)
         li.append('<div class="meta">'+label+'</div>');
