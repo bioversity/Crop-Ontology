@@ -290,7 +290,7 @@ border-bottom-right-radius: 10px;
 }
 .pagehead {
 
-height: 42px;
+height: 50px;
 margin-bottom: 0;
 }
 .pagehead .head_left {
@@ -319,7 +319,6 @@ a.button {
     word-wrap: normal;
     border: 1px solid transparent;
     color: white;
-    text-transform: uppercase;
     background-color: #D14836;
     background-image: -webkit-linear-gradient(top,#DD4B39,#D14836);
     background-image: -moz-linear-gradient(top,#DD4B39,#D14836);
@@ -341,14 +340,18 @@ a.button {
     display: block;
 }
 
-.api {
+.api, .aboutbtn {
     width: 100px;
     float: left;
     position: absolute;
     top: 40px;
     left: 40px;
 }
-.api a {
+.aboutbtn {
+    top: 40px;
+    left: 150px;
+}
+.api a, .aboutbtn a {
     font-size: 15px;
 }
 
@@ -455,4 +458,48 @@ a.button {
 }
 .relationship.part_of {
     background: #D14836;
+}
+/**
+ * Modal window
+ */
+div.modal {
+    width: 600px;
+
+    margin-left: -300px;
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    z-index: 100;
+    text-align: left;
+
+
+}
+.modal .popup {
+    position: relative;
+    border: 3px solid transparent;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
+}
+.modal .content {
+    display: table;
+    padding: 10px;
+    background: white;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    width: 574px;
+}
+.modal .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 2px;
+    background: white;
+}
+.modal .close img {
+    opacity: 0.3;
 }

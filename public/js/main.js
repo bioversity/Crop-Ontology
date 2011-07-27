@@ -596,13 +596,11 @@ var events = function(){
     });
     $("#register-close").click(function(e){
  
-        myregister();
- 
         e.preventDefault();
         e.stopPropagation();
     });
     $("#dologin").click(function(e){
-        mylogin();
+        Modal.show("login");
  
         e.preventDefault();
         e.stopPropagation();
@@ -616,7 +614,7 @@ var events = function(){
         e.stopPropagation();
     });
     $("#doregister").click(function(e){
-        myregister();
+        Modal.show("register");
  
         e.preventDefault();
         e.stopPropagation();
@@ -838,8 +836,54 @@ var events = function(){
             //autoFill:true
         }
     );
+
+
+    Modal.init();
+
+    $(".aboutbtn a").click(function(e) {
+        Modal.show("about");
+        
+        e.preventDefault();
+        e.stopPropagation();
+    });
  
 };
+
+var Modal = (function() {
+    var main = "#main, .footer";
+    function hide() {
+        $(".modal").hide();
+        $(main).css("opacity", "1.0");
+    }
+
+    function init() {
+        $(".modal .popup .close").click(function(e) {
+
+            hide();
+            
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        
+    }
+    function show(className) {
+        $(main).css("opacity", "0.2");
+
+        $(".modal").show();
+        var sel = ".modal .popup .content";
+        // hide all divs inside content
+        $(sel + " > div").hide();
+
+        // show the curr one
+        $(sel+" ."+className).show();
+    }
+
+    return {
+        init: init,
+        show: show,
+        hide: hide
+    };
+})();
 
 
 // Search weeee

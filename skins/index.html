@@ -29,6 +29,9 @@ var searchQuery = "";
                 <div class="api">
                     <a class="button" href="/api">API</a>
                 </div>
+                <div class="aboutbtn">
+                    <a class="button" href="/about">About</a>
+                </div>
                 
                 <div id="logo"> 
                     <h1><a href="/">Crop Ontology Curation Tool Demo</a></h1>
@@ -62,64 +65,6 @@ var searchQuery = "";
     </div><!-- /main --> 
  
  
-<div id="mylogin" style="position: absolute; top:50%; left: 50%; margin-top: -200px; margin-left: -200px; display: none;"> 
- 
-    <div class="login_form" id="login" style=""> 
-      <form method="post" id="login_form" action="/session"><div style="margin: 0pt; padding: 0pt;"><input type="hidden" value="5cdd9e664d321b89797b0ed43576d21152bc53e9" name="authenticity_token"></div>      <h1>Log in<a id="login-close"></a></h1> 
-      <div class="formbody"> 
-        
-            <div class="context-loader" style="display: none; top:107px;">Sending Request...</div> 
-        <div class="error_box" style="display: none;">Incorrect login or password.</div> 
-        
-        <label for="login"> 
-            Username<br> 
-            <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="login_field" class="text"> 
-        </label> 
- 
-        <label for="password"> 
-            Password 
-            <br> 
-            <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="password" class="text"> 
-        </label> 
- 
-        <label class="submit_btn"> 
-                                    <input type="submit" value="Log in" tabindex="3" name="commit"> 
-        </label> 
-      </div> 
-    </form>  </div> 
- 
-</div><!-- /mylogin --> 
-<div id="myregister" style="position: absolute; top:50%; left: 50%; margin-top: -200px; margin-left: -200px; display: none;"> 
- 
-    <div class="login_form" id="login" style=""> 
-      <form method="post" id="register_form" action=""><div style="margin: 0pt; padding: 0pt;"><input type="hidden" value="5cdd9e664d321b89797b0ed43576d21152bc53e9" name="authenticity_token"></div>      <h1>Register<a id="register-close"></a></h1> 
-      <div class="formbody"> 
-        
-            <div class="context-loader" style="display: none; top:107px;">Sending Request...</div> 
-        <div class="error_box" style="display: none;">Incorrect login or password.</div> 
-        
-        <label for="login"> 
-            Username<br> 
-            <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="login_field" class="text"> 
-        </label> 
-        <label for="email"> 
-            Email<br> 
-            <input type="text" value="" tabindex="1" style="width: 21em;" name="email" class="text"> 
-        </label> 
- 
-        <label for="password"> 
-            Password 
-            <br> 
-            <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="password" class="text"> 
-        </label> 
- 
-        <label class="submit_btn"> 
-            <input type="submit" value="Register" tabindex="3" name="commit"> 
-        </label> 
-      </div> 
-    </form>  </div> 
- 
-</div><!-- /myregister --> 
  
 <div class="toolbar" style="display: none; position: absolute; top:0; left:0;">
     <div class="toolbar_edit"></div>
@@ -144,6 +89,78 @@ var searchQuery = "";
 <div class="footer">
 &copy;2011 Bioversity International
 </div>
+
+<div class="modal" style="display: none;"> 
+    <div class="popup"> 
+        <div class="content"> 
+            <div class="about" style="display: none;">
+                <h1>Ontology Tool</h1>
+                <p>This site is meant to let you store and navigate ontologies</p>
+            </div><!-- /about -->
+            <div class="login_form register" style="display: none;">
+              <form method="post" id="register_form" action="">      
+                  <h1>Register</h1> 
+                  <div class="formbody"> 
+                    
+                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
+                    <div class="error_box" style="display: none;">Incorrect login or password.</div> 
+                    
+                    <label for="reg_username"> 
+                        Username<br> 
+                        <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="reg_username" class="text"> 
+                    </label> 
+                    <label for="reg_email"> 
+                        Email<br> 
+                        <input type="text" value="" tabindex="1" style="width: 21em;" name="email" id="reg_email" class="text"> 
+                    </label> 
+             
+                    <label for="reg_password"> 
+                        Password 
+                        <br> 
+                        <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="reg_password" class="text"> 
+                    </label> 
+             
+                    <label class="submit_btn"> 
+                        <input type="submit" value="Register" tabindex="3" name="commit"> 
+                    </label> 
+                  </div> 
+                </form>  
+
+            </div><!-- /register -->
+            <div class="login login_form" style="display: none;">
+
+              <form method="post" id="login_form" action="/session">
+                  <h1>Log in</h1> 
+                  <div class="formbody"> 
+                    
+                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
+                    <div class="error_box" style="display: none;">Incorrect login or password.</div> 
+                    
+                    <label for="log_username"> 
+                        Username<br> 
+                        <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="log_username" class="text"> 
+                    </label> 
+             
+                    <label for="log_password"> 
+                        Password 
+                        <br> 
+                        <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="log_password" class="text"> 
+                    </label> 
+             
+                    <label class="submit_btn"> 
+                        <input type="submit" value="Log in" tabindex="3" name="commit"> 
+                    </label> 
+                  </div> 
+                </form>  
+            </div><!-- /login -->
+        </div> <!-- /content -->
+        <a href="#" class="close"> 
+            <img src="/images/closelabel.png" title="Close" class="close_image"> 
+        </a> 
+ 
+    </div> 
+</div> 
+
  
 </body> 
 </html> 
