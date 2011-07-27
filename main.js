@@ -59,7 +59,7 @@ apejs.urls = {
             
         }
     },
-    "/ontology/([a-zA-Z0-9_\: ]+)": {
+    "/ontology/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
             var skin = render("skins/index.html")
                     .replace(/{{CONTENT}}/g, render("skins/onto.html"))
@@ -68,7 +68,7 @@ apejs.urls = {
             response.getWriter().println(skin);
         }
     },
-    "/get-ontology/([a-zA-Z0-9_\: ]+)": {
+    "/get-ontology/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
             require("./blobstore.js");
 
@@ -88,7 +88,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-ontology-roots/([a-zA-Z0-9_\: ]+)": {
+    "/get-ontology-roots/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
             var ontoId = matches[1];
             try {
@@ -112,7 +112,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/([a-zA-Z0-9_\: ]+)": {
+    "/get-children/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
             var parentId = matches[1];
             if(!parentId)
@@ -160,7 +160,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-attributes/([a-zA-Z0-9_\: ]+)": {
+    "/get-attributes/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
             require("./blobstore.js");
 
@@ -361,7 +361,7 @@ apejs.urls = {
 
         }
     },
-    "/terms/([a-zA-Z0-9_\: ]+)/(.*)" : {
+    "/terms/([a-zA-Z0-9_\: \.]+)/(.*)" : {
         get: function(request, response, matches) {
             var termId = matches[1],
                 termName = matches[2];
@@ -865,7 +865,7 @@ apejs.urls = {
 
         }
     },
-    "/get-term-parents/([a-zA-Z0-9_\: ]+)": {
+    "/get-term-parents/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
             function getParent(arr, termId) {
                 var termKey = googlestore.createKey("term", termId),

@@ -97,13 +97,13 @@ var jsonobo = (function(){
                     for(var i=0,len=arr.length; i<len; i++) {
                         var s = arr[i].split(" ! ");
                         var type = s[0].split(" "); // hope "space" is enough
-                        // XXX type[1] is the type of relationship, store it somewhere
+                        // XXX type[0] is the type of relationship, store it somewhere
                         ids.push(type[1]);
                     }
                 } else {
                     var s = term.relationship.split(" ! ");
                     var type = s[0].split(" "); // hope "space" is enough
-                    // XXX type[1] is the type of relationship, store it somewhere
+                    // XXX type[0] is the type of relationship, store it somewhere
                     ids.push(type[1]);
                 }
 
