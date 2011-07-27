@@ -104,6 +104,7 @@ var bindEvents = function() {
             ontology_name: $("#ontology_name").val(),
             ontology_id: $("#ontology_id").val(),
             ontology_summary: $("#ontology_summary").val(),
+            category: $("#create_ontology_cont select[name=category]").val(),
             json: JSON.stringify(ret)
         };
 

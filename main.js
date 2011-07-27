@@ -37,8 +37,13 @@ apejs.urls = {
     },
     "/ontologies": {
         get: function(request, response) {
-            var ontologies = googlestore.query("ontology")
-                    .fetch();
+            var category = request.getParameter("category"); 
+            var ontologies = googlestore.query("ontology");
+
+            if(category && !category.equals(""))
+                ontologies.filter("category", "=", category);
+
+            ontologies = ontologies.fetch();
 
             var res = [];
             ontologies.forEach(function(onto){
@@ -61,8 +66,11 @@ apejs.urls = {
     },
     "/ontology/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
+            require("./ontologymodel.js");
+
             var skin = render("skins/index.html")
                     .replace(/{{CONTENT}}/g, render("skins/onto.html"))
+                    .replace(/{{ONTOLOGY_CATEGORIES}}/g, ontologymodel.catsSelectHtml())
                     .replace(/{{VERSION}}/g, VERSION)
                     .replace(/{{ontologyid}}/g, matches[1]);
             response.getWriter().println(skin);
@@ -537,9 +545,13 @@ apejs.urls = {
     "/add-ontology" : {
         get: function(request, response) {
             require("./blobstore.js");
+            require("./ontologymodel.js");
+
             var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
+
             var html = render("./skins/index.html")
                         .replace(/{{CONTENT}}/g, render("skins/add-ontology.html"))
+                        .replace(/{{ONTOLOGY_CATEGORIES}}/g, ontologymodel.catsSelectHtml())
                         .replace(/{{UPLOAD_URL}}/g, UPLOAD_URL)
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);
@@ -574,7 +586,8 @@ apejs.urls = {
                     user_key: currUser.getKey(),
                     ontology_id: ontologyId,
                     ontology_name: ontologyName,
-                    ontology_summary: ontologySummary
+                    ontology_summary: ontologySummary,
+                    category: request.getParameter("category")
                 });
 
                 googlestore.put(ontoEntity);
@@ -617,14 +630,16 @@ apejs.urls = {
 
                 // now edit it
                 var ontologyName = request.getParameter("ontology_name"),
-                    ontologySummary = request.getParameter("ontology_summary");
+                    ontologySummary = request.getParameter("ontology_summary"),
+                    category = request.getParameter("category");
 
-                if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
+                if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "" || !category || category == "")
                     return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
 
                 googlestore.set(ontoEntity, {
                     ontology_name: ontologyName,
-                    ontology_summary: ontologySummary
+                    ontology_summary: ontologySummary,
+                    category: category
                 });
                 googlestore.put(ontoEntity);
 
@@ -673,7 +688,8 @@ apejs.urls = {
                     user_key: currUser.getKey(),
                     ontology_id: ontologyId,
                     ontology_name: ontologyName,
-                    ontology_summary: ontologySummary
+                    ontology_summary: ontologySummary,
+                    category: request.getParameter("category")
                 });
 
                 googlestore.put(ontoEntity);
@@ -854,10 +870,15 @@ apejs.urls = {
 
             var ret = [];
             ontos.forEach(function(onto) {
+                var category = onto.getProperty("category");
+                if(!category || category.equals(""))
+                    category = "";
+
                 ret.push({
                     ontology_id: ""+onto.getProperty("ontology_id"),
                     ontology_name: ""+onto.getProperty("ontology_name"),
-                    ontology_summary: ""+onto.getProperty("ontology_summary")
+                    ontology_summary: ""+onto.getProperty("ontology_summary"),
+                    category: ""+category
                 });
             });
 
@@ -914,6 +935,26 @@ apejs.urls = {
 
             // reverse() so the forst element is actually the first parent (root)
             print(response).json(arr.reverse());
+        }
+    },
+    "/get-categories": {
+        get: function(request, response) {
+            // to get categories we need to get all ontologies and
+            // filter the unique values
+            var ontologies = googlestore.query("ontology")
+                            .fetch();
+
+            var categories = {}; // use an object so keys are unique :D
+            ontologies.forEach(function(onto){
+                if(onto.getProperty("category")) 
+                    categories[""+onto.getProperty("category")] = 0;
+            });
+            // convert object to simple array
+            var cats = [];
+            for(var i in categories) 
+                cats.push(i);
+
+            print(response).json(cats);
         }
     }
 };

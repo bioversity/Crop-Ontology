@@ -14,6 +14,10 @@
 
                         <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data">
                             <p>
+                            Category:
+                            {{ONTOLOGY_CATEGORIES}}
+                            </p>
+                            <p>
                             <input name="ontology_name" type="text" placeholder="Ontology Name" />
                             <input name="ontology_id" type="text" placeholder="Ontology ID" />
                             </p>
@@ -52,6 +56,10 @@ $(function(){
 
 
                     <div id="create_ontology_cont" style="display: none">
+                            <p>
+                            Category:
+                            {{ONTOLOGY_CATEGORIES}}
+                            </p>
                         <ul class="treeview" id="cont"> 
                             <li class="last" id="ontology">
                                 <input type="text" id="ontology_name" name="name" placeholder="Ontology Name" />

@@ -1038,7 +1038,9 @@ var Editable = (function(){
         $.post("/edit-ontology", {
             ontology_id: ontologyid,
             ontology_name: $editbox.find("[name=ontology_name]").val(),
-            ontology_summary: $editbox.find("[name=ontology_summary]").val()
+            ontology_summary: $editbox.find("[name=ontology_summary]").val(),
+            category: $editbox.find("[name=category]").val()
+
         }, function(data) {
             // now create the terms
             // for each input editable_input that is visible, it's a term
@@ -1070,6 +1072,8 @@ var Editable = (function(){
             return $editbox.hide();
 
         $editbox.show();
+
+        $editbox.find("[name=category]").val(ontology.category);
 
         $editbox.find("[name=ontology_name]").val(ontology.ontology_name);
         $editbox.find("[name=ontology_summary]").val(ontology.ontology_summary);

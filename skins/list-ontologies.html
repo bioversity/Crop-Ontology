@@ -1,32 +1,60 @@
 <script>
 $(function(){
 
+// we don't want to get all ontologies,
+// get all categories first and then fetch
+// the ontology for each specific category
+var cont = $(".list-ontologies .bar");
+$.getJSON("/get-categories", function(cats) {
+    for(var i=0; i<cats.length; i++) {
+        var c = cont.clone();
+
+        c.find(".featured-heading span").text(cats[i]);
+
+        $(".list-ontologies").append(c);
+        c.show();
+
+        // now load the ontologies for this category
+        $.getJSON("/ontologies", {category: cats[i]}, function(json) {
+            $.each(json, function() {
+                addRow(this, c);
+            });
+            c.find(".loader").hide();
+
+        });
+    }
+
+});
+
+
+function addRow(obj, parent) {
+    var $row = $(".row:first").clone();
+
+    $row.show();
+
+
+    // replace stuff
+    $row.find("h3 a.term").attr("title", obj.ontology_name)
+                .attr("href", "/ontology/"+obj.ontology_id)
+                .text(obj.ontology_name);
+    $row.find("a.username").text(obj.username);
+
+    $row.find("p span.description").text(obj.ontology_summary);
+
+    parent.append($row);
+}
+/*
 var url = "/ontologies",
     parent = $(".list-ontologies .bar");
 
 $.getJSON(url, function(json) {
     $.each(json, function() {
 
-        var $row = $("#row").clone();
-        $row.attr("id", "");
-        $row[0].id = "";
-
-        $row.show();
-
-
-        // replace stuff
-        $row.find("h3 a.term").attr("title", this.ontology_name)
-                    .attr("href", "/ontology/"+this.ontology_id)
-                    .text(this.ontology_name);
-        $row.find("a.username").text(this.username);
-
-        $row.find("p span.description").text(this.ontology_summary);
-
-        parent.append($row);
     });
     $(".loader").hide();
 
 });
+*/
 
 });
 
@@ -34,11 +62,11 @@ $.getJSON(url, function(json) {
  
  
             <div class="list-ontologies"> 
-                <div class="bar left">
-                    <h2 class="featured-heading"><a class="feed" href="http://singerdatadictionary.disqus.com/latest.rss">Subscribe</a>Crop Ontologies</h2>
+                <div class="bar left" style="display: none;">
+                    <h2 class="featured-heading"><a class="feed" href="http://singerdatadictionary.disqus.com/latest.rss">Subscribe</a><span>Crop Ontologies</span></h2>
                     <img src="/images/metabox_loader.gif" class="loader"/>
 
-                    <ol class="ranked-repositories" id="row" style="display: none;">
+                    <ol class="ranked-repositories row" style="display: none;">
                         <li>
                             <ul class="repo-stats">
                                 <li class="watchers">
