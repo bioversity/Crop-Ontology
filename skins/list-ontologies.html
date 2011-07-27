@@ -1,6 +1,19 @@
 <script>
 $(function(){
 
+function filterCat(cat) {
+    // if the first word contains a dash - good enough
+    var words = cat.split(" "),
+        firstWord = words[0];
+
+    var containsDash = firstWord.split("-").length;
+
+    if(containsDash)
+        return cat.replace(firstWord, "").trim();
+    else
+        return cat;
+
+}
 // we don't want to get all ontologies,
 // get all categories first and then fetch
 // the ontology for each specific category
@@ -9,12 +22,14 @@ $.getJSON("/get-categories", function(cats) {
     for(var i=0; i<cats.length; i++) {
         var c = cont.clone();
 
-        c.find(".featured-heading span").text(cats[i]);
+        c.find(".featured-heading span").text(filterCat(cats[i]));
 
         $(".list-ontologies").append(c);
         c.show();
 
         // now load the ontologies for this category
+        // hrm seems like "c" isn't carried on
+        (function(c) {
         $.getJSON("/ontologies", {category: cats[i]}, function(json) {
             $.each(json, function() {
                 addRow(this, c);
@@ -22,6 +37,7 @@ $.getJSON("/get-categories", function(cats) {
             c.find(".loader").hide();
 
         });
+        })(c);
     }
 
 });

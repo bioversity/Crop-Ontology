@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.1.9";
+var VERSION = "0.2.1";
 
 var print = function(response) {
     return {
@@ -108,6 +108,8 @@ apejs.urls = {
 
                 rootTerms.forEach(function(term) {
                     var name = term.getProperty("name");
+                    if(term.getProperty("is_obsolete") && term.getProperty("is_obsolete").equals("true")) return;
+
                     ret.push({
                         "id": ""+term.getProperty("id"),
                         "name": ""+(name instanceof Text ? name.getValue() : name)
