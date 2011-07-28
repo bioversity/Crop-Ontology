@@ -32,22 +32,8 @@ function Login(func) {
             jprofile.show().html(data.username);
             jprofile.click(function(e) {
 
-                Modal.show("user", function() {
-                    var that = this;
-                    this.load(true);
+                UserWidget.show(data.userid);
 
-                    $.getJSON("/users/"+data.userid, function(user){
-                        // do replacement
-                        var curr = that.curr;
-                        curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
-                        curr.find(".name").text(user.username);
-                        curr.show();
-
-
-                        that.load(false);
-                    });
-                
-                });
 
                 e.stopPropagation();
                 e.preventDefault();
@@ -891,9 +877,18 @@ var Modal = (function() {
         });
         
     }
+    function setModalHeight() {
+        // set the modal height based on the current modal height
+        var jmodal = $(".modal");
+        var height = jmodal.height();
+        jmodal.css("margin-top", "-" + (height/2) + "px");
+
+    }
     function load(s) {
         if(s) {
             
+        } else {
+            setModalHeight();
         }
 
     }
@@ -919,9 +914,7 @@ var Modal = (function() {
         }
         curr.show();
 
-        // set the modal height based on the current modal height
-        var height = jmodal.height();
-        jmodal.css("margin-top", "-" + (height/2) + "px");
+        setModalHeight();
     }
 
     return {
@@ -1244,6 +1237,54 @@ var Term = (function(){
 
     return {
         init: init
+    };
+})();
+
+// XXX global
+UserWidget = (function() {
+
+    function show(userid) {
+        Modal.show("user", function() {
+            var that = this;
+            this.load(true);
+
+            $.getJSON("/users/"+userid, function(user){
+                // do replacement
+                var curr = that.curr;
+                curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
+                curr.find(".name").text(user.username);
+                curr.show();
+
+                // now get this users ontologies
+                $.getJSON("/user-ontologies", {userid: userid}, function(ontologies) {
+                    var cont = curr.find(".result li:first"),
+                        res = curr.find(".result"),
+                        clone = cont.clone();
+
+                    res.html(""); // clear it out
+
+                    $.each(ontologies, function() {
+                        var onto = this;
+
+                        clone.find(".box").attr("href", "/ontology/"+onto.ontology_id).text(onto.ontology_id);
+                        clone.find(".name").text(onto.ontology_name);
+                        clone.find(".summary").text(onto.ontology_summary);
+                        clone.show();
+
+                        res.append(clone.clone());
+
+                    });
+
+                    that.load(false);
+                });
+
+
+            });
+        
+        });
+    }
+    return {
+        show: show
     };
 })();
  

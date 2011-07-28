@@ -501,3 +501,61 @@ div.modal {
 .modal .close img {
     opacity: 0.3;
 }
+
+img.grav {
+    vertical-align:middle;
+}
+
+ul.result {
+    margin: 0;
+    padding:0;
+margin-top: 10px;
+}
+ul.result li {
+border-bottom: 1px solid #EEE;
+text-shadow: 1px 1px white;
+position: relative;
+margin: 0;
+padding: 10px 0;
+line-height: 35px;
+font-weight: bold;
+list-style: none;
+font-size: 14px;
+}
+ul.result li .name{
+    color: #333136;
+    text-decoration: none;
+}
+ul.result li .summary{
+    color: #919191;
+    font-weight: normal;
+    font-size: 12px;
+}
+ul.result .onto_id {
+    float: left;
+}
+ul.result .onto_id .box{
+    width: 100px;
+    display: block;
+}
+ul.result .desc {
+    float: left;
+    margin-left: 20px;
+}
+.box {
+background: #5481CB;
+color: white !important;
+font-weight: bold;
+padding: 10px;
+text-align: center;
+font-size: 14px;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+text-shadow: none;
+
+}
+.box:hover {
+text-decoration: none;
+
+}

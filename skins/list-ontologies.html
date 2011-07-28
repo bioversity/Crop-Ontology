@@ -30,13 +30,13 @@ $.getJSON("/get-categories", function(cats) {
         // now load the ontologies for this category
         // hrm seems like "c" isn't carried on
         (function(c) {
-        $.getJSON("/ontologies", {category: cats[i]}, function(json) {
-            $.each(json, function() {
-                addRow(this, c);
-            });
-            c.find(".loader").hide();
+            $.getJSON("/ontologies", {category: cats[i]}, function(json) {
+                $.each(json, function() {
+                    addRow(this, c);
+                });
+                c.find(".loader").hide();
 
-        });
+            });
         })(c);
     }
 
@@ -53,7 +53,12 @@ function addRow(obj, parent) {
     $row.find("h3 a.term").attr("title", obj.ontology_name)
                 .attr("href", "/ontology/"+obj.ontology_id)
                 .text(obj.ontology_name);
-    $row.find("a.username").text(obj.username);
+    $row.find("a.username").click(function(e) {
+        UserWidget.show(obj.userid);
+        
+        e.preventDefault();
+        e.stopPropagation();
+    }).text(obj.username);
 
     $row.find("p span.description").text(obj.ontology_summary);
 

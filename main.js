@@ -48,15 +48,20 @@ apejs.urls = {
             var res = [];
             ontologies.forEach(function(onto){
 
-                var username = "";
+                var username = "",
+                    userid = "";
                 if(onto.getProperty("user_key")) {
-                    username = googlestore.get(onto.getProperty("user_key")).getProperty("username"); 
+                    var user = googlestore.get(onto.getProperty("user_key"));
+                    username = user.getProperty("username"); 
+                    userid = user.getKey().getId();
+
                 }
                 res.push({
                     ontology_id: ""+onto.getProperty("ontology_id"),
                     ontology_name: ""+onto.getProperty("ontology_name"),
                     ontology_summary: ""+onto.getProperty("ontology_summary"),
-                    username: ""+username
+                    username: ""+username,
+                    userid: ""+userid
                 });
             });
 
@@ -978,6 +983,32 @@ apejs.urls = {
                     userEntity = googlestore.get(userKey);
 
                 print(response).json(usermodel.out(userEntity));
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        }
+    },
+    "/user-ontologies": {
+        get: function(request, response) {
+            var userid = request.getParameter("userid");
+            if(!userid || userid.equals(""))
+                return response.sendError(response.SC_BAD_REQUEST, "missing userid");
+
+            try {
+                var userKey = googlestore.createKey("user", parseInt(userid, 10));
+
+                var ontologies = googlestore.query("ontology")
+                                    .filter("user_key", "=", userKey)
+                                    .fetch();
+
+                var ret = [];
+
+                ontologies.forEach(function(ontology) {
+                    ret.push(googlestore.toJS(ontology));
+                });
+
+                print(response).json(ret);
+
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
