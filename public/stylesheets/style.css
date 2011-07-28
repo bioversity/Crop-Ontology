@@ -541,6 +541,7 @@ ul.result .onto_id .box{
 ul.result .desc {
     float: left;
     margin-left: 20px;
+    width: 400px;
 }
 .box {
 background: #5481CB;

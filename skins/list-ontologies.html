@@ -9,10 +9,31 @@ function filterCat(cat) {
     var containsDash = firstWord.split("-").length;
 
     if(containsDash)
-        return cat.replace(firstWord, "").trim();
+        return cat.replace(firstWord, "");
     else
         return cat;
 
+}
+function addRow(obj, par) {
+    var $row = $(".row:first").clone();
+
+    $row.show();
+
+
+    // replace stuff
+    $row.find("h3 a.term").attr("title", obj.ontology_name)
+                .attr("href", "/ontology/"+obj.ontology_id)
+                .text(obj.ontology_name);
+    $row.find("a.username").click(function(e) {
+        UserWidget.show(obj.userid);
+        
+        e.preventDefault();
+        e.stopPropagation();
+    }).text(obj.username);
+
+    $row.find("p span.description").text(obj.ontology_summary);
+
+    par.append($row);
 }
 // we don't want to get all ontologies,
 // get all categories first and then fetch
@@ -42,40 +63,6 @@ $.getJSON("/get-categories", function(cats) {
 
 });
 
-
-function addRow(obj, parent) {
-    var $row = $(".row:first").clone();
-
-    $row.show();
-
-
-    // replace stuff
-    $row.find("h3 a.term").attr("title", obj.ontology_name)
-                .attr("href", "/ontology/"+obj.ontology_id)
-                .text(obj.ontology_name);
-    $row.find("a.username").click(function(e) {
-        UserWidget.show(obj.userid);
-        
-        e.preventDefault();
-        e.stopPropagation();
-    }).text(obj.username);
-
-    $row.find("p span.description").text(obj.ontology_summary);
-
-    parent.append($row);
-}
-/*
-var url = "/ontologies",
-    parent = $(".list-ontologies .bar");
-
-$.getJSON(url, function(json) {
-    $.each(json, function() {
-
-    });
-    $(".loader").hide();
-
-});
-*/
 
 });
 
