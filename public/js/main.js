@@ -144,6 +144,7 @@ var comments = (function(){
         var link = clone.find("strong.author a");
         link.attr("href", "#");
         link.text(data.author);
+        link.attr("userid", data.author_id);
  
         clone.find(".date .relatize").text(data.created);
  
@@ -572,7 +573,8 @@ var events = function(){
  
     // comment post
     $(".new-comments .form-actions button").click(function(e) {
-        var comment = $(".new-comments .comment-form textarea").val();
+        var commentTextarea = $(".new-comments .comment-form textarea");
+        var comment = commentTextarea.val();
         var term_id = $("#term_id").text();
  
         term_loader(true);
@@ -586,6 +588,9 @@ var events = function(){
           },
           success: function(data) {
             term_loader(false);
+            // clear the comment box
+            commentTextarea.val("");
+
             // load comments of this term again
             // simulate click on this, rather ugly
             //load_term(term_id);
@@ -854,6 +859,17 @@ var events = function(){
     $(".aboutbtn a").click(function(e) {
         Modal.show("about");
         
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $(".comment-list p.author strong.author a").live("click", function(e) {
+        var $this = $(this);
+        var userid = $this.attr("userid");
+
+        if(userid)
+            UserWidget.show(userid);
+
         e.preventDefault();
         e.stopPropagation();
     });

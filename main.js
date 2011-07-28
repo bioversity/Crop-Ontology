@@ -545,9 +545,11 @@ apejs.urls = {
                 for(var i=0; i<comments.length; i++) {
                     var comment = comments[i];
                     // conver them all to JS strings so the JSON.stringify can read them
+                    var author = googlestore.get(comment.getProperty("userKey"));
                     ret.push({
                         "created": ""+comment.getProperty("created"),
-                        "author": ""+googlestore.get(comment.getProperty("userKey")).getProperty("username"),
+                        "author": ""+author.getProperty("username"),
+                        "author_id": ""+author.getKey().getId(),
                         "comment": ""+comment.getProperty("comment").getValue()
 
                     });
