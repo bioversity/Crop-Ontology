@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.1";
+var VERSION = "0.2.2";
 
 var print = function(response) {
     return {
@@ -424,10 +424,18 @@ apejs.urls = {
         get: function(request, response) {
             // find user with this key and return its data
             var user = auth.getUser(request),
-                username = "";
-            if(user)
+                username = "",
+                userid = "";
+            if(user) {
                 username = user.getProperty("username");
-            response.getWriter().println('{"username":"'+username+'"}');
+                userid = user.getKey().getId();
+            }
+            
+            print(response).json({
+                username: ""+username,
+                userid: ""+userid
+            });
+            //response.getWriter().println('{"username":"'+username+'"}');
         },
         post: function(request, response) {
             var username = request.getParameter("username"),
@@ -957,6 +965,22 @@ apejs.urls = {
                 cats.push(i);
 
             print(response).json(cats);
+        }
+    },
+    "/users/([a-zA-Z0-9_]+)": {
+        get: function(request, response, matches) {
+            require("./usermodel.js");
+            var userid = matches[1];
+
+            try {
+                // get this user data
+                var userKey = googlestore.createKey("user", parseInt(userid, 10)),
+                    userEntity = googlestore.get(userKey);
+
+                print(response).json(usermodel.out(userEntity));
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
         }
     }
 };

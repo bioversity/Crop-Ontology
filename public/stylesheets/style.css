@@ -466,8 +466,8 @@ div.modal {
     width: 600px;
 
     margin-left: -300px;
-    position: fixed;
-    top: 40px;
+    position: absolute;
+    top: 50%;
     left: 50%;
     z-index: 100;
     text-align: left;
@@ -485,13 +485,11 @@ div.modal {
     box-shadow: 0 0 18px rgba(0, 0, 0, 0.4);
 }
 .modal .content {
-    display: table;
     padding: 10px;
     background: white;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    width: 574px;
 }
 .modal .close {
     position: absolute;

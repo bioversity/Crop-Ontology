@@ -28,8 +28,33 @@ function Login(func) {
             $("#dologin").hide();
             $("#doregister").hide();
 
-            $("#doprofile").show().html(data.username);
+            var jprofile = $("#doprofile");
+            jprofile.show().html(data.username);
+            jprofile.click(function(e) {
+
+                Modal.show("user", function() {
+                    var that = this;
+                    this.load(true);
+
+                    $.getJSON("/users/"+data.userid, function(user){
+                        // do replacement
+                        var curr = that.curr;
+                        curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
+                        curr.find(".name").text(user.username);
+                        curr.show();
+
+
+                        that.load(false);
+                    });
+                
+                });
+
+                e.stopPropagation();
+                e.preventDefault();
+            });
+
             $("#dologout").show();
+
             func(data);
         } else {
             $("#dologin").show();
@@ -639,7 +664,7 @@ var events = function(){
                     if(ontologyid !== "{{ontologyid}}")
                         Editable.init(ontologyid);
                 });
-                mylogin();
+                Modal.hide();
                 $(".error").hide();
                 $(".error_box").hide();
             }
@@ -669,7 +694,7 @@ var events = function(){
             } else {
                 $(".error").hide();
                 $(".error_box").hide();
-                myregister();
+                Modal.hide();
                 Login(function(){});
             }
             term_loader(false);
@@ -866,16 +891,37 @@ var Modal = (function() {
         });
         
     }
-    function show(className) {
+    function load(s) {
+        if(s) {
+            
+        }
+
+    }
+    function show(className, func) {
         $(main).css("opacity", "0.2");
 
-        $(".modal").show();
+        var jmodal = $(".modal");
+        jmodal.show();
+
         var sel = ".modal .popup .content";
         // hide all divs inside content
         $(sel + " > div").hide();
 
         // show the curr one
-        $(sel+" ."+className).show();
+        var curr = $(sel+" ."+className);
+        if(func) {
+            func.call({
+                curr: curr,
+                load: load
+            });
+
+            return;
+        }
+        curr.show();
+
+        // set the modal height based on the current modal height
+        var height = jmodal.height();
+        jmodal.css("margin-top", "-" + (height/2) + "px");
     }
 
     return {
