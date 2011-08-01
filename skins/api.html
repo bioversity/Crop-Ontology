@@ -1,3 +1,14 @@
+<style>
+li {
+    margin-left: 15px;
+    list-style: none;
+}
+h2 {
+    margin-top: 30px !important;
+    padding-top: 30px !important;
+    color: #D14836 !important;
+}
+</style>
 <div class="api_left">
 
 <h1>API</h1>
@@ -5,20 +16,83 @@
 This is the official API for the Ontology Curation Tool. It allows you to programmatically retrieve and interact with Ontology data. 
 </p>
 <p>
-To let us gather feedback you can leave a comment using the form on the right sidebar.
+To let us gather feedback you can leave a comment using the form on the right.
 </p>
 <h2>API Data Types</h2>
 <p>
-Data can be requested in JSON or JSONP formats.  The default is JSON.  To ask for another type, append the format to the querystring.  Example:
+Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> semantics: create, retrieve, update and delete.
 </p>
-<p>
-<label>JSON:</label> <code>http://example.com/page</code><br>
-<label>JSONP:</label> <code>http://example.com/page?format=jsonp&amp;callback=yourFunction</code><br>
-</p>
+<h2>Retrieve Ontologies By Category</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/ontologies?category={category}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects; each one representing an ontology</li>
+</ul>
 
-<h2>More to come ...</h2>
+<h2>Retrieve Root Terms of an Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-roots/{ontologyId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects; each one representing a term</li>
+</ul>
 
-</div>
+<h2>Retrieve Child Terms of parent Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of terms</li>
+</ul>
+
+<h2>Retrieve Child Terms of a parent Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of terms</li>
+</ul>
+
+<h2>Retrieve Properties/Attributes of a Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-attributes/{termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects representing the terms property</li>
+</ul>
+
+<h2>Retrieve Comments of a Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-comments?termId={termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects representing a comment</li>
+</ul>
+
+<h2>Login - Retrieve a user's auth token (used for adding and editing ontologies)</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. {username}, {password}</li>
+    <li><strong>Returns:</strong> HTTP response with a <code>user</code> cookie in the header that contains a <code>token</code>. You'll need to pass this cookie to subsequent requests that require authentication</li>
+</ul>
+
+<h2>Retrieve Logged-in User information</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>
+    <li><strong>Method:</strong> <code>GET</code>. Pass <code>user</code> cookie in request</li>
+    <li><strong>Returns:</strong> Object of the currently logged in user</li>
+</ul>
+
+<h2>Create Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/add-ontology</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. Pass <code>user</code> cookie in request. {json} a JSON string representing a list of objects; each object being a term. {ontology_name}, {ontology_id}, {ontology_summary}</li>
+    <li><strong>Returns:</strong> HTTP error if something went wrong</li>
+</ul>
+
+<h2>Create Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/create-term</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. {jsonTerm} a JSON representation of the term. You can call this method as many times as you need to build the structure of an ontology. Example: <code>{"ontology_id: "CO_22", "ontology_name": "Sorghum Trait", "parent": "CO_222:1122" ...}</code>. As you can see the <strong>parent</strong> property describes the relationship between terms. If parent is <i>null</i> then the term is a ROOT term</li>
+    <li><strong>Returns:</strong> HTTP error if something went wrong</li>
+</ul>
+
+</div><!-- /api_left -->
 <div class="api_right">
 Disqus comment form, once we buy a domain
 </div>
