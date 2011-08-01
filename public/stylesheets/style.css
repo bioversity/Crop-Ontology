@@ -110,13 +110,15 @@ a.minibutton.selected{
 }
 #logo h1{
     line-height:90px;
-
-    
     color:#495961;
     font-size:30px;
     font-weight:normal;
     letter-spacing:-1px;
     text-shadow:1px 1px 0 #FFFFFF;
+}
+#logo h1 img{
+    vertical-align: middle;
+    margin-right: 20px;
 }
 table.attributes {
     width: 100%;
