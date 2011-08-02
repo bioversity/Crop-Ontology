@@ -116,6 +116,9 @@ a.minibutton.selected{
     letter-spacing:-1px;
     text-shadow:1px 1px 0 #FFFFFF;
 }
+#logo h1 a{
+    text-decoration: none;
+}
 #logo h1 img{
     vertical-align: middle;
     margin-right: 20px;
