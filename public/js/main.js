@@ -862,8 +862,14 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
+    $(".usersbtn a").click(function(e) {
+        UserWidget.showAll();
 
-    $(".comment-list p.author strong.author a").live("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $("[userid]").live("click", function(e) {
         var $this = $(this);
         var userid = $this.attr("userid");
 
@@ -873,6 +879,7 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
+
  
 };
 
@@ -1299,8 +1306,38 @@ UserWidget = (function() {
         
         });
     }
+    function showAll() {
+        Modal.show("users", function() {
+            var that = this;
+            this.load(true);
+
+            $.getJSON("/users", function(users){
+                // do replacement
+                var curr = that.curr;
+                curr.show();
+
+                var result = curr.find(".result");
+                result.html("");
+
+                var h2 = curr.find("h2:first");
+
+                for(var i=0; i<users.length; i++) {
+                    var c = h2.clone();
+                    var user = users[i];
+                    c.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
+                    c.find(".name").attr("userid", user.userid).text(user.username);
+                    c.show();
+
+                    result.append(c);
+                }
+                that.load(false);
+            });
+        
+        });
+    }
     return {
-        show: show
+        show: show,
+        showAll: showAll
     };
 })();
  

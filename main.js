@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.20";
+var VERSION = "0.2.21";
 
 var print = function(response) {
     return {
@@ -30,7 +30,8 @@ apejs.urls = {
         get: function(request, response) {
             var skin = render("skins/index.html")
                         .replace(/{{CONTENT}}/g, render("skins/api.html"))
-                        .replace(/{{VERSION}}/g, VERSION);
+                        .replace(/{{VERSION}}/g, VERSION)
+                        .replace(/{{URL}}/g, "http://www.cropontology-curationtool.org");
             response.getWriter().println(skin);
             
         }
@@ -411,13 +412,23 @@ apejs.urls = {
 
             if(!q || q == "") return print(response).json(ret);
 
-            q = q.toLowerCase();
+            q = q.toLowerCase().trim();
+
+            // split the search query into words
+            var words = q.split(" ");
 
             var searchField = "normalized";
-            var terms = googlestore.query("term")
-                            .filter(searchField, ">=", q)
-                            .filter(searchField, "<", q + "\ufffd")
-                            .fetch();
+
+            var terms = googlestore.query("term");
+
+            // for each word, apply a filter on the query
+            for(var i=0; i<words.length; i++) {
+                var searchValue = words[i];
+                terms.filter(searchField, ">=", searchValue);
+                terms.filter(searchField, "<", searchValue + "\ufffd");
+            }
+            terms = terms.fetch();
+
             terms.forEach(function(t) {
                 ret.push(googlestore.toJS(t));
             });
@@ -972,6 +983,24 @@ apejs.urls = {
                 cats.push(i);
 
             print(response).json(cats);
+        }
+    },
+    "/users": {
+        get: function(request, response) {
+            require("./usermodel.js");
+            try {
+                var users = googlestore.query("user").fetch();
+                    
+                var ret = [];
+
+                users.forEach(function(userEntity) {
+                    ret.push(usermodel.out(userEntity));
+                });
+                print(response).json(ret);
+
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
         }
     },
     "/users/([a-zA-Z0-9_]+)": {

@@ -97,6 +97,9 @@ var usermodel = {
         // hide email
         ret["email"] = usermodel.hideEmail(ret["email"]);
 
+        // also we want the id
+        ret["userid"] = ""+u.getKey().getId();
+
         return ret;
 
     }

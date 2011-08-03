@@ -345,7 +345,7 @@ a.button {
     display: block;
 }
 
-.api, .aboutbtn {
+.api, .aboutbtn, .usersbtn {
     width: 100px;
     float: left;
     position: absolute;
@@ -356,7 +356,11 @@ a.button {
     top: 40px;
     left: 150px;
 }
-.api a, .aboutbtn a {
+.usersbtn {
+    left: 260px;
+    top: 40px;
+}
+.api a, .aboutbtn a, .usersbtn a {
     font-size: 15px;
 }
 
