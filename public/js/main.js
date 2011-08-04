@@ -1277,11 +1277,12 @@ UserWidget = (function() {
                 curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
                 curr.find(".name").text(user.username);
                 curr.show();
+                    
+                var cont = curr.find("ul li:first");
 
                 // now get this users ontologies
                 $.getJSON("/user-ontologies", {userid: userid}, function(ontologies) {
-                    var cont = curr.find(".result li:first"),
-                        res = curr.find(".result"),
+                    var res = curr.find(".result"),
                         clone = cont.clone();
 
                     res.html(""); // clear it out

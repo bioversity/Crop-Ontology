@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.21";
+var VERSION = "0.2.5";
 
 var print = function(response) {
     return {
@@ -408,7 +408,6 @@ apejs.urls = {
     "/search" : {
         get: function(request, response, matches) {
             var q = request.getParameter("q");
-            var ret = [];
 
             if(!q || q == "") return print(response).json(ret);
 
@@ -419,21 +418,76 @@ apejs.urls = {
 
             var searchField = "normalized";
 
-            var terms = googlestore.query("term");
+            var resultLength = 0,
+                matchedTerms = []; // contains all the terms entities
 
             // for each word, apply a filter on the query
             for(var i=0; i<words.length; i++) {
                 var searchValue = words[i];
+                var terms = googlestore.query("term");
                 terms.filter(searchField, ">=", searchValue);
                 terms.filter(searchField, "<", searchValue + "\ufffd");
-            }
-            terms = terms.fetch();
+                terms = terms.fetch();
 
-            terms.forEach(function(t) {
-                ret.push(googlestore.toJS(t));
+                if(terms.length) {
+
+                    // but all the terms we found in a big array
+                    terms.forEach(function(termEntity) {
+                        matchedTerms.push(termEntity);
+                    });
+
+                    resultLength++;
+                }
+            }
+
+            // check that the result length is same as words length
+            // meaning that we found entities with all the words
+            if(resultLength != words.length)
+                return print(response).json([]);
+
+            // found somewhere online
+            function compressArray(original) {
+                var compressed = [];
+                // make a copy of the input array
+                var copy = original.slice(0);
+             
+                // first loop goes over every element
+                for (var i = 0; i < original.length; i++) {
+                    var myCount = 0;    
+                    // loop over every element in the copy and see if it's the same
+                    for (var w = 0; w < copy.length; w++) {
+                        if (original[i].equals(copy[w])) { // XXX changed this to .equals since it's an array of entities
+                            // increase amount of times duplicate is found
+                            myCount++;
+                            // sets item to undefined
+                            delete copy[w];
+                        }
+                    }
+                    if (myCount > 0) {
+                        var a = {};
+                        a.value = original[i];
+                        a.count = myCount;
+                        compressed.push(a);
+                    }
+                }
+             
+                return compressed;
+            };
+
+            var compressed = compressArray(matchedTerms);
+
+            var res = [];
+            // loop through the compressed and see if the count matches the resultLength
+            compressed.forEach(function(o) {
+                var entity = o.value,
+                    count = o.count;
+
+                if(count == resultLength)
+                    res.push(googlestore.toJS(entity));
+
             });
             
-            return print(response).json(ret);
+            return print(response).json(res);
         }
     },
     "/login" : {

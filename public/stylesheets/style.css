@@ -1,13 +1,42 @@
 .description ul{
     padding-left:40px;
 }
+#header {
+    width: 920px !important;
+    min-width: 920px;
+}
 
 #header_outer {
+    /*
     background: #F1F1F1;
     border-bottom: 1px solid #D2D2D2;
+    border-top: 1px solid #D2D2D2;
+    */
 }
 #header {
     position: relative;
+    background: #F1F1F1;
+    border: 1px solid #D2D2D2;
+}
+
+.header_top {
+    height: 50px;
+    width: 920px;
+    margin: auto;
+}
+
+.header_logo{
+    padding-top: 5px;
+}
+.header_logo h1 a{
+}
+.header_logo h1 span{
+}
+.gcp_logo {
+    float: right;
+}
+.header_images img{
+    float: right;
 }
 .bar {
     width: 420px;
@@ -108,20 +137,26 @@ a.minibutton.selected{
     float: right;
     cursor: pointer;
 }
-#logo h1{
+.header_top h1{
     line-height:90px;
-    color:#495961;
     font-size:30px;
     font-weight:normal;
     letter-spacing:-1px;
     text-shadow:1px 1px 0 #FFFFFF;
+
+
+    font-family: 'Open Sans',arial,sans-serif;
+    color: #333;
 }
-#logo h1 a{
+.header_top h1 a{
     text-decoration: none;
+    color: #333;
 }
 #logo h1 img{
     vertical-align: middle;
     margin-right: 20px;
+    width:80px;
+    height: 69px;
 }
 table.attributes {
     width: 100%;
@@ -349,16 +384,14 @@ a.button {
     width: 100px;
     float: left;
     position: absolute;
-    top: 40px;
+    top: 36px;
     left: 40px;
 }
 .aboutbtn {
-    top: 40px;
     left: 150px;
 }
 .usersbtn {
     left: 260px;
-    top: 40px;
 }
 .api a, .aboutbtn a, .usersbtn a {
     font-size: 15px;
@@ -515,12 +548,12 @@ img.grav {
     vertical-align:middle;
 }
 
-ul.result {
+ul.ontos {
     margin: 0;
     padding:0;
 margin-top: 10px;
 }
-ul.result li {
+ul.ontos li {
 border-bottom: 1px solid #EEE;
 text-shadow: 1px 1px white;
 position: relative;
@@ -531,29 +564,29 @@ font-weight: bold;
 list-style: none;
 font-size: 14px;
 }
-ul.result li .name{
+ul.ontos li .name{
     color: #333136;
     text-decoration: none;
 }
-ul.result li .summary{
+ul.ontos li .summary{
     color: #919191;
     font-weight: normal;
     font-size: 12px;
 }
-ul.result .onto_id {
+ul.ontos .onto_id {
     float: left;
 }
-ul.result .onto_id .box{
+ul.ontos .onto_id .box{
     width: 100px;
     display: block;
 }
-ul.result .desc {
+ul.ontos .desc {
     float: left;
     margin-left: 20px;
     width: 400px;
 }
 .box {
-background: #5481CB;
+background: #4183C4;
 color: white !important;
 font-weight: bold;
 padding: 10px;
