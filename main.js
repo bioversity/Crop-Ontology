@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.51";
+var VERSION = "0.2.52";
 
 var print = function(response) {
     return {
@@ -534,13 +534,14 @@ apejs.urls = {
                 created: new java.util.Date(),
                 username: request.getParameter("username"),
                 email: request.getParameter("email"),
-                password: request.getParameter("password"),
-                admin: false
+                password: request.getParameter("password")
             }, o = {}, error = false;
 
             for(var i in user)
                 if(user[i] == "") error = "Complete the entire form!";
 
+
+            user.admin = false;
 
             if(usermodel.emailExists(user.email))
                 error = "This email already exists!";
@@ -1145,6 +1146,27 @@ apejs.urls = {
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
+        }
+    },
+    "/admin": {
+        get: function(request, response) {
+            /*
+            var key = googlestore.createKey("user", 2);
+            var rose = googlestore.get(key);
+
+            rose.setProperty("admin", true);
+
+            googlestore.put(rose);
+            */
+
+        }
+    },
+    "/feedback": {
+        get: function(request, response) {
+            var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/feedback.html"))
+                        .replace(/{{VERSION}}/g, VERSION);
+            response.getWriter().println(skin);
         }
     }
 };
