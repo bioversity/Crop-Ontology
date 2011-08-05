@@ -89,9 +89,18 @@ var auth = (function(){
         return text;
     }
 
+    function isAdmin(userEntity) {
+        var admin = userEntity.getProperty("admin");
+        if(admin && admin == true)
+            return true;
+        else
+            return false;
+    }
+
     return {
         getUser: getUser,
-        login: login
+        login: login,
+        isAdmin: isAdmin
     };
 
 })();

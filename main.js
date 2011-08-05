@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.5";
+var VERSION = "0.2.51";
 
 var print = function(response) {
     return {
@@ -534,7 +534,8 @@ apejs.urls = {
                 created: new java.util.Date(),
                 username: request.getParameter("username"),
                 email: request.getParameter("email"),
-                password: request.getParameter("password")
+                password: request.getParameter("password"),
+                admin: false
             }, o = {}, error = false;
 
             for(var i in user)
@@ -567,7 +568,6 @@ apejs.urls = {
                 auth.login(response, user.username, user.password);
 
             }
-                
         }
     },
     "/add-comment" : {
@@ -705,10 +705,11 @@ apejs.urls = {
                 var ontoKey = googlestore.createKey("ontology", ontologyId),
                     ontoEntity = googlestore.get(ontoKey);
 
-                // check that we own this ontology
-                if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
-                    return response.sendError(response.SC_BAD_REQUEST, "you can't edit this ontology");
-
+                // check that we own this ontology only if we're not admins
+                if(!auth.isAdmin(currUser)) {
+                    if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                        return response.sendError(response.SC_BAD_REQUEST, "you can't edit this ontology");
+                }
 
                 // now edit it
                 var ontologyName = request.getParameter("ontology_name"),
@@ -985,10 +986,17 @@ apejs.urls = {
     "/curruser-ontologies": {
         get: function(request, response) {
             var currUser = auth.getUser(request);
+            if(!currUser)
+                response.sendError(response.SC_BAD_REQUEST, "Not logged in");
+
             
-            var ontos = googlestore.query("ontology")
-                            .filter("user_key", "=", currUser.getKey())
-                            .fetch();
+            var ontos = googlestore.query("ontology");
+            // return all ontologies if admin
+            if(!auth.isAdmin(currUser)) {
+                ontos.filter("user_key", "=", currUser.getKey());
+            }
+
+            ontos = ontos.fetch();
 
             var ret = [];
             ontos.forEach(function(onto) {
