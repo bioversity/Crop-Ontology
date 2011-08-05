@@ -746,25 +746,84 @@ apejs.urls = {
             require("./taskqueue.js");
             require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
+
             var currUser = auth.getUser(request);
             if(!currUser)
-                return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+                return err("Not logged in");
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 oboBlobKey = blobs.get("obofile");
 
             if(oboBlobKey == null) {
-                return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+                return err("Something is missing. Did you fill out all the fields?");
             }
             try {
                 var ontologyName = request.getParameter("ontology_name"),
-                    ontologyId = request.getParameter("ontology_id"),
                     ontologySummary = request.getParameter("ontology_summary");
 
-                if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "")
-                    return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+                if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
+                    return err("Something is missing. Did you fill out all the fields?");
 
-                // first create ontology
+
+                // let's use BlobstoreInputStream to read more than 1mb at a time.
+                // we read and parse line by line because we don't want to allocate
+                // memory - keeping it light
+                var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
+                    ontologyNameString = ""+ontologyName;
+
+
+                var first = true,
+                    ontologyId = 0,
+                    stop = false;
+                blobstore.readLine(oboBlobKey, function(line) {
+                    if(stop) return;
+                    jsonobo.findTerm(line, function(term) { // the callback is called when a complete Term is found
+                        // let's safely assume the first term we find contains
+                        // the ontology id
+                        if(first) {
+                            var split = term.id.split(":");
+                            ontologyId = split[0];
+
+                            first = false;
+
+                            // check if this ontoId already exists
+                            // (of course only runs the first time)
+                            try {
+                                var ontoKey = googlestore.createKey("ontology", ontologyId);
+                                var ontoEntity = googlestore.get(ontoKey);
+                                stop = true;
+                            } catch (e) {
+                                // if we get here, ontology doesn't exist
+                                stop = false;
+                            }
+                        }
+                        
+                        if(stop) return;
+
+                        // need a reference to the obo we just created
+                        term.obo_blob_key = oboBlobKeyString;
+                        // also need reference to the ontology
+                        term.ontology_name = ontologyNameString;
+
+                        // use this terms ontology ID, if it's different from the rest
+                        // it will not show up - it's the OBO's fault
+                        term.ontology_id = ontologyId;
+
+
+                        // we found a term, let's save it in datastore.
+                        // XXX, the .put() in here is expensive - takes more than 30secs
+                        // spawn a Task or something else
+                        // pass the data as a JSON string
+                        taskqueue.createTask("/create-term", JSON.stringify(term));
+                    });
+                });
+
+                if(stop) {
+                    return err("Ontology ID already exists");
+                }
+
+                // create the ontology
                 var ontoEntity = googlestore.entity("ontology", ontologyId, {
                     created_at: new java.util.Date(),
                     user_key: currUser.getKey(),
@@ -776,37 +835,18 @@ apejs.urls = {
 
                 googlestore.put(ontoEntity);
 
-
-                // let's use BlobstoreInputStream to read more than 1mb at a time.
-                // we read and parse line by line because we don't want to allocate
-                // memory - keeping it light
-                var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
-                    ontologyIdString = ""+ontologyId,
-                    ontologyNameString = ""+ontologyName;
-
-                blobstore.readLine(oboBlobKey, function(line) {
-                    // the callback is called when a complete Term is found
-                    jsonobo.findTerm(line, function(term) {
-                        // need a reference to the obo we just created
-                        term.obo_blob_key = oboBlobKeyString;
-                        // also need reference to the ontology
-                        term.ontology_id = ontologyIdString;
-                        term.ontology_name = ontologyNameString;
-
-                        // we found a term, let's save it in datastore.
-                        // XXX, the .put() in here is expensive - takes more than 30secs
-                        // spawn a Task or something else
-                        // pass the data as a JSON string
-                        taskqueue.createTask("/create-term", JSON.stringify(term));
-                    });
-                });
-
-
-                response.sendRedirect("/");
+                return err("");
             } catch(e) {
-                return response.sendError(response.SC_BAD_REQUEST, e);
+                return err(e);
             }
 
+        }
+    },
+    "/obo-upload-url": {
+        get: function(request, response) {
+            require("./blobstore.js");
+            var uploadUrl = blobstore.createUploadUrl("/obo-upload");
+            response.getWriter().println(uploadUrl);
         }
     },
     "/create-term": {

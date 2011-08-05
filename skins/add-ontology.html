@@ -12,14 +12,13 @@
 
                     <div id="upload_obo_cont">
 
-                        <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data">
+                        <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="obo_upload_iframe">
                             <p>
                             Category:
                             {{ONTOLOGY_CATEGORIES}}
                             </p>
                             <p>
                             <input name="ontology_name" type="text" placeholder="Ontology Name" />
-                            <input name="ontology_id" type="text" placeholder="Ontology ID" />
                             </p>
                             <p>
                             <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
@@ -31,6 +30,7 @@
                             <input type="submit" value="Upload OBO" />
                             </p>
                         </form>
+                        <iframe name="obo_upload_iframe" style="display: none"></iframe>
 
 <!--
 <script type="text/javascript" src="/js/jsonobo.js"></script>

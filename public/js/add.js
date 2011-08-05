@@ -146,6 +146,14 @@ var bindEvents = function() {
         e.preventDefault();
         e.stopPropagation();
     });
+
+    $("[target=obo_upload_iframe]").submit(function() {
+        var $this = $(this);
+
+        var submitBtn = $this.find("[type=submit]");
+        submitBtn.hide();
+
+    });
 };
 
 
@@ -156,3 +164,19 @@ $(function() {
     bindEvents();    
 
 });
+
+// for obo upload errors
+var fileupload_done = function(error) {
+    var form = $("form[target=obo_upload_iframe]");
+
+    if(error) {
+        err(error);
+        $.get("/obo-upload-url", function(url) {
+            form.attr("action", url);
+
+            form.find("[type=submit]").show();
+        });
+    } else {
+        window.location = "/";
+    }
+};
