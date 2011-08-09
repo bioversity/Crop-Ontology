@@ -584,6 +584,7 @@ var events = function(){
           url: '/add-comment',
           data: {
             "termId" : term_id,
+            "ontologyId" : ontologyid,
             "comment" :comment
           },
           success: function(data) {

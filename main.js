@@ -12,6 +12,11 @@ var print = function(response) {
     return {
         json: function(j) {
             response.getWriter().println(JSON.stringify(j));
+        },
+        rss: function(title, arr) {
+            require("./rss.js");
+
+            response.getWriter().println(rss(title, arr));
         }
     };
 }
@@ -40,6 +45,8 @@ apejs.urls = {
         get: function(request, response) {
             var category = request.getParameter("category"); 
             var ontologies = googlestore.query("ontology");
+
+            ontologies.sort("ontology_name", "ASC");
 
             if(category && !category.equals(""))
                 ontologies.filter("category", "=", category);
@@ -70,9 +77,28 @@ apejs.urls = {
             
         }
     },
-    "/ontology/([a-zA-Z0-9_\: \.]+)": {
+    // haha nice REGEX!
+    "/ontology(?:/([a-zA-Z0-9_\: \.]+)(?:/([a-zA-Z0-9_\: \.]+)(?:/([a-zA-Z0-9]+))?)?)?": {
         get: function(request, response, matches) {
             require("./ontologymodel.js");
+
+            var ontoId = matches[1];
+
+            if(matches[3] && matches[3] == "rss") {
+                require("./commentmodel.js");
+
+                var ontoComments = commentmodel.getCommentsByOnto(ontoId);
+
+                // do rss comments
+                /*
+                print(response).json(ontoComments);
+                return;
+                */
+                response.setContentType("application/xml");
+                print(response).rss(matches[2] + " ("+matches[1]+") - Latest Comments", ontoComments);
+
+                return;
+            }
 
             var skin = render("skins/index.html")
                     .replace(/{{CONTENT}}/g, render("skins/onto.html"))
@@ -578,6 +604,7 @@ apejs.urls = {
                 return response.sendError(response.SC_FORBIDDEN);
 
             var termId = request.getParameter("termId"),
+                ontologyId = request.getParameter("ontologyId"),
                 comment = request.getParameter("comment");
 
             if(!comment || comment == "" || !termId || termId == "") {
@@ -587,6 +614,7 @@ apejs.urls = {
 
             var comment = googlestore.entity("comment", {
                 termId: termId,
+                ontology_id: ontologyId,
                 userKey: currUser.getKey(),
                 created: new java.util.Date(),
                 comment: new Text(comment)

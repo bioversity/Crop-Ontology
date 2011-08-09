@@ -22,8 +22,11 @@ function addRow(obj, par) {
 
     // replace stuff
     $row.find("h3 a.term").attr("title", obj.ontology_name)
-                .attr("href", "/ontology/"+obj.ontology_id)
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+obj.ontology_name)
                 .text(obj.ontology_name);
+    $row.find(".comments_rss")
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+obj.ontology_name+"/rss");
+
     $row.find("a.username").click(function(e) {
         UserWidget.show(obj.userid);
         
@@ -71,16 +74,12 @@ $.getJSON("/get-categories", function(cats) {
  
             <div class="list-ontologies"> 
                 <div class="bar left" style="display: none;">
-                    <h2 class="featured-heading"><a class="feed" href="http://singerdatadictionary.disqus.com/latest.rss">Subscribe</a><span>Crop Ontologies</span></h2>
+                    <h2 class="featured-heading"><span>Crop Ontologies</span></h2>
                     <img src="/images/metabox_loader.gif" class="loader"/>
 
                     <ol class="ranked-repositories row" style="display: none;">
                         <li>
-                            <ul class="repo-stats">
-                                <li class="watchers">
-                                    <a title="Comments" href="http://singer.cgiar.org/data-dictionary/AccessionLocalUniqueIdentifier#disqus_thread">0</a>    
-                                </li>
-                            </ul>
+                            <a href="#" title="Comments RSS" class="comments_rss"></a>
                             <h3>
                                 <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a><a href="#" class="username">Ciao</a>
                             </h3>
