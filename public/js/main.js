@@ -577,6 +577,13 @@ var events = function(){
         var comment = commentTextarea.val();
         var term_id = $("#term_id").text();
  
+        var ontoId = "";
+        if(ontologyid == "{{ontologyid}}") {
+            // get it from the term_id
+            ontoId = term_id.split(":")[0];
+        } else {
+            ontoId = ontologyid;
+        }
         term_loader(true);
  
         $.ajax({
@@ -584,7 +591,7 @@ var events = function(){
           url: '/add-comment',
           data: {
             "termId" : term_id,
-            "ontologyId" : ontologyid,
+            "ontologyId" : ontoId,
             "comment" :comment
           },
           success: function(data) {

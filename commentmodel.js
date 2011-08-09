@@ -1,8 +1,8 @@
 var commentmodel = {
     getCommentsByOnto: function(ontoId) {
         var comments = googlestore.query("comment")
-                        .sort("created", "DESC")
                         .filter("ontology_id", "=", ontoId)
+                        .sort("created", "DESC")
                         .fetch();
         
         var ret = [];
