@@ -21,11 +21,17 @@ function addRow(obj, par) {
 
 
     // replace stuff
+
+    // replace slasehs with dashes because then url goes crazy
+    var escapedName = obj.ontology_name.replace("/", "-");
+
     $row.find("h3 a.term").attr("title", obj.ontology_name)
-                .attr("href", "/ontology/"+obj.ontology_id+"/"+obj.ontology_name)
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName)
                 .text(obj.ontology_name);
+
+
     $row.find(".comments_rss")
-                .attr("href", "/ontology/"+obj.ontology_id+"/"+obj.ontology_name+"/rss");
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
 
     $row.find("a.username").click(function(e) {
         UserWidget.show(obj.userid);

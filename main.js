@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.61";
+var VERSION = "0.2.63";
 
 var print = function(response) {
     return {
@@ -19,7 +19,11 @@ var print = function(response) {
             response.getWriter().println(rss(title, arr));
         }
     };
-}
+};
+
+var error = function(response, msg) {
+    response.sendError(response.SC_BAD_REQUEST, msg);
+};
 
 apejs.urls = {
     "/": {
@@ -78,7 +82,7 @@ apejs.urls = {
         }
     },
     // haha nice REGEX!
-    "/ontology(?:/([a-zA-Z0-9_\: \.]+)(?:/([a-zA-Z0-9_\: \.]+)(?:/([a-zA-Z0-9]+))?)?)?": {
+    "/ontology(?:/([a-zA-Z0-9_\: \.-]+)(?:/([a-zA-Z0-9_\: \.-]+)(?:/([a-zA-Z0-9]+))?)?)?": {
         get: function(request, response, matches) {
             require("./ontologymodel.js");
 
@@ -151,6 +155,63 @@ apejs.urls = {
                 response.getWriter().println(JSON.stringify(ret));
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        }
+    },
+    "/delete-ontology": {
+        post: function(request, response) {
+            try {
+                var ontologyId = request.getParameter("ontologyId");
+                if(!ontologyId || ontologyId.equals(""))
+                    return error(response, "Missing required parameter");
+
+                var currUser = auth.getUser(request);
+                if(!currUser)
+                    return error(response, "Not logged in");
+
+                var ontoKey = googlestore.createKey("ontology", ontologyId),
+                    ontoEntity = googlestore.get(ontoKey);
+
+                // check if own this ontology only if we're not admins
+                if(!auth.isAdmin(currUser)) {
+                    if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                        return error(response, "You don't have the permissions to delete this ontology");
+                }
+
+                // get all the terms that have this ontology_id so we can delete them
+                var termsToDelete = googlestore.query("term")
+                                        .filter("ontology_id", "=", ontologyId)
+                                        .setKeysOnly()
+                                        .fetchAsIterable();
+
+                // termsToDelete is an Iterable<Entity>
+                // since we need to pass it inside the delete method
+                // we need an Iterable<Key>. Implement it using
+                // JavaScript directly :)
+                var obj = {
+                    iterator: function() {
+                        var it = termsToDelete.iterator();
+                        return new java.util.Iterator({
+                            hasNext: function() {
+                                return it.hasNext();
+                            },
+                            next: function() {
+                                return it.next().getKey();
+                            },
+                            remove: function(){
+                                it.remove();
+                            }
+                        });
+                    }
+                };
+                var iterable = new java.lang.Iterable(obj);
+
+                googlestore.del(iterable);
+
+                // now delete the actual ontology entity
+                googlestore.del(ontoEntity.getKey());
+            } catch(e) {
+                error(response, e);
             }
         }
     },
@@ -709,6 +770,7 @@ apejs.urls = {
                     var term = arr[i];
                     term.ontology_id = ontologyId;
                     term.ontology_name = ontologyName;
+                    // XXX someone posting a term with an already existing ID might edit it
                     termmodel.createTerm(term);
                 }
 
@@ -890,6 +952,8 @@ apejs.urls = {
             logger.info("== RAN TASK - JSON TERM: "+jsonTerm);
             */
 
+            // XXX if the term id or relationship already exists, do something!
+
             // parse the JSON
             var jsonTerm = request.getParameter("jsonTerm");
             var term = JSON.parse(jsonTerm);
@@ -999,8 +1063,11 @@ apejs.urls = {
             var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
                 ontoEntity = googlestore.get(ontoKey);
 
-            if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
-                return err("You don't have the permissions to edit this attribute");
+            // check if it's our ontology only if we're not admins
+            if(!auth.isAdmin(currUser)) {
+                if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                    return err("You don't have the permissions to edit this attribute");
+            }
 
             // set this property value
             termEntity.setProperty(key, (value instanceof BlobKey ? value : new Text(value)));
