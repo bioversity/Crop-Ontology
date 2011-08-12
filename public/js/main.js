@@ -1169,11 +1169,20 @@ var Editable = (function(){
                     parent: $this.find("input[name=parent]:first").val(),
                     id: $this.find("input[name=id]:first").val()
                 };
-                
-                $.post("/create-term", {jsonTerm: JSON.stringify(jsonTerm)}, function(data) {
-                });
+
+                if(jsonTerm.name) {
+                    $.post("/create-term", {jsonTerm: JSON.stringify(jsonTerm)}, function(data) {
+                        editToggle(false);
+
+                        // transform this .editable_input into a button
+                        var last = false;
+                        if($this.hasClass("last")) last = true;
+                        var o = { name: jsonTerm.name, id: jsonTerm.id};
+                        var li = make_li(o, last);
+                        $this.replaceWith(li);
+                    });
+                }
             });
-            editToggle(false);
 
         });
 
