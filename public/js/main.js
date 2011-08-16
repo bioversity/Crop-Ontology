@@ -1190,7 +1190,6 @@ var Editable = (function(){
 
     function deleteOntology(ontology) {
         if(!confirm("The ontology "+ontology.ontology_name+" with ID: "+ontology.ontology_id+" will be deleted along with all its terms. Are you sure you want to proceed?")) return;
-        console.log(ontology);
 
         $.post("/delete-ontology", {ontologyId: ontology.ontology_id}, function(data) {
             window.location.pathname = "/";
