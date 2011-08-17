@@ -864,12 +864,14 @@ var events = function(){
 
     Modal.init();
 
+    /*
     $(".aboutbtn a").click(function(e) {
         Modal.show("about");
         
         e.preventDefault();
         e.stopPropagation();
     });
+    */
     $(".usersbtn a").click(function(e) {
         UserWidget.showAll();
 
@@ -912,7 +914,12 @@ var Modal = (function() {
         // set the modal height based on the current modal height
         var jmodal = $(".modal");
         var height = jmodal.height();
-        jmodal.css("margin-top", "-" + (height/2) + "px");
+        // if height is bigger than the screen, just set top to 0
+        if(height > $(window).height()) {
+            jmodal.css("margin-top", "0px");
+        } else {
+            jmodal.css("margin-top", "-" + (height/2) + "px");
+        }
 
     }
     function load(s) {

@@ -1,10 +1,10 @@
 var ontologymodel = (function() {
 
     var categories = [
-        "010-089 General Germplasm Ontology Ontology",
+        "010-089 General Germplasm Ontology",
         "090-099 Taxonomic Ontology",
         "100-299 Plant Anatomy & Development Ontology",
-        "300-499 Phenotype and Trait Ontology Ontology",
+        "300-499 Phenotype and Trait Ontology",
         "500-699 Structural and Functional Genomic Ontology",
         "700-799 Location and Environmental Ontology",
         "800-899 General Science Ontology",

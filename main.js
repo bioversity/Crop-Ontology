@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.67";
+var VERSION = "0.2.71";
 
 var print = function(response) {
     return {
@@ -41,6 +41,15 @@ apejs.urls = {
                         .replace(/{{CONTENT}}/g, render("skins/api.html"))
                         .replace(/{{VERSION}}/g, VERSION)
                         .replace(/{{URL}}/g, "http://www.cropontology-curationtool.org");
+            response.getWriter().println(skin);
+            
+        }
+    },
+    "/about": {
+        get: function(request, response) {
+            var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/about.html"))
+                        .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(skin);
             
         }
@@ -1152,9 +1161,11 @@ apejs.urls = {
             // start the array with the current term
             var termKey = googlestore.createKey("term", termId),
                 termEntity = googlestore.get(termKey);
+
+            var name = termEntity.getProperty("name");
             arr.push({
                 id: ""+termEntity.getProperty("id"),
-                name: ""+termEntity.getProperty("name")
+                name: ""+(name instanceof Text ? name.getValue() : name)
             })
 
             getParent(arr, termId);
