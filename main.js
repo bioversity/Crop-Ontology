@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.71";
+var VERSION = "0.2.72";
 
 var print = function(response) {
     return {
@@ -671,7 +671,7 @@ apejs.urls = {
         post: function(request, response) {
             var currUser = auth.getUser(request);
             if(!currUser)
-                return response.sendError(response.SC_FORBIDDEN);
+                return response.sendError(response.SC_BAD_REQUEST, "Please log in to comment");
 
             var termId = request.getParameter("termId"),
                 ontologyId = request.getParameter("ontologyId"),
@@ -709,17 +709,25 @@ apejs.urls = {
                 for(var i=0; i<comments.length; i++) {
                     var comment = comments[i];
                     // conver them all to JS strings so the JSON.stringify can read them
-                    var author = googlestore.get(comment.getProperty("userKey"));
-                    ret.push({
-                        "created": ""+comment.getProperty("created"),
-                        "author": ""+author.getProperty("username"),
-                        "author_id": ""+author.getKey().getId(),
-                        "comment": ""+comment.getProperty("comment").getValue()
+                    var author = false;
+                    try {
+                        author = googlestore.get(comment.getProperty("userKey"));
+                    } catch(e) {
+                    }
 
-                    });
+                    if(author) {
+                        ret.push({
+                            "created": ""+comment.getProperty("created"),
+                            "author": ""+author.getProperty("username"),
+                            "author_id": ""+author.getKey().getId(),
+                            "comment": ""+comment.getProperty("comment").getValue()
+
+                        });
+                    }
                 }
                 response.getWriter().println(JSON.stringify(ret));
             } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
             }
         }
     },
