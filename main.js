@@ -54,6 +54,40 @@ apejs.urls = {
             
         }
     },
+    "/latest-terms": {
+        get: function(request, response) {
+            var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/latest-terms.html"))
+                        .replace(/{{VERSION}}/g, VERSION);
+            response.getWriter().println(skin);
+        },
+        post: function(request, response) {
+            var latestTerms = googlestore.query("term")
+                                .sort("created_at", "DESC")
+                                .fetch(10);
+
+            var ret = [];
+
+            latestTerms.forEach(function(term) {
+                var ontoKey = googlestore.createKey("ontology", term.getProperty("ontology_id")),
+                    ontoEntity = googlestore.get(ontoKey);
+
+                // find author from ontology
+                var author = googlestore.get(ontoEntity.getProperty("user_key"));
+
+                ret.push({
+                    "id": ""+term.getProperty("id"),
+                    "name": ""+term.getProperty("name"),
+                    "created": ""+term.getProperty("created_at"),
+                    "ontology_name": ""+ontoEntity.getProperty("ontology_name"),
+                    "author": ""+author.getProperty("username"),
+                    "author_id": ""+author.getKey().getId()
+                });
+            });
+
+            print(response).json(ret);
+        }
+    },
     "/ontologies": {
         get: function(request, response) {
             var category = request.getParameter("category"); 

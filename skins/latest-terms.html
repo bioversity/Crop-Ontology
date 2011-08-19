@@ -1,0 +1,40 @@
+<script>
+
+$(function() {
+    // get latest terms
+    $.post("/latest-terms", function(terms) {
+        $.each(terms, function() {
+            var clone = $("#latest_term").clone();
+            clone.id = "";
+            clone.attr("id","");
+
+            // replace stuff
+            clone.find(".username").attr("userid", this.author_id).text(this.author);
+            clone.find(".term").attr("href", "/terms/"+this.id+"/"+this.name).text(this.name);
+            clone.find(".description").html("Ontology: <b>"+this.ontology_name+"</b>. Created: "+this.created);
+
+            
+            clone.show();
+            $(".list-ontologies").append(clone);
+
+        });
+
+        $(".loader").hide();
+    }, "json");
+
+});
+</script>
+
+<div class="list-ontologies">
+    <h2 class="featured-heading"><span> Latest Terms</span></h2>
+    <img class="loader" src="/images/metabox_loader.gif">
+
+    <ol style="display: none;" class="ranked-repositories row" id="latest_term">
+        <li>
+            <h3>
+                <a href="/data-dictionary/AccessionLocalUniqueIdentifier" class="term" title="AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a><a class="username" href="#" userid="0">Ciao</a>
+            </h3>
+            <p class="description"><span class="description">Here's a test of an ontology</span> </p>
+        </li>
+    </ol>
+</div>

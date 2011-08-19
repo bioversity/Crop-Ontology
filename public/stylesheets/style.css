@@ -380,6 +380,16 @@ a.button {
     display: block;
 }
 
+a.button.green {
+background-color: #7FBF4D;
+background-image: -webkit-linear-gradient(top,#7fbf4d,#63a62f);
+background-image: -moz-linear-gradient(top,#7fbf4d,#63a62f);
+background-image: -ms-linear-gradient(top,#7fbf4d,#63a62f);
+background-image: -o-linear-gradient(top,#7fbf4d,#63a62f);
+background-image: linear-gradient(top,#7fbf4d,#63a62f);
+
+}
+
 .api, .aboutbtn, .usersbtn, .feedbackbtn {
     width: 100px;
     float: left;
