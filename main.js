@@ -54,38 +54,70 @@ apejs.urls = {
             
         }
     },
-    "/latest-terms": {
+    "/latest": {
         get: function(request, response) {
             var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/latest-terms.html"))
+                        .replace(/{{CONTENT}}/g, render("skins/latest.html"))
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(skin);
         },
         post: function(request, response) {
-            var latestTerms = googlestore.query("term")
+            var termsQuery = googlestore.query("term")
+                                .sort("created_at", "DESC")
+                                .fetch(10),
+                ontosQuery = googlestore.query("ontology")
                                 .sort("created_at", "DESC")
                                 .fetch(10);
 
-            var ret = [];
+            var latestTerms = [],
+                latestOntos = [];
 
-            latestTerms.forEach(function(term) {
-                var ontoKey = googlestore.createKey("ontology", term.getProperty("ontology_id")),
-                    ontoEntity = googlestore.get(ontoKey);
+            // do latest terms
+            try {
+                termsQuery.forEach(function(term) {
+                    var ontoKey = googlestore.createKey("ontology", term.getProperty("ontology_id")),
+                        ontoEntity = googlestore.get(ontoKey);
 
-                // find author from ontology
-                var author = googlestore.get(ontoEntity.getProperty("user_key"));
+                    // find author from ontology
+                    var author = googlestore.get(ontoEntity.getProperty("user_key"));
 
-                ret.push({
-                    "id": ""+term.getProperty("id"),
-                    "name": ""+term.getProperty("name"),
-                    "created": ""+term.getProperty("created_at"),
-                    "ontology_name": ""+ontoEntity.getProperty("ontology_name"),
-                    "author": ""+author.getProperty("username"),
-                    "author_id": ""+author.getKey().getId()
+                    latestTerms.push({
+                        "id": ""+term.getProperty("id"),
+                        "name": ""+term.getProperty("name"),
+                        "created": ""+term.getProperty("created_at"),
+                        "ontology_name": ""+ontoEntity.getProperty("ontology_name"),
+                        "author": ""+author.getProperty("username"),
+                        "author_id": ""+author.getKey().getId()
+                    });
                 });
-            });
+            } catch(e) {
+            }
 
-            print(response).json(ret);
+            // do latest ontos
+            try {
+                ontosQuery.forEach(function(onto) {
+                    var username = "",
+                        userid = "";
+                    if(onto.getProperty("user_key")) {
+                        var user = googlestore.get(onto.getProperty("user_key"));
+                        username = user.getProperty("username"); 
+                        userid = user.getKey().getId();
+                    }
+                    latestOntos.push({
+                        ontology_id: ""+onto.getProperty("ontology_id"),
+                        ontology_name: ""+onto.getProperty("ontology_name"),
+                        ontology_summary: ""+onto.getProperty("ontology_summary"),
+                        username: ""+username,
+                        userid: ""+userid
+                    });
+                });
+            } catch(e) {
+            }
+
+            print(response).json({
+                "latestTerms": latestTerms,
+                "latestOntos": latestOntos
+            });
         }
     },
     "/ontologies": {

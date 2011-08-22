@@ -1,0 +1,71 @@
+<script>
+
+$(function() {
+    // get latest terms
+    $.post("/latest", function(data) {
+        var terms = data.latestTerms;
+        $.each(terms, function() {
+            var clone = $("#latest_term").clone();
+            clone.id = "";
+            clone.attr("id","");
+
+            // replace stuff
+            clone.find(".username").attr("userid", this.author_id).text(this.author);
+            clone.find(".term").attr("href", "/terms/"+this.id+"/"+this.name).text(this.name);
+            clone.find(".description").html("Ontology: <b>"+this.ontology_name+"</b>. Created: "+this.created);
+
+            
+            clone.show();
+            $(".latest_terms").append(clone);
+        });
+
+        var ontos = data.latestOntos;
+        $.each(ontos, function() {
+            var clone = $("#latest_onto").clone();
+            clone.id = "";
+            clone.attr("id","");
+
+            // replace stuff
+            clone.find(".username").attr("userid", this.userid).text(this.username);
+            clone.find(".term").attr("href", "/ontology/"+this.ontology_id+"/"+this.ontology_name).text(this.ontology_name);
+            clone.find(".description").html(this.ontology_summary);
+
+            
+            clone.show();
+            $(".latest_ontologies").append(clone);
+        });
+
+        $(".loader").hide();
+    }, "json");
+
+});
+</script>
+
+<div class="list-ontologies">
+    <div class="bar latest_terms">
+        <h2 class="featured-heading"><span> Latest Terms (Top 10)</span></h2>
+        <img class="loader" src="/images/metabox_loader.gif">
+
+        <ol style="display: none;" class="ranked-repositories row" id="latest_term">
+            <li>
+                <h3>
+                    <a href="/data-dictionary/AccessionLocalUniqueIdentifier" class="term" title="AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a><a class="username" href="#" userid="0">Ciao</a>
+                </h3>
+                <p class="description"><span class="description">Here's a test of an ontology</span> </p>
+            </li>
+        </ol>
+    </div>
+    <div class="bar latest_ontologies">
+        <h2 class="featured-heading"><span> Latest Ontologies (Top 10)</span></h2>
+        <img class="loader" src="/images/metabox_loader.gif">
+
+        <ol style="display: none;" class="ranked-repositories row" id="latest_onto">
+            <li>
+                <h3>
+                    <a href="/data-dictionary/AccessionLocalUniqueIdentifier" class="term" title="AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a><a class="username" href="#" userid="0">Ciao</a>
+                </h3>
+                <p class="description"><span class="description">Here's a test of an ontology</span> </p>
+            </li>
+        </ol>
+    </div>
+</div>
