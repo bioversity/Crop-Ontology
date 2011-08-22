@@ -58,12 +58,23 @@ $(".list-ontologies").append(left).append(right);
     
 
 $.getJSON("/get-categories", function(cats) {
+    // filter
+    var filteredCats = [],
+        globalCats = {};
+    for(var i=0, len=cats.length; i<len; i++) {
+        var filtered = filterCat(cats[i]);
+        filteredCats.push(filtered);
+
+        globalCats[filtered] = cats[i];
+    }
+
+    // order the cats
+    cats = filteredCats.sort();
+
     for(var i=0, len=cats.length; i<len; i++) {
         var c = cont.clone();
 
-
-
-        c.find(".featured-heading span").text(filterCat(cats[i]));
+        c.find(".featured-heading span").text(cats[i]);
         c.get(0).className = "";
 
         if(i%2) // is odd, add to right
@@ -76,7 +87,7 @@ $.getJSON("/get-categories", function(cats) {
         // now load the ontologies for this category
         // hrm seems like "c" isn't carried on
         (function(c) {
-            $.getJSON("/ontologies", {category: cats[i]}, function(json) {
+            $.getJSON("/ontologies", {category: globalCats[cats[i]]}, function(json) {
                 $.each(json, function() {
                     addRow(this, c);
                 });
