@@ -44,17 +44,33 @@ function addRow(obj, par) {
 
     par.append($row);
 }
+
 // we don't want to get all ontologies,
 // get all categories first and then fetch
 // the ontology for each specific category
 var cont = $(".list-ontologies .bar");
+
+// create 2 containers, left and right
+var left = $("<div class='bar'></div>"),
+    right = $("<div class='bar'></div>");
+
+$(".list-ontologies").append(left).append(right);
+    
+
 $.getJSON("/get-categories", function(cats) {
-    for(var i=0; i<cats.length; i++) {
+    for(var i=0, len=cats.length; i<len; i++) {
         var c = cont.clone();
 
-        c.find(".featured-heading span").text(filterCat(cats[i]));
 
-        $(".list-ontologies").append(c);
+
+        c.find(".featured-heading span").text(filterCat(cats[i]));
+        c.get(0).className = "";
+
+        if(i%2) // is odd, add to right
+            right.append(c);
+        else
+            left.append(c);
+
         c.show();
 
         // now load the ontologies for this category

@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.72";
+var VERSION = "0.2.74";
 
 var print = function(response) {
     return {
@@ -73,46 +73,56 @@ apejs.urls = {
                 latestOntos = [];
 
             // do latest terms
-            try {
-                termsQuery.forEach(function(term) {
+            termsQuery.forEach(function(term) {
+                var ontologyName = null,
+                    author = null,
+                    author_id = null;
+                try {
                     var ontoKey = googlestore.createKey("ontology", term.getProperty("ontology_id")),
                         ontoEntity = googlestore.get(ontoKey);
 
-                    // find author from ontology
-                    var author = googlestore.get(ontoEntity.getProperty("user_key"));
+                    ontologyName = ontoEntity.getProperty("ontology_name");
 
-                    latestTerms.push({
-                        "id": ""+term.getProperty("id"),
-                        "name": ""+term.getProperty("name"),
-                        "created": ""+term.getProperty("created_at"),
-                        "ontology_name": ""+ontoEntity.getProperty("ontology_name"),
-                        "author": ""+author.getProperty("username"),
-                        "author_id": ""+author.getKey().getId()
-                    });
+                    // find author from ontology
+                    author = googlestore.get(ontoEntity.getProperty("user_key")).getProperty("username");
+                    author_id = author.getKey().getId();
+
+                } catch(e) {
+                    // something happened, probably the term exists but not the ontology, which is BAD XXX
+                    ontologyName = term.getProperty("ontology_name");
+                }
+
+                latestTerms.push({
+                    "id": ""+term.getProperty("id"),
+                    "name": ""+term.getProperty("name"),
+                    "created": ""+term.getProperty("created_at"),
+                    "ontology_name": ""+ontologyName,
+                    "author": ""+author,
+                    "author_id": ""+author_id
                 });
-            } catch(e) {
-            }
+            });
 
             // do latest ontos
-            try {
-                ontosQuery.forEach(function(onto) {
-                    var username = "",
-                        userid = "";
+            ontosQuery.forEach(function(onto) {
+                var username = null,
+                    userid = null;
+                try {
                     if(onto.getProperty("user_key")) {
                         var user = googlestore.get(onto.getProperty("user_key"));
                         username = user.getProperty("username"); 
                         userid = user.getKey().getId();
                     }
-                    latestOntos.push({
-                        ontology_id: ""+onto.getProperty("ontology_id"),
-                        ontology_name: ""+onto.getProperty("ontology_name"),
-                        ontology_summary: ""+onto.getProperty("ontology_summary"),
-                        username: ""+username,
-                        userid: ""+userid
-                    });
+                } catch(e){ // user might not exist for this ontology
+                }
+
+                latestOntos.push({
+                    ontology_id: ""+onto.getProperty("ontology_id"),
+                    ontology_name: ""+onto.getProperty("ontology_name"),
+                    ontology_summary: ""+onto.getProperty("ontology_summary"),
+                    username: ""+username,
+                    userid: ""+userid
                 });
-            } catch(e) {
-            }
+            });
 
             print(response).json({
                 "latestTerms": latestTerms,
