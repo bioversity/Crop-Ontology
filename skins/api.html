@@ -9,6 +9,34 @@ li {
     color: #D14836 !important;
 }
 </style>
+<script>
+
+$(function(){
+
+    // replaces API urls for examples
+    $(".example").each(function() {
+        var $this = $(this);
+
+        var url = $this.parent().siblings().first().find("code").text();
+
+        var parameters = url.match(/{(.*?)}/g);
+
+        if(parameters) {
+            for(var i=0; i<parameters.length; i++) {
+                var par = parameters[i];
+                var clean = par.substring(1, par.length-1);
+                url = url.replace(par, $this.attr(clean));
+            }
+        }
+
+        $this.html("<a href='"+url+"' target='_blank'>"+url+"</a>");
+
+    });
+
+});
+
+</script>
+
 <div class="api_left">
 
 <h1>API</h1>
@@ -22,11 +50,28 @@ To let us gather feedback you can leave a comment using the form on the right.
 <p>
 Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> semantics: create, retrieve, update and delete.
 </p>
+<h2>Search Terms</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/search?q={query}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects matching the search query - each object being a term</li>
+    <li><strong>Example:</strong> <span class="example" query="stem rust"></span></li>
+</ul>
+
+<h2>Retrieve Categories</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-categories</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of strings - string being the name of the category that you pass to the <code>/ontologies</code> API call</li>
+    <li><strong>Example:</strong> <span class="example"></span></li>
+</ul>
+
 <h2>Retrieve Ontologies By Category</h2>
 <ul>
     <li><strong>URL:</strong> <code>{{URL}}/ontologies?category={category}</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> Array of objects; each one representing an ontology</li>
+    <li><strong>Example:</strong> <span class="example" category="010-089 General Germplasm Ontology"></span></li>
 </ul>
 
 <h2>Retrieve Root Terms of an Ontology</h2>
@@ -34,6 +79,7 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>URL:</strong> <code>{{URL}}/get-ontology-roots/{ontologyId}</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> Array of objects; each one representing a term</li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_020"></span></li>
 </ul>
 
 <h2>Retrieve Child Terms of parent Term</h2>
@@ -41,13 +87,7 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> Array of terms</li>
-</ul>
-
-<h2>Retrieve Child Terms of a parent Term</h2>
-<ul>
-    <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>
-    <li><strong>Method:</strong> <code>GET</code></li>
-    <li><strong>Returns:</strong> Array of terms</li>
+    <li><strong>Example:</strong> <span class="example" parentId="CO_020:0000000"></span></li>
 </ul>
 
 <h2>Retrieve Properties/Attributes of a Term</h2>
@@ -55,6 +95,7 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>URL:</strong> <code>{{URL}}/get-attributes/{termId}</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> Array of objects representing the terms property</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
 </ul>
 
 <h2>Retrieve Comments of a Term</h2>
@@ -62,6 +103,7 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>URL:</strong> <code>{{URL}}/get-comments?termId={termId}</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> Array of objects representing a comment</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
 </ul>
 
 <h2>Login - Retrieve a user's auth token (used for adding and editing ontologies)</h2>

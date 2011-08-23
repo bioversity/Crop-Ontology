@@ -770,7 +770,7 @@ apejs.urls = {
         }
     },
     "/get-comments" : {
-        post: function(request, response) {
+        get: function(request, response) {
             var termId = request.getParameter("termId");
             if(termId == "" || !termId) {
                 response.sendError(response.SC_BAD_REQUEST, "missing paramaters");

@@ -282,7 +282,7 @@ load_term = function(li) {
     });
  
     /* get comments */
-    $.post("/get-comments", {termId: id}, function(data){
+    $.get("/get-comments", {termId: id}, function(data){
         comments.load(data);
     }, "json");
 
