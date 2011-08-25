@@ -16,7 +16,7 @@ function rss(title, arr) {
     for(var i=0,len=arr.length; i<len; i++) {
         str += '<item>\
             <title>'+title+'</title>\
-            <link>http://www.cropontology-curationtool.org/terms/'+arr[i].termId+'#comment</link>\
+            <link>http://www.cropontology-curationtool.org/terms/'+arr[i].termId+'/comments</link>\
             <description>'+arr[i].comment+'</description>\
             <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">'+arr[i].author+'</dc:creator>\
             <pubDate>'+rfc822.format(arr[i].created)+'</pubDate>\

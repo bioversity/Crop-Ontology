@@ -8,12 +8,19 @@ var commentmodel = {
         var ret = [];
 
         comments.forEach(function(comment) {
-            var c = googlestore.toJS(comment);
-            // need the author in clean text
-            var userKey = comment.getProperty("userKey"),
-                userEntity = googlestore.get(userKey);
+            var c = googlestore.toJS(comment),
+                username = null;
 
-            c.author = ""+userEntity.getProperty("username");
+            try {
+                // need the author in clean text
+                var userKey = comment.getProperty("userKey"),
+                    userEntity = googlestore.get(userKey);
+
+                username = userEntity.getProperty("username");
+            } catch(e) {
+            }
+
+            c.author = ""+username;
 
             // keep the date as JAVA date!
             c.created = comment.getProperty("created");
