@@ -205,6 +205,7 @@ function show_attributes(id, name, attributes) {
     str += '<span class="add_attribute">Add a new attribute</span>';
 
     $(".right ul.filters li a").text(name);
+    $("#static-html").attr("href", "/terms/"+id+"/"+name+"/static-html");
     $("#term_id").text(id);
     $(".term_id").attr("href", "/terms/"+id+"/"+name);
     $("#pages .general").html(str);

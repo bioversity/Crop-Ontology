@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.2.75";
+var VERSION = "0.2.76";
 
 var print = function(response) {
     return {
@@ -552,7 +552,7 @@ apejs.urls = {
     "/terms/([a-zA-Z0-9_\: \.]+)/(.*)" : {
         get: function(request, response, matches) {
             var termId = matches[1],
-                termName = matches[2];
+                info = matches[2];
 
             // find the ontologyid form this term
             /*
@@ -563,11 +563,17 @@ apejs.urls = {
             var ontologyId = termEntity.getProperty("ontology_id");
             */
 
-
-            var skin = render("skins/index.html")
-                    .replace(/{{CONTENT}}/g, render("skins/onto.html"))
-                    .replace(/{{VERSION}}/g, VERSION)
-                    .replace(/{{termid}}/g, termId);
+            // if info contains the string "static-html", show static HTML of this term
+            if(info.indexOf("static-html") != -1) {
+                var skin = render("skins/term.html")
+                            .replace(/{{term_name}}/g, info.split("/")[0])
+                            .replace(/{{term_id}}/g, termId);
+            } else {
+                var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/onto.html"))
+                        .replace(/{{VERSION}}/g, VERSION)
+                        .replace(/{{termid}}/g, termId);
+            }
             response.getWriter().println(skin);
             /*
             var skin = render("skins/term.html")
