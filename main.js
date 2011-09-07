@@ -474,11 +474,14 @@ apejs.urls = {
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
 
-            // check if we own this term
-            var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
-                ontoEntity = googlestore.get(ontoKey);
-            if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
-                return err("You don't have the permissions to remove this attribute");
+            // check if we own this term only if we're not admins
+            if(!auth.isAdmin(currUser)) {
+                var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
+                    ontoEntity = googlestore.get(ontoKey);
+                if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                    return err("You don't have the permissions to remove this attribute");
+            }
+
 
             // set it to null
             termEntity.setProperty(key, null);
@@ -1362,6 +1365,12 @@ apejs.urls = {
             var skin = render("skins/index.html")
                         .replace(/{{CONTENT}}/g, render("skins/feedback.html"))
                         .replace(/{{VERSION}}/g, VERSION);
+            response.getWriter().println(skin);
+        }
+    },
+    "/annotation-tool": {
+        get: function(request, response) {
+            var skin = render("skins/annotation-tool.html");
             response.getWriter().println(skin);
         }
     }

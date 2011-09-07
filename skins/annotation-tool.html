@@ -1,0 +1,520 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="">
+<head> 
+<title>Annotation Tool</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> 
+
+<!--<link type="text/css" rel="stylesheet" href="http://www.ackwire.com/all.css" /> -->
+<!--<link type="text/css" rel="stylesheet" href="/all.css" />-->
+
+
+<style>
+body {
+font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+}
+thead {
+display: table-header-group;
+vertical-align: middle;
+border-color: inherit;
+}
+tr {
+display: table-row;
+vertical-align: inherit;
+border-color: inherit;
+}
+tfoot {
+display: table-footer-group;
+vertical-align: middle;
+border-color: inherit;
+}
+tbody {
+display: table-row-group;
+vertical-align: middle;
+border-color: inherit;
+}
+#newspaper-b {
+font-size: 12px;
+text-align: left;
+border-collapse: collapse;
+border: 1px solid #69C;
+margin: 20px;
+}
+#newspaper-b tbody {
+background: #E8EDFF;
+}
+
+#newspaper-b th {
+font-weight: normal;
+font-size: 14px;
+color: #039;
+padding: 15px 10px 10px;
+}
+#newspaper-b td {
+color: #669;
+border-top: 1px dashed white;
+padding: 10px;
+}
+#newspaper-b tbody tr:hover td{color:#339;background:#d0dafd;}
+
+#newspaper-b thead tr td:hover, .selected {color:#339;background:#d0dafd; cursor: pointer;}
+
+</style>
+<script>
+
+
+var TOKENS = {};
+(function() {
+
+    /**
+     * simple module that generates CSV from DOM stuff - requires jquery
+     * copyright - Luca Matteis
+     */
+    var csvGenerator = (function(){
+        // converts a DOM table into csv
+        function fromTable(domTable) {
+            var table = $(domTable),
+                csv = "",
+                trs = table.find("tr");
+            trs.each(function(){
+                var cells = $(this).find("td");
+                cells.each(function(i){
+                    csv += (i==0 ? "" :",") + $(this).text();
+                });
+                csv += "\n";
+            });
+            return csv;
+        }
+        return {
+            fromTable: fromTable
+        };
+    })();
+
+    function parseClipboard(content){
+        var rows = content.split("\n");
+        var result = []; // array of arrays
+        for(var i=0; i<rows.length; i++) {
+            var row = rows[i];
+            if(row) {
+                var cells = row.split("\t"); // tab delimited columns
+                result.push(cells);
+            }
+        }
+        return result;
+    }
+    /**
+     * The 'result' parameter is an array of arrays
+     * rapresenting the excel copied cells
+     */
+    function showParsedClipboard(result){
+        var cont = $("#result");
+        cont.html("");
+        var table = $('<table cellspacing="0" cellpadding="0" id="newspaper-b"></table>');
+        var tbody = $('<tbody></tbody>'),
+            thead = $("<thead></thead>");
+        table.append(thead);
+        table.append(tbody);
+        for(var i=0; i<result.length; i++) {
+            var row = result[i];
+            if(i%2) {
+                var str = "<tr class='odd'>";
+            } else {
+                var str = "<tr class='even'>";
+            }
+
+            for(var x=0; x<row.length; x++) {
+                var cell = row[x];
+                str += "<td class='bottom center border'>"+cell+"</td>";
+            }
+
+            str += "</tr>";
+            if(i == 0)
+                thead.append(str);
+            else
+                tbody.append(str);
+        }
+        cont.html(table);
+    }
+    function makeToken(content){
+        var html = "<b class=\"token\">"+content+"</b>";
+        return html;
+    }
+    function doReplace(text, key) {
+
+        text = text.replace(new RegExp("\\b"+key+"\\b", "g"), makeToken(key));
+        // search also for underscores
+        var underscores = key.replace(new RegExp(" ", "g"), "_");
+        if(underscores.indexOf("_") >= 0)
+            text = text.replace(new RegExp("\\b"+underscores+"\\b", "g"), makeToken(underscores));
+
+        return text;
+    }
+    function getOntologyId(matchedTerm) {
+        var jMatchedTerm = $(matchedTerm);
+        var itemId = jMatchedTerm.find("OmixedItemID").text();
+
+        var ontologyId = itemId.split("/")[2];
+        ontologyId = ontologyId.split(" ")[0];
+
+        return ontologyId;
+    }
+    function terminize(elem, text) {
+        var jel = $(elem); 
+        var old = jel.val();
+        jel.val("Loading...");
+        $.ajax({
+            url:"/", 
+            data: {sourceText: $("#clipboard").val()},
+            type: "POST",
+            dataType: "xml",
+            success: function(xml){
+                var jxml = $(xml);
+                var foundTokens = jxml.find("TokenIndices");
+                var clipTxt = $("#clipboard").val();
+                var res = {};
+                foundTokens.each(function(i){
+                    var el = $(this);
+                    var matchedTerm = el.parent().get(0);
+                    var tokenIndexes = el.text().split(",");
+                    var text = "";
+                    for(var i=0; i<tokenIndexes.length; i++) {
+                        var foundTerm = jxml.find("Token[index="+tokenIndexes[i]+"]");
+                        // separate by space
+                        text += foundTerm.text() + " ";
+                    }
+                    text = $.trim(text);
+                    if(!res[text]) { // doesn't exist, just add it as a single array
+                        res[text] = [{
+                            ontologyId: getOntologyId(matchedTerm),
+                            domMatchedTerm: matchedTerm
+                        }];
+                    } else { // exists - push it inside only if it comes from a different ontology from the ones already inside
+                        var ontologyId = getOntologyId(matchedTerm);
+                        // check if it exists
+                        var found = false;
+                        for(var i=0; i<res[text].length; i++) {
+                            if(res[text][i].ontologyId == ontologyId) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found) {
+                            res[text].push({
+                                ontologyId: ontologyId,
+                                domMatchedTerm: matchedTerm
+                            });
+                        }
+                    }
+                });
+
+                // res contains an array of matched terms elements
+                for(var i in res) {
+                    clipTxt = doReplace(clipTxt, i);
+                }
+
+                TOKENS = res;
+
+                var result = parseClipboard(clipTxt);
+                showParsedClipboard(result);
+                doPoshytip();
+                jel.val(old);
+            }
+        });
+    }
+
+    function generate() {
+        var result = parseClipboard($("#clipboard").val());
+        showParsedClipboard(result);
+    }
+
+    function assignEvents(){
+        $("#generate").click(generate);
+        $("#clipboard").keyup(generate);
+
+        $("#terminize").click(function(){
+            terminize(this, $("#clipboard").val());
+        });
+
+        $("#sample").click(function(e){
+
+            $("#clipboard").val($(".sample").html());
+            generate();
+            
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        $("#download").click(function() {
+            var csv = csvGenerator.fromTable($("#indexlist").get(0));
+            var form = $('<form style="display:none" method="post" action="/csv-download"><input type="hidden" value="'+csv+'" name="csvString" /></form>');
+            $(document.body).append(form);
+            form.submit();
+            form.remove();
+        });
+
+        // annotation
+        $("table thead tr td").live("click", function(e){
+            var $this = $(this);
+            $("table thead tr td").each(function() {
+                $(this).removeClass("selected");
+            });
+
+            $this.addClass("selected");
+
+            widget.show($this.get(0));
+        });
+        
+    }
+    function doPoshytip() {
+        var currentHoveredDomTerm = false;
+        $(".token").each(function(){
+            var $this = $(this), foundTerms, title = "";
+            var text = $this.text().replace(new RegExp("_", "g"), " ");
+            if(foundTerms = TOKENS[text])  {
+
+                title = foundTerms.length == 1 ? "Choose this term:" : "Choose one of these "+foundTerms.length+" terms:";
+                for(var i=0; i<foundTerms.length; i++) {
+                    var matchedTerm = $(foundTerms[i].domMatchedTerm);
+
+                    var term = matchedTerm.find("OmixedItemID").text().split("/");
+                    term = term[term.length - 1];
+                    var definition = matchedTerm.find("Definition").text() || "no definition found";
+                    var id = matchedTerm.find("Accession").text();
+
+                    title += [
+                        "<table class=\"tip_table\">"
+                            ,"<tr><td class=\"key\">Term</td><td>" +term+"</td></tr>"
+                            ,"<tr><td class=\"key\">ID</td><td> "+id+"</td></tr>"
+                            ,"<tr><td class=\"key\">Definition</td><td> "+definition+"</td></tr>"
+                            ,"<tr><td class=\"key\">Actions</td><td><input term_name=\""+term+"\" term_id=\""+id+"\" class=\"use\" type=\"button\" value=\"Use\" /><input term_name=\""+term+"\" term_id=\""+id+"\" class=\"use\" type=\"button\" value=\"Use for all\" /></td></tr>"
+
+                        ,"</table>"
+                    ].join("");
+                }
+
+                $this.attr("title", title);
+            }
+        });
+        // using live because the "use" button gets created before we
+        // assing this event
+        $(".use").live("click", function(){
+            var $this = $(this);
+            var termId = $this.attr("term_id");
+            var termName = $this.attr("term_name");
+            var curr = $(currentHoveredDomTerm);
+            var original_text = curr.text();
+            var new_text = termName + " (" + termId + ")"
+            curr.text(new_text);
+            if($this.val() == "Use for all") {
+                $("#indexlist td b").each(function(){
+                    var $this = $(this);
+                    if($this.text() == original_text) 
+                        $this.text(new_text);
+                });
+            }
+        });
+        $(".token").poshytip({
+            className: 'tip_form',
+            showTimeout: 1,
+            alignTo: 'target',
+            alignX: 'center',
+            offsetY: 5,
+            allowTipHover: true,
+            fade: false,
+            slide: false
+        }).hover(function(){
+            currentHoveredDomTerm = this;
+        }, function(){});
+    }
+
+    $(function() {
+        assignEvents();
+    });
+
+})();
+
+</script>
+<style>
+#clipboard {
+    width: 500px;
+    height: 200px;
+    border: 1px solid #000;
+}
+#result {
+}
+b {
+    cursor: default;
+}
+
+.tip_table {
+    border-top:1px dotted #ccc;
+}
+.tip_table td{
+    line-height: normal;
+    vertical-align: top;
+    padding:0;
+    padding-right: 20px;
+
+}
+.tip_table td.key{
+    font-style: italic;
+    text-decoration: underline;
+
+    text-align: right;
+    padding-right: 5px;
+}
+
+.tip-inner {
+    max-height: 200px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+.use {
+    width: 100px;
+}
+
+</style>
+
+</head>
+<body>
+    <div id="header">
+        <div id="logo">
+            <h1><a href="/">Annotation Tool</a></h1>
+        </div>
+    </div>
+    
+    <div id="body">
+        <h2>1) Copy and paste some Excel cells into this section and then click on "Generate"</h2>
+        <h4><a href="#" id="sample">load a sample</a></h4>
+        <textarea id="clipboard"></textarea>
+
+        <br>
+        <br>
+        
+        <input id="generate" type="button" value="Generate" />
+
+        <h2>2) Here's the generated table. Start annotating your data by clicking cells in the header.</h2>
+        <!-- <input id="terminize" type="button" value="Terminize" />-->
+        <div id="result"></div>
+        <br>
+        <br>
+        
+        <input id="download" type="button" value="Download as CSV" />
+
+        
+    </div>
+    <div id="footer">
+<div class="sample" style="display: none">pegno	rep	clone	sprout	vigour	cmd1s	cmd3s	cmd6s	mcmds	cmd1i	cmd3i	cmd6i	mcmdi	cbb3s	cbb6s	mcbbs	cbb3i	cbb6i	mcbbi	cad6s	cad6i	cgm1
+101	1	05/1570	0.7	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	1.0	1.0	1.0	2	0.3	2
+102	1	05/1740	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.1	2
+103	1	05/0303	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.1	2
+104	1	05/1601	0.6	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.2	4
+105	1	05/0127	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.1	2
+106	1	05/0286	0.9	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	0.9	1.0	2	0.2	4
+107	1	05/0311	0.7	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.4	4
+108	1	05/0125	0.6	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	3	3.5	1.0	1.0	1.0	3	0.3	4
+109	1	05/0231	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.8	1.0	0.9	2	0.3	5
+110	1	05/0741	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.4	5
+111	1	05/1274	0.7	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.9	5
+112	1	05/0128	0.6	5	1	1	1	1.0	0.0	0.0	0.0	0.0	4	4	4.0	1.0	1.0	1.0	3	0.7	5
+113	1	05/1553	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.4	5
+114	1	05/0099	0.4	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.6	1.0	0.8	2	0.1	4
+115	1	TME 1	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	4	4.0	1.0	1.0	1.0	3	0.3	2
+116	1	05/0998	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	3	3.5	1.0	1.0	1.0	3	0.4	2
+117	1	05/1814	0.5	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	1.0	1.0	1.0	2	0.3	2
+118	1	05/0327	0.4	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.3	5
+119	1	05/0024	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	0.8	0.8	0.8	2	0.2	2
+120	1	30572	0.9	7	3	2	1	2.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.3	5
+201	2	05/1740	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.3	2
+202	2	05/0327	0.7	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.4	5
+203	2	05/0099	0.4	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.4	1.0	0.7	3	0.2	4
+204	2	05/1553	0.9	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.3	4
+205	2	05/0127	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.8	1.0	0.9	2	0.3	2
+206	2	30572	1.0	7	3	1	1	1.7	0.1	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.6	5
+207	2	TME 1	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	4	4.0	1.0	1.0	1.0	4	0.6	2
+208	2	05/1814	0.5	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.5	2
+209	2	05/0998	0.9	5	1	1	1	1.0	0.0	0.0	0.0	0.0	4	3	3.5	1.0	1.0	1.0	3	0.4	2
+210	2	05/0024	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	1.0	1.0	1.0	2	0.3	2</div>
+
+
+<script>
+/**
+ * Widget that works with JSON API - soon to work with JSONP as well
+ */
+var widget = (function() {
+    var className = ".widget",
+        $widget, $clicked,
+        loaded = false;
+
+    function loadOntologies() {
+        if(loaded) return;
+
+        $.getJSON("/get-categories", function(data) {
+            for(var i=0; i<data.length; i++) {
+                var c = $("<ul><h5>"+data[i]+"</h5></ul>");
+                $(className + " .cats").append(c);
+
+                // now load the ontologies for this category
+                // hrm seems like "c" isn't carried on
+                (function(c) {
+                    $.getJSON("/ontologies", {category: data[i]}, function(json) {
+                        $.each(json, function() {
+                            c.append("<li><a href='#'>"+this.ontology_name+"</a></li>");
+                        });
+                    });
+                })(c);
+            }
+            loaded = true;
+        });
+    }
+
+    function show(clicked) {
+        $widget = $(className);
+        $clicked = $(clicked);
+
+        var p = $clicked.position();
+
+        $widget.css("top", p.top + "px");
+        $widget.css("left", p.left + $clicked.width() + "px");
+
+        $widget.show();
+
+
+        loadOntologies();
+
+    }
+
+    return {
+        show: show
+    };
+
+})();
+
+</script>
+<style>
+.widget {
+    position: absolute;
+    background: white;
+    top:0;
+    left:0;
+    width: 300px;
+    border: 1px solid #000;
+    padding: 10px;
+    display: none;
+}
+
+</style>
+<div class="widget">
+    <h4>Choose the Ontology you would like to use:</h4>
+    <div class="cats"></div>
+
+</div>
+
+
+
+    </div>
+    
+
+
+
+</body>
+</html>
