@@ -442,8 +442,42 @@ b {
  */
 var widget = (function() {
     var className = ".widget",
-        $widget, $clicked,
+        searchResult = ".widget_search_result",
+        $widget, $clicked, $searchResult,
         loaded = false;
+
+    // some initialization for events
+    $(function(){
+        $widget = $(className);
+        $searchResult = $(searchResult);
+
+        $(".widget_search").submit(function(e) {
+            $searchResult.html("Loading...");
+            $.getJSON("/search?"+$(this).serialize(), function(data) {
+                $searchResult.html("");
+                for(var i=0; i<data.length; i++) {
+                    var term = data[i],
+                        $a = $("<li><a href='#'>"+term.name+"</a></li>");
+
+                    $a.find("a").click(function(e) {
+                        var oldtext = $clicked.text();
+
+
+                        $clicked.text(oldtext + " {"+ term.id +"}");
+
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+
+                    $searchResult.append($a);
+                }
+            });
+
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+    });
 
     function loadOntologies() {
         if(loaded) return;
@@ -468,18 +502,21 @@ var widget = (function() {
     }
 
     function show(clicked) {
-        $widget = $(className);
         $clicked = $(clicked);
 
         var p = $clicked.position();
 
         $widget.css("top", p.top + "px");
-        $widget.css("left", p.left + $clicked.width() + "px");
+        $widget.css("left", p.left + $clicked.width() + 20 + "px");
+
+        $widget.find("input[name=q]").val("");
+        $searchResult.html("");
 
         $widget.show();
 
-
-        loadOntologies();
+        $(document).keyup(function(e) {
+            if(e.keyCode == 27) { $widget.hide(); }   // esc
+        });
 
     }
 
@@ -504,8 +541,13 @@ var widget = (function() {
 
 </style>
 <div class="widget">
-    <h4>Choose the Ontology you would like to use:</h4>
-    <div class="cats"></div>
+    <small><i>Press esc to hide this window</i></small>
+    <h4>Search for a specific trait:</h4>
+    <form class="widget_search">
+        <input name="q" type="text" />
+        <button type="submit">Search</button>
+    </form>
+    <ul class="widget_search_result"></ul>
 
 </div>
 
