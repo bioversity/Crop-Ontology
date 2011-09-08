@@ -457,10 +457,13 @@ var widget = (function() {
                 $searchResult.html("");
                 for(var i=0; i<data.length; i++) {
                     var term = data[i],
-                        $a = $("<li><a href='#'>"+term.name+"</a></li>");
+                        $a = $("<li><a href='#' title='"+(term.def || term.comment || "").replace("\'", "\\'")+"'>"+term.name+" ("+term.ontology_name+")</a></li>");
 
                     $a.find("a").click(function(e) {
                         var oldtext = $clicked.text();
+
+                        // if there's a bracket, remove it
+                        oldtext = oldtext.match(/([^{]+)/g)[0];
 
 
                         $clicked.text(oldtext + " {"+ term.id +"}");
