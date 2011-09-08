@@ -348,6 +348,9 @@ b {
 .tip_table {
     border-top:1px dotted #ccc;
 }
+.tip_table img{
+    max-width: 100px;
+}
 .tip_table td{
     line-height: normal;
     vertical-align: top;
@@ -501,6 +504,7 @@ var widget = (function() {
             liveEvents: true,
             content: function(updateCallback) {
                 var termId = $(this).attr("term_id");
+                $table.html("");
                 $.getJSON("/get-attributes/"+termId, function(data) {
                     for(var i=0; i<data.length; i++) {
                         var attribute = data[i];
