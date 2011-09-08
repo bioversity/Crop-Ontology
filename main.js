@@ -612,7 +612,7 @@ apejs.urls = {
 
                 if(terms.length) {
 
-                    // but all the terms we found in a big array
+                    // put all the terms we found in a big array
                     terms.forEach(function(termEntity) {
                         matchedTerms.push(termEntity);
                     });

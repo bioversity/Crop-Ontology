@@ -457,7 +457,7 @@ var widget = (function() {
                 $searchResult.html("");
                 for(var i=0; i<data.length; i++) {
                     var term = data[i],
-                        $a = $("<li><a href='#' title='"+(term.def || term.comment || "").replace("\'", "\\'")+"'>"+term.name+" ("+term.ontology_name+")</a></li>");
+                        $a = $("<li><a href='#' term_id='"+term.id+"' class='poshytip'>"+term.name+" ("+term.ontology_name+")</a></li>");
 
                     $a.find("a").click(function(e) {
                         var oldtext = $clicked.text();
@@ -476,9 +476,41 @@ var widget = (function() {
                 }
             });
 
+
+
             e.preventDefault();
             e.stopPropagation();
         });
+
+        var table = [
+            "<table class=\"tip_table\">"
+                //,"<tr><td class=\"key\">Term</td><td>" +term+"</td></tr>"
+            ,"</table>"
+        ].join(""),
+            $table = $(table);
+        $(".poshytip").poshytip({
+            className: 'tip_form',
+            showTimeout: 1,
+            alignTo: 'target',
+            alignX: 'center',
+            alignY: 'bottom',
+            offsetY: 5,
+            allowTipHover: true,
+            fade: false,
+            slide: false,
+            liveEvents: true,
+            content: function(updateCallback) {
+                var termId = $(this).attr("term_id");
+                $.getJSON("/get-attributes/"+termId, function(data) {
+                    for(var i=0; i<data.length; i++) {
+                        var attribute = data[i];
+                        $table.append("<tr><td class=\"key\">"+attribute.key+"</td><td>" +attribute.value+"</td></tr>");
+                    }
+                    updateCallback($table);
+                });
+                return 'Loading...';
+            }
+        })
 
     });
 
@@ -530,17 +562,153 @@ var widget = (function() {
 })();
 
 </script>
+<script type="text/javascript" src="/js/jquery.poshytip.js"></script> 
 <style>
 .widget {
     position: absolute;
-    background: white;
     top:0;
     left:0;
-    width: 300px;
-    border: 1px solid #000;
     padding: 10px;
     display: none;
+
+
+    border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; 
+                box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1); -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
+                            font-family: Calibri, Tahoma, Geneva, sans-serif;
+                                        position: absolute; left: 1em; top: 2em; z-index: 99;
+                                                    margin-left: 0; width: 250px;
+                                                    background: #FFA;
+                                                    border: 1px solid #FFAD33;
+                                                    padding: 0.8em 1em;
 }
+.widget a {
+    color: #669;
+}
+.tip_th {
+    z-index: 1000;
+    text-align: left;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    padding: 8px 8px;
+    max-width: 250px;
+    color: #FFFFFF;
+    background-color: #000000;
+    text-align: center;
+}
+.tip_th .tip-inner {
+    font-size: 100%;
+}
+.tip_th .tip-arrow-top {
+    margin-top: -5px;
+    margin-left: -5px; /* approx. half the width to center it */
+    top: 0;
+    left: 50%;
+    width: 9px;
+    height: 5px;
+}
+.tip_th .tip-arrow-right {
+    margin-top: -4px; /* approx. half the height to center it */
+    margin-left: 0;
+    top: 50%;
+    left: 100%;
+    width: 5px;
+    height: 9px;
+}
+.tip_th .tip-arrow-bottom {
+    margin-top: 0;
+    margin-left: -5px; /* approx. half the width to center it */
+    top: 100%;
+    left: 50%;
+    width: 9px;
+    height: 5px;
+}
+.tip_th .tip-arrow-left {
+    margin-top: -4px; /* approx. half the height to center it */
+    margin-left: -5px;
+    top: 50%;
+    left: 0;
+    width: 5px;
+    height: 9px;
+}
+.tip_form {
+    z-index: 1000;
+    text-align: left;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    padding: 8px 8px;
+    max-width: 400px;
+    color: #FFFFFF;
+    background-color: #000000;
+    text-align: left;
+    font-size: 12px;
+}
+.tip_form .tip-inner {
+    font-size: 100%;
+}
+.tip_form .tip-arrow-top {
+    margin-top: -5px;
+    margin-left: -5px; /* approx. half the width to center it */
+    top: 0;
+    left: 50%;
+    width: 9px;
+    height: 5px;
+}
+.tip_form .tip-arrow-right {
+    margin-top: -4px; /* approx. half the height to center it */
+    margin-left: 0;
+    top: 50%;
+    left: 100%;
+    width: 5px;
+    height: 9px;
+}
+.tip_form .tip-arrow-bottom {
+    margin-top: 0;
+    margin-left: -5px; /* approx. half the width to center it */
+    top: 100%;
+    left: 50%;
+    width: 9px;
+    height: 5px;
+}
+.tip_form .tip-arrow-left {
+    margin-top: -4px; /* approx. half the height to center it */
+    margin-left: -5px;
+    top: 50%;
+    left: 0;
+    width: 5px;
+    height: 9px;
+}
+
+.tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    display: none;
+}
+.tt_highlight {
+    text-decoration: underline;
+    color: #FFFF11;
+}
+.tip_table {
+    border-top:1px dotted #ccc;
+}
+.tip_table td{
+    line-height: normal;
+    vertical-align: top;
+    padding:0;
+    padding-right: 20px;
+
+}
+.tip_table td.key{
+    font-style: italic;
+    text-decoration: underline;
+
+    text-align: right;
+    padding-right: 5px;
+}
+
 
 </style>
 <div class="widget">
