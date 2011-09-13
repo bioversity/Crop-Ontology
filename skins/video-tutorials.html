@@ -1,0 +1,87 @@
+<style type="text/css"> 
+    
+ 
+    
+ 
+#ytvideo,
+#ytvideo2 {
+    float: left;
+    margin-right:10px;
+}
+ 
+ 
+.yt_holder {
+    background: #f3f3f3;
+    padding: 10px;
+    float: left;
+    border: 1px solid #e3e3e3;
+    margin-bottom:15px;
+}
+ 
+ 
+ul {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 220px;
+}
+ 
+ul li {
+    list-style-type: none;
+    display:block;
+    background: #f1f1f1;
+    float: left;
+    width: 216px;
+    margin-bottom: 5px;
+    padding:2px;
+ 
+}
+ 
+ul li img {
+    width: 120px;
+    float: left;
+    margin-right: 5px;
+    border: 1px solid #999;
+}
+ 
+ul li a {
+    text-decoration: none;
+    display: block;
+    color: #000;
+}
+ 
+.currentvideo {
+    background: #e6e6e6;
+}
+    
+ 
+    
+</style> 
+<script type="text/javascript" src="http://geckohub.com/jquery/youtubeplaylist/jquery.youtubeplaylist.js"></script> 
+
+<script type="text/ecmascript"> 
+    
+        $(function() {
+            $("ul.demo2").ytplaylist({
+                addThumbs:true, 
+                autoPlay: false, 
+                holderId: 'ytvideo2',
+                playerWidth: 660,
+                playerHeight: 500
+
+            });
+        });
+    
+</script> 
+ <div class="yt_holder"> 
+    <div id="ytvideo2"></div> 
+    <ul class="demo2"> 
+        <li><a href="http://www.youtube.com/watch?v=ani1SWy1N-g">Homepage Navigation</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=GiADgYlwmGI">Login & Registration</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=E67xYagMYe0">Search</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=-5j7AeuFT1A">OBO Upload</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=HMaQgKPrpwo">Create New Ontology</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=-aLr_E-JuSM">API & Feedback</a></li> 
+    </ul> 
+</div>
+

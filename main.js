@@ -54,6 +54,14 @@ apejs.urls = {
             
         }
     },
+    "/video-tutorials": {
+        get: function(request, response) {
+            var skin = render("skins/index.html")
+                        .replace(/{{CONTENT}}/g, render("skins/video-tutorials.html"))
+                        .replace(/{{VERSION}}/g, VERSION);
+            response.getWriter().println(skin);
+        }
+    },
     "/latest": {
         get: function(request, response) {
             var skin = render("skins/index.html")
