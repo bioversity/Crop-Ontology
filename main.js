@@ -576,6 +576,7 @@ apejs.urls = {
 
             // if info contains the string "static-html", show static HTML of this term
             if(info.indexOf("static-html") != -1) {
+                // get the name of term from its ID
                 var skin = render("skins/term.html")
                             .replace(/{{term_name}}/g, info.split("/")[0])
                             .replace(/{{term_id}}/g, termId);
