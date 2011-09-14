@@ -582,7 +582,9 @@ apejs.urls = {
 
                 var skin = render("skins/term.html")
                             .replace(/{{term_name}}/g, termEntity.getProperty("name"))
-                            .replace(/{{term_id}}/g, termId);
+                            .replace(/{{term_id}}/g, termId)
+                            .replace(/{{ontology_name}}/g, termEntity.getProperty("ontology_name"))
+                            .replace(/{{ontology_id}}/g, termEntity.getProperty("ontology_id"));
             } else {
                 var skin = render("skins/index.html")
                         .replace(/{{CONTENT}}/g, render("skins/onto.html"))
