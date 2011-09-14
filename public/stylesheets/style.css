@@ -301,6 +301,8 @@ border-bottom-right-radius: 10px;
     float:left;
     padding-left:10px;
     padding-top:10px;
+    word-wrap: break-word;
+
     width:300px;
 }
 #pages div.attribute span.value img{

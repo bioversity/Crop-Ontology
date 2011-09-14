@@ -12,6 +12,17 @@ var term_name = "{{term_name}}";
 var term_id = "{{term_id}}";
 $(function(){
 
+function markdown(str) {
+    function replaceURLWithHTMLLinks(text) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(exp,"<a href='$1'>$1</a>"); 
+    }
+    var str = ""+str;
+    str = str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
+    str = str.replace(/\\n/g, "<br />");
+    str = replaceURLWithHTMLLinks(str);
+    return str;
+}
 function loader(show) {
     if(show)
         $(".loader").show();
@@ -27,7 +38,7 @@ function show_attributes(attributes) {
                     <h2>'+this.key+'</h2>\
                 </div>\
                 <div class="yui-u">\
-                    <p class="enlarge">'+this.value+'</p>\
+                    <p class="enlarge">'+markdown(this.value)+'</p>\
                     <p id="languages" class="enlarge"></p>\
                 </div>\
             </div>\
@@ -68,6 +79,10 @@ load_ols();
 }
 img {
     max-width: 500px;
+}
+.yui-u {
+    word-wrap: break-word;
+    
 }
 </style>
 </head>

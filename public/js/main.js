@@ -55,8 +55,15 @@ function Login(func) {
 }
 
 function markdown(str) {
+    function replaceURLWithHTMLLinks(text) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(exp,"<a href='$1'>$1</a>"); 
+    }
     var str = ""+str;
-    return str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
+    str = str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
+    str = str.replace(/\\n/g, "<br />");
+    str = replaceURLWithHTMLLinks(str);
+    return str;
 }
  
 /*
