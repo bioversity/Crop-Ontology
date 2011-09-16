@@ -56,7 +56,7 @@ border-top: 1px dashed white;
 padding: 10px;
 }
 /*#newspaper-b tbody tr:hover td{color:#339;background:#d0dafd;}*/
-
+#newspaper-b tbody tr td:hover,
 .selected, .keep {color:#339;background:#d0dafd; cursor: pointer;}
 
 .keep:hover {
@@ -270,10 +270,11 @@ var TOKENS = {};
         });
 
         // annotation
-        $("table tr td.keep").live("click", function(e){
+        $("table tr td").live("click", function(e){
             var $this = $(this);
 
             widget.show($this.get(0));
+            widget.run();
         });
 
         // row column selection
@@ -284,6 +285,7 @@ var TOKENS = {};
         });
 
         // hover
+        /*
         var selclass = "selected";
         $("#newspaper-b").live("mouseout", function() {
             $("."+selclass).removeClass(selclass);
@@ -311,6 +313,7 @@ var TOKENS = {};
                 $(this).addClass(keepclass); 
             });
         });
+        */
 
     }
     function doPoshytip() {
@@ -445,15 +448,18 @@ b {
         <input id="generate" type="button" value="Generate" />
 
         <h2>2) Here's the generated table. Please choose whether you trait information is displayed in a row or in a column, and select it:</h2>
+        <!--
         <select id="selection">
             <option value="row">Row selection</option>
             <option value="column">Column selection</option>
-        </select>
+        </select>-->
         <!-- <input id="terminize" type="button" value="Terminize" />-->
         <div id="result"></div>
+        <!--
         <br>
         <br>
         <input id="suggestions" type="button" value="Show suggestions" />
+        -->
 
         <br>
         <br>
@@ -534,7 +540,17 @@ var widget = (function() {
 
         $(".widget_search").submit(function(e) {
             $searchResult.html("Loading...");
-            $.getJSON("/search?"+$(this).serialize(), function(data) {
+
+            // XXX only sending the first two words of the search
+            var words = $(".widget_search input[name=q]").val().split(" ");
+            var query = "";
+            for(var i=0; i<words.length; i++) {
+                if(i == 2) break;
+                query += words[i] + " ";
+            }
+            query = $.trim(query);
+
+            $.getJSON("/search", {q: query}, function(data) {
                 $searchResult.html("");
                 for(var i=0; i<data.length; i++) {
                     var term = data[i],
@@ -587,6 +603,7 @@ var widget = (function() {
                 var termId = $(this).attr("term_id");
                 $table.html("");
                 $.getJSON("/get-attributes/"+termId, function(data) {
+                    $table.html("");
                     var $cont = $("<div></div>");
                     for(var i=0; i<data.length; i++) {
                         var attribute = data[i];
@@ -643,8 +660,15 @@ var widget = (function() {
 
     }
 
+    function run() {
+        var $search = $(".widget_search");
+        $search.find("input[name=q]").val($clicked.text());
+        $search.submit();
+    }
+
     return {
-        show: show
+        show: show,
+        run: run
     };
 
 })();
