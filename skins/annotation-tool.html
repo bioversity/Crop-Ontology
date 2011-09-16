@@ -84,7 +84,10 @@ var TOKENS = {};
             trs.each(function(){
                 var cells = $(this).find("td");
                 cells.each(function(i){
-                    csv += (i==0 ? "" :",") + $(this).text();
+                    var text = $(this).text();
+                    text = text.replace(/\"/g, '\\"');
+                    text = '"' + text + '"';
+                    csv += (i==0 ? "" :",") + text;
                 });
                 csv += "\n";
             });
@@ -254,8 +257,13 @@ var TOKENS = {};
             e.stopPropagation();
         });
         $("#download").click(function() {
-            var csv = csvGenerator.fromTable($("#indexlist").get(0));
-            var form = $('<form style="display:none" method="post" action="/csv-download"><input type="hidden" value="'+csv+'" name="csvString" /></form>');
+            var csv = csvGenerator.fromTable($("#newspaper-b").get(0));
+            var form = $('<form style="display:none" method="post" action="/csv-download"></form>'),
+                input = $('<input type="hidden" name="csvString" />');
+
+            input.val(csv);
+
+            form.append(input);
             $(document.body).append(form);
             form.submit();
             form.remove();

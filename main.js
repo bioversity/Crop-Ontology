@@ -1387,5 +1387,14 @@ apejs.urls = {
             var skin = render("skins/annotation-tool.html");
             response.getWriter().println(skin);
         }
+    },
+    "/csv-download": {
+        post: function(request, response) {
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition","attachment;filename=result.csv"); 
+            
+            var csvString = request.getParameter("csvString");
+            response.getWriter().println(csvString);
+        }
     }
 };
