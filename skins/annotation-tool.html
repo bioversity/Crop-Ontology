@@ -272,6 +272,11 @@ var TOKENS = {};
         // annotation
         $("table tr td").live("click", function(e){
             var $this = $(this);
+            $("table tr td").each(function() {
+                $(this).removeClass("selected");
+            });
+
+            $this.addClass("selected");
 
             widget.show($this.get(0));
             widget.run();
@@ -543,15 +548,18 @@ var widget = (function() {
 
             // XXX only sending the first two words of the search
             var words = $(".widget_search input[name=q]").val().split(" ");
-            var query = "";
+            var query = [];
             for(var i=0; i<words.length; i++) {
-                if(i == 2) break;
-                query += words[i] + " ";
+                if(query.length == 2) break;
+                if(words[i].length <= 2) continue;
+                query.push(words[i]);
             }
-            query = $.trim(query);
+            query = $.trim(query.join(" "));
 
             $.getJSON("/search", {q: query}, function(data) {
                 $searchResult.html("");
+                if(!data.length)
+                    $searchResult.html("No results found");
                 for(var i=0; i<data.length; i++) {
                     var term = data[i],
                         $a = $("<li><a href='#' term_id='"+term.id+"' class='poshytip'>"+term.name+" ("+term.ontology_name+")</a></li>");
@@ -824,7 +832,7 @@ var widget = (function() {
 
 </style>
 <div class="widget">
-    <small><i>Press esc to hide this window</i></small>
+    <small><i>Press esc to close this window</i></small>
     <h4>Search for a specific trait:</h4>
     <form class="widget_search">
         <input name="q" type="text" />
