@@ -55,9 +55,14 @@ color: #669;
 border-top: 1px dashed white;
 padding: 10px;
 }
-#newspaper-b tbody tr:hover td{color:#339;background:#d0dafd;}
+/*#newspaper-b tbody tr:hover td{color:#339;background:#d0dafd;}*/
 
-#newspaper-b thead tr td:hover, .selected {color:#339;background:#d0dafd; cursor: pointer;}
+.selected, .keep {color:#339;background:#d0dafd; cursor: pointer;}
+
+.keep:hover {
+    background: #E8EDFF;
+
+}
 
 </style>
 <script>
@@ -112,7 +117,7 @@ var TOKENS = {};
         var table = $('<table cellspacing="0" cellpadding="0" id="newspaper-b"></table>');
         var tbody = $('<tbody></tbody>'),
             thead = $("<thead></thead>");
-        table.append(thead);
+        //table.append(thead);
         table.append(tbody);
         for(var i=0; i<result.length; i++) {
             var row = result[i];
@@ -128,10 +133,15 @@ var TOKENS = {};
             }
 
             str += "</tr>";
+
+            /*
             if(i == 0)
                 thead.append(str);
             else
                 tbody.append(str);
+            */
+
+            tbody.append(str);
         }
         cont.html(table);
     }
@@ -252,17 +262,48 @@ var TOKENS = {};
         });
 
         // annotation
-        $("table thead tr td").live("click", function(e){
+        $("table tr td.keep").live("click", function(e){
             var $this = $(this);
-            $("table thead tr td").each(function() {
-                $(this).removeClass("selected");
-            });
-
-            $this.addClass("selected");
 
             widget.show($this.get(0));
         });
-        
+
+        // row column selection
+        var val = "row";
+        $("#selection").change(function() {
+            var $this = $(this);
+            val = $this.val()
+        });
+
+        // hover
+        var selclass = "selected";
+        $("#newspaper-b").live("mouseout", function() {
+            $("."+selclass).removeClass(selclass);
+        });
+        $("#newspaper-b tbody tr td").live("hover",
+            function() {
+                var $this = $(this);
+                $("."+selclass).removeClass(selclass);
+                $this.addClass(selclass);
+                if(val == "row") {
+                    $this.siblings().addClass(selclass);
+                } else if (val == "column") {
+                    // to find columns it's a bit more complex <-- USEFUL COMMENT! COMPLEXITY GIVES ME MOTIVATION
+                    var idx = $this.index() + 1;
+                    $("#newspaper-b tbody tr td:nth-child("+idx+")").addClass(selclass);
+                }
+            }
+        );
+
+        var keepclass = "keep";
+        $("#newspaper-b tbody tr td").live("click", function() {
+            var $this = $(this);
+            $("."+keepclass).removeClass(keepclass);
+            $("."+selclass).each(function(){ 
+                $(this).addClass(keepclass); 
+            });
+        });
+
     }
     function doPoshytip() {
         var currentHoveredDomTerm = false;
@@ -395,48 +436,77 @@ b {
         
         <input id="generate" type="button" value="Generate" />
 
-        <h2>2) Here's the generated table. Start annotating your data by clicking cells in the header.</h2>
+        <h2>2) Here's the generated table. Please choose whether you trait information is displayed in a row or in a column, and select it:</h2>
+        <select id="selection">
+            <option value="row">Row selection</option>
+            <option value="column">Column selection</option>
+        </select>
         <!-- <input id="terminize" type="button" value="Terminize" />-->
         <div id="result"></div>
         <br>
         <br>
-        
+        <input id="suggestions" type="button" value="Show suggestions" />
+
+        <br>
+        <br>
         <input id="download" type="button" value="Download as CSV" />
 
         
     </div>
     <div id="footer">
-<div class="sample" style="display: none">pegno	rep	clone	sprout	vigour	cmd1s	cmd3s	cmd6s	mcmds	cmd1i	cmd3i	cmd6i	mcmdi	cbb3s	cbb6s	mcbbs	cbb3i	cbb6i	mcbbi	cad6s	cad6i	cgm1
-101	1	05/1570	0.7	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	1.0	1.0	1.0	2	0.3	2
-102	1	05/1740	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.1	2
-103	1	05/0303	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.1	2
-104	1	05/1601	0.6	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.2	4
-105	1	05/0127	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.1	2
-106	1	05/0286	0.9	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	0.9	1.0	2	0.2	4
-107	1	05/0311	0.7	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.4	4
-108	1	05/0125	0.6	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	3	3.5	1.0	1.0	1.0	3	0.3	4
-109	1	05/0231	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.8	1.0	0.9	2	0.3	5
-110	1	05/0741	0.8	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.4	5
-111	1	05/1274	0.7	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.9	5
-112	1	05/0128	0.6	5	1	1	1	1.0	0.0	0.0	0.0	0.0	4	4	4.0	1.0	1.0	1.0	3	0.7	5
-113	1	05/1553	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.4	5
-114	1	05/0099	0.4	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.6	1.0	0.8	2	0.1	4
-115	1	TME 1	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	4	4.0	1.0	1.0	1.0	3	0.3	2
-116	1	05/0998	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	3	3.5	1.0	1.0	1.0	3	0.4	2
-117	1	05/1814	0.5	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	1.0	1.0	1.0	2	0.3	2
-118	1	05/0327	0.4	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.3	5
-119	1	05/0024	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	0.8	0.8	0.8	2	0.2	2
-120	1	30572	0.9	7	3	2	1	2.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.3	5
-201	2	05/1740	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.3	2
-202	2	05/0327	0.7	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.4	5
-203	2	05/0099	0.4	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.4	1.0	0.7	3	0.2	4
-204	2	05/1553	0.9	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.3	4
-205	2	05/0127	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	0.8	1.0	0.9	2	0.3	2
-206	2	30572	1.0	7	3	1	1	1.7	0.1	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	3	0.6	5
-207	2	TME 1	1.0	7	1	1	1	1.0	0.0	0.0	0.0	0.0	4	4	4.0	1.0	1.0	1.0	4	0.6	2
-208	2	05/1814	0.5	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	3	3.0	1.0	1.0	1.0	2	0.5	2
-209	2	05/0998	0.9	5	1	1	1	1.0	0.0	0.0	0.0	0.0	4	3	3.5	1.0	1.0	1.0	3	0.4	2
-210	2	05/0024	0.8	5	1	1	1	1.0	0.0	0.0	0.0	0.0	3	2	2.5	1.0	1.0	1.0	2	0.3	2</div>
+<div class="sample" style="display: none">10032	10032	Sprouting	SPROUT	Germination of stakes (Proportion of total planted) (1 month after planting)	0	0	0	AGRONOMIC
+10033	10033	Initial Vigor		Initial Vigority 3-low; 5-intermediate; and 7 high	0	0	0	AGRONOMIC
+10034	10034	Color of unexpanded apical leaves	LCOLAPC	Color of unexpanded apical leaves. 3-light green; 5-dark green; 7-green purple; 9 purple	0	0	0	AGRONOMIC
+10035	10035	Color of first fully expanded leaf	LCOLEXP	Color of first fully expanded leaf. 3-light green; 5-dark green; 7-green purple; 9 purple	0	0	0	AGRONOMIC
+10036	10036	Leaf vein color	LFVNCOL	Leaf vein color. 3-light green; 5-dark green; 7-green purple; 9 purple	0	0	0	AGRONOMIC
+10037	10037	Apical Pubescence	APUBES	Pubescence of young leaves.0-absence; 3-little; 5-moderate; 7-high pubescence	0	0	0	AGRONOMIC
+10038	10038	Length of stipules	STIPLT	Length of stipules (6 months after planting). 3-short; 5-medium; 7-long	0	0	0	AGRONOMIC
+10039	10039	Number of leaf lobes	LFLBNO	Number of leaf lobes (6 months after planting)	0	0	0	AGRONOMIC
+10040	10040	Leaf lobe position	LFLBPOS	Position in which leaf lobes are held. 1-erect; 2-horizontal; 3-deflexed; 4-retorse	0	0	0	AGRONOMIC
+10041	10041	Angle of petiole insertion	PETANG	Angle between branch and petiole. 0-no petiole; 3 15-30; 5 45-60; 7 75-90	0	0	0	AGRONOMIC
+10042	10042	Petiole length	PETLGT	Petiole length. 0-absent; 3-short; 5-medium; 7-long	0	0	0	AGRONOMIC
+10043	10043	Petiole color	PETCOL	Petiole color. 3-light green; 5-dark green; 7-green purple; 8-red; 9 purple	0	0	0	AGRONOMIC
+10044	10044	Anthocyanin pigmentation	ATHOPIG	Distribution of anthocyanin pigmentation (0-3). 0-absent; 3-totally pigmented	0	0	0	AGRONOMIC
+10045	10045	Growth habit of young stem	YSMGRHT	Growth habit of young stem. 1-Straight; 2-Zig-zag	0	0	0	AGRONOMIC
+10046	10046	Pubescence of young stem	STMPUB	Pubescence of young stem. 0-absent; 3-little; 5-moderate; 7-high pubescense	0	0	0	AGRONOMIC
+10047	10047	Stem color	STMCOL	Stem color (9 months after planting). 1-silver; 2-light brown or orange; 3-dark brown. 4-dark green	0	0	0	AGRONOMIC
+10048	10048	Leaf scar prominence	LFSCAR	Prominence of leaf scars (measured on fresh scars).3-little; 5-moderate; 7 prominent	0	0	0	AGRONOMIC
+10049	10049	Apical branching	APBRN	Time to first apical branching (associated with formation of inflorescence, in weeks from planting)	0	0	0	AGRONOMIC
+10050	10050	Branching levels	BRLEV	Number of levels of branching (Actual number of levels (at harvest)	0	0	0	AGRONOMIC
+10051	10051	Branching Angle	BRANG	Angle of branching (Angle between vertical plane and first branches (if branching). 0-no branching; 3-(15-30); 5-(45-60); 7-(75-90)	0	0	0	AGRONOMIC
+10052	10052	Height of first apical branch	FAPBRHT	Height of first apical branch if branching (ground level to point of first Apical branch, 9 months after planting) in cm	0	0	0	AGRONOMIC
+10053	10053	Height of plant	PLTHT	Height of plant (ground level to top of canopy) (at harvest) in cm	0	0	0	AGRONOMIC
+10054	10054	Total fresh weight foliage and stems	SHTWT	Total fresh weight of foliage and stems per plant (at harvest) in kg 	0	0	0	AGRONOMIC
+10055	10055	Total fresh weight foliage and stems	TYLD	Total fresh weight of foliage and stems per plant (at harvest) in t/ha	0	0	0	AGRONOMIC
+10056	10056	Number harvested	NOHAV	Number of plant stand harvest	0	0	0	AGRONOMIC
+10057	10057	Root number	RTNO	Number of storage roots per plot	0	0	0	AGRONOMIC
+10058	10058	Fresh weight of storage root	RTWT	Total fresh weight of storage roots per plant (measured in kg)	0	0	0	AGRONOMIC
+10059	10059	Fresh root yield	FYLD	Fresh root yield (t/ha)	0	0	0	AGRONOMIC
+10060	10060	Dry yield	DYLD	Dry yield (t/ha)	0	0	0	AGRONOMIC
+10061	10061	Harvest index	HI	Harvest index	0	0	0	AGRONOMIC
+10062	10062	Proportion of lodged plants	PLODPLT	Proportion of lodged plants (>45o)	0	0	0	AGRONOMIC
+10063	10063	Leaf retention	LFRET	Leaf retention (stay green) Categoricald on a 1-7 scale. 1-no stress; 3-low susceptibility; 5-medium susceptibility; 7-high susceptibility	0	0	0	AGRONOMIC
+10064	10064	Plant architecture		Plant architecture on a 1-5 scale.1-excellent; 2-good; 3-fair; 4-bad; 5-very bad	0	0	0	MORPHOLOGICAL
+10065	10065	Flowers (50%)	FLOWER	Flower 50% 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10066	10066	Sepal Color	SEPCOL	Color of sepals. 1-white or cream; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10067	10067	Disc Color	DISCOL	Color of disc. 1-white; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10068	10068	Sigma color	SIGCOL	Color of stigma. 1-white; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10069	10069	Ovary color	OVYCOL	Color of ovary. 1-white; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10070	10070	Anther color	ANTCOL	Color of anthers. 1-cream; 2-yellow; 3-other	0	0	0	MORPHOLOGICAL
+10071	10071	Female stamenoids	FSTAMEN	Female flowers without staminoids. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10072	10072	Male Sterile	MSTRL	Pollen. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10073	10073	Days to Flower	DYFL	Days to 50% flowering	0	0	0	MORPHOLOGICAL
+10074	10074	Fruit set	FRTSET	Fruit set. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10075	10075	Fruit Exocarp	FREXCAP	Exocarp of fruit (enter 0 for 3.1 is 0). 3- smooth; 7-rough	0	0	0	MORPHOLOGICAL
+10076	10076	Ploidy	PLOIDY	Ploidy level (n = 1,2,3,4 ) (by morphorlogical characteristics)	0	0	0	MORPHOLOGICAL
+10077	10077	Seed Color	SDCOL	Main color of seed. 1-brown; 3-grey; 3-mottled; 4-black; 5-dark brown	0	0	0	MORPHOLOGICAL
+10078	10078	Caruncle Color	CARCOL	Color of caruncle. 1-white or cream; 2-pink or red; 3-purple	0	0	0	MORPHOLOGICAL
+10079	10079	Storage root peduncle	RTPED	Storage root peduncle.0-absent; 3-short; 5-intermediate; 7-long	0	0	0	MORPHOLOGICAL
+10080	10080	Storage root form	RTSHP	Storage root form. 1-conical; 2-conical-cylindrical; 3-cylindrical; 4-fusiform; 5-irregular; 6-combination of above.	0	0	0	MORPHOLOGICAL
+10081	10081	Storage root constrictions	RTCONS	Storage root constrictions. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10082	10082	Root Position	RTPOST	Position of roots. 1-tending toward vertical; 2-tending towards horizontal; 3-irregular	0	0	0	MORPHOLOGICAL
+10083	10083	Root surface color	RTSCOL	Storage root surface color. 1-white or cream; 2-light brown; 3-dark brown	0	0	0	MORPHOLOGICAL
+10084	10084	Root surface texture	RTSTEX	Storage root surface texture. 3-smooth; 5-medium; 7-rough	0	0	0	MORPHOLOGICAL</div>
 
 
 <script>
@@ -462,18 +532,21 @@ var widget = (function() {
                     var term = data[i],
                         $a = $("<li><a href='#' term_id='"+term.id+"' class='poshytip'>"+term.name+" ("+term.ontology_name+")</a></li>");
 
-                    $a.find("a").click(function(e) {
-                        var oldtext = $clicked.text();
 
-                        // if there's a bracket, remove it
-                        oldtext = oldtext.match(/([^{]+)/g)[0];
+                    (function(term) {
+                        $a.find("a").click(function(e) {
+                            var oldtext = $clicked.text();
+
+                            // if there's a bracket, remove it
+                            oldtext = oldtext.match(/([^{]+)/g)[0];
 
 
-                        $clicked.text(oldtext + " {"+ term.id +"}");
+                            $clicked.text(oldtext + " {"+ term.id +"}");
 
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
+                            e.preventDefault();
+                            e.stopPropagation();
+                        });
+                    })(term);
 
                     $searchResult.append($a);
                 }
@@ -506,11 +579,14 @@ var widget = (function() {
                 var termId = $(this).attr("term_id");
                 $table.html("");
                 $.getJSON("/get-attributes/"+termId, function(data) {
+                    var $cont = $("<div></div>");
                     for(var i=0; i<data.length; i++) {
                         var attribute = data[i];
                         $table.append("<tr><td class=\"key\">"+attribute.key+"</td><td>" +attribute.value+"</td></tr>");
+
                     }
-                    updateCallback($table);
+                    $cont.append($table);
+                    updateCallback($cont.html());
                 });
                 return 'Loading...';
             }
