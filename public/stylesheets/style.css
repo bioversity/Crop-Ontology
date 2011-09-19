@@ -631,3 +631,14 @@ a.comments_rss {
     height: 14px;
     width: 14px;
 }
+
+#survey {
+    padding: 5px 8px;
+    background-color: #FFFBE8;
+    border: 1px solid #FFF1A9;
+    text-align: left;
+    width: 904px;
+    margin: auto;
+    margin-top: .6em;
+    margin-bottom: .6em;
+}
