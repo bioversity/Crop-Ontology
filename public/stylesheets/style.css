@@ -332,16 +332,18 @@ border-bottom-right-radius: 10px;
 }
 .pagehead {
 
-height: 50px;
+height: 30px;
 margin-bottom: 0;
+
+margin:0;
+padding:0;
 }
 .pagehead .head_left {
 font-size: 20px;
 float: left;
-margin-top: 8px;
 }
 .pagehead .head_right {
-    margin-top: 15px !important;
+    padding-top: 8px;
 }
 .pagehead .head_right a{
     float: right;
@@ -641,4 +643,9 @@ a.comments_rss {
     margin: auto;
     margin-top: .6em;
     margin-bottom: .6em;
+    font-size: 12px;
 }
+#survey img{
+    vertical-align: top;
+}
+
