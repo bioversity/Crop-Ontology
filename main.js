@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.3.1";
+var VERSION = "0.3.2";
 
 var print = function(response) {
     return {
