@@ -568,16 +568,14 @@ var widget = (function() {
 
             $.getJSON("/search", {q: query}, function(data) {
                 $searchResult.html("");
-                if(!data.length)
-                    $searchResult.html("No results found");
                 for(var i=0; i<data.length; i++) {
                     var term = data[i],
                         $a = $("<li><a href='#' term_id='"+term.id+"' class='poshytip'>"+term.name+" ("+term.ontology_name+")</a></li>");
 
                     // let's check whether this specific term actually belongs to the Crop we selected above
                     var cropval = $("#crop").val();
-                    if(cropval != "Loading..." || cropval != "All Crops") {
-                        if(term.ontology_name != $("#crop").val())
+                    if(cropval != "Loading..." && cropval != "All Crops") {
+                        if(term.ontology_name != cropval)
                             continue;
                     }
 
@@ -598,6 +596,8 @@ var widget = (function() {
 
                     $searchResult.append($a);
                 }
+                if(!$searchResult.children().length)
+                    $searchResult.html("No results found");
             });
 
 
