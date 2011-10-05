@@ -154,7 +154,7 @@ apejs.urls = {
                 ontologies.filter("category", "=", category);
 
             ontologies = ontologies
-                            .setCacheKey("ontologies")
+                            .setCacheKey("ontology_" + category)
                             .fetch();
 
             var res = [];
