@@ -11,7 +11,12 @@ var VERSION = "0.3.2";
 var print = function(response) {
     return {
         json: function(j) {
-            response.getWriter().println(JSON.stringify(j));
+            var jsonString = JSON.stringify(j);
+            response.getWriter().println(jsonString);
+            return jsonString;
+        },
+        text: function(text) {
+            response.getWriter().println(text);
         },
         rss: function(title, arr) {
             require("./rss.js");
@@ -148,7 +153,9 @@ apejs.urls = {
             if(category && !category.equals(""))
                 ontologies.filter("category", "=", category);
 
-            ontologies = ontologies.fetch();
+            ontologies = ontologies
+                            .setCacheKey("ontologies")
+                            .fetch();
 
             var res = [];
             ontologies.forEach(function(onto){
@@ -1286,6 +1293,7 @@ apejs.urls = {
             // to get categories we need to get all ontologies and
             // filter the unique values
             var ontologies = googlestore.query("ontology")
+                            .setCacheKey("get-categories") 
                             .fetch();
 
             var categories = {}; // use an object so keys are unique :D
@@ -1305,7 +1313,8 @@ apejs.urls = {
         get: function(request, response) {
             require("./usermodel.js");
             try {
-                var users = googlestore.query("user").fetch();
+                var users = googlestore.query("user")
+                            .fetch();
                     
                 var ret = [];
 
