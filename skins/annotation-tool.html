@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="">
 <head> 
 <title>Annotation Tool</title>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> 
+<script type="text/javascript" src="/js/jquery.min.1.5.2.js"></script>
 
 <!--<link type="text/css" rel="stylesheet" href="http://www.ackwire.com/all.css" /> -->
 <!--<link type="text/css" rel="stylesheet" href="/all.css" />-->
@@ -289,6 +289,18 @@ var TOKENS = {};
             val = $this.val()
         });
 
+        // load all crops (ontologies)
+        $.getJSON("/ontologies?category=300-499 Phenotype and Trait Ontology", function(data) {
+            var $crop = $("#crop");
+            $crop.html("");
+            $crop.append($("<option value=\"All Crops\">All Crops</option>"));
+            for(var i=0; i<data.length; i++) {
+                var term = data[i],
+                    option = $("<option value=\""+term.ontology_name+"\">"+term.ontology_name+"</option>");
+                $crop.append(option);
+            }
+        });
+
         // hover
         /*
         var selclass = "selected";
@@ -452,12 +464,10 @@ b {
         
         <input id="generate" type="button" value="Generate" />
 
-        <h2>2) Here's the generated table. Please choose whether you trait information is displayed in a row or in a column, and select it:</h2>
-        <!--
-        <select id="selection">
-            <option value="row">Row selection</option>
-            <option value="column">Column selection</option>
-        </select>-->
+        <h2>2) Here's the generated table. Choose your crop and select the cell in the table that you would like to annotate:</h2>
+        <select id="crop">
+            <option>Loading...</option>
+        </select>
         <!-- <input id="terminize" type="button" value="Terminize" />-->
         <div id="result"></div>
         <!--
@@ -558,12 +568,16 @@ var widget = (function() {
 
             $.getJSON("/search", {q: query}, function(data) {
                 $searchResult.html("");
-                if(!data.length)
-                    $searchResult.html("No results found");
                 for(var i=0; i<data.length; i++) {
                     var term = data[i],
                         $a = $("<li><a href='#' term_id='"+term.id+"' class='poshytip'>"+term.name+" ("+term.ontology_name+")</a></li>");
 
+                    // let's check whether this specific term actually belongs to the Crop we selected above
+                    var cropval = $("#crop").val();
+                    if(cropval != "Loading..." && cropval != "All Crops") {
+                        if(term.ontology_name != cropval)
+                            continue;
+                    }
 
                     (function(term) {
                         $a.find("a").click(function(e) {
@@ -582,6 +596,8 @@ var widget = (function() {
 
                     $searchResult.append($a);
                 }
+                if(!$searchResult.children().length)
+                    $searchResult.html("No results found");
             });
 
 
