@@ -1321,7 +1321,21 @@ apejs.urls = {
                 if(onto.getProperty("category")) {
                     var key = ""+onto.getProperty("category");
                     if(!categories[key]) categories[key] = [];
-                    categories[key].push(googlestore.toJS(onto));
+                    // convert this ontology into something JSON can read
+                    var username = "",
+                        userid = "";
+                    if(onto.getProperty("user_key")) {
+                        var user = googlestore.get(onto.getProperty("user_key"));
+                        username = user.getProperty("username"); 
+                        userid = user.getKey().getId();
+                    }
+                    categories[key].push({
+                        ontology_id: ""+onto.getProperty("ontology_id"),
+                        ontology_name: ""+onto.getProperty("ontology_name"),
+                        ontology_summary: ""+onto.getProperty("ontology_summary"),
+                        username: ""+username,
+                        userid: ""+userid
+                    });
                 }
             });
             print(response).json(categories);
