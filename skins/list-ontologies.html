@@ -89,11 +89,10 @@ $.getJSON("/get-ontologies", function(cats) {
         (function(currCat, c) {
             for(var i=0; i<cats[currCat].length; i++) {
                 addRow(cats[currCat][i], c);
-                c.find(".loader").hide();
             };
         })(currCat, c);
     }
-
+    $(".loader").hide();
 });
 
 
@@ -105,9 +104,9 @@ $.getJSON("/get-ontologies", function(cats) {
  <a href="/latest" class="button" style="display: inline">Latest</a>
  
             <div class="list-ontologies"> 
+                <img src="/images/metabox_loader.gif" class="loader"/>
                 <div class="bar left" style="display: none;">
                     <h2 class="featured-heading"><span>Crop Ontologies</span></h2>
-                    <img src="/images/metabox_loader.gif" class="loader"/>
 
                     <ol class="ranked-repositories row" style="display: none;">
                         <li>
