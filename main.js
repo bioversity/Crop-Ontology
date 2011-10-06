@@ -1313,7 +1313,6 @@ apejs.urls = {
         get: function(request, response) {
             var ontologies = googlestore.query("ontology")
                             .sort("ontology_name", "ASC")
-                            .setCacheKey("get-ontologies") 
                             .fetch();
 
             var categories = {}; // use an object so keys are unique :D
