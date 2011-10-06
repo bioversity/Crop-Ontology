@@ -1309,6 +1309,24 @@ apejs.urls = {
             print(response).json(cats);
         }
     },
+    "/get-ontologies": {
+        get: function(request, response) {
+            var ontologies = googlestore.query("ontology")
+                            .sort("ontology_name", "ASC")
+                            .setCacheKey("get-ontologies") 
+                            .fetch();
+
+            var categories = {}; // use an object so keys are unique :D
+            ontologies.forEach(function(onto){
+                if(onto.getProperty("category")) {
+                    var key = ""+onto.getProperty("category");
+                    if(!categories[key]) categories[key] = [];
+                    categories[key].push(googlestore.toJS(onto));
+                }
+            });
+            print(response).json(categories);
+        }
+    },
     "/users": {
         get: function(request, response) {
             require("./usermodel.js");
