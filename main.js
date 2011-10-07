@@ -6,7 +6,7 @@ require("./usermodel.js");
 require("./auth.js");
 require("./log.js");
 
-var VERSION = "0.3.3";
+var VERSION = "0.3.4";
 
 var print = function(response) {
     return {
@@ -154,7 +154,7 @@ apejs.urls = {
                 ontologies.filter("category", "=", category);
 
             ontologies = ontologies
-                            .setCacheKey("ontology_" + category)
+                            //.setCacheKey("ontology_" + category)
                             .fetch();
 
             var res = [];
@@ -1293,7 +1293,7 @@ apejs.urls = {
             // to get categories we need to get all ontologies and
             // filter the unique values
             var ontologies = googlestore.query("ontology")
-                            .setCacheKey("get-categories") 
+                            //.setCacheKey("get-categories") 
                             .fetch();
 
             var categories = {}; // use an object so keys are unique :D
