@@ -58,14 +58,14 @@ $(".list-ontologies").append(left).append(right);
     
 
 $.getJSON("/get-ontologies", function(cats) {
-    var filteredCats = [];
+    var filteredCats = [],
+        newCats = {};
 
-    for(var i in cats) {
-        var filtered = filterCat(i);
+    $.each(cats, function(key, val) {
+        var filtered = filterCat(key);
         filteredCats.push(filtered);
-        cats[filtered] = cats[i];
-        delete cats[i];
-    }
+        newCats[filtered] = val;
+    });
 
     // order the cats
     filteredCats = filteredCats.sort();
@@ -87,8 +87,8 @@ $.getJSON("/get-ontologies", function(cats) {
         // now load the ontologies for this category
         // hrm seems like "c" isn't carried on
         (function(currCat, c) {
-            for(var i=0; i<cats[currCat].length; i++) {
-                addRow(cats[currCat][i], c);
+            for(var i=0; i<newCats[currCat].length; i++) {
+                addRow(newCats[currCat][i], c);
             };
         })(currCat, c);
     }
