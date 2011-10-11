@@ -1,10 +1,19 @@
 require("apejs.js");
 require("googlestore.js");
 
-require("./fileupload.js");
 require("./usermodel.js");
+require("./ontologymodel.js");
+require("./commentmodel.js");
+require("./termmodel.js");
+require("./usermodel.js");
+
+require("./fileupload.js");
 require("./auth.js");
 require("./log.js");
+require("./rss.js");
+require("./blobstore.js");
+require("./taskqueue.js");
+require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
 var VERSION = "0.3.4";
 
@@ -19,7 +28,6 @@ var print = function(response) {
             response.getWriter().println(text);
         },
         rss: function(title, arr) {
-            require("./rss.js");
 
             response.getWriter().println(rss(title, arr));
         }
@@ -184,12 +192,10 @@ apejs.urls = {
     // haha nice REGEX!
     "/ontology(?:/([a-zA-Z0-9_\: \.-]+)(?:/([a-zA-Z0-9_\: \.-]+)(?:/([a-zA-Z0-9]+))?)?)?": {
         get: function(request, response, matches) {
-            require("./ontologymodel.js");
 
             var ontoId = matches[1];
 
             if(matches[3] && matches[3] == "rss") {
-                require("./commentmodel.js");
 
                 var ontoComments = commentmodel.getCommentsByOnto(ontoId);
 
@@ -214,7 +220,6 @@ apejs.urls = {
     },
     "/get-ontology/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
-            require("./blobstore.js");
 
             var ontoId = matches[1];
             try {
@@ -365,8 +370,6 @@ apejs.urls = {
     },
     "/get-attributes/([a-zA-Z0-9_\: \.]+)": {
         get: function(request, response, matches) {
-            require("./blobstore.js");
-
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
 
@@ -510,6 +513,7 @@ apejs.urls = {
     },
     "/httpget": {
         get: function(request, response) {
+            /*
             require("./httpget.js");
             var url = request.getParameter("url"),
                 contentType = request.getParameter("contentType");
@@ -520,11 +524,11 @@ apejs.urls = {
                 response.setContentType(contentType);
 
             response.getWriter().println(ret);
+            */
         }
     },
     "/serve/([a-zA-Z0-9_\: \-]+)" : {
         get: function(request, response, matches) {
-            require("./blobstore.js");
             var blobKeyString = matches[1];
 
             var blobKey = new BlobKey(blobKeyString);
@@ -839,8 +843,6 @@ apejs.urls = {
     },
     "/add-ontology" : {
         get: function(request, response) {
-            require("./blobstore.js");
-            require("./ontologymodel.js");
 
             var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
 
@@ -852,8 +854,6 @@ apejs.urls = {
             response.getWriter().println(html);
         },
         post: function(request, response) {
-            require("./blobstore.js");
-            require("./termmodel.js");
             
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -948,7 +948,6 @@ apejs.urls = {
     },
     "/serve" : {
         get: function(request, response) {
-            require("./blobstore.js");
             var blobKey = new BlobKey(request.getParameter("blob-key"));
 
             blobstore.blobstoreService.serve(blobKey, response);
@@ -956,10 +955,6 @@ apejs.urls = {
     },
     "/obo-upload" : {
         post: function(request, response) {
-            require("./blobstore.js");
-            require("./termmodel.js");
-            require("./taskqueue.js");
-            require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 
@@ -1059,14 +1054,12 @@ apejs.urls = {
     },
     "/obo-upload-url": {
         get: function(request, response) {
-            require("./blobstore.js");
             var uploadUrl = blobstore.createUploadUrl("/obo-upload");
             response.getWriter().println(uploadUrl);
         }
     },
     "/create-term": {
         post: function(request, response) {
-            require("./termmodel.js");
             /*
             importPackage(java.util.logging);
             var logger = Logger.getLogger("org.whatever.Logtest");
@@ -1124,7 +1117,6 @@ apejs.urls = {
      */
     "/obo-to-json": {
         get: function(request, response) {
-            require("./blobstore.js");
 
             var oboBlobKey = new BlobKey(request.getParameter("oboBlobKey"));
             if(!oboBlobKey)
@@ -1135,7 +1127,6 @@ apejs.urls = {
     },
     "/attribute-upload-url": {
         get: function(request, response) {
-            require("./blobstore.js");
             var uploadUrl = blobstore.createUploadUrl("/attribute-upload");
             response.getWriter().println(uploadUrl);
         }
@@ -1149,8 +1140,6 @@ apejs.urls = {
     },
     "/attribute-upload": {
         post: function(request, response) {
-            require("./blobstore.js");
-            require("./termmodel.js");
 
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 
@@ -1342,7 +1331,6 @@ apejs.urls = {
     },
     "/users": {
         get: function(request, response) {
-            require("./usermodel.js");
             try {
                 var users = googlestore.query("user")
                             .fetch();
@@ -1361,7 +1349,6 @@ apejs.urls = {
     },
     "/users/([a-zA-Z0-9_]+)": {
         get: function(request, response, matches) {
-            require("./usermodel.js");
             var userid = matches[1];
 
             try {
