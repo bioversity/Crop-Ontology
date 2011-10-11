@@ -625,7 +625,8 @@ apejs.urls = {
             var searchField = "normalized";
 
             var resultLength = 0,
-                matchedTerms = []; // contains all the terms entities
+                matchedTerms = [],
+                termIds = {}, newTermIds = {};
 
             // for each word, apply a filter on the query
             for(var i=0; i<words.length; i++) {
@@ -635,65 +636,47 @@ apejs.urls = {
                 terms.filter(searchField, "<", searchValue + "\ufffd");
                 terms = terms.fetch();
 
-                if(terms.length) {
+                // always clear the matchedTerms array
+                matchedTerms.length = 0;
 
-                    // put all the terms we found in a big array
-                    terms.forEach(function(termEntity) {
-                        matchedTerms.push(termEntity);
-                    });
+                if(terms.length) {
+                    // look into this terms array and discard
+                    // all terms that didn't appear in the earlier word iteration
+                    // by checking an obj of term ids
+                    for(var x=0, len=terms.length; x<len; x++) {
+                        var termEntity = terms[x];
+                        var id = ""+termEntity.getKey().getName();
+                        // on the first word iteration just add all the termids,
+                        // and after we start discarding
+                        if(i == 0) {
+                            termIds[id] = true;
+                            matchedTerms.push(termEntity);
+                        } else { 
+                            if(termIds[id] === true)  {
+                                matchedTerms.push(termEntity);
+                                newTermIds[id] = true; // track new term ids
+                            }
+                            if(x == (len-1))
+                                termIds = newTermIds;
+                        }
+                    }
 
                     resultLength++;
                 }
             }
 
             // check that the result length is same as words length
-            // meaning that we found entities with all the words
+            // meaning that we found at least an entity for each word
             if(resultLength != words.length)
                 return print(response).json([]);
 
-            // found somewhere online
-            function compressArray(original) {
-                var compressed = [];
-                // make a copy of the input array
-                var copy = original.slice(0);
-             
-                // first loop goes over every element
-                for (var i = 0; i < original.length; i++) {
-                    var myCount = 0;    
-                    // loop over every element in the copy and see if it's the same
-                    for (var w = 0; w < copy.length; w++) {
-                        if (original[i].equals(copy[w])) { // XXX changed this to .equals since it's an array of entities
-                            // increase amount of times duplicate is found
-                            myCount++;
-                            // sets item to undefined
-                            delete copy[w];
-                        }
-                    }
-                    if (myCount > 0) {
-                        var a = {};
-                        a.value = original[i];
-                        a.count = myCount;
-                        compressed.push(a);
-                    }
-                }
-             
-                return compressed;
-            };
-
-            var compressed = compressArray(matchedTerms);
-
             var res = [];
-            // loop through the compressed and see if the count matches the resultLength
-            compressed.forEach(function(o) {
-                var entity = o.value,
-                    count = o.count;
-
-                if(count == resultLength)
-                    res.push(googlestore.toJS(entity));
-
+            // convert the terms to JS objects
+            matchedTerms.forEach(function(entity) {
+                res.push(googlestore.toJS(entity));
             });
             
-            return print(response).json(res);
+            return print(response).json({termIds: termIds, res:res});
         }
     },
     "/login" : {
