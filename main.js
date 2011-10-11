@@ -676,7 +676,7 @@ apejs.urls = {
                 res.push(googlestore.toJS(entity));
             });
             
-            return print(response).json({termIds: termIds, res:res});
+            return print(response).json(res);
         }
     },
     "/login" : {
