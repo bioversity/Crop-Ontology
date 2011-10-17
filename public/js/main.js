@@ -864,8 +864,7 @@ var events = function(){
             matchSubset:1,
             matchContains:1,
             onItemSelect:selectItem,
-            formatItem:formatItem,
-            //autoFill:true
+            formatItem:formatItem
         }
     );
 

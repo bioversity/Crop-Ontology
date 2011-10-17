@@ -15,7 +15,7 @@ require("./blobstore.js");
 require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 
-var VERSION = "0.3.4";
+var VERSION = "0.3.6";
 
 var print = function(response) {
     return {

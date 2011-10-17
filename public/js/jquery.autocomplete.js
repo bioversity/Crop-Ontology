@@ -84,20 +84,33 @@ jQuery.autocomplete = function(input, options) {
 				moveSelect(1);
 				break;
 			case 9:  // tab
+			default:
+                /*
+				active = -1;
+				if (timeout) clearTimeout(timeout);
+				timeout = setTimeout(function(){onChange();}, options.delay);
+                */
+				break;
+		}
+	})
+    /**
+     * using another event here because in IE7 when pressing
+     * the "enter" key, keydown isn't fired, while with keypress it is
+     */
+    .keypress(function(e) {
+		switch(e.keyCode) {
 			case 13: // return
 				if( selectCurrent() ){
 					// make sure to blur off the current field
 					$input.get(0).blur();
 					e.preventDefault();
-				}
+				} else {
+                    // do search
+                    onChange();
+                }
 				break;
-			default:
-				active = -1;
-				if (timeout) clearTimeout(timeout);
-				timeout = setTimeout(function(){onChange();}, options.delay);
-				break;
-		}
-	})
+        }
+    })
 	.focus(function(){
 		// track whether the field has focus, we shouldn't process any results if the field no longer has focus
 		hasFocus = true;
@@ -114,7 +127,7 @@ jQuery.autocomplete = function(input, options) {
 	function onChange() {
         function makeRequest() {
             // ignore if the following keys are pressed: [del] [shift] [capslock]
-            if( lastKeyPressCode == 46 || (lastKeyPressCode > 8 && lastKeyPressCode < 32) ) return $results.hide();
+            //if( lastKeyPressCode == 46 || (lastKeyPressCode > 8 && lastKeyPressCode < 32) ) return $results.hide();
             var v = $input.val();
             if (v == prev) return;
             prev = v;
@@ -126,7 +139,9 @@ jQuery.autocomplete = function(input, options) {
                 $results.hide();
             }
         }
+        makeRequest();
 
+        /*
         // simple timer logic so that search 
         // doesn't happen everytime we hit a key
         if(firstType) {
@@ -137,6 +152,7 @@ jQuery.autocomplete = function(input, options) {
             }, 1000); // 1 second
         }
         firstType = false;
+        */
 
 	};
 
