@@ -63,6 +63,11 @@ function markdown(str) {
     str = str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
     str = str.replace(/\\n/g, "<br />");
     str = replaceURLWithHTMLLinks(str);
+    // do gramene links
+    str = str.replace(/TO\\?:(\S+)/g, function() {
+        var id = "TO:" + arguments[1];
+        return "<a target='_blank' href='http://www.gramene.org/db/ontology/search?id="+id+"'>" + id + "</a>"
+    }); // replace TO:\ with TO:
     return str;
 }
  
