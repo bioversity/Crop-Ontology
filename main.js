@@ -14,6 +14,7 @@ require("./rss.js");
 require("./blobstore.js");
 require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
+require("./excel.js");
 
 var VERSION = "0.4.21";
 
@@ -1405,6 +1406,31 @@ apejs.urls = {
             
             var csvString = request.getParameter("csvString");
             response.getWriter().println(csvString);
+        }
+    },
+    "/excel-template-upload": {
+        get: function(request, response) {
+            var UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
+            var skin = "<form method='post' enctype='multipart/form-data' action='"+UPLOAD_URL+"'><input type='file' name='excelfile' /><input type='submit' /></form>";
+            response.getWriter().println(skin);
+        },
+        post: function(request, response) {
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
+
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return err("Not logged in");
+
+            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+                blobKey = blobs.get("excelfile");
+
+            if(blobKey == null) {
+                return err("Something is missing. Did you fill out all the fields?");
+            }
+
+            excel.parseTemplate(blobKey, function(term) {
+                response.getWriter().println(JSON.stringify(term) + "<br>");
+            });
         }
     }
 };
