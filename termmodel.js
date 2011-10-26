@@ -10,7 +10,7 @@ var termmodel = (function(){
      * and figures out what needs to be normalized
      */
     function normalize(term) {
-        var fields = ["id", "name", "comment", "def"],
+        var fields = ["id", "name", "comment", "def", "Name of Trait", "Description of Trait"],
             arr = [];
 
         for(var i=0; i<fields.length; i++) {

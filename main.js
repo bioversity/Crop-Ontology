@@ -35,6 +35,12 @@ var print = function(response) {
     };
 };
 
+var isblank = function(javaStr) {
+    if(javaStr == null || javaStr.equals(""))
+        return true;
+    return false;
+};
+
 var error = function(response, msg) {
     response.sendError(response.SC_BAD_REQUEST, msg);
 };
@@ -1422,15 +1428,45 @@ apejs.urls = {
                 return err("Not logged in");
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
-                blobKey = blobs.get("excelfile");
+                blobKey = blobs.get("excelfile"),
+                ontologyName = request.getParameter("ontology_name"),
+                ontologyId = request.getParameter("ontology_id"),
+                ontologySummary = request.getParameter("ontology_summary"),
+                category = request.getParameter("category");
 
-            if(blobKey == null) {
+            if(blobKey == null || isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || isblank(category)) {
                 return err("Something is missing. Did you fill out all the fields?");
             }
 
-            excel.parseTemplate(blobKey, function(term) {
-                response.getWriter().println(JSON.stringify(term) + "<br>");
-            });
+            var blobKeyString = blobKey.getKeyString();
+
+            try {
+                // check wheter ontologyId already exists
+                if(ontologymodel.exists(ontologyId)) {
+                    return err("Ontology with this ID already exists");
+                }
+
+                // add the terms
+                excel.parseTemplate(blobKey, function(term) {
+                    // need a reference to the blob of the excel
+                    term.excel_blob_key = blobKeyString;
+
+                    // set the actual id from the one we have in the excel PLUS
+                    // the ontologyId
+                    term.id = ontologyId + ":" + term["TRAITID"];
+
+                    // also need reference to the ontology
+                    term.ontology_name = ""+ontologyName;
+                    term.ontology_id = ""+ontologyId;
+
+                    taskqueue.createTask("/create-term", JSON.stringify(term));
+                });
+
+                // create the ontology
+                ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
+            } catch(e) {
+                return err(e);
+            }
         }
     }
 };
