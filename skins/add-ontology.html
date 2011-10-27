@@ -6,6 +6,8 @@
                         <a title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch selected"><span>Upload an OBO File</span></a>
                         or
                         <a title="Generate Ontology" cont="create_ontology_cont" class="minibutton btn-watch"><span>Create an Ontology</span></a>
+                        or
+                        <a title="Upload Excel Template" cont="upload_excel_cont" class="minibutton btn-watch"><span>Upload Excel Trait Template</span></a>
                     </div>
 
                     <a class="button" id="error" style="display: none; margin-bottom: 10px;"></a>
@@ -31,27 +33,6 @@
                             </p>
                         </form>
                         <iframe name="obo_upload_iframe" style="display: none"></iframe>
-
-<!--
-<script type="text/javascript" src="/js/jsonobo.js"></script>
-<script>
-$(function(){
-    $("#obobtn").click(function(){
-        //var arr = jsonobo.obotojson($("#obo").val());
-        //console.log(arr);
-
-        var lines = $("#obo").val().split("\n");
-        for(var i=0,len=lines.length; i<len; i++) {
-            jsonobo.findTerm(lines[i], function(term) {
-                console.log(term);
-            });
-        }
-    }); 
-});
-</script>
-<textarea id="obo"></textarea>
-<input type="button" id="obobtn" />
--->
                     </div><!-- upload obo -->
 
 
@@ -74,7 +55,32 @@ $(function(){
                         <div class="buttons">
                             <a title="Save" id="save" class="minibutton btn-watch"><span>Save</span></a>
                         </div>
-                    </div>
+                    </div><!-- create_ontology_cont -->
+                    <div id="upload_excel_cont" style="display: none">
+
+                        <form action="{{EXCEL_UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="excel_upload_iframe">
+                            <p>
+                            Category:
+                            {{ONTOLOGY_CATEGORIES}}
+                            </p>
+                            <p>
+                                <input type="text" name="ontology_id" placeholder="Ontology ID" />
+                            </p>
+                            <p>
+                            <input name="ontology_name" type="text" placeholder="Ontology Name" />
+                            </p>
+                            <p>
+                            <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
+                            </p>
+                            <p>
+                            <input name="excelfile" type="file" /> 
+                            </p>
+                            <p>
+                            <input type="submit" value="Upload Excel" />
+                            </p>
+                        </form>
+                        <iframe name="excel_upload_iframe" style="display: none"></iframe>
+                    </div><!-- upload_excel_cont  -->
                     
                     
                 </div> 

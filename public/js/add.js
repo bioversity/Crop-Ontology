@@ -134,7 +134,7 @@ var bindEvents = function() {
         var $this = $(this);
         var cont = $this.attr("cont");
 
-        $("#upload_obo_cont, #create_ontology_cont").hide(); // hide all
+        $("#upload_obo_cont, #create_ontology_cont, #upload_excel_cont").hide(); // hide all
 
         $(".add_title a").removeClass("selected");
 
@@ -147,7 +147,7 @@ var bindEvents = function() {
         e.stopPropagation();
     });
 
-    $("[target=obo_upload_iframe]").submit(function() {
+    $("[target=obo_upload_iframe], [target=excel_upload_iframe]").submit(function() {
         var $this = $(this);
 
         var submitBtn = $this.find("[type=submit]");
@@ -167,7 +167,8 @@ $(function() {
 
 // for obo upload errors
 var fileupload_done = function(error) {
-    var form = $("form[target=obo_upload_iframe]");
+    var form = $("form[target=obo_upload_iframe]"),
+        excel_form = $("form[target=excel_upload_iframe]");
 
     if(error) {
         err(error);
@@ -175,6 +176,11 @@ var fileupload_done = function(error) {
             form.attr("action", url);
 
             form.find("[type=submit]").show();
+        });
+        $.get("/excel-upload-url", function(url) {
+            excel_form.attr("action", url);
+
+            excel_form.find("[type=submit]").show();
         });
     } else {
         window.location = "/";

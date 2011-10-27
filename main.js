@@ -16,7 +16,7 @@ require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 require("./excel.js");
 
-var VERSION = "0.4.21";
+var VERSION = "0.4.3";
 
 var print = function(response) {
     return {
@@ -835,11 +835,13 @@ apejs.urls = {
         get: function(request, response) {
 
             var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
+            var EXCEL_UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
 
             var html = render("./skins/index.html")
                         .replace(/{{CONTENT}}/g, render("skins/add-ontology.html"))
                         .replace(/{{ONTOLOGY_CATEGORIES}}/g, ontologymodel.catsSelectHtml())
                         .replace(/{{UPLOAD_URL}}/g, UPLOAD_URL)
+                        .replace(/{{EXCEL_UPLOAD_URL}}/g, EXCEL_UPLOAD_URL)
                         .replace(/{{VERSION}}/g, VERSION);
             response.getWriter().println(html);
         },
@@ -1045,6 +1047,12 @@ apejs.urls = {
     "/obo-upload-url": {
         get: function(request, response) {
             var uploadUrl = blobstore.createUploadUrl("/obo-upload");
+            response.getWriter().println(uploadUrl);
+        }
+    },
+    "/excel-upload-url": {
+        get: function(request, response) {
+            var uploadUrl = blobstore.createUploadUrl("/excel-template-upload");
             response.getWriter().println(uploadUrl);
         }
     },
@@ -1449,21 +1457,39 @@ apejs.urls = {
                 // add the terms
                 excel.parseTemplate(blobKey, function(term) {
                     // need a reference to the blob of the excel
-                    term.excel_blob_key = blobKeyString;
+                    term.excel_blob_key = ""+blobKeyString;
 
-                    // set the actual id from the one we have in the excel PLUS
-                    // the ontologyId
-                    term.id = ontologyId + ":" + term["TRAITID"];
+                    var parent = 0; // root by default
 
-                    // also need reference to the ontology
-                    term.ontology_name = ""+ontologyName;
-                    term.ontology_id = ""+ontologyId;
+                    // create the "trait class" term which is the parent
+                    if(term["Trait Class"]) {
+                        // set the parent to be this trait
+                        parent = ontologyId + ":" + term["Trait Class"];
+                        taskqueue.createTask("/create-term", JSON.stringify({
+                            id: parent,
+                            ontology_name: ""+ontologyName,
+                            ontology_id: ""+ontologyId,
+                            name: term["Trait Class"]
+                        }));
+                    } else {
+                        // set the actual id from the one we have in the excel PLUS
+                        // the ontologyId
+                        term.id = ontologyId + ":" + term["TRAITID"];
 
-                    taskqueue.createTask("/create-term", JSON.stringify(term));
+                        term.name = term["Name of Trait"];
+
+                        // also need reference to the ontology
+                        term.ontology_name = ""+ontologyName;
+                        term.ontology_id = ""+ontologyId;
+                        term.parent = parent;
+
+                        taskqueue.createTask("/create-term", JSON.stringify(term));
+                    }
                 });
 
                 // create the ontology
                 ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
+                return err("");
             } catch(e) {
                 return err(e);
             }
