@@ -16,7 +16,7 @@ require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 require("./excel.js");
 
-var VERSION = "0.4.3";
+var VERSION = "0.4.32";
 
 var print = function(response) {
     return {
@@ -375,7 +375,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-attributes/([a-zA-Z0-9_\: \.]+)": {
+    "/get-attributes/([a-zA-Z0-9_\: \.\\-\/\?\%\(\)]+)": {
         get: function(request, response, matches) {
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
@@ -396,7 +396,7 @@ apejs.urls = {
                 if(!key || !value) continue;
 
                 // let's skip certain keys
-                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals(""))
+                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals("") || key.equals("excel_blob_key"))
                     continue;
 
                 if(value instanceof BlobKey) {
@@ -1471,20 +1471,39 @@ apejs.urls = {
                             ontology_id: ""+ontologyId,
                             name: term["Trait Class"]
                         }));
-                    } else {
-                        // set the actual id from the one we have in the excel PLUS
-                        // the ontologyId
-                        term.id = ontologyId + ":" + term["TRAITID"];
-
-                        term.name = term["Name of Trait"];
-
-                        // also need reference to the ontology
-                        term.ontology_name = ""+ontologyName;
-                        term.ontology_id = ""+ontologyId;
-                        term.parent = parent;
-
-                        taskqueue.createTask("/create-term", JSON.stringify(term));
                     }
+
+                    // set the actual id from the one we have in the excel PLUS
+                    // the ontologyId
+                    term.id = ontologyId + ":" + term["TRAITID"];
+
+                    // create a method / child of this term
+                    var methodField = "Describe how measured (method)";
+                    if(term[methodField]) {
+                        taskqueue.createTask("/create-term", JSON.stringify({
+                            id: term.id + ":" + term[methodField],
+                            parent: term.id, // child!
+                            ontology_name: ""+ontologyName,
+                            ontology_id: ""+ontologyId,
+                            name: term[methodField],
+                            relationship: "method_of"
+                        }));
+                    }
+
+                    // do scales
+                    var scaleField = "For Continuous: units of measurement";
+                    if(methodId && term[scaleField]) {
+
+                    }
+
+                    term.name = term["Name of Trait"];
+
+                    // also need reference to the ontology
+                    term.ontology_name = ""+ontologyName;
+                    term.ontology_id = ""+ontologyId;
+                    term.parent = parent;
+
+                    taskqueue.createTask("/create-term", JSON.stringify(term));
                 });
 
                 // create the ontology

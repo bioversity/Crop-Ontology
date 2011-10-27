@@ -11,18 +11,28 @@ var excel = {
         // We now need something to iterate through the cells.**/
         var rowIter = mySheet.rowIterator(); 
 
-        var idx = 0;
+        var idx = 0,
+            cellContent,
+            cols = 0;
         while(rowIter.hasNext()){ // for each row
             var myRow = rowIter.next();
-            var cellIter = myRow.cellIterator();
-            var arr = [];
-            while(cellIter.hasNext()){ // for each cell
-                var myCell = cellIter.next();
-                var cellContent = ""+myCell.toString().trim();
-                if(cellContent)
-                    arr.push(cellContent);
+            if(idx == 0) // first row must tell us how many cols we have
+                cols = myRow.getPhysicalNumberOfCells();
+
+            var arr = [],
+                empty = true;
+            for (var i = 0; i < cols; i++) { // for each cell
+                var cell = myRow.getCell(i);
+                if(cell) {
+                    cellContent = ""+cell.toString().trim();
+                    if(cellContent)
+                        empty = false;
+                } else {
+                    cellContent = "";
+                }
+                arr.push(cellContent);
             }
-            if(arr.length)
+            if(!empty)
                 callback(arr, idx++);
         }
     },

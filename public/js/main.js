@@ -284,7 +284,7 @@ load_term = function(li) {
  
     var attributes = {};
     
-    $.getJSON("/get-attributes/"+id, function(this_attrs) {
+    $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
         });
@@ -338,7 +338,7 @@ function make_li(obj, last) {
     var id = obj.id;
     var name = obj.name;
     var label = obj.label;
-    var summary = obj.summary;
+    var summary = obj.name;
     var has_children = obj.has_children,
         relationship = obj.relationship,
         hitarea;
