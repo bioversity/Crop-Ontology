@@ -16,7 +16,7 @@ require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 require("./excel.js");
 
-var VERSION = "0.4.4";
+var VERSION = "0.4.41";
 
 var print = function(response) {
     return {

@@ -388,7 +388,7 @@ function make_li(obj, last) {
     var has_children = obj.has_children,
         relationship = obj.relationship,
         hitarea,
-        has_method = (!obj.has_children && obj.method);
+        has_method = (!obj.has_children && obj.method && obj.method !== "null");
 
     var li = $("<li></li>");
     if(last)
