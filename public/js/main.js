@@ -266,6 +266,45 @@ function highlight(li) {
 
     });
 }
+
+function showMethodAttr(attributes) {
+    var show = [
+        "Describe how measured (method)",
+        "Type of Measure (Continuous, Discrete or Categorical)"
+    ];
+    var ret = {};
+    for(var i=0;i<show.length;i++) {
+        ret[show[i]] = attributes[show[i]];
+    }
+    return ret;
+}
+function showScaleAttr(attributes) {
+    var type = attributes["Type of Measure (Continuous, Discrete or Categorical)"];
+    if(type == "Continuous") {
+        var show = [
+            "Type of Measure (Continuous, Discrete or Categorical)",
+            "For Continuous: units of measurement",
+            "For Continuous: minimum",
+            "For Continuous: maximum"
+        ];
+
+    } else if(type == "Categorical") {
+        var show = [
+            "Type of Measure (Continuous, Discrete or Categorical)",
+            "For Categorical: Class 1 - value = meaning",
+            "For Categorical: Class 2 - value = meaning",
+              "For Categorical: Class 3 - value = meaning",
+             "For Categorical: Class 4 - value = meaning",
+              "For Categorical: Class 5 - value = meaning"
+        ];
+    }
+
+    var ret = {};
+    for(var i=0;i<show.length;i++) {
+        ret[show[i]] = attributes[show[i]];
+    }
+    return ret;
+}
  
 // click event function
 // must load data for this specifict
@@ -288,6 +327,13 @@ load_term = function(li) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
         });
+
+        if(li.children(".method_of").length) { // it's a method, show only some attributes
+            attributes = showMethodAttr(attributes);    
+        }
+        if(li.children(".scale_of").length) { // it's a scale, show only some attributes
+            attributes = showScaleAttr(attributes);    
+        }
 
         // let's show the attributes
         show_attributes(id, name, attributes);
@@ -341,7 +387,8 @@ function make_li(obj, last) {
     var summary = obj.name;
     var has_children = obj.has_children,
         relationship = obj.relationship,
-        hitarea;
+        hitarea,
+        has_method = (!obj.has_children && obj.method);
 
     var li = $("<li></li>");
     if(last)
@@ -350,15 +397,16 @@ function make_li(obj, last) {
     // add a hidden input to track the id of this node
     li.append('<input type="hidden" class="id" value="'+id+'" />');
  
-    if(has_children){
+    if(has_children || has_method){
         li.addClass("expandable");
         hitarea = $('<div class="hitarea expandable-hitarea"></div>'); 
         li.append(hitarea);
     }
-    if(last && has_children) {
+    if(last && (has_children || has_method)) {
         li.addClass("lastExpandable");
         hitarea.addClass("lastExpandable-hitarea");
     }
+
  
     var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+name+'</span></a>');
  
@@ -387,8 +435,71 @@ function make_li(obj, last) {
         // assign click events for expansion/collapse
         //expand_collapse(li);
     }
+
+    // if it's the last leaf node and it has a method
+    // just show it as a child
+    if(has_method) { 
+        li.append(methodScale(obj));
+    }
  
     return li;
+}
+
+function makeScaleLi(scale, obj, islast) {
+    var scale_li = $("<li class='"+(islast ? "last": "")+"'></li>"),
+        scale_link = $('<a title="'+scale+'" class="minibutton btn-watch"><span>'+scale+'</span></a>');
+
+    // add a hidden input to track the id of this node
+    scale_li.append('<input type="hidden" class="id" value="'+obj.id+'" />');
+    scale_link.click(function(e) {
+        load_term(scale_li);
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    scale_li.append(scale_link);
+
+    scale_li.append("<span class='relationship scale_of' title='scale_of'>scale_of</span>");
+
+    return scale_li;
+}
+
+/**
+ * creates the methodScale "node" and assigns proper links to it
+ */
+function methodScale(obj) {
+
+    // add an ul (parent) to this, so we can put stuff in it as a child
+    var method_ul = $('<ul style="display:none;"></ul>'),
+        method_li = $("<li class='last'></li>"),
+        method_link = $('<a title="'+obj.method+'" class="minibutton btn-watch"><span>'+obj.method+'</span></a>');
+
+    // add a hidden input to track the id of this node
+    method_li.append('<input type="hidden" class="id" value="'+obj.id+'" />');
+
+    method_link.click(function(e) {
+        load_term(method_li);
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    method_li.append(method_link);
+
+    method_li.append("<span class='relationship method_of' title='method_of'>method_of</span>");
+
+    var scaleul = $("<ul></ul>");
+    for(var i=0; i<obj.scales.length; i++) {
+        var scale = obj.scales[i];
+            scaleli = makeScaleLi(scale, obj, (i == obj.scales.length-1)?true:false);
+        if(scale)
+            scaleul.append(scaleli);
+    }
+    if(obj.scales.length) {
+        method_li.append(scaleul);
+    }
+
+    method_ul.append(method_li);
+    return method_ul;
 }
  
 function loader(parent, show) {

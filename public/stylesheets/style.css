@@ -519,6 +519,12 @@ background-image: linear-gradient(top,#7fbf4d,#63a62f);
 .relationship.part_of {
     background: #D14836;
 }
+.relationship.method_of {
+    background: #D14836;
+}
+.relationship.scale_of {
+    background: #D14836;
+}
 /**
  * Modal window
  */

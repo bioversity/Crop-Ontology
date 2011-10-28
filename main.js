@@ -16,7 +16,7 @@ require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 require("./excel.js");
 
-var VERSION = "0.4.32";
+var VERSION = "0.4.4";
 
 var print = function(response) {
     return {
@@ -361,11 +361,41 @@ apejs.urls = {
                         relationship = ""+relationship.trim().split(" ")[0];
                     }
 
+                    // get the method of this child
+                    var method = term.getProperty("Describe how measured (method)");
+
+                    var type = term.getProperty("Type of Measure (Continuous, Discrete or Categorical)"),
+                    scales = [];
+
+                    if(type == "Continuous") {
+                        scales.push(term.getProperty("For Continuous: units of measurement"));
+                    } else if(type == "Categorical") {
+                        scales = [
+                            term.getProperty("For Categorical: Class 1 - value = meaning"),
+                            term.getProperty("For Categorical: Class 2 - value = meaning"),
+                            term.getProperty("For Categorical: Class 3 - value = meaning"),
+                            term.getProperty("For Categorical: Class 4 - value = meaning"),
+                            term.getProperty("For Categorical: Class 5 - value = meaning")
+                        ];
+                    }
+                    if(method instanceof Text)
+                        method = method.getValue();
+
+                    scales.forEach(function(s, i) {
+                        if(s instanceof Text)
+                            scales[i] = ""+s.getValue();
+                        else
+                            scales[i] = ""+s;
+                    });
+                    
+
                     ret.push({
                         "id": ""+term.getProperty("id"),
                         "name": ""+(name instanceof Text ? name.getValue() : name),
                         "relationship": relationship,
-                        "has_children": q.length
+                        "has_children": q.length,
+                        "method": ""+method,
+                        "scales": scales
                     });
                 });
 
@@ -1478,10 +1508,11 @@ apejs.urls = {
                     term.id = ontologyId + ":" + term["TRAITID"];
 
                     // create a method / child of this term
+                    /*
                     var methodField = "Describe how measured (method)";
                     if(term[methodField]) {
                         taskqueue.createTask("/create-term", JSON.stringify({
-                            id: term.id + ":" + term[methodField],
+                            id: term.id + ":method",
                             parent: term.id, // child!
                             ontology_name: ""+ontologyName,
                             ontology_id: ""+ontologyId,
@@ -1489,12 +1520,15 @@ apejs.urls = {
                             relationship: "method_of"
                         }));
                     }
+                    */
 
                     // do scales
+                    /*
                     var scaleField = "For Continuous: units of measurement";
                     if(methodId && term[scaleField]) {
 
                     }
+                    */
 
                     term.name = term["Name of Trait"];
 
@@ -1511,6 +1545,32 @@ apejs.urls = {
                 return err("");
             } catch(e) {
                 return err(e);
+            }
+        }
+    },
+    "/backup": {
+        get: function(request, response) {
+            var kind = request.getParameter("kind");
+            if(isblank(kind))
+                return error(response, "Need kind");
+
+            var currUser = auth.getUser(request);
+            if(!currUser)
+                return error(response, "Not logged in");
+            if(!auth.isAdmin(currUser)) 
+                return error(response, "Need to be an admin");
+
+            // CSV?
+            try {
+                var entities = googlestore.query(kind)
+                                .fetch();
+                var arr = [];
+                entities.forEach(function(entity) {
+                    arr.push(googlestore.toJS(entity)); 
+                });
+                return print(response).json(arr);
+            } catch (e) {
+                return error(response, e);
             }
         }
     }
