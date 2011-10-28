@@ -50,6 +50,12 @@ To let us gather feedback you can leave a comment using the form on the right.
 <p>
 Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> semantics: create, retrieve, update and delete.
 </p>
+
+<h2>Retrieve all traits given an Ontology Name</h2>
+<ul>
+    <li>Here's a little code snippet written in <b>PHP</b> to show you how you can leverage this API to retrieve all the traits of a specific Ontology: <a href="https://gist.github.com/1322511">https://gist.github.com/1322511</a></li>
+</ul>
+
 <h2>Search Terms</h2>
 <ul>
     <li><strong>URL:</strong> <code>{{URL}}/search?q={query}</code></li>
@@ -58,12 +64,20 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Example:</strong> <span class="example" query="stem rust"></span></li>
 </ul>
 
+
 <h2>Retrieve all Ontologies</h2>
 <ul>
     <li><strong>URL:</strong> <code>{{URL}}/get-ontologies</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> JSON Hierarchy of the Ontologies under each category</li>
     <li><strong>Example:</strong> <span class="example"></span></li>
+</ul>
+<h2>Retrieve Ontology ID by its Name</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-id?ontology_name={ontology_name}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> ID of the ontology, to be used with <code>/get-ontology-roots/{id}</code></li>
+    <li><strong>Example:</strong> <span class="example" ontology_name="cassava"></span></li>
 </ul>
 
 <h2>Retrieve Categories</h2>

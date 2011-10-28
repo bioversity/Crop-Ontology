@@ -270,6 +270,26 @@ apejs.urls = {
             }
         }
     },
+    "/get-ontology-id": {
+        get: function(request, response) {
+            var ontology_name = request.getParameter("ontology_name");
+            if(isblank(ontology_name))
+                return error(response, "Missing ontology_name");
+            var search_value = ""+ontology_name,
+                search_value = search_value.charAt(0).toUpperCase() + search_value.slice(1); // capitalize first letter
+
+            var ontologies = googlestore.query("ontology")
+                            .filter("ontology_name", ">=", search_value)
+                            .filter("ontology_name", "<", search_value + "\ufffd")
+                            .fetch(1);
+            var ontology = ontologies[0];
+
+            if(!ontology)
+                return error(response, "No traits found for this ontology crop");
+
+            print(response).text(ontology.getProperty("ontology_id"));
+        }
+    },
     "/delete-ontology": {
         post: function(request, response) {
             try {
