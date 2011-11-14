@@ -328,12 +328,14 @@ load_term = function(li) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
         });
 
+        /*
         if(li.children(".method_of").length) { // it's a method, show only some attributes
             attributes = showMethodAttr(attributes);    
         }
         if(li.children(".scale_of").length) { // it's a scale, show only some attributes
             attributes = showScaleAttr(attributes);    
         }
+        */
 
         // let's show the attributes
         show_attributes(id, name, attributes);
