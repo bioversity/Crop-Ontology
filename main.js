@@ -16,7 +16,7 @@ require("./taskqueue.js");
 require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 require("./excel.js");
 
-var VERSION = "0.4.43";
+var VERSION = "0.4.51";
 
 var print = function(response) {
     return {
@@ -1592,6 +1592,17 @@ apejs.urls = {
             } catch (e) {
                 return error(response, e);
             }
+        }
+    },
+    "/report": {
+        get: function(request, response) {
+          var ontoId = request.getParameter("ontology_id");
+          if(isblank(ontoId)) return error(response, "Invalid parameter");
+          print(response).text(
+              render("./skins/report.html")
+                  .replace(/{{ontology_id}}/g, ""+ontoId)
+                  .replace(/{{VERSION}}/g, VERSION)
+          );
         }
     }
 };

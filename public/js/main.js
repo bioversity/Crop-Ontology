@@ -659,6 +659,7 @@ var events = function(){
     // right navigation
     $("ul.sorts li").click(function(){
         var $this = $(this);
+        if($this.attr("id") == "download") return;
  
         // deselect all navigation buttons
         $("ul.sorts li").removeClass("desc");
