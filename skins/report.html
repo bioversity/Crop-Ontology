@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/js/jquery.min.1.5.2.js"></script>
+    <script type="text/javascript" src="/js/jquery-report/jquery.report.js?{{VERSION}}"></script>
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+
+<script>
+var columns = {},
+    columnsIdx = 0;
+
+function createTd($tr, key, val) {
+  var children = $tr.children().length,
+      idx = columns[key];
+
+  if(idx > children) { // means we need to add extra empty <td>
+    var diff = idx - children;
+    for(var i=0; i<diff; i++) {
+      $tr.append("<td></td>");
+    }
+  }
+  
+  if (idx < children) { // let's not append, select the TD
+    $tr.children().eq(idx).text(val);
+  } else { // append
+    $tr.append("<td>"+val+"</td>");
+  }
+}
+function addRow(trait) {
+  var $tr = $("<tr></tr>");
+  $.each(trait, function(key, val) {
+    if(columns[key] === undefined) {
+      $("table thead tr").append("<th>"+key+"</th>");
+      columns[key] = columnsIdx++;
+    }
+    createTd($tr, key, val);
+  });
+  $("table tbody").append($tr);
+}
+
+var traits = [],
+    $table;
+function getAttr(trait) {
+  var newtrait = {};
+  newtrait.id = trait.id;
+  $.getJSON("/get-attributes/"+trait.id, function(attributes) {
+    $.each(attributes, function(idx, val) {
+      var key = val.key,
+          value = val.value;
+      newtrait[key] = value;
+    });
+    traits.push(newtrait);
+  });
+  $table.report(traits);
+}
+
+function getChildren(parentId) {
+  $.getJSON("/get-children/"+parentId, function(children) {
+    for(var i=0; i<children.length; i++) {
+      var child = children[i];
+      if(child.has_children > 0) {
+        getChildren(child.id);
+      } else if (child.has_children == 0) { // it's a trait!!
+        getAttr(child);
+      }
+    }
+  });
+}
+
+$(function(){
+  $table = $("table");
+  $.getJSON("/get-ontology-roots/{{ontology_id}}", function(roots) {
+    for(var i=0; i<roots.length; i++) {
+      var onto = roots[i];
+      getChildren(onto.id);  
+    }
+  });
+
+});
+</script>
+  </head>
+<body>
+<table class="bordered-table zebra-striped">
+</table>
+</body>
+</html>
