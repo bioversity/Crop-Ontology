@@ -5,10 +5,10 @@ var excel = {
     read: function(blobKey, callback) {
         // Create a workbook using the File System
         var myWorkBook = new WorkbookFactory.create(new BlobstoreInputStream(blobKey));
-        /// Get the first sheet from workbook
+        // Get the first sheet from workbook
         var mySheet = myWorkBook.getSheetAt(1);
 
-        // We now need something to iterate through the cells.**/
+        // We now need something to iterate through the cells.
         var rowIter = mySheet.rowIterator(); 
 
         var idx = 0,
