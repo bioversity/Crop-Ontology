@@ -438,6 +438,8 @@ apejs.urls = {
 
             var attributes = [];
 
+            var attrObj = {};
+
             while(entries.hasNext()) {
                 var entry = entries.next(),
                     key = entry.getKey(),
@@ -463,9 +465,41 @@ apejs.urls = {
                 } else if(value instanceof Text)
                     value = value.getValue();
 
+                attrObj[""+key] = ""+value;
+                /*
                 attributes.push({
                     "key": ""+ key,
                     "value": ""+value
+                });
+                */
+            }
+
+            var order = {
+                "creation_date":true,
+                "created_at": true,
+                "name":true,
+                "synonym":true,
+                "def":true,
+                "Description of Trait":true,
+                "comment":true
+            };
+
+            // do the first ones in order
+            for(var i in order) {
+                if(attrObj[i]) {
+                    attributes.push({
+                        "key": i,
+                        "value": attrObj[i]
+                    });
+                }
+            }
+
+            // then do the rest
+            for(var i in attrObj) {
+                if(order[i]) continue; // skip the ones we already did above
+                attributes.push({
+                    "key": i,
+                    "value": attrObj[i]
                 });
             }
 
