@@ -1514,6 +1514,7 @@ apejs.urls = {
         },
         post: function(request, response) {
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
+            
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1539,7 +1540,7 @@ apejs.urls = {
                 }
 
                 // add the terms
-                excel.parseTemplate(blobKey, function(term) {
+                excel.parseTemplate(6, blobKey, function(term) {
                     // need a reference to the blob of the excel
                     term.excel_blob_key = ""+blobKeyString;
 
@@ -1557,34 +1558,10 @@ apejs.urls = {
                         }));
                     }
 
-                    // set the actual id from the one we have in the excel PLUS
-                    // the ontologyId
-                    term.id = ontologyId + ":" + term["TRAITID"];
-
-                    // create a method / child of this term
-                    /*
-                    var methodField = "Describe how measured (method)";
-                    if(term[methodField]) {
-                        taskqueue.createTask("/create-term", JSON.stringify({
-                            id: term.id + ":method",
-                            parent: term.id, // child!
-                            ontology_name: ""+ontologyName,
-                            ontology_id: ""+ontologyId,
-                            name: term[methodField],
-                            relationship: "method_of"
-                        }));
-                    }
-                    */
-
-                    // do scales
-                    /*
-                    var scaleField = "For Continuous: units of measurement";
-                    if(methodId && term[scaleField]) {
-
-                    }
-                    */
-
                     term.name = term["Name of Trait"];
+
+                    // set the actual id of this trait as the ontologyId:TERM-NAME
+                    term.id = ontologyId + ":" + term.name;
 
                     // also need reference to the ontology
                     term.ontology_name = ""+ontologyName;
