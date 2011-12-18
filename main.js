@@ -347,7 +347,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/([a-zA-Z0-9_\: \.\-]+)": {
+    "/get-children/(.*)": {
         get: function(request, response, matches) {
             var parentId = matches[1];
             if(!parentId)
@@ -425,7 +425,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-attributes/([a-zA-Z0-9_\: \.\\-\/\?\%\(\)]+)": {
+    "/get-attributes/(.*)": {
         get: function(request, response, matches) {
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
