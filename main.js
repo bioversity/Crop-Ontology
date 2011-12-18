@@ -1568,6 +1568,8 @@ apejs.urls = {
                     term.ontology_id = ""+ontologyId;
                     term.parent = parent;
 
+                    delete term[""]; // WTF DUDE OMG
+
                     taskqueue.createTask("/create-term", JSON.stringify(term));
                 });
 
