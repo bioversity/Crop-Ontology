@@ -347,7 +347,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/([a-zA-Z0-9_\: \.]+)": {
+    "/get-children/([a-zA-Z0-9_\: \.\-]+)": {
         get: function(request, response, matches) {
             var parentId = matches[1];
             if(!parentId)
