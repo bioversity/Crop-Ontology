@@ -225,7 +225,7 @@ apejs.urls = {
             response.getWriter().println(skin);
         }
     },
-    "/get-ontology/([a-zA-Z0-9_\: \.]+)": {
+    "/get-ontology/([a-zA-Z0-9_\: \.\-]+)": {
         get: function(request, response, matches) {
 
             var ontoId = matches[1];
@@ -244,7 +244,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-ontology-roots/([a-zA-Z0-9_\: \.]+)": {
+    "/get-ontology-roots/([a-zA-Z0-9_\: \.\-]+)": {
         get: function(request, response, matches) {
             var ontoId = matches[1];
             try {
