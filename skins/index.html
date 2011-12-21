@@ -16,6 +16,11 @@ var ontologyid = "{{ontologyid}}";
 var ontologyname = "{{ontologyname}}";
 var termid = "{{termid}}";
 var searchQuery = "";
+$(function(){
+  if(ontologyid.charAt(0) !== "{") {
+    $(".crop-logos").show();
+  }
+});
 </script>
 <script type="text/javascript" src="/js/main.js?{{VERSION}}"></script>
 
@@ -39,6 +44,7 @@ var searchQuery = "";
     <div id="main" class=""> 
         <div class="header_top">
             <div class="gcp_logo">
+                <span class="crop-logos" style="display: none">{{CROP_LOGOS}}</span>
                 <a href="http://www.generationcp.org/"><img src="/images/gcp-logo.png?{{VERSION}}" /></a>
             </div>
             <div class="header_logo">

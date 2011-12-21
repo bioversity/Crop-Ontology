@@ -216,12 +216,23 @@ apejs.urls = {
 
                 return;
             }
+            var assoc = {
+              "CO_334": "<img src='https://integratedbreeding.net/sites/default/files/uploads/ciat.jpg' /><img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>",
+              "CO_338": "<img src='https://integratedbreeding.net/sites/default/files/uploads/icrisat_logo.jpg' /><img src='https://integratedbreeding.net/sites/default/files/uploads/icarda.jpg' />",
+              "CO_322": "<img src='https://integratedbreeding.net/sites/default/files/uploads/cimmyt-logo.png' />",
+              "CO_320": "<img src='https://integratedbreeding.net/sites/default/files/uploads/irri.png'/><img src='https://integratedbreeding.net/sites/default/files/uploads/africa_rice.png' />",
+              "CO_324": "<img src='https://integratedbreeding.net/sites/default/files/uploads/icrisat_logo.jpg' />",
+              "CO_321": "<img src='https://integratedbreeding.net/sites/default/files/uploads/cimmyt-logo.png' />"
+            };
+            var cropLogos = "<img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>";
 
+            var cropLogos = assoc[matches[1]] || "";
             var skin = render("skins/index.html")
                     .replace(/{{CONTENT}}/g, render("skins/onto.html"))
                     .replace(/{{ONTOLOGY_CATEGORIES}}/g, ontologymodel.catsSelectHtml())
                     .replace(/{{VERSION}}/g, VERSION)
-                    .replace(/{{ontologyid}}/g, matches[1]);
+                    .replace(/{{ontologyid}}/g, matches[1])
+                    .replace(/{{CROP_LOGOS}}/g, cropLogos);
             response.getWriter().println(skin);
         }
     },
