@@ -455,6 +455,9 @@ background-image: linear-gradient(top,#7fbf4d,#63a62f);
 .rounded-button:hover {
     text-decoration: none;
 }
+.print-button {
+  background-color: #DA4A38;
+}
 .edit-button {
     position: absolute;
     top:0;
