@@ -622,6 +622,19 @@ function myregister() {
 }
 
 
+var langs = {
+  capitaliseFirstLetter: function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  },
+  html: function(langs){
+    var html = "<select>";
+    for(var i=0; i<langs.length; i++) {
+      html += "<option>" + this.capitaliseFirstLetter(langs[i]) + "</option>"; 
+    }
+    html += "</select>";
+    return html;
+  }
+}
 
 var row_edit_template = '\
     <div class="attribute">\
@@ -637,12 +650,7 @@ var row_edit_template = '\
                     </select>\
                 </p>\
                 <p>\
-                    Language: \
-                    <select>\
-                        <option>English</option>\
-                        <option>French</option>\
-                        <option>Spanish</option>\
-                    </select>\
+                    Language: '+langs.html(languages)+'\
                 </p>\
                 <div class="form-actions">\
                     <button type="submit" class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\

@@ -53,7 +53,8 @@ function renderIndex(htmlFile, data) {
   if(!data) data = {};
   var partials = { 
     CONTENT: render(htmlFile), 
-    VERSION: VERSION
+    VERSION: VERSION,
+    languages: JSON.stringify(languages.all)
   };
   var html = Mustache.to_html(render("skins/index.html"), data, partials);
   return html;
