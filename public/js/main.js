@@ -713,7 +713,7 @@ var events = function(){
         var term_id = $("#term_id").text();
  
         var ontoId = "";
-        if(ontologyid == "{{ontologyid}}") {
+        if(ontologyid === "") {
             // get it from the term_id
             ontoId = term_id.split(":")[0];
         } else {
@@ -795,7 +795,7 @@ var events = function(){
                 $(".error_box").html(data.error); 
             } else {
                 Login(function(user) {
-                    if(ontologyid !== "{{ontologyid}}")
+                    if(ontologyid !== "")
                         Editable.init(ontologyid);
                 });
                 Modal.hide();
@@ -1518,19 +1518,17 @@ UserWidget = (function() {
 $(document).ready(function(){
  
     Login(function(user) {
-        if(ontologyid !== "{{ontologyid}}")
+        if(ontologyid !== "")
             Editable.init(ontologyid);
     });
 
-    if(ontologyid !== "{{ontologyid}}") {
+    if(ontologyid !== "") {
         LoadOntology(ontologyid);
     }
 
-    if(termid !== "{{termid}}") {
+    if(termid !== "") {
         Term.init(termid);
     }
-
-
 
     /* assign some events for ui */
     events();

@@ -1,4 +1,4 @@
-<script type="text/javascript" src="/js/add.js?{{VERSION}}"></script>
+<script type="text/javascript" src="/js/add.js?{{>VERSION}}"></script>
             <div class="left browser-content" style="width: 100%;"> 
                 <div class="cont" style="width: 877px;"> 
 
@@ -17,7 +17,7 @@
                         <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="obo_upload_iframe">
                             <p>
                             Category:
-                            {{ONTOLOGY_CATEGORIES}}
+                            {{{ONTOLOGY_CATEGORIES}}}
                             </p>
                             <p>
                             <input name="ontology_name" type="text" placeholder="Ontology Name" />
@@ -39,7 +39,7 @@
                     <div id="create_ontology_cont" style="display: none">
                             <p>
                             Category:
-                            {{ONTOLOGY_CATEGORIES}}
+                            {{{ONTOLOGY_CATEGORIES}}}
                             </p>
                         <ul class="treeview" id="cont"> 
                             <li class="last" id="ontology">
@@ -62,7 +62,7 @@
                         <form action="{{EXCEL_UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="excel_upload_iframe">
                             <p>
                             Category:
-                            {{ONTOLOGY_CATEGORIES}}
+                            {{{ONTOLOGY_CATEGORIES}}}
                             </p>
                             <p>
                                 <input type="text" name="ontology_id" placeholder="Ontology ID" />

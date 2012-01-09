@@ -17,6 +17,9 @@ var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET
 var excel = require("./excel.js");
 var languages = require("./languages.js");
 
+// commonjs modules
+var Mustache = require("./common/mustache.js");
+
 var VERSION = "0.6";
 
 var print = function(response) {
@@ -46,49 +49,45 @@ var error = function(response, msg) {
     response.sendError(response.SC_BAD_REQUEST, msg);
 };
 
+function renderIndex(htmlFile, data) {
+  if(!data) data = {};
+  var partials = { 
+    CONTENT: render(htmlFile), 
+    VERSION: VERSION
+  };
+  var html = Mustache.to_html(render("skins/index.html"), data, partials);
+  return html;
+}
+
 apejs.urls = {
     "/": {
         get: function(request, response) {
-            var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/list-ontologies.html"))
-                        .replace(/{{VERSION}}/g, VERSION);
-            response.getWriter().println(skin);
-            
+            var html = renderIndex("skins/list-ontologies.html");
+            print(response).text(html);
         }
     },
     "/api": {
         get: function(request, response) {
-            var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/api.html"))
-                        .replace(/{{VERSION}}/g, VERSION)
-                        .replace(/{{URL}}/g, "http://www.cropontology-curationtool.org");
-            response.getWriter().println(skin);
-            
+            var html = renderIndex("skins/api.html", {URL:"http://www.cropontology-curationtool.org" });
+            print(response).text(html);
         }
     },
     "/about": {
         get: function(request, response) {
-            var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/about.html"))
-                        .replace(/{{VERSION}}/g, VERSION);
-            response.getWriter().println(skin);
-            
+            var html = renderIndex("skins/about.html");
+            print(response).text(html);
         }
     },
     "/video-tutorials": {
         get: function(request, response) {
-            var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/video-tutorials.html"))
-                        .replace(/{{VERSION}}/g, VERSION);
-            response.getWriter().println(skin);
+            var html = renderIndex("skins/video-tutorials.html");
+            print(response).text(html);
         }
     },
     "/latest": {
         get: function(request, response) {
-            var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/latest.html"))
-                        .replace(/{{VERSION}}/g, VERSION);
-            response.getWriter().println(skin);
+            var html = renderIndex("skins/latest.html");
+            print(response).text(html);
         },
         post: function(request, response) {
             var termsQuery = googlestore.query("term")
@@ -228,29 +227,26 @@ apejs.urls = {
             var cropLogos = "<img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>";
 
             var cropLogos = assoc[matches[1]] || "";
-            var skin = render("skins/index.html")
-                    .replace(/{{CONTENT}}/g, render("skins/onto.html"))
-                    .replace(/{{ONTOLOGY_CATEGORIES}}/g, ontologymodel.catsSelectHtml())
-                    .replace(/{{VERSION}}/g, VERSION)
-                    .replace(/{{ontologyid}}/g, matches[1])
-                    .replace(/{{CROP_LOGOS}}/g, cropLogos);
-            response.getWriter().println(skin);
+
+            var html = renderIndex("skins/onto.html", {
+              URL:"http://www.cropontology-curationtool.org",
+              ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
+              ontologyid: matches[1],
+              CROP_LOGOS: cropLogos
+            });
+            print(response).text(html);
         }
     },
     "/get-ontology/([a-zA-Z0-9_\: \.\-]+)": {
         get: function(request, response, matches) {
-
             var ontoId = matches[1];
             try {
                 // get this ontology data from it's id
                 var ontoKey = googlestore.createKey("ontology", ontoId),
                     ontoEntity = googlestore.get(ontoKey);
-
                 var jsonBlobKey = ontoEntity.getProperty("jsonBlobKey");
-                    
                 // just use serve() to get the jsonString from the blobstore
                 blobstore.blobstoreService.serve(jsonBlobKey, response);
-
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
@@ -685,16 +681,17 @@ apejs.urls = {
                 var termKey = googlestore.createKey("term", termId),
                     termEntity = googlestore.get(termKey);
 
-                var skin = render("skins/term.html")
-                            .replace(/{{term_name}}/g, termEntity.getProperty("name"))
-                            .replace(/{{term_id}}/g, termId)
-                            .replace(/{{ontology_name}}/g, termEntity.getProperty("ontology_name"))
-                            .replace(/{{ontology_id}}/g, termEntity.getProperty("ontology_id"));
+
+                var skin = Mustache.to_html(render("skins/term.html"), {
+                  term_name:termEntity.getProperty("name"),
+                  term_id:termId,
+                  ontology_name: termEntity.getProperty("ontology_name"),
+                  ontology_id: termEntity.getProperty("ontology_id")
+                });
             } else {
-                var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/onto.html"))
-                        .replace(/{{VERSION}}/g, VERSION)
-                        .replace(/{{termid}}/g, termId);
+                var skin = renderIndex("skins/onto.html", {
+                  termid: termId
+                });
             }
             response.getWriter().println(skin);
             /*
@@ -924,21 +921,18 @@ apejs.urls = {
             var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
             var EXCEL_UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
 
-            var html = render("./skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/add-ontology.html"))
-                        .replace(/{{ONTOLOGY_CATEGORIES}}/g, ontologymodel.catsSelectHtml())
-                        .replace(/{{UPLOAD_URL}}/g, UPLOAD_URL)
-                        .replace(/{{EXCEL_UPLOAD_URL}}/g, EXCEL_UPLOAD_URL)
-                        .replace(/{{VERSION}}/g, VERSION);
+            var html = renderIndex("skins/add-ontology.html", {
+                ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
+                UPLOAD_URL: UPLOAD_URL,
+                EXCEL_UPLOAD_URL: EXCEL_UPLOAD_URL
+            });
             response.getWriter().println(html);
         },
         post: function(request, response) {
-            
             var currUser = auth.getUser(request);
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
                 
-
             var json = request.getParameter("json");
 
             try {
@@ -1488,9 +1482,7 @@ apejs.urls = {
     },
     "/feedback": {
         get: function(request, response) {
-            var skin = render("skins/index.html")
-                        .replace(/{{CONTENT}}/g, render("skins/feedback.html"))
-                        .replace(/{{VERSION}}/g, VERSION);
+            var skin = renderIndex("skins/feedback.html");
             response.getWriter().println(skin);
         }
     },
