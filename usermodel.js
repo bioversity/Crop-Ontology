@@ -104,3 +104,4 @@ var usermodel = {
 
     }
 };
+exports = usermodel;

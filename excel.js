@@ -63,3 +63,4 @@ var excel = {
 
     }
 };
+exports = excel;

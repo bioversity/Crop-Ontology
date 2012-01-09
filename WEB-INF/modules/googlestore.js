@@ -4,7 +4,7 @@
  */
 importPackage(com.google.appengine.api.datastore);
 
-require("memcache.js");
+var memcache = require("memcache.js");
 
 var googlestore = (function(){
 
@@ -174,3 +174,5 @@ var googlestore = (function(){
 
     };
 })();
+
+exports = googlestore;

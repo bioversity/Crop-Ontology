@@ -65,3 +65,4 @@ var termmodel = (function(){
     };
 
 })();
+exports = termmodel;

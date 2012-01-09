@@ -246,3 +246,6 @@ var jsonobo = (function(){
     };
 
 })();
+if(exports) {
+  exports = jsonobo;
+}

@@ -37,3 +37,4 @@ var fileupload = {
         return data;
     }
 };
+exports = fileupload;

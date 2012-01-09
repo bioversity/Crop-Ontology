@@ -104,3 +104,5 @@ var auth = (function(){
     };
 
 })();
+
+exports = auth;

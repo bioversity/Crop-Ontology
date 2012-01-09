@@ -86,3 +86,5 @@ var blobstore = {
         return blobKey;
     }
 };
+
+exports = blobstore;

@@ -31,3 +31,4 @@ var commentmodel = {
         return ret;
     }
 };
+exports = commentmodel;

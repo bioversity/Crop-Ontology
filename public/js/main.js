@@ -636,6 +636,14 @@ var row_edit_template = '\
                         <option>File</option>\
                     </select>\
                 </p>\
+                <p>\
+                    Language: \
+                    <select>\
+                        <option>English</option>\
+                        <option>French</option>\
+                        <option>Spanish</option>\
+                    </select>\
+                </p>\
                 <div class="form-actions">\
                     <button type="submit" class="minibutton"><span>Save</span></button> &nbsp; <a href="#" class="cancel">Cancel</a>\
                 </div>\

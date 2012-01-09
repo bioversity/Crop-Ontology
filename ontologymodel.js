@@ -53,3 +53,4 @@ var ontologymodel = (function() {
         exists: exists
     };
 })();
+exports = ontologymodel;

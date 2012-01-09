@@ -26,3 +26,4 @@ function rss(title, arr) {
 
     return str;
 }
+exports = rss;

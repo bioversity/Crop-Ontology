@@ -1,22 +1,23 @@
-require("apejs.js");
-require("googlestore.js");
+var apejs = require("apejs.js");
+var googlestore = require("googlestore.js");
 
-require("./usermodel.js");
-require("./ontologymodel.js");
-require("./commentmodel.js");
-require("./termmodel.js");
-require("./usermodel.js");
+var usermodel = require("./usermodel.js");
+var ontologymodel = require("./ontologymodel.js");
+var commentmodel = require("./commentmodel.js");
+var termmodel = require("./termmodel.js");
+var usermodel = require("./usermodel.js");
 
-require("./fileupload.js");
-require("./auth.js");
-require("./log.js");
-require("./rss.js");
-require("./blobstore.js");
-require("./taskqueue.js");
-require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
-require("./excel.js");
+var fileupload = require("./fileupload.js");
+var auth = require("./auth.js");
+var log = require("./log.js");
+var rss = require("./rss.js");
+var blobstore = require("./blobstore.js");
+var taskqueue = require("./taskqueue.js");
+var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
+var excel = require("./excel.js");
+var languages = require("./languages.js");
 
-var VERSION = "0.5";
+var VERSION = "0.6";
 
 var print = function(response) {
     return {
@@ -677,15 +678,6 @@ apejs.urls = {
         get: function(request, response, matches) {
             var termId = matches[1],
                 info = matches[2];
-
-            // find the ontologyid form this term
-            /*
-            var termKey = googlestore.createKey("term", termId),
-                termEntity = googlestore.get(termKey);
-
-            // get ontology
-            var ontologyId = termEntity.getProperty("ontology_id");
-            */
 
             // if info contains the string "static-html", show static HTML of this term
             if(info.indexOf("static-html") != -1) {

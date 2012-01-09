@@ -4,3 +4,4 @@ var log = function(msg) {
 
     logger.info("LOG: "+msg);
 };
+exports = log;

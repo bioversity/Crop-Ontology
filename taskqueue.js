@@ -11,3 +11,4 @@ var taskqueue = (function() {
         createTask: createTask
     };
 })();
+exports = taskqueue;
