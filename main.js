@@ -442,12 +442,28 @@ apejs.urls = {
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
 
-            var properties = termEntity.getProperties(),
-                entries = properties.entrySet().iterator();
-
             var attributes = [];
 
-            var attrObj = {};
+            var attrObj = googlestore.toJS(termEntity);
+
+            // let's skip certain keys
+            delete attrObj.id;
+            delete attrObj.normalized;
+            delete attrObj.parent;
+            delete attrObj.ontology_id;
+            delete attrObj.ontology_name;
+            delete attrObj.is_a;
+            delete attrObj.relationship;
+            delete attrObj.obo_blob_key;
+            delete attrObj.excel_blob_key;
+            
+            /*
+            if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals("") || key.equals("excel_blob_key"))
+            */
+
+            /*
+            var properties = termEntity.getProperties(),
+                entries = properties.entrySet().iterator();
 
             while(entries.hasNext()) {
                 var entry = entries.next(),
@@ -475,13 +491,8 @@ apejs.urls = {
                     value = value.getValue();
 
                 attrObj[""+key] = ""+value;
-                /*
-                attributes.push({
-                    "key": ""+ key,
-                    "value": ""+value
-                });
-                */
             }
+            */
 
             var order = {
                 "creation_date":true,
@@ -493,12 +504,16 @@ apejs.urls = {
                 "comment":true
             };
 
+            // need the current user info to figure out what
+            // language they set by default
+            var currUser = auth.getUser(request);
+
             // do the first ones in order
             for(var i in order) {
                 if(attrObj[i]) {
                     attributes.push({
                         "key": i,
-                        "value": attrObj[i]
+                        "value": languages.translate(currUser, attrObj[i])
                     });
                 }
             }
@@ -508,7 +523,7 @@ apejs.urls = {
                 if(order[i]) continue; // skip the ones we already did above
                 attributes.push({
                     "key": i,
-                    "value": attrObj[i]
+                    "value": languages.translate(currUser, attrObj[i])
                 });
             }
 

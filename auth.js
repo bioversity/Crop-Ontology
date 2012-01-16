@@ -97,10 +97,16 @@ var auth = (function(){
             return false;
     }
 
+    function getLanguage(userEntity) {
+      var language = userEntity.getProperty("language");
+      return language;
+    }
+
     return {
         getUser: getUser,
         login: login,
-        isAdmin: isAdmin
+        isAdmin: isAdmin,
+        getLanguage: getLanguage
     };
 
 })();
