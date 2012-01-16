@@ -10,29 +10,29 @@ var termmodel = (function(){
      * and figures out what needs to be normalized
      */
     function normalize(term) {
-        var fields = ["id", "name", "comment", "def", "Name of Trait", "Description of Trait"],
-            arr = [];
-
-        for(var i=0; i<fields.length; i++) {
-            var curr = fields[i];
-
-            if(term[curr]) { // normalize it, it exists
-                var value = term[curr];
-                value = ""+value; // JS string
-                // ok for each value we must trim() it and lowercase() it
-                value = value.trim().toLowerCase();
-                // then we must split it by space, comma and other things
-                var words = splitter(value);
-
-                for(var x=0; x<words.length; x++) {
-                    // add each word to our main array
-                    arr.push(words[x]);
-                }
-                
-            }
+      var arr = [];
+      for(var i in term) {
+        // normalize everything!
+        var value = term[i];
+        if(value instanceof Object) {
+          // it's an object, loop through these values as well
+          var a = normalize(value);
+          a.forEach(function(el) {
+            arr.push(el);
+          });
         }
+        value = ""+value; // JS string
+        // ok for each value we must trim() it and lowercase() it
+        value = value.trim().toLowerCase();
+        // then we must split it by space, comma and other things
+        var words = splitter(value);
 
-        return arr;
+        for(var x=0; x<words.length; x++) {
+          // add each word to our main array
+          arr.push(words[x]);
+        }
+      }
+      return arr;
     }
 
     /**

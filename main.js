@@ -1243,8 +1243,6 @@ apejs.urls = {
             if(!currUser)
                 return err("Not logged in");
 
-
-
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("value");
                 
@@ -1278,6 +1276,8 @@ apejs.urls = {
 
             // set this property value
             termEntity.setProperty(key, (value instanceof BlobKey ? value : new Text(value)));
+            // clear it before setting it
+            termEntity.setProperty("normalized", "");
             googlestore.set(termEntity, {
                 "normalized": termmodel.normalize(googlestore.toJS(termEntity))
             });

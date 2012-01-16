@@ -629,7 +629,7 @@ var langs = {
   html: function(langs){
     var html = "<select>";
     for(var i=0; i<langs.length; i++) {
-      html += "<option>" + this.capitaliseFirstLetter(langs[i]) + "</option>"; 
+      html += "<option value='"+langs[i]+"'>" + this.capitaliseFirstLetter(langs[i]) + "</option>"; 
     }
     html += "</select>";
     return html;
