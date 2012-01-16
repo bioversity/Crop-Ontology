@@ -1245,6 +1245,7 @@ apejs.urls = {
             var value = request.getParameter("value");
             var term_id = request.getParameter("term_id"); 
             var key = request.getParameter("key");
+            var lang = request.getParameter("language");
 
             if(!term_id || term_id == "" || !key || key == "")
                 return err("Must complete all fields");
@@ -1255,10 +1256,11 @@ apejs.urls = {
             if(!value || value == "")
                 return err("Must complete all fields");
 
-
             // get this term from it's id
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
+
+            var jsEntity = googlestore.toJS(termEntity);
 
             // check if own this term
             var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
@@ -1270,12 +1272,26 @@ apejs.urls = {
                     return err("You don't have the permissions to edit this attribute");
             }
 
-            // set this property value
-            termEntity.setProperty(key, (value instanceof BlobKey ? value : new Text(value)));
-            // clear it before setting it
-            termEntity.setProperty("normalized", "");
+            if(!(value instanceof BlobKey)) {
+              value = ""+value;
+              var obj = jsEntity[key];
+              if(!(obj instanceof Object)) {
+                obj = {};
+              }
+              if(isblank(lang)) {
+                obj[languages.default] = value;
+              } else {
+                obj[lang] = value;
+              }
+              value = new Text(JSON.stringify(obj));
+            }
+
+            termEntity.setProperty(key, value);
+
+            // clear normalized before setting it
+            jsEntity.normalized = "";
             googlestore.set(termEntity, {
-                "normalized": termmodel.normalize(googlestore.toJS(termEntity))
+                "normalized": termmodel.normalize(jsEntity)
             });
             googlestore.put(termEntity);
 

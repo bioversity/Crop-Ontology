@@ -627,7 +627,7 @@ var langs = {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
   html: function(langs){
-    var html = "<select>";
+    var html = "<select name='language'>";
     for(var i=0; i<langs.length; i++) {
       html += "<option value='"+langs[i]+"'>" + this.capitaliseFirstLetter(langs[i]) + "</option>"; 
     }
