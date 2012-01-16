@@ -456,10 +456,6 @@ apejs.urls = {
             delete attrObj.relationship;
             delete attrObj.obo_blob_key;
             delete attrObj.excel_blob_key;
-            
-            /*
-            if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals("") || key.equals("excel_blob_key"))
-            */
 
             /*
             var properties = termEntity.getProperties(),
