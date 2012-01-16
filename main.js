@@ -198,7 +198,7 @@ apejs.urls = {
         }
     },
     // haha nice REGEX!
-    "/ontology(?:/([a-zA-Z0-9_\: \.-]+)(?:/([a-zA-Z0-9_\: \.-]+)(?:/([a-zA-Z0-9]+))?)?)?": {
+    "/ontology(?:/([^/]*)(?:/([^/]*)(?:/([^/]*))?)?)?": {
         get: function(request, response, matches) {
 
             var ontoId = matches[1];
@@ -238,7 +238,7 @@ apejs.urls = {
             print(response).text(html);
         }
     },
-    "/get-ontology/([a-zA-Z0-9_\: \.\-]+)": {
+    "/get-ontology/([^/]*)": {
         get: function(request, response, matches) {
             var ontoId = matches[1];
             try {
@@ -253,7 +253,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-ontology-roots/([a-zA-Z0-9_\: \.\-]+)": {
+    "/get-ontology-roots/([^/]*)": {
         get: function(request, response, matches) {
             var ontoId = matches[1];
             try {
@@ -356,7 +356,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/(.*)": {
+    "/get-children/([^/]*)": {
         get: function(request, response, matches) {
             var parentId = matches[1];
             if(!parentId)
@@ -434,7 +434,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-attributes/(.*)": {
+    "/get-attributes/([^/]*)": {
         get: function(request, response, matches) {
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
@@ -636,7 +636,7 @@ apejs.urls = {
             */
         }
     },
-    "/serve/([a-zA-Z0-9_\: \-]+)" : {
+    "/serve/([^/]*)" : {
         get: function(request, response, matches) {
             var blobKeyString = matches[1];
 
@@ -680,7 +680,7 @@ apejs.urls = {
 
         }
     },
-    "/terms/([a-zA-Z0-9_\: \.]+)/(.*)" : {
+    "/terms/([^/]*)/(.*)" : {
         get: function(request, response, matches) {
             var termId = matches[1],
                 info = matches[2];
@@ -1334,7 +1334,7 @@ apejs.urls = {
 
         }
     },
-    "/get-term-parents/([a-zA-Z0-9_\: \.]+)": {
+    "/get-term-parents/([^/]*)": {
         get: function(request, response, matches) {
             function getParent(arr, termId) {
                 var termKey = googlestore.createKey("term", termId),
