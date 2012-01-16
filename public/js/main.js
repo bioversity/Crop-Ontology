@@ -3,6 +3,7 @@
 var URL = "http://test.development.grinfo.net/Luca/datadict";
 var OLS_MAINURL = "http://cropontology.org";
 var roots_loaded = false;
+var currUser = false;
  
 function tooltip() {
     // tool tip
@@ -19,12 +20,45 @@ function tooltip() {
     });
 }
 
+
+var DEFAULT_LANGUAGE = "english";
+function findTranslation(lang, obj) {
+  var translation = "";
+  translation = obj[lang];  
+  if(!obj[lang]) { 
+    // this object doesn't contain the language.
+    // show the first key
+    for(var i in obj) {
+      translation = obj[i];
+      lang = i;
+      break;
+    }
+  }
+  return {lang: lang, translation: translation};
+}
+function translate(currUser, value) {
+  try {
+    value = $.parseJSON(value);
+    var lang = currUser.language;
+    if(!lang) { // show default language
+      lang = DEFAULT_LANGUAGE;
+    }
+    var t = findTranslation(lang, value);
+    return {lang: t.lang, translation: t.translation};
+  } catch(e) {
+    // value is a string with no translations.
+    // default to what it is
+    return {lang: DEFAULT_LANGUAGE, translation: value};
+  }
+}
+
 // does login WOW this code is so messy it's not even funny
 // but there's a demo in 2 weeks and i have to build facebook like interface
 function Login(func) {
     // reach /login and see if there's a session
     $.get("/login", function(data) {
         if(data.username != "") {
+            currUser = data;
             $("#dologin").hide();
             $("#doregister").hide();
 
@@ -48,6 +82,7 @@ function Login(func) {
 
             $("#doprofile").hide();
             $("#dologout").hide();
+            func(false);
 
         }
             
@@ -210,7 +245,8 @@ function show_attributes(id, name, attributes) {
 
     $.each(attributes, function(i){
         count++;
-        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(attributes[i])+'</span></div>';
+        var t = translate(currUser, attributes[i]);
+        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
     });
     if(count == 0)
         str += "<div class='error'>No additional information available.</div>";
@@ -327,15 +363,6 @@ load_term = function(li) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
         });
-
-        /*
-        if(li.children(".method_of").length) { // it's a method, show only some attributes
-            attributes = showMethodAttr(attributes);    
-        }
-        if(li.children(".scale_of").length) { // it's a scale, show only some attributes
-            attributes = showScaleAttr(attributes);    
-        }
-        */
 
         // let's show the attributes
         show_attributes(id, name, attributes);
@@ -827,7 +854,8 @@ var events = function(){
           data: {
             "username":$("#register_form input[name=username]").val(),
             "email":$("#register_form input[name=email]").val(),
-            "password":$("#register_form input[name=password]").val()
+            "password":$("#register_form input[name=password]").val(),
+            "language":$("#register_form [name=language]").val()
           },
           success: function(data){
             if(data && data.error) {
@@ -951,9 +979,16 @@ var events = function(){
 
         var key = jcurrEditing.find("label").text();
         var value = jcurrEditing.find("span.value").text();
+        var language = jcurrEditing.find(".language").val();
 
         edit_row.find("input[name=key]").val(key);
         edit_row.find("textarea[name=value]").val(value);
+        edit_row.find("option").each(function(){
+          var $this = $(this);
+          if($this.val() === language) {
+            $this.attr("selected", "selected");
+          }
+        });
 
         // make the key input read-only
         var input = edit_row.find("label input[type=text]");
@@ -1032,6 +1067,34 @@ var events = function(){
         e.stopPropagation();
     });
 
+    $(".reg_lang").html(langs.html(languages));
+
+    $("#edit_profile").click(function(e) {
+
+      Modal.show("edit_profile",function(){
+        this.curr.show();
+        this.load(true);
+        var $form = this.curr.find("form");
+
+        this.curr.find("option").each(function(){
+          var $this = $(this);
+          if($this.val() === currUser.language) {
+            $this.attr('selected', 'selected');
+          }
+        });
+        $form.submit(function(e) {
+          var $this = $(this);
+          $.post("/edit-profile", $this.serialize(), function(data) {
+              Login(function(){});
+          });
+
+          e.stopPropagation();
+          e.preventDefault();
+        });
+      });
+      e.stopPropagation();
+      e.preventDefault();
+    });
  
 };
 
@@ -1526,17 +1589,18 @@ UserWidget = (function() {
 $(document).ready(function(){
  
     Login(function(user) {
-        if(ontologyid !== "")
-            Editable.init(ontologyid);
+      if(ontologyid !== "")
+          Editable.init(ontologyid);
+
+      if(termid !== "") {
+          Term.init(termid);
+      }
     });
 
     if(ontologyid !== "") {
         LoadOntology(ontologyid);
     }
 
-    if(termid !== "") {
-        Term.init(termid);
-    }
 
     /* assign some events for ui */
     events();

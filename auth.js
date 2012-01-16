@@ -98,6 +98,7 @@ var auth = (function(){
     }
 
     function getLanguage(userEntity) {
+      if(!userEntity) return false;
       var language = userEntity.getProperty("language");
       return language;
     }

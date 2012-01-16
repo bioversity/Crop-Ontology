@@ -509,7 +509,7 @@ apejs.urls = {
                 if(attrObj[i]) {
                     attributes.push({
                         "key": i,
-                        "value": languages.translate(currUser, attrObj[i])
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
                     });
                 }
             }
@@ -519,7 +519,7 @@ apejs.urls = {
                 if(order[i]) continue; // skip the ones we already did above
                 attributes.push({
                     "key": i,
-                    "value": languages.translate(currUser, attrObj[i])
+                    "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
                 });
             }
 
@@ -787,15 +787,19 @@ apejs.urls = {
             // find user with this key and return its data
             var user = auth.getUser(request),
                 username = "",
-                userid = "";
+                userid = "",
+                language = "";
             if(user) {
                 username = user.getProperty("username");
                 userid = user.getKey().getId();
+                language = user.getProperty("language");
             }
+            if(!language) language = "";
             
             print(response).json({
                 username: ""+username,
-                userid: ""+userid
+                userid: ""+userid,
+                language: ""+language
             });
             //response.getWriter().println('{"username":"'+username+'"}');
         },
@@ -826,7 +830,8 @@ apejs.urls = {
                 created: new java.util.Date(),
                 username: request.getParameter("username"),
                 email: request.getParameter("email"),
-                password: request.getParameter("password")
+                password: request.getParameter("password"),
+                language: request.getParameter("language")
             }, o = {}, error = false;
 
             for(var i in user)
@@ -1640,5 +1645,16 @@ apejs.urls = {
                   .replace(/{{VERSION}}/g, VERSION)
           );
         }
+    },
+    "/edit-profile": {
+      post: function(req, res) {
+        var language = req.getParameter("language");
+        var currUser = auth.getUser(req);
+        if(!currUser) return error(res, "Not logged in");
+        if(isblank(language)) return error(res, "You need to insert a language");
+
+        currUser.setProperty("language", language);
+        googlestore.put(currUser);
+      }
     }
 };

@@ -2416,7 +2416,7 @@ input[type=text].error,.standard_form form label.error input.text,.standard_form
 .login_form form label.error{color:#a00;}
 .login_form form .label label{margin:0;color:black;font-size:95%;}
 .login_form form .label span{font-size:90%;color:#888;}
-.login_form form input.text,.login_form form textarea{padding:5px;border:1px solid #d8dee2;margin:.2em 0 1em 0;}
+.login_form form input.text,.login_form form select,.login_form form textarea{padding:5px;border:1px solid #d8dee2;margin:.2em 0 1em 0;}
 .login_form form input.text{font-size:110%;}
 .login_form button{margin:0 8px 0 0;}
 .login_form form input[type=submit]{display:inline-block;height:34px;padding:0;position:relative;top:1px;margin-left:10px;font-family:helvetica,arial,freesans,clean,sans-serif;font-weight:bold;font-size:12px;color:#333;text-shadow:1px 1px 0 #fff;white-space:nowrap;border:none;overflow:visible;background:#ddd;filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#ffffff',endColorstr='#e1e1e1');background:-webkit-gradient(linear,0% 0,0% 100%,from(#fff),to(#e1e1e1));background:-moz-linear-gradient(-90deg,#fff,#e1e1e1);border-bottom:1px solid #ebebeb;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.3);-moz-box-shadow:0 1px 4px rgba(0,0,0,0.3);box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer;margin-left:1px;padding:0 13px;-webkit-font-smoothing:subpixel-antialiased!important;}
