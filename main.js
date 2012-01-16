@@ -20,7 +20,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.6";
+var VERSION = "0.7";
 
 var print = function(response) {
     return {
@@ -611,9 +611,7 @@ apejs.urls = {
                     return err("You don't have the permissions to remove this attribute");
             }
 
-
-            // set it to null
-            termEntity.setProperty(key, null);
+            termEntity.removeProperty(key);
             googlestore.put(termEntity);
 
             /*
