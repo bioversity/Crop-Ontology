@@ -1515,6 +1515,11 @@ UserWidget = (function() {
             var that = this;
             this.load(true);
 
+            if(currUser && currUser.userid === userid)
+              this.curr.find(".profile").show();
+            else
+              this.curr.find(".profile").hide();
+
             $.getJSON("/users/"+userid, function(user){
                 // do replacement
                 var curr = that.curr;
