@@ -1594,7 +1594,7 @@ UserWidget = (function() {
 $(document).ready(function(){
  
     Login(function(user) {
-      if(ontologyid !== "")
+      if(user && ontologyid !== "")
           Editable.init(ontologyid);
 
       if(termid !== "") {
