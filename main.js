@@ -1429,7 +1429,10 @@ apejs.urls = {
                     }
                     // get all terms for this ontology
                     // maybe we can cache this... let's see how it performs
-                    var terms = googlestore.query("term").filter("ontology_id", "=", onto.getProperty("ontology_id")).fetch();
+                    var terms = googlestore.query("term") 
+                                  .filter("ontology_id", "=", onto.getProperty("ontology_id"))
+                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"))
+                                  .fetch();
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
                         ontology_name: ""+onto.getProperty("ontology_name"),
