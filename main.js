@@ -1427,12 +1427,16 @@ apejs.urls = {
                         username = user.getProperty("username"); 
                         userid = user.getKey().getId();
                     }
+                    // get all terms for this ontology
+                    // maybe we can cache this... let's see how it performs
+                    var terms = googlestore.query("term").filter("ontology_id", "=", onto.getProperty("ontology_id")).fetch();
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
                         ontology_name: ""+onto.getProperty("ontology_name"),
                         ontology_summary: ""+onto.getProperty("ontology_summary"),
                         username: ""+username,
-                        userid: ""+userid
+                        userid: ""+userid,
+                        tot: terms.length
                     });
                 }
             });

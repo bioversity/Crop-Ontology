@@ -29,6 +29,7 @@ function addRow(obj, par) {
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName)
                 .text(obj.ontology_name);
 
+    $row.find("h3 small").text(obj.tot + " terms");
 
     $row.find(".comments_rss")
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
@@ -112,7 +113,7 @@ $.getJSON("/get-ontologies", function(cats) {
                         <li>
                             <a href="#" title="Comments RSS" class="comments_rss"></a>
                             <h3>
-                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a><a href="#" class="username">Ciao</a>
+                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a> <small></small><a href="#" class="username">Ciao</a>
                             </h3>
                             <p class="description"><span class="description">Here's a test of an ontology</span> </p>
                         </li>
