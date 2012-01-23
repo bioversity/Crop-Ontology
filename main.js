@@ -69,7 +69,7 @@ apejs.urls = {
     },
     "/api": {
         get: function(request, response) {
-            var html = renderIndex("skins/api.html", {URL:"http://www.cropontology-curationtool.org" });
+            var html = renderIndex("skins/api.html", {URL:"http://www.cropontology.org" });
             print(response).text(html);
         }
     },
@@ -230,7 +230,7 @@ apejs.urls = {
             var cropLogos = assoc[matches[1]] || "";
 
             var html = renderIndex("skins/onto.html", {
-              URL:"http://www.cropontology-curationtool.org",
+              URL:"http://www.cropontology.org",
               ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
               ontologyid: matches[1],
               CROP_LOGOS: cropLogos
