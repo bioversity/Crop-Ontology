@@ -665,7 +665,7 @@ var langs = {
 
 var row_edit_template = '\
     <div class="attribute">\
-        <form enctype="multipart/form-data" method="post" action="/add-attribute" id="form_add_attribute" target="upload_iframe">\
+        <form enctype="multipart/form-data" method="post" action="/add-attribute" id="form_add_attribute" target="upload_iframe" accept-charset="UTF-8">\
             <input type="hidden" name="term_id" />\
             <label><input type="text" name="key" /></label>\
             <span class="value">\
