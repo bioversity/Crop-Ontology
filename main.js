@@ -1278,8 +1278,15 @@ apejs.urls = {
             if(!(value instanceof BlobKey)) {
               value = ""+value;
               var obj = jsEntity[key];
+              // obj is either instanceof Object or type "string"
               if(!(obj instanceof Object)) {
+                // means object is a string.
+                // if it exists add it to the obj as the default langauge
+                var cpy = obj;
                 obj = {};
+                if(cpy !== "") {
+                  obj[languages.default] = cpy;   
+                }
               }
               if(isblank(lang)) {
                 obj[languages.default] = value;

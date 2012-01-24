@@ -437,7 +437,7 @@ function make_li(obj, last) {
     }
 
  
-    var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+name+'</span></a>');
+    var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+translate(currUser, name).translation+'</span></a>');
  
     link.click(function(e) {
         load_term(li);
