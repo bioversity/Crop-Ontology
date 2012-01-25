@@ -436,6 +436,10 @@ apejs.urls = {
     },
     "/get-attributes/([^/]*)": {
         get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
 
@@ -1227,6 +1231,9 @@ apejs.urls = {
     },
     "/attribute-redirect": {
         get: function(request, response) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
 
             var msg = request.getParameter("msg");
             response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>');
@@ -1234,6 +1241,9 @@ apejs.urls = {
     },
     "/attribute-upload": {
         post: function(request, response) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
 
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
 

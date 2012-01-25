@@ -3,7 +3,8 @@ var languages = {
   all: [
     "english",
     "french",
-    "spanish"
+    "spanish",
+    "chinese"
   ]
 };
 
