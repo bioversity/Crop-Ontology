@@ -375,6 +375,13 @@ load_term = function(li) {
     }, "json");
 
 
+    // build graph
+    var $graph = $("#graph");
+    $.getJSON("/get-term-parents/"+id, function(data) {
+      $graph.show();
+      buildGraph($graph, data);
+    });
+
     /* get relationship */
     /*
     $.get("/httpget", {url:"http://cropontology.org/ontology-lookup/termsgraph.view?&graphId=random&termId="+encodeURIComponent(id)+"&termName="+encodeURIComponent(name)+"&ontologyName="+encodeURIComponent(ontology_name)+"&graphType=root&realPath=/usr/local/tomcat-dev/webapps/ontology-lookup&q=termsgraph&_=", contentType : "text/html"}, function(html){
@@ -692,6 +699,29 @@ function createUploadUrl(jcont) {
     $.get("/attribute-upload-url", function(str) {
         form.attr("action", str); 
     });
+}
+
+function buildGraph($cont, data) {
+  $cont.html("");
+  var width = $cont.width();
+  var height = 300;
+  var g = new Graph();
+  //g.edgeFactory.template.style.directed = true;
+
+  $.each(data, function(idx, el) {
+    var next = data[idx+1];
+    if(next) {
+      g.addEdge(el.id, next.id, {label: el.relationship});
+    } else {
+      g.addNode(el.id);
+    }
+  });
+
+  var layouter = new Graph.Layout.Spring(g);
+  layouter.layout();
+
+  var renderer = new Graph.Renderer.Raphael('graph', g, width, height);
+  renderer.draw();
 }
 
 /*
@@ -1095,7 +1125,7 @@ var events = function(){
       e.stopPropagation();
       e.preventDefault();
     });
- 
+
 };
 
 var Modal = (function() {

@@ -49,6 +49,22 @@ var error = function(response, msg) {
     response.sendError(response.SC_BAD_REQUEST, msg);
 };
 
+function defaultRelationship(relationship) {
+  // relationship could be an array
+  if(relationship && (relationship instanceof java.util.List))
+      relationship = relationship.get(0);
+
+  if(relationship instanceof Text)
+      relationship = relationship.getValue();
+
+  if(!relationship || relationship.equals("")) {
+      relationship = "is_a";
+  } else {
+      relationship = ""+relationship.trim().split(" ")[0];
+  }
+  return relationship;
+}
+
 function renderIndex(htmlFile, data) {
   if(!data) data = {};
   var partials = { 
@@ -376,19 +392,7 @@ apejs.urls = {
 
                     var name = term.getProperty("name");
 
-                    var relationship = term.getProperty("relationship");
-                    // relationship could be an array
-                    if(relationship && (relationship instanceof java.util.List))
-                        relationship = relationship.get(0);
-
-                    if(relationship instanceof Text)
-                        relationship = relationship.getValue();
-
-                    if(!relationship || relationship.equals("")) {
-                        relationship = "is_a";
-                    } else {
-                        relationship = ""+relationship.trim().split(" ")[0];
-                    }
+                    var relationship = defaultRelationship(term.getProperty("relationship"));
 
                     // get the method of this child
                     var method = term.getProperty("Describe how measured (method)");
@@ -1378,7 +1382,8 @@ apejs.urls = {
                     name = parentEntity.getProperty("name");
                 arr.push({
                     id: id,
-                    name: ""+(name instanceof Text ? name.getValue() : name)
+                    name: ""+(name instanceof Text ? name.getValue() : name),
+                    relationship: defaultRelationship(parentEntity.getProperty("relationship"))
                 });
 
                 // now look for parents of this parent
