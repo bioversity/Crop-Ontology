@@ -1357,56 +1357,68 @@ apejs.urls = {
     },
     "/get-term-parents/([^/]*)": {
         get: function(request, response, matches) {
-            function getParent(arr, termId) {
+            function getParent(arr, branch, termId) {
                 var termKey = googlestore.createKey("term", termId),
                     termEntity = googlestore.get(termKey);
                 
-                // XXX default to first in array - so not showing if has many parents
-                var parentArr = termEntity.getProperty("parent"),
-                    parentId;
+                var parentList = termEntity.getProperty("parent");
 
-                if(parentArr instanceof java.util.List) {
-                    parentId = parentArr ? ""+parentArr.get(0) : false;
-                } else {
-                    parentId = parentArr ? ""+parentArr : false;;
-                }
-
-                if(!parentId) // reached a root term, stop
+                if(!parentList) // reached a root term, stop
                     return;
 
-                // we have parent. get parent information
-                var parentKey = googlestore.createKey("term", parentId),
-                    parentEntity = googlestore.get(parentKey);
+                if(!(parentList instanceof java.util.List)) { // if it's not a list? make it
+                    parentList = java.util.Arrays.asList(parentList);
+                }
 
-                var id = ""+parentEntity.getProperty("id"),
-                    name = parentEntity.getProperty("name");
-                arr.push({
-                    id: id,
-                    name: ""+(name instanceof Text ? name.getValue() : name),
-                    relationship: defaultRelationship(parentEntity.getProperty("relationship"))
-                });
+                for(var i=0; i<parentList.size(); i++) {
+                  // we have parent. get parent information
+                  var parentId = parentList.get(i);
+                  var parentKey = googlestore.createKey("term", parentId),
+                      parentEntity = googlestore.get(parentKey);
 
-                // now look for parents of this parent
-                getParent(arr, id);
+                  var id = ""+parentEntity.getProperty("id"),
+                      name = parentEntity.getProperty("name");
+                  var o = {
+                      id: id,
+                      name: ""+(name instanceof Text ? name.getValue() : name),
+                      relationship: defaultRelationship(parentEntity.getProperty("relationship"))
+                  };
+                  if(i > 0) {
+                    var newBranch = [];
+                    // TODO copy all stuff from current branch
+                    arr.push(newBranch);
+                    branch = newBranch;
+                  } else {
+                    branch.push(o);
+                  }
+
+                  // now look for parents of this parent
+                  getParent(arr, branch, id);
+                }
 
             }
 
-            var arr = [];
             var termId = matches[1];
             // start the array with the current term
             var termKey = googlestore.createKey("term", termId),
                 termEntity = googlestore.get(termKey);
 
             var name = termEntity.getProperty("name");
-            arr.push({
+            var o = {
                 id: ""+termEntity.getProperty("id"),
                 name: ""+(name instanceof Text ? name.getValue() : name)
-            })
+            };
+            var arr = [];
+            var branch = [];
+            branch.push(o);
 
-            getParent(arr, termId);
+            arr.push(branch);
+
+            getParent(arr, branch, termId);
 
             // reverse() so the forst element is actually the first parent (root)
-            print(response).json(arr.reverse());
+            //print(response).json(arr.reverse());
+            print(response).json(arr);
         }
     },
     "/get-categories": {
