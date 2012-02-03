@@ -709,11 +709,13 @@ function buildGraph($cont, data) {
   //g.edgeFactory.template.style.directed = true;
 
   $.each(data, function(idx, el) {
-    var next = data[idx+1];
-    if(next) {
-      g.addEdge(el.id, next.id, {label: el.relationship});
-    } else {
-      g.addNode(el.id);
+    for(var i=0; i<el.length; i++) {
+      var next = el[i+1];
+      if(next) {
+        g.addEdge(el[i].id, next.id, {label: el[i].relationship});
+      } else {
+        g.addNode(el[i].id);
+      }
     }
   });
 
@@ -1513,14 +1515,17 @@ var Term = (function(){
     function init(termId) {
         // get parents up till root
         $.getJSON("/get-term-parents/"+termId, function(data) {
-            var parent = $("#root");
+          var $root = $("#root");
+          for(var x=0; x<data.length; x++) {
+            var parent = $root;
             var li;
-            for(var i=0, len=data.length; i<len; i++) {
-                data[i].has_children = true;
-                if(i == (data.length-1))
-                    data[i].has_children = false;
+            for(var i=0, len=data[x].length; i<len; i++) {
+                var el = data[x][i];
+                el.has_children = true;
+                if(i == (data[x].length-1))
+                    el.has_children = false;
 
-                li = make_li(data[i], true);
+                li = make_li(el, true);
                 parent.append(li);
                 // parent becomes the first ul inside this li
                 parent = li.find("ul:first");
@@ -1528,7 +1533,9 @@ var Term = (function(){
             }
 
             // great now laod the right sidebar with this current termId
-            load_term(li);
+            if(x === 0)
+              load_term(li);
+          }
         });
     }
 

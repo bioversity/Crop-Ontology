@@ -1357,14 +1357,15 @@ apejs.urls = {
     },
     "/get-term-parents/([^/]*)": {
         get: function(request, response, matches) {
-            function getParent(arr, branch, termId) {
+            function getParent(arr, untouched, branch, termId) {
                 var termKey = googlestore.createKey("term", termId),
                     termEntity = googlestore.get(termKey);
                 
                 var parentList = termEntity.getProperty("parent");
 
-                if(!parentList) // reached a root term, stop
+                if(!parentList) { // reached a root term, stop
                     return;
+                }
 
                 if(!(parentList instanceof java.util.List)) { // if it's not a list? make it
                     parentList = java.util.Arrays.asList(parentList);
@@ -1383,19 +1384,23 @@ apejs.urls = {
                       name: ""+(name instanceof Text ? name.getValue() : name),
                       relationship: defaultRelationship(parentEntity.getProperty("relationship"))
                   };
-                  if(i > 0) {
-                    var newBranch = [];
-                    // TODO copy all stuff from current branch
+                  if(i === 0) {
+                    if(parentList.size() > 0) { // has parents
+                      untouched = branch.slice(0);   
+                    }
+                    branch.push(o);
+                  } else if(i > 0) {
+                    // copy all stuff from current branch
+                    // slice(0) seems to make me clone the array somehow! no idea why
+                    var newBranch = untouched.slice(0);
+                    newBranch.push(o);
                     arr.push(newBranch);
                     branch = newBranch;
-                  } else {
-                    branch.push(o);
                   }
 
                   // now look for parents of this parent
-                  getParent(arr, branch, id);
+                  getParent(arr, untouched, branch, id);
                 }
-
             }
 
             var termId = matches[1];
@@ -1414,10 +1419,14 @@ apejs.urls = {
 
             arr.push(branch);
 
-            getParent(arr, branch, termId);
+            var untouched = branch.slice(0);
+
+            getParent(arr, untouched, branch, termId);
 
             // reverse() so the forst element is actually the first parent (root)
-            //print(response).json(arr.reverse());
+            for(var i=0; i<arr.length; i++) {
+              arr[i] = arr[i].reverse();
+            }
             print(response).json(arr);
         }
     },
