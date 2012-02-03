@@ -702,19 +702,41 @@ function createUploadUrl(jcont) {
 }
 
 function buildGraph($cont, data) {
+  var render = function(r, n) {
+    /* the Raphael set is obligatory, containing all you want to display */
+    var id = n.id,
+        label = n.label,
+        biggest;
+    if(id.length > label.length) {
+      biggest = id;
+    } else {
+      biggest = label;
+    }
+    
+    var set = r.set().push(
+        /* custom objects go here */
+        r.rect(n.point[0], n.point[1]-13, biggest.length + 120, 44).attr({"fill": "#feb", r : "12px", "stroke-width" : n.distance == 0 ? "3px" : "1px" })).push(
+        r.text(n.point[0] + (biggest.length / 2) + 60, n.point[1] + 10, (n.label || n.id) + "\n(" + (n.id) + ")"));
+    return set;
+  };
+
   $cont.html("");
   var width = $cont.width();
-  var height = 300;
+  var height = 400;
   var g = new Graph();
-  //g.edgeFactory.template.style.directed = true;
+  g.edgeFactory.template.style.directed = true;
 
+  $.each(data, function(idx, el) {
+    for(var i=0; i<el.length; i++) {
+      g.addNode(el[i].id, {render:render, label: el[i].name});
+    }
+  });
   $.each(data, function(idx, el) {
     for(var i=0; i<el.length; i++) {
       var next = el[i+1];
       if(next) {
-        g.addEdge(el[i].id, next.id, {label: el[i].relationship});
-      } else {
-        g.addNode(el[i].id);
+        g.addEdge(next.id, el[i].id, {label: el[i].relationship});
+        //g.addEdge(next.id, el[i].id);
       }
     }
   });

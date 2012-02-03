@@ -20,7 +20,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.7.34";
+var VERSION = "0.7.40";
 
 var print = function(response) {
     return {
