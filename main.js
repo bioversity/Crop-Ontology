@@ -20,7 +20,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.7.40";
+var VERSION = "0.7.41";
 
 var print = function(response) {
     return {
@@ -1474,7 +1474,7 @@ apejs.urls = {
                     // maybe we can cache this... let's see how it performs
                     var terms = googlestore.query("term") 
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
-                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"))
+                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"), 7200) /* 7200 seconds is 2 hours */
                                   .fetch();
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
