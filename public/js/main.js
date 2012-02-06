@@ -88,23 +88,6 @@ function Login(func) {
             
     }, "json");
 }
-
-function markdown(str) {
-    function replaceURLWithHTMLLinks(text) {
-        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return text.replace(exp,"<a href='$1'>$1</a>"); 
-    }
-    var str = ""+str;
-    str = str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
-    str = str.replace(/\\n/g, "<br />");
-    str = replaceURLWithHTMLLinks(str);
-    // do gramene links
-    str = str.replace(/TO\\?:(\d+)/g, function() {
-        var id = "TO:" + arguments[1];
-        return "<a target='_blank' href='http://www.gramene.org/db/ontology/search?id="+id+"'>" + id + "</a>"
-    }); // replace TO:\ with TO:
-    return str;
-}
  
 /*
  * takes care of assigning proper

@@ -705,7 +705,7 @@ apejs.urls = {
                   term_id:termId,
                   ontology_name: termEntity.getProperty("ontology_name"),
                   ontology_id: termEntity.getProperty("ontology_id")
-                });
+                }, {VERSION:VERSION});
             } else {
                 var skin = renderIndex("skins/onto.html", {
                   termid: termId
