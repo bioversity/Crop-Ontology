@@ -20,12 +20,25 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.7.41";
+var VERSION = "0.7.42";
+
+var isblank = function(javaStr) {
+    if(javaStr == null || javaStr.equals(""))
+        return true;
+    return false;
+};
 
 var print = function(response) {
     return {
-        json: function(j) {
+        // callback is a Java string that contains the name
+        // of the callback, so we can run JSONP if it exists
+        json: function(j, callback) {
             var jsonString = JSON.stringify(j);
+
+            if(!isblank(callback)) { // JSONP
+              jsonString = "" + callback + "(" + jsonString + ");";  
+            }
+
             response.getWriter().println(jsonString);
             return jsonString;
         },
@@ -37,12 +50,6 @@ var print = function(response) {
             response.getWriter().println(rss(title, arr));
         }
     };
-};
-
-var isblank = function(javaStr) {
-    if(javaStr == null || javaStr.equals(""))
-        return true;
-    return false;
 };
 
 var error = function(response, msg) {
@@ -723,8 +730,9 @@ apejs.urls = {
     "/search" : {
         get: function(request, response, matches) {
             var q = request.getParameter("q");
+            var callback = request.getParameter("callback");
 
-            if(!q || q == "") return print(response).json(ret);
+            if(!q || q == "") return print(response).json([]);
 
             q = q.toLowerCase().trim();
 
@@ -785,7 +793,7 @@ apejs.urls = {
                 res.push(googlestore.toJS(entity));
             });
             
-            return print(response).json(res);
+            return print(response).json(res, callback);
         }
     },
     "/login" : {
@@ -1427,7 +1435,7 @@ apejs.urls = {
             for(var i=0; i<arr.length; i++) {
               arr[i] = arr[i].reverse();
             }
-            print(response).json(arr);
+            print(response).json(arr, request.getParameter("callback"));
         }
     },
     "/get-categories": {
