@@ -1461,8 +1461,11 @@ apejs.urls = {
     },
     "/get-ontologies": {
         get: function(request, response) {
+            var cacheKey = "/get-ontologies";
+
             var ontologies = googlestore.query("ontology")
                             .sort("ontology_name", "ASC")
+                            .setCacheKey("get-ontologies", 7200)
                             .fetch();
 
             var categories = {}; // use an object so keys are unique :D
@@ -1482,7 +1485,7 @@ apejs.urls = {
                     // maybe we can cache this... let's see how it performs
                     var terms = googlestore.query("term") 
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
-                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"), 7200) /* 7200 seconds is 2 hours */
+                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"), 7200)
                                   .fetch();
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
