@@ -992,6 +992,8 @@ apejs.urls = {
 
                 googlestore.put(ontoEntity);
 
+                memcache.clearAll();
+
                 // now create the terms.
                 // a term is each item in the JSON array
                 for(var i=0,len=arr.length; i<len; i++) {
@@ -1044,6 +1046,7 @@ apejs.urls = {
                     category: category
                 });
                 googlestore.put(ontoEntity);
+                memcache.clearAll();
 
             } catch(e) {
                 return response.sendError(response.SC_BAD_REQUEST, e);
@@ -1149,6 +1152,7 @@ apejs.urls = {
                 });
 
                 googlestore.put(ontoEntity);
+                memcache.clearAll();
 
                 return err("");
             } catch(e) {

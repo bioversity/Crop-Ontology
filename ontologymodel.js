@@ -32,6 +32,7 @@ var ontologymodel = (function() {
         });
 
         googlestore.put(ontoEntity);
+        memcache.clearAll();
     }
     function exists(ontologyId) {
         // check if this ontoId already exists
