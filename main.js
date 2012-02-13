@@ -1,5 +1,6 @@
 var apejs = require("apejs.js");
 var googlestore = require("googlestore.js");
+var memcache = require("memcache.js");
 
 var usermodel = require("./usermodel.js");
 var ontologymodel = require("./ontologymodel.js");
@@ -1462,10 +1463,11 @@ apejs.urls = {
     "/get-ontologies": {
         get: function(request, response) {
             var cacheKey = "/get-ontologies";
+            var data = memcache.get(cacheKey);
+            if(data) return print(response).json(JSON.parse(data), request.getParameter("callback"));
 
             var ontologies = googlestore.query("ontology")
                             .sort("ontology_name", "ASC")
-                            .setCacheKey("get-ontologies", 7200)
                             .fetch();
 
             var categories = {}; // use an object so keys are unique :D
@@ -1497,6 +1499,7 @@ apejs.urls = {
                     });
                 }
             });
+            memcache.put(cacheKey, JSON.stringify(categories));
             print(response).json(categories, request.getParameter("callback"));
         }
     },
