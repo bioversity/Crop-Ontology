@@ -111,6 +111,13 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Returns:</strong> Array of terms</li>
     <li><strong>Example:</strong> <span class="example" parentId="CO_020:0000000"></span></li>
 </ul>
+<h2>Retrieve Parents of Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-term-parents/{termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of the paths from the parent to child</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_020:0000000"></span></li>
+</ul>
 
 <h2>Retrieve Properties/Attributes of a Term</h2>
 <ul>
@@ -149,12 +156,14 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Returns:</strong> HTTP error if something went wrong</li>
 </ul>
 
+<!--
 <h2>Create Term</h2>
 <ul>
     <li><strong>URL:</strong> <code>{{URL}}/create-term</code></li>
     <li><strong>Method:</strong> <code>POST</code>. {jsonTerm} a JSON representation of the term. You can call this method as many times as you need to build the structure of an ontology. Example: <code>{"ontology_id: "CO_22", "ontology_name": "Sorghum Trait", "parent": "CO_222:1122" ...}</code>. As you can see the <strong>parent</strong> property describes the relationship between terms. If parent is <i>null</i> then the term is a ROOT term</li>
     <li><strong>Returns:</strong> HTTP error if something went wrong</li>
 </ul>
+-->
 
 <h2>Delete Ontology</h2>
 <ul>
