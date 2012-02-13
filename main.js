@@ -1494,7 +1494,7 @@ apejs.urls = {
                     });
                 }
             });
-            print(response).json(categories);
+            print(response).json(categories, request.getParameter("callback"));
         }
     },
     "/users": {
