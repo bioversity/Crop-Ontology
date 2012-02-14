@@ -297,7 +297,7 @@ apejs.urls = {
                     });
                 });
 
-                response.getWriter().println(JSON.stringify(ret));
+                print(response).json(ret, request.getParameter("callback"));
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
@@ -440,7 +440,7 @@ apejs.urls = {
                     });
                 });
 
-                response.getWriter().println(JSON.stringify(ret));
+                print(response).json(ret, request.getParameter("callback"));
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
