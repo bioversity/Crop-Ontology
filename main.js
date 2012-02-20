@@ -539,7 +539,8 @@ apejs.urls = {
                 });
             }
 
-            response.getWriter().println(JSON.stringify(attributes));
+            //response.getWriter().println(JSON.stringify(attributes));
+            print(response).json(attributes, request.getParameter("callback"));
         }
     },
     "/add-attribute": {
