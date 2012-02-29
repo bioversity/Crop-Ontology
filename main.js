@@ -787,7 +787,7 @@ apejs.urls = {
             // check that the result length is same as words length
             // meaning that we found at least an entity for each word
             if(resultLength != words.length)
-                return print(response).json([]);
+                return print(response).json([], callback);
 
             var res = [];
             // convert the terms to JS objects
