@@ -734,7 +734,7 @@ apejs.urls = {
             var q = request.getParameter("q");
             var callback = request.getParameter("callback");
 
-            if(!q || q == "") return print(response).json([]);
+            if(!q || q == "") return print(response).json([], callback);
 
             q = q.toLowerCase().trim();
 
