@@ -662,3 +662,6 @@ a.comments_rss {
     vertical-align: top;
 }
 
+.somethingover {
+    background: yellow !important;
+}

@@ -1,3 +1,111 @@
+jQuery.prototype.draggable = function(dropSelector){
+    var that = this;
+    var dragged, mousex, mousey, coordinates = [],
+        startObjectX,
+        startObjectY,
+        startMouseX,
+        startMouseY;
+
+    var continueDragging = function(e) {
+        // Change the location of the draggable object
+        dragged.css({
+            left:startObjectX+(e.pageX-startMouseX)+'px',
+            top:startObjectY+(e.pageY-startMouseY)+'px'
+        });
+
+        // Check if we hit any boxes
+        for (var i in coordinates) {
+            if (mousex >= coordinates[i].left && mousex <= coordinates[i].right) {
+                if (mousey >= coordinates[i].top && mousey <= coordinates[i].bottom) {
+                    // Yes, the mouse is on a droppable area
+                    // Lets change the background color
+                    coordinates[i].dom.addClass("somethingover");
+                } else {
+                    coordinates[i].dom.removeClass("somethingover");
+                }
+            } else {
+                // Nope, we did not hit any objects yet
+                coordinates[i].dom.removeClass("somethingover");
+            }
+        }
+
+        // Keep the last positions of the mouse coord.s
+        mousex = e.pageX;
+        mousey = e.pageY;
+    }
+
+    var endDragging = function(e) {
+        // Remove document event listeners
+        var $document = $(document);
+        $document.unbind("mousemove", continueDragging);
+        $document.unbind("mouseup", endDragging);
+
+        // Check if we hit any boxes
+        for (var i in coordinates) {
+            if (mousex >= coordinates[i].left && mousex <= coordinates[i].right) {
+                if (mousey >= coordinates[i].top && mousey <= coordinates[i].bottom) {
+                    // Yes, the mouse is on a droppable area
+                    droptarget = coordinates[i].dom;
+                    droptarget.removeClass("somethingover").addClass("dropped");
+                    dragged.hide("fast", function() {
+                        $(this).remove();
+                    });
+                }
+            }
+        }
+
+        if(dragged) dragged.remove();
+
+        // Reset variables
+        mousex = 0;
+        mousey = 0;
+        dragged = null;
+        coordinates = [];
+    }
+
+    var startDragging = function(e) {
+        // Find coordinates of the droppable bounding boxes
+        $(dropSelector).each(function() {
+            var $this = $(this);
+            var lefttop = $this.offset();
+            // and save them in a container for later access
+            coordinates.push({
+                dom: $this,
+                left: lefttop.left,
+                top: lefttop.top,
+                right: lefttop.left + $this.width(),
+                bottom: lefttop.top + $this.height()
+            });
+        });
+
+        var $this = $(this);
+        // When the mouse down event is received
+        if (e.type == "mousedown") {
+            dragged = $("<span class='treeview'></span>");
+            dragged.append($this.clone());
+            dragged.css({
+                position: "absolute",
+                opacity: "0.7"
+            });
+            // set the start of the object
+            startMouseX = e.pageX;
+            startMouseY = e.pageY;
+            var pos = $this.offset();
+            startObjectX = pos.left;
+            startObjectY = pos.top;
+            $(document.body).append(dragged);
+            // Bind the events for dragging and stopping
+            var $document = $(document);
+            $document.bind("mousemove", continueDragging);
+            $document.bind("mouseup", endDragging);
+        }
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    // Start the dragging
+    this.live("mousedown", startDragging);    
+};
 (function(){
  
 var URL = "http://test.development.grinfo.net/Luca/datadict";
@@ -1363,12 +1471,14 @@ var Editable = (function(){
             if(currTarget == target.get(0))
                 return;
 
-
             showButtons(target); 
 
             currTarget = target.get(0);
+            e.stopPropagation();
         });
 
+        // drag
+        $(".cont .treeview li").draggable(".cont .treeview li a.minibutton");
     }
 
     function unbindHoverEvents() {
@@ -1378,6 +1488,8 @@ var Editable = (function(){
         $(".editable_add").hide();
 
         $(".editable_input").hide();
+
+        $(".treeview li").draggable().undraggable();
 
     }
     function editToggle(ontology){
