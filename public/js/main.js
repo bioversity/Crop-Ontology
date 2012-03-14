@@ -1,10 +1,11 @@
-jQuery.prototype.draggable = function(dropSelector){
+jQuery.prototype.draggable = function(dropSelector, cb){
     var that = this;
     var dragged, mousex, mousey, coordinates = [],
         startObjectX,
         startObjectY,
         startMouseX,
-        startMouseY;
+        startMouseY,
+        fromEl;
 
     var continueDragging = function(e) {
         // Change the location of the draggable object
@@ -47,6 +48,8 @@ jQuery.prototype.draggable = function(dropSelector){
                     // Yes, the mouse is on a droppable area
                     droptarget = coordinates[i].dom;
                     droptarget.removeClass("somethingover").addClass("dropped");
+                    cb(fromEl, droptarget);
+
                     dragged.hide("fast", function() {
                         $(this).remove();
                     });
@@ -79,6 +82,7 @@ jQuery.prototype.draggable = function(dropSelector){
         });
 
         var $this = $(this);
+        fromEl = $this;
         // When the mouse down event is received
         if (e.type == "mousedown") {
             dragged = $("<span class='treeview'></span>");
@@ -1478,7 +1482,12 @@ var Editable = (function(){
         });
 
         // drag
-        $(".cont .treeview li").draggable(".cont .treeview li a.minibutton");
+        $(".cont .treeview li").draggable(".cont .treeview li a.minibutton", function(from, to) {
+            var fromId = from.find(".id").val();
+            var toId = to.siblings(".id").val();
+            $.get("/add-parent?termId="+fromId+"&parentId="+toId, function() {
+            });
+        });
     }
 
     function unbindHoverEvents() {
@@ -1489,7 +1498,7 @@ var Editable = (function(){
 
         $(".editable_input").hide();
 
-        $(".treeview li").draggable().undraggable();
+        //$(".treeview li").draggable().undraggable();
 
     }
     function editToggle(ontology){

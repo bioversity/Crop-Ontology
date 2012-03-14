@@ -34,6 +34,7 @@ var print = function(response) {
         // callback is a Java string that contains the name
         // of the callback, so we can run JSONP if it exists
         json: function(j, callback) {
+            if(!response) return;
             var jsonString = JSON.stringify(j);
 
             if(!isblank(callback)) { // JSONP
@@ -44,10 +45,11 @@ var print = function(response) {
             return jsonString;
         },
         text: function(text) {
+            if(!response) return;
             response.getWriter().println(text);
         },
         rss: function(title, arr) {
-
+            if(!response) return;
             response.getWriter().println(rss(title, arr));
         }
     };
@@ -1442,6 +1444,7 @@ apejs.urls = {
               arr[i] = arr[i].reverse();
             }
             print(response).json(arr, request.getParameter("callback"));
+            return arr;
         }
     },
     "/get-categories": {
@@ -1723,5 +1726,64 @@ apejs.urls = {
         currUser.setProperty("language", language);
         googlestore.put(currUser);
       }
+    },
+    "/add-parent": {
+        get: function(req, res) {
+            try {
+                // only if logged in
+                var currUser = auth.getUser(req);
+                if(!currUser) throw "Not logged in";
+
+                var termId = req.getParameter("termId");
+                var parentId = req.getParameter("parentId");
+
+                if(isblank(termId) || isblank(parentId)) throw "Missing parameters";
+
+                var termKey = googlestore.createKey("term", termId),
+                    termEntity = googlestore.get(termKey);
+
+                var parentKey = googlestore.createKey("term", parentId),
+                    parentEntity = googlestore.get(parentKey);
+
+                // find parents of this term (reusing http api, powerful)
+                // and be sure this parentId doesn't exist in there
+                var getTermParents = apejs.urls["/get-term-parents/([^/]*)"]["get"]; 
+                var pathsToParent = getTermParents({ getParameter: function(){ return "";}}, false, [0, parentId]);
+
+                pathsToParent.forEach(function(path) {
+                    path.forEach(function(parent) {
+                        if(parent.id == termId) {
+                            throw "You can't make this element a child of itself";
+                        }
+                    });
+                });
+
+                // be sure the ontologies are the same
+                if(!termEntity.getProperty("ontology_id").equals(parentEntity.getProperty("ontology_id")))
+                    throw "You're moving a term in another ontology. Can't do that.";
+
+                // check if it's our ontology only if we're not admins
+                if(!auth.isAdmin(currUser)) {
+                    // check if own this term
+                    var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
+                        ontoEntity = googlestore.get(ontoKey);
+
+                    if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+                        throw "You don't have the permissions to edit this term";
+                }
+
+                // at this point we can do the add
+                var parent = termEntity.getProperty("parent");
+                if(!(parent instanceof java.util.List)) { // if it's not a list? make it
+                    parent = java.util.Arrays.asList(parent);
+                }
+                parent.add(parentId);
+                termEntity.setProperty("parent", parent);
+                googlestore.put(termEntity);
+
+            } catch(e) {
+                return error(res, e);
+            }
+        }
     }
 };
