@@ -34,7 +34,7 @@ var print = function(response) {
         // callback is a Java string that contains the name
         // of the callback, so we can run JSONP if it exists
         json: function(j, callback) {
-            if(!response) return;
+            if(response == null) return;
             var jsonString = JSON.stringify(j);
 
             if(!isblank(callback)) { // JSONP
@@ -45,11 +45,11 @@ var print = function(response) {
             return jsonString;
         },
         text: function(text) {
-            if(!response) return;
+            if(response == null) return;
             response.getWriter().println(text);
         },
         rss: function(title, arr) {
-            if(!response) return;
+            if(response == null) return;
             response.getWriter().println(rss(title, arr));
         }
     };
