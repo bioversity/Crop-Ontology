@@ -21,7 +21,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.7.42";
+var VERSION = "0.8";
 
 var isblank = function(javaStr) {
     if(javaStr == null || javaStr.equals(""))
