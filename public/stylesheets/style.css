@@ -506,7 +506,8 @@ background-image: linear-gradient(top,#7fbf4d,#63a62f);
     padding: 10px;
 
 }
-.editable_add {
+.editable_add,
+.editable_delete {
     position: absolute;
     top:0;
     left:0;

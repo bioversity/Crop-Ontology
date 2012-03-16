@@ -1637,12 +1637,22 @@ apejs.urls = {
                     return err("Ontology with this ID already exists");
                 }
 
+                // create a root term with ID the ontologyId:root
+                var rootId = ontologyId + ":ROOT";
+                taskqueue.createTask("/create-term", JSON.stringify({
+                    id: rootId,
+                    ontology_name: ""+ontologyName,
+                    ontology_id: ""+ontologyId,
+                    name: ""+ontologyName,
+                    parent: 0
+                }));
+
                 // add the terms
                 excel.parseTemplate(6, blobKey, function(term) {
                     // need a reference to the blob of the excel
                     term.excel_blob_key = ""+blobKeyString;
 
-                    var parent = 0; // root by default
+                    var parent = rootId;
 
                     // create the "trait class" term which is the parent
                     if(term["Trait Class"]) {
@@ -1652,7 +1662,8 @@ apejs.urls = {
                             id: parent,
                             ontology_name: ""+ontologyName,
                             ontology_id: ""+ontologyId,
-                            name: term["Trait Class"]
+                            name: term["Trait Class"],
+                            parent: rootId
                         }));
                     }
 
@@ -1748,7 +1759,7 @@ apejs.urls = {
                 // find parents of this term (reusing http api, powerful)
                 // and be sure this parentId doesn't exist in there
                 var getTermParents = apejs.urls["/get-term-parents/([^/]*)"]["get"]; 
-                var pathsToParent = getTermParents({ getParameter: function(){ return "";}}, false, [0, parentId]);
+                var pathsToParent = getTermParents({ getParameter: function(){ return "";}}, null, [0, parentId]);
 
                 pathsToParent.forEach(function(path) {
                     path.forEach(function(parent) {

@@ -1424,35 +1424,37 @@ var Editable = (function(){
     function addTerm() {
         // make an ajax call to find an available ID for a new term of this ontology
         loader(targetLi, true);
+        var currLi = targetLi;
         $.getJSON("/next-id", {ontology_id: ontologyid}, function(data) {
-            var hitarea = targetLi.find(".hitarea:first");
+            var hitarea = currLi.find(".hitarea:first");
             if(hitarea.length) { // expand it
                 hitarea.click();
             }
 
-            var cont = targetLi.find("ul:first");
+            var cont = currLi.find("ul:first");
             if(!cont.length) {// if it doesn't exist an inner UL, create one
                 cont = $("<ul></ul>");
-                targetLi.append(cont);
+                currLi.append(cont);
             }
 
             var last = true;
             if(hitarea.length)
                 last = false;
                 
-            var parentId = targetLi.find("input.id:first").val();
+            var parentId = currLi.find("input.id:first").val();
 
             // the id is whatever the server returns PLUS all the editable_input
             var id = $(".editable_input:visible").length + data.id;
             var li = makeEditInput(id, parentId, last);
             cont.prepend(li);
             cont.show();
-            loader(targetLi, false);
+            loader(currLi, false);
         });
     }
     function showButtons(target) {
         targetLi = target;
         var el = $(".editable_add");
+        var del = $(".editable_delete");
 
         var p = target.offset();
 
@@ -1461,7 +1463,11 @@ var Editable = (function(){
 
         el.css("top", top+"px");
         el.css("left", left+"px");
+        del.css("top", top+"px");
+        del.css("left", (left - 30) + "px");
         el.show();
+        del.show();
+
     }
     function bindHoverEvents() {
         var currTarget;
@@ -1480,6 +1486,7 @@ var Editable = (function(){
             currTarget = target.get(0);
             e.stopPropagation();
         });
+        //$(".editable_root").show();
 
         // drag
         $(".cont .treeview li").draggable(".cont .treeview li a.minibutton", function(from, to) {
@@ -1495,6 +1502,7 @@ var Editable = (function(){
         $(".treeview li").die("hover");
 
         $(".editable_add").hide();
+        $(".editable_delete").hide();
 
         $(".editable_input").hide();
 
@@ -1606,6 +1614,11 @@ var Editable = (function(){
 
         $(".editable_add").click(function(e) {
             addTerm();
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        $(".editable_delete").click(function(e) {
+            var termId = targetLi.find("input.id:first").val();
             e.preventDefault();
             e.stopPropagation();
         });
