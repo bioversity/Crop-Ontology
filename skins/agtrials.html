@@ -1,0 +1,48 @@
+<script>
+$.getJSON("/js/agtrials.json", function(data) {
+    var $cont = $(".variables");
+    $cont.html("");
+    var $table = $("<table><thead><th>Occurrences</th><th>Crop</th><th>Trait Name</th></thead></table>");
+    var $tbody = $("<tbody></tbody>");
+
+    data.sort(function(a, b) {
+        return parseInt(a.number_of_trials, 10) < parseInt(b.number_of_trials, 10) ? 1 : -1;
+    });
+    for(var i=0; i<data.length; i++) {
+        var trait = data[i];
+        var $tr = $("<tr></tr>");
+
+        var trials = trait.fc_trials_variablesmeasured;
+        trials = trials.split(",");
+
+        var trialsLink = $("<a href='#'>" + trait.number_of_trials+"</a>");
+
+        (function(t) {
+            trialsLink.click(function(e) {
+
+                console.log(t);
+                
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        })(trials);
+        var $td = $("<td></td>");
+        $td.append(trialsLink);
+        $tr.append($td);
+        $tr.append("<td>" + trait.crop + "</td>");
+        $tr.append("<td>" + trait.name + "</td>");
+
+        $tbody.append($tr);
+
+    }
+
+    $table.append($tbody);
+
+    $cont.append($table);
+});
+</script>
+<h2>AgTrials variables measured</h2>
+
+<div class="variables">
+Loading...
+</div>

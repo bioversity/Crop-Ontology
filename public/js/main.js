@@ -104,7 +104,7 @@ jQuery.prototype.draggable = function(dropSelector, cb){
             $document.bind("mouseup", endDragging);
         }
         e.stopPropagation();
-        e.preventDefault();
+        //e.preventDefault();
     }
 
     // Start the dragging

@@ -12,6 +12,7 @@ var fileupload = require("./fileupload.js");
 var auth = require("./auth.js");
 var log = require("./log.js");
 var rss = require("./rss.js");
+var httpget = require("./httpget.js");
 var blobstore = require("./blobstore.js");
 var taskqueue = require("./taskqueue.js");
 var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
@@ -1795,6 +1796,12 @@ apejs.urls = {
             } catch(e) {
                 return error(res, e);
             }
+        }
+    },
+    "/agtrials": {
+        get: function(req, res) {
+            var html = renderIndex("skins/agtrials.html");
+            print(res).text(html);
         }
     }
 };

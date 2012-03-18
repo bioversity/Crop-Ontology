@@ -19,4 +19,6 @@ var httpget = function(url) {
         return e.javaException.getMessage();
     }
     return answer.toString();
-}
+};
+
+exports = httpget;
