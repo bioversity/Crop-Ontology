@@ -22,7 +22,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8";
+var VERSION = "0.8.1";
 
 var isblank = function(javaStr) {
     if(javaStr == null || javaStr.equals(""))
@@ -378,6 +378,8 @@ apejs.urls = {
 
                 // now delete the actual ontology entity
                 googlestore.del(ontoEntity.getKey());
+
+                memcache.clearAll();
             } catch(e) {
                 error(response, e);
             }
@@ -1638,8 +1640,10 @@ apejs.urls = {
                     return err("Ontology with this ID already exists");
                 }
 
+                var id = 1; // start id at 1
+
                 // create a root term with ID the ontologyId:root
-                var rootId = ontologyId + ":ROOT";
+                var rootId = ontologyId + ":" + id;
                 taskqueue.createTask("/create-term", JSON.stringify({
                     id: rootId,
                     ontology_name: ""+ontologyName,
@@ -1648,8 +1652,41 @@ apejs.urls = {
                     parent: 0
                 }));
 
+                var mod = "Trait ID for modification, Blank for New",
+                    ib = "ib primary traits";
+
                 // add the terms
                 excel.parseTemplate(6, blobKey, function(term) {
+                    if(term[mod] || term[mod] !== "null") {
+                        // there's a modification to happen.
+                        // don't create the ontology
+                        var modId = term[mod];
+
+                        // for now we create the "ib primary traits" entity
+                        var ibId = ontologyId + ":" + ib;
+                        taskqueue.createTask("/create-term", JSON.stringify({
+                            id: ibId,
+                            ontology_name: ""+ontologyName,
+                            ontology_id: ""+ontologyId,
+                            name: ib,
+                            parent: rootId
+                        }));
+
+                        // get the entity so we can modify it
+                        var modKey = googlestore.createKey("term", modId),
+                            modEntity = googlestore.get(modKey);
+
+                        var parent = modEntity.getProperty("parent");
+                        if(!(parent instanceof java.util.List)) { // if it's not a list? make it
+                            parent = java.util.Arrays.asList(parent);
+                        }
+                        parent.add(ibId);
+                        modEntity.setProperty("parent", parent);
+                        googlestore.put(termEntity);
+
+                        return;
+                    }
+
                     // need a reference to the blob of the excel
                     term.excel_blob_key = ""+blobKeyString;
 
@@ -1668,10 +1705,11 @@ apejs.urls = {
                         }));
                     }
 
+
                     term.name = term["Name of Trait"];
 
                     // set the actual id of this trait as the ontologyId:TERM-NAME
-                    term.id = ontologyId + ":" + term.name;
+                    term.id = ontologyId + ":" + (++id);
 
                     // also need reference to the ontology
                     term.ontology_name = ""+ontologyName;
