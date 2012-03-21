@@ -1615,7 +1615,13 @@ apejs.urls = {
         },
         post: function(request, response) {
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
-            
+            function pad(number, length) {
+                var str = '' + number;
+                while (str.length < length) {
+                    str = '0' + str;
+                }
+                return str;
+            }
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1640,10 +1646,11 @@ apejs.urls = {
                     return err("Ontology with this ID already exists");
                 }
 
-                var id = 1; // start id at 1
+                var id = 0; // start id at 0
+                var idlen = 7;
 
                 // create a root term with ID the ontologyId:root
-                var rootId = ontologyId + ":" + id;
+                var rootId = ontologyId + ":" + pad(id, idlen);
                 taskqueue.createTask("/create-term", JSON.stringify({
                     id: rootId,
                     ontology_name: ""+ontologyName,
@@ -1657,35 +1664,6 @@ apejs.urls = {
 
                 // add the terms
                 excel.parseTemplate(6, blobKey, function(term) {
-                    if(term[mod] || term[mod] !== "null") {
-                        // there's a modification to happen.
-                        // don't create the ontology
-                        var modId = term[mod];
-
-                        // for now we create the "ib primary traits" entity
-                        var ibId = ontologyId + ":" + ib;
-                        taskqueue.createTask("/create-term", JSON.stringify({
-                            id: ibId,
-                            ontology_name: ""+ontologyName,
-                            ontology_id: ""+ontologyId,
-                            name: ib,
-                            parent: rootId
-                        }));
-
-                        // get the entity so we can modify it
-                        var modKey = googlestore.createKey("term", modId),
-                            modEntity = googlestore.get(modKey);
-
-                        var parent = modEntity.getProperty("parent");
-                        if(!(parent instanceof java.util.List)) { // if it's not a list? make it
-                            parent = java.util.Arrays.asList(parent);
-                        }
-                        parent.add(ibId);
-                        modEntity.setProperty("parent", parent);
-                        googlestore.put(termEntity);
-
-                        return;
-                    }
 
                     // need a reference to the blob of the excel
                     term.excel_blob_key = ""+blobKeyString;
@@ -1709,7 +1687,7 @@ apejs.urls = {
                     term.name = term["Name of Trait"];
 
                     // set the actual id of this trait as the ontologyId:TERM-NAME
-                    term.id = ontologyId + ":" + (++id);
+                    term.id = ontologyId + ":" + pad((++id), idlen);
 
                     // also need reference to the ontology
                     term.ontology_name = ""+ontologyName;
@@ -1717,6 +1695,10 @@ apejs.urls = {
                     term.parent = parent;
 
                     delete term[""]; // WTF DUDE OMG
+
+                    // remove null
+                    for(var x in term) if(term[x] == "") delete term[x];
+
 
                     taskqueue.createTask("/create-term", JSON.stringify(term));
                 });
