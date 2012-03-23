@@ -1823,5 +1823,28 @@ apejs.urls = {
             var html = renderIndex("skins/agtrials.html");
             print(res).text(html);
         }
+    },
+    "/primary": {
+        get: function(req, res) {
+            var currUser = auth.getUser(req);
+            if(!auth.isAdmin(currUser))
+                return error(res, "Not admin");
+
+            var ids = req.getParameter("ids");
+
+            var arr = JSON.parse(ids);
+
+            print(res).text(arr.length + " terms to be set primary<br><br>");
+
+            arr.forEach(function(id) {
+                var termKey = googlestore.createKey("term", id),
+                    termEntity = googlestore.get(termKey);
+
+                termEntity.setProperty("ibfieldbook", "default");
+                googlestore.put(termEntity);
+                print(res).text(id + " was set");
+            });
+
+        }
     }
 };
