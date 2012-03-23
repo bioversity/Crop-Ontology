@@ -1,6 +1,7 @@
 var apejs = require("apejs.js");
 var googlestore = require("googlestore.js");
 var memcache = require("memcache.js");
+var select = require("select.js");
 
 var usermodel = require("./usermodel.js");
 var ontologymodel = require("./ontologymodel.js");
@@ -1845,6 +1846,19 @@ apejs.urls = {
                 print(res).text(id + " was set");
             });
 
+        }
+    },
+    "/ibfieldbook": {
+        get: function(req, res) {
+            var obj = {};
+            select("term")
+                .find({ ibfieldbook: "default" })
+                .each(function() {
+                    if(!obj[this.ontology_name])
+                        obj[this.ontology_name] = [];
+                    obj[this.ontology_name].push(this.id);
+                });
+            print(res).json(obj);
         }
     }
 };
