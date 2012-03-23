@@ -461,7 +461,6 @@ b {
 
         <br>
         <br>
-        
         <input id="generate" type="button" value="Generate" />
 
         <h2>2) Here's the generated table. Choose your crop and select the cell in the table that you would like to annotate:</h2>
@@ -476,6 +475,10 @@ b {
         <input id="suggestions" type="button" value="Show suggestions" />
         -->
 
+        <br>
+        <br>
+        <textarea id="log"></textarea>
+        
         <br>
         <br>
         <input id="download" type="button" value="Download as CSV" />
@@ -539,6 +542,28 @@ b {
 
 
 <script>
+
+var LogId = (function() {
+    
+    var ids = [];
+    var unique = function(a) {
+        var temp = {};
+        for (var i = 0; i < a.length; i++)
+            temp[a[i]] = true;
+        var r = [];
+        for (var k in temp)
+            r.push(k);
+        return r;
+    };
+
+    return {
+        add: function(id) {
+            ids.push(id);  
+            ids = unique(ids);
+            return ids;
+        }
+    };
+})();
 /**
  * Widget that works with JSON API - soon to work with JSONP as well
  */
@@ -586,6 +611,8 @@ var widget = (function() {
                             // if there's a bracket, remove it
                             oldtext = oldtext.match(/([^{]+)/g)[0];
 
+                            var ids = LogId.add(term.id);
+                            $("#log").val(JSON.stringify(ids));
 
                             $clicked.text(oldtext + " {"+ term.id +"}");
 
