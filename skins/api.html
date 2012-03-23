@@ -51,10 +51,12 @@ To let us gather feedback you can leave a comment using the form on the right.
 Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> semantics: create, retrieve, update and delete.
 </p>
 
+<!--
 <h2>Retrieve all traits given an Ontology Name</h2>
 <ul>
     <li>Here's a little code snippet written in <b>PHP</b> to show you how you can leverage this API to retrieve all the traits of a specific Ontology: <a href="https://gist.github.com/1322511">https://gist.github.com/1322511</a></li>
 </ul>
+-->
 
 <h2>Search Terms</h2>
 <ul>
@@ -64,6 +66,12 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Example:</strong> <span class="example" query="stem rust"></span></li>
 </ul>
 
+<h2>Retrieve IB Fieldbook Default List</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/ibfieldbook</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> An object - each key being the ontology name and the value being the array of ids</li>
+</ul>
 
 <h2>Retrieve all Ontologies</h2>
 <ul>
