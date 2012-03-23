@@ -43,6 +43,7 @@ var print = function(response) {
               jsonString = "" + callback + "(" + jsonString + ");";  
             }
 
+            response.setContentType("application/json");
             response.getWriter().println(jsonString);
             return jsonString;
         },
@@ -1858,7 +1859,6 @@ apejs.urls = {
                         obj[this.ontology_name] = [];
                     obj[this.ontology_name].push(this.id);
                 });
-            res.setContentType("application/json");
             print(res).json(obj);
         }
     }
