@@ -1852,6 +1852,22 @@ apejs.urls = {
     "/ibfieldbook": {
         get: function(req, res) {
             var obj = {};
+
+            var terms = googlestore.query("term")
+                            .filter("ibfieldbook", "!=", 0)
+                            .fetch();
+
+            obj.length = terms.length;
+
+            /*
+            terms.forEach(function() {
+                if(!obj[this.ontology_name])
+                    obj[this.ontology_name] = [];
+                obj[this.ontology_name].push(this.id);
+            });
+            */
+
+            /*
             select("term")
                 .find({ ibfieldbook: "default" })
                 .each(function() {
@@ -1859,6 +1875,7 @@ apejs.urls = {
                         obj[this.ontology_name] = [];
                     obj[this.ontology_name].push(this.id);
                 });
+            */
             print(res).json(obj);
         }
     }
