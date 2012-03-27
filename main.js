@@ -299,8 +299,7 @@ apejs.urls = {
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name),
-                        "has_children": true
+                        "name": ""+(name instanceof Text ? name.getValue() : name)
                     });
                 });
 
@@ -1880,7 +1879,8 @@ apejs.urls = {
 
             // if we pass ontologyid, filter by that
             if(!isblank(ontologyId)) {
-                return print(res).json(obj[ontologyId]);
+                if(obj[ontologyId])
+                    return print(res).json(obj[ontologyId]);
             }
 
             print(res).json(obj);

@@ -31,10 +31,8 @@ function ibfieldbook() {
     var $ul = $("<ul class='treeview' id='ibfieldbook'></ul>");
     $(".cont").append($ul);
     load_branch($ul, "/get-ontology-roots/"+ontologyid, function(li) {
-        var hitarea = li.find(".hitarea:first");
-        console.log(hitarea);
-        //hitarea.click();
-        var parent = li.find("ul").first();
+        var parent = $("<ul></ul>");
+        li.append(parent);
         load_branch(parent, "/ibfieldbook?ontologyId="+ontologyid);
     });
 
