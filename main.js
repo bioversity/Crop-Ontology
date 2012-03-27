@@ -262,6 +262,7 @@ apejs.urls = {
               URL:"http://www.cropontology.org",
               ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
               ontologyid: matches[1],
+              ontologyname: matches[2],
               CROP_LOGOS: cropLogos
             });
             print(response).text(html);
@@ -298,7 +299,8 @@ apejs.urls = {
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name)
+                        "name": ""+(name instanceof Text ? name.getValue() : name),
+                        "has_children": true
                     });
                 });
 
@@ -1857,30 +1859,29 @@ apejs.urls = {
     },
     "/ibfieldbook": {
         get: function(req, res) {
+            var ontologyId = req.getParameter("ontologyId");
+
             var obj = {};
 
-            /*
             var terms = googlestore.query("term")
-                            .fetch();
-
-            terms.forEach(function(term){
-                // make property a regular text
-                if(term.getProperty("ibfieldbook")) {
-                    term.setProperty("ibfieldbook", "default");
-                    googlestore.put(term);
-                }
-            });
-            */
-
-            var terms = googlestore.query("term")
+                            .sort("ibfieldbook")
+                            .sort("name")
                             .filter("ibfieldbook", "!=", null)
                             .fetch();
             terms.forEach(function(term) {
-                var ontoName = term.getProperty("ontology_name");
-                if(!obj[ontoName])
-                    obj[ontoName] = [];
-                obj[ontoName].push(""+term.getProperty("id"));
+                var ontoId = term.getProperty("ontology_id");
+                if(!obj[ontoId])
+                    obj[ontoId] = [];
+                obj[ontoId].push({
+                    id: ""+term.getProperty("id"),
+                    name: ""+term.getProperty("name")
+                });
             });
+
+            // if we pass ontologyid, filter by that
+            if(!isblank(ontologyId)) {
+                return print(res).json(obj[ontologyId]);
+            }
 
             print(res).json(obj);
         }

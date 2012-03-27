@@ -698,7 +698,7 @@ function do_search() {
  *           this gets populated with the elements
  * @url - the json array of objects to do an AJAX request to
  */
-function load_branch(parent, url) {
+load_branch = function(parent, url, cb) {
     var obj, li;
  
     // insert before the parent a loading image
@@ -720,6 +720,7 @@ function load_branch(parent, url) {
         }
          
         loader(parent, false);
+        if(cb) cb(li);
     });
 }
  
