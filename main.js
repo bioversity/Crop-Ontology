@@ -589,7 +589,11 @@ apejs.urls = {
                 termEntity = googlestore.get(termKey);
 
             // set this property value
-            termEntity.setProperty(key, (value instanceof Blob ? value : new Text(value)));
+            if(key === "ibfieldbook") {
+                termEntity.setProperty(key, value);
+            } else {
+                termEntity.setProperty(key, (value instanceof Blob ? value : new Text(value)));
+            }
             googlestore.put(termEntity);
 
             /*
@@ -1310,7 +1314,9 @@ apejs.urls = {
                     return err("You don't have the permissions to edit this attribute");
             }
 
-            if(!(value instanceof BlobKey)) {
+            if(key == "ibfieldbook") {
+                value = ""+value;
+            } else if(!(value instanceof BlobKey)) {
               value = ""+value;
               var obj = jsEntity[key];
               // obj is either instanceof Object or type "string"
@@ -1853,29 +1859,29 @@ apejs.urls = {
         get: function(req, res) {
             var obj = {};
 
+            /*
             var terms = googlestore.query("term")
-                            .filter("ibfieldbook", "!=", 0)
                             .fetch();
 
-            obj.length = terms.length;
-
-            /*
-            terms.forEach(function() {
-                if(!obj[this.ontology_name])
-                    obj[this.ontology_name] = [];
-                obj[this.ontology_name].push(this.id);
+            terms.forEach(function(term){
+                // make property a regular text
+                if(term.getProperty("ibfieldbook")) {
+                    term.setProperty("ibfieldbook", "default");
+                    googlestore.put(term);
+                }
             });
             */
 
-            /*
-            select("term")
-                .find({ ibfieldbook: "default" })
-                .each(function() {
-                    if(!obj[this.ontology_name])
-                        obj[this.ontology_name] = [];
-                    obj[this.ontology_name].push(this.id);
-                });
-            */
+            var terms = googlestore.query("term")
+                            .filter("ibfieldbook", "!=", null)
+                            .fetch();
+            terms.forEach(function(term) {
+                var ontoName = term.getProperty("ontology_name");
+                if(!obj[ontoName])
+                    obj[ontoName] = [];
+                obj[ontoName].push(""+term.getProperty("id"));
+            });
+
             print(res).json(obj);
         }
     }
