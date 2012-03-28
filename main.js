@@ -262,6 +262,7 @@ apejs.urls = {
               URL:"http://www.cropontology.org",
               ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
               ontologyid: matches[1],
+              ontologyname: matches[2],
               CROP_LOGOS: cropLogos
             });
             print(response).text(html);
@@ -589,7 +590,11 @@ apejs.urls = {
                 termEntity = googlestore.get(termKey);
 
             // set this property value
-            termEntity.setProperty(key, (value instanceof Blob ? value : new Text(value)));
+            if(key === "ibfieldbook") {
+                termEntity.setProperty(key, value);
+            } else {
+                termEntity.setProperty(key, (value instanceof Blob ? value : new Text(value)));
+            }
             googlestore.put(termEntity);
 
             /*
@@ -1310,7 +1315,9 @@ apejs.urls = {
                     return err("You don't have the permissions to edit this attribute");
             }
 
-            if(!(value instanceof BlobKey)) {
+            if(key == "ibfieldbook") {
+                value = ""+value;
+            } else if(!(value instanceof BlobKey)) {
               value = ""+value;
               var obj = jsEntity[key];
               // obj is either instanceof Object or type "string"
@@ -1500,15 +1507,21 @@ apejs.urls = {
                     // maybe we can cache this... let's see how it performs
                     var terms = googlestore.query("term") 
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
-                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"), 7200)
                                   .fetch();
+                    // get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
+                    var oboTerms = googlestore.query("term")
+                                    .filter("ontology_id", "=", onto.getProperty("ontology_id"))
+                                    .filter("obo_blob_key", "!=", null)
+                                    .fetch();
+
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
                         ontology_name: ""+onto.getProperty("ontology_name"),
                         ontology_summary: ""+onto.getProperty("ontology_summary"),
                         username: ""+username,
                         userid: ""+userid,
-                        tot: terms.length
+                        tot: terms.length,
+                        oboTerms: oboTerms.length
                     });
                 }
             });
@@ -1851,31 +1864,31 @@ apejs.urls = {
     },
     "/ibfieldbook": {
         get: function(req, res) {
+            var ontologyId = req.getParameter("ontologyId");
+
             var obj = {};
 
             var terms = googlestore.query("term")
-                            .filter("ibfieldbook", "!=", 0)
+                            .sort("ibfieldbook")
+                            .sort("name")
+                            .filter("ibfieldbook", "!=", null)
                             .fetch();
-
-            obj.length = terms.length;
-
-            /*
-            terms.forEach(function() {
-                if(!obj[this.ontology_name])
-                    obj[this.ontology_name] = [];
-                obj[this.ontology_name].push(this.id);
-            });
-            */
-
-            /*
-            select("term")
-                .find({ ibfieldbook: "default" })
-                .each(function() {
-                    if(!obj[this.ontology_name])
-                        obj[this.ontology_name] = [];
-                    obj[this.ontology_name].push(this.id);
+            terms.forEach(function(term) {
+                var ontoId = term.getProperty("ontology_id");
+                if(!obj[ontoId])
+                    obj[ontoId] = [];
+                obj[ontoId].push({
+                    id: ""+term.getProperty("id"),
+                    name: ""+term.getProperty("name")
                 });
-            */
+            });
+
+            // if we pass ontologyid, filter by that
+            if(!isblank(ontologyId)) {
+                if(obj[ontologyId])
+                    return print(res).json(obj[ontologyId]);
+            }
+
             print(res).json(obj);
         }
     }
