@@ -293,7 +293,7 @@ var TOKENS = {};
         $.getJSON("/ontologies?category=300-499 Phenotype and Trait Ontology", function(data) {
             var $crop = $("#crop");
             $crop.html("");
-            $crop.append($("<option value=\"All Crops\">All Crops</option>"));
+            $crop.append($("<option value=\"All Crops\">Filter by crop</option>"));
             for(var i=0; i<data.length; i++) {
                 var term = data[i],
                     option = $("<option value=\""+term.ontology_name+"\">"+term.ontology_name+"</option>");
@@ -401,6 +401,161 @@ var TOKENS = {};
 
 })();
 
+// autoselect value script
+
+
+            var ontology = '';
+            function setOntology(onto){
+            	ontology = onto
+            }
+            function getOntology(){
+            	return ontology;
+            }
+            
+            var loaderImg = $('<img id="loaderImg" src="/images/metabox_loader.gif" width="14" height="14" />');
+ 
+            function annotationColumn(num, ontology){
+                $(function(){
+                    var table =$("table#newspaper-b tr");
+                    var count = 1;
+                    $("table#newspaper-b tr").each(function(el){
+                    	var $tr = $(this);
+                    	var td = $tr.children('td')
+                    	var currentValue = $(td[num])['context'].textContent
+                    	$.getJSON("/search?q=" + currentValue, function(data){ 
+                           	var arrayApp = new Array();
+                           	for(var j=0; j<data.length; j++){
+                           		if(data[j].ontology_name==ontology)
+                           			arrayApp.push(data[j])
+                           	}
+                           	if(el>0){
+	                       		if(arrayApp.length==1)
+	                       			$(td[num]).append('<p style="color:green" class="elementID">{'+arrayApp[0].id+'}</p>');
+	                       		if(arrayApp.length==0)
+	                       			$(td[num]).append('<p style="color:red">nope</p>');
+	                       		if(arrayApp.length>1)
+	                           		$(td[num]).append(implode(arrayApp));
+                           	}
+                        }).complete(function(){
+                        	if(count==($("table#newspaper-b tr").length))
+                    			$('#loaderImg').remove();
+                        	count++;
+                        	})
+                    })
+                });
+            }
+ 
+            function annotationRow(num, ontology){
+                $(function(){
+                    var table =$("table#newspaper-b tr");
+                    var tr = $(table[num])
+                    var tds = tr.children('td')
+                    var count = 1;
+                    $(tds).each(function(el){
+                    	var currentValue = $(this)['context'].textContent
+                    	$.getJSON("/search?q=" + currentValue, function(data){ 
+                           	var arrayApp = new Array();
+                           	for(var j=0; j<data.length; j++){
+                           		if(data[j].ontology_name==ontology)
+                           			arrayApp.push(data[j])
+                           	}
+                           	if(el>0){
+	                           	if(arrayApp.length==1)
+	                       			$(tds[el]).append('<p style="color:green" class="elementID">{'+arrayApp[0].id+'}</p>')
+	                       		if(arrayApp.length==0)
+	                       			$(tds[el]).append('<p style="color:red">nope</p>')
+	                       		if(arrayApp.length>1)
+	                           		$(tds[el]).append(implode(arrayApp))
+                           	}
+                        }).complete(function(){
+	                        	if(count==(tds.length))
+	                    			$('#loaderImg').remove();
+	                        	count++;
+                        	})
+                    })
+                });
+            }
+
+            function addRadio(){
+            	$('.radioButton').each(function(){
+            		$(this).remove();
+            		$('#radioButtonTr').remove();
+            	})
+            	$("table#newspaper-b td").each(function(){
+        			$(this).children('p').remove();
+            	})
+            	var tr = $($.find('tr:first.even'));
+            	tr.each(function(){
+            		var trFirst = $('<tr id="radioButtonTr"></tr>').insertBefore($(this))
+            		for(var i=0; i<$(this).children('td').length; i++){
+            			var tdCol = $('<td></td>');
+            			tdCol.addClass('radioButton');
+            			var inputCol = $('<input type="radio" id="'+(i+1)+'" />');
+            			inputCol.click(function(){
+            				$("table#newspaper-b td").each(function(){
+		            			$(this).children('p').remove();
+			            	})
+			            		loaderImg.insertAfter($(this))
+            					var numCol = $(this)['context'].id
+            					annotationColumn(numCol, getOntology());
+            				})
+            			tdCol.append(inputCol);
+            			tdCol.click(function(e){
+            				e.stopPropagation();
+            			})
+            			trFirst.append(tdCol);
+            		}
+            	});
+            	var j=0;
+            	$("table#newspaper-b tr").each(function(){
+            		var row = $(this).children('td:first');
+            		var tdRow = $('<td></td>');
+            		tdRow.addClass('radioButton');
+            		var inputRow = $('<input type="radio" id="'+j+'" />');
+            		inputRow.click(function(){
+            			$("table#newspaper-b td").each(function(){
+		            			$(this).children('p').remove();
+			            	})
+			            	loaderImg.insertAfter($(this))
+            				var numRow = $(this)['context'].id
+            				annotationRow(numRow, getOntology());
+            			})
+            		tdRow.append(inputRow);
+            		tdRow.click(function(e){
+            			e.stopPropagation();
+            		})
+            		$(tdRow).insertBefore(row);
+            		j++
+            	})
+            	
+            	// remove the radio element for the first cross
+        		$('table#newspaper-b td:first').children('input').remove()
+            }
+            
+            function implode(array){
+            	var string = '';
+            	for(var i=0; i<array.length; i++){
+            		string += '<p id="'+array[i].id.replace('.','')+'" onclick="selectValue(\''+array[i].id.replace('.','')+'\',\''+array[i].id+'\')" style="color:blue">'+array[i].id+' ('+array[i].name+')</p>'
+            	}
+            	return string;
+            }
+            
+            function selectValue(id, value){
+            	var parent = $("#"+id).parent('td')
+            	parent.children('p').remove();
+            	parent.append($('<p style="color:green" class="elementID">{'+value+'}</p>'))
+            	//$("#"+value).innerHTML = '{'+value+'}'
+            }
+            
+            function getElement(){
+            	var el = $(".elementID")
+            	var returnArray = new Array();
+            	for(var i=0; i<el.length; i++){
+            		returnArray.push($(el[i]).text().replace('{','').replace('}',''))
+            	}
+            	$('#log').val(JSON.stringify(returnArray))
+            }
+
 </script>
 <style>
 #clipboard {
@@ -464,9 +619,9 @@ b {
         <input id="generate" type="button" value="Generate" />
 
         <h2>2) Here's the generated table. Choose your crop and select the cell in the table that you would like to annotate:</h2>
-        <select id="crop">
-            <option>Loading...</option>
-        </select>
+            	<p><select id="crop" onclick="setOntology(value)"></select>
+            	<button onclick="addRadio();">add radio button</button></p>
+            	
         <!-- <input id="terminize" type="button" value="Terminize" />-->
         <div id="result"></div>
         <!--
@@ -477,6 +632,7 @@ b {
 
         <br>
         <br>
+        <button onclick="getElement()">Element selected</button><br />
         <textarea id="log"></textarea>
         
         <br>
@@ -580,7 +736,7 @@ var widget = (function() {
 
         $(".widget_search").submit(function(e) {
             $searchResult.html("Loading...");
-
+			
             // XXX only sending the first two words of the search
             var words = $(".widget_search input[name=q]").val().split(" ");
             var query = [];
@@ -590,7 +746,8 @@ var widget = (function() {
                 query.push(words[i]);
             }
             query = $.trim(query.join(" "));
-
+            var exclude =  $clicked.children('p').text()
+			query = query.replace(exclude,'')
             $.getJSON("/search", {q: query}, function(data) {
                 $searchResult.html("");
                 for(var i=0; i<data.length; i++) {
@@ -612,9 +769,10 @@ var widget = (function() {
                             oldtext = oldtext.match(/([^{]+)/g)[0];
 
                             var ids = LogId.add(term.id);
-                            $("#log").val(JSON.stringify(ids));
-
-                            $clicked.text(oldtext + " {"+ term.id +"}");
+                            //$("#log").val(JSON.stringify(ids));
+                            $clicked.children('p').remove();
+							$clicked.append($('<p style="color:green" class="elementID">{'+ term.id +'}</p>'))
+                            //$clicked.text(oldtext + '<p style="color:green" class="elementID">'+ term.id +'</p>');
 
                             e.preventDefault();
                             e.stopPropagation();
@@ -694,7 +852,6 @@ var widget = (function() {
 
     function show(clicked) {
         $clicked = $(clicked);
-
         var p = $clicked.position();
 
         $widget.css("top", p.top + "px");
@@ -713,7 +870,8 @@ var widget = (function() {
 
     function run() {
         var $search = $(".widget_search");
-        $search.find("input[name=q]").val($clicked.text());
+        var exclude =  $clicked.children('p').text()
+        $search.find("input[name=q]").val($clicked.text().replace(exclude,''));
         $search.submit();
     }
 
