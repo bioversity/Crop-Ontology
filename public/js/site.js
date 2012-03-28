@@ -45,6 +45,20 @@ $(function() {
         this.get("#!/", index);
         this.get("#!/ibfieldbook", ibfieldbook);
 
+
+        this.get("/add-ontology#!/add/:action", function() {
+            var action = this.params["action"];
+            $("#upload_obo_cont, #create_ontology_cont, #upload_excel_cont").hide(); // hide all
+            $(".add_title a").removeClass("selected");
+
+            var $this = $("[cont=" + action + "_cont]");
+            if($this.length) {
+                $this.addClass("selected");
+                // show this cont
+                $("#" + action + "_cont").show();
+            }
+        });
+
     }).run();
 });
 

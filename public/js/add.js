@@ -129,23 +129,6 @@ var bindEvents = function() {
     });
 
 
-    //
-    $(".add_title a").click(function(e) {
-        var $this = $(this);
-        var cont = $this.attr("cont");
-
-        $("#upload_obo_cont, #create_ontology_cont, #upload_excel_cont").hide(); // hide all
-
-        $(".add_title a").removeClass("selected");
-
-        $this.addClass("selected");
-
-        // show this cont
-        $("#"+cont).show();
-
-        e.preventDefault();
-        e.stopPropagation();
-    });
 
     $("[target=obo_upload_iframe], [target=excel_upload_iframe]").submit(function() {
         var $this = $(this);
