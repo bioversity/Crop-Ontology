@@ -25,6 +25,9 @@ function addRow(obj, par) {
     // replace slasehs with dashes because then url goes crazy
     var escapedName = obj.ontology_name.replace("/", "-");
 
+    if(obj.oboTerms == 0)
+        $row.find("h3").addClass("template");
+
     $row.find("h3 a.term").attr("title", obj.ontology_name)
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName)
                 .text(obj.ontology_name);

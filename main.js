@@ -1507,15 +1507,21 @@ apejs.urls = {
                     // maybe we can cache this... let's see how it performs
                     var terms = googlestore.query("term") 
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
-                                  .setCacheKey("totTerms_" + onto.getProperty("ontology_id"), 7200)
                                   .fetch();
+                    // get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
+                    var oboTerms = googlestore.query("term")
+                                    .filter("ontology_id", "=", onto.getProperty("ontology_id"))
+                                    .filter("obo_blob_key", "!=", null)
+                                    .fetch();
+
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
                         ontology_name: ""+onto.getProperty("ontology_name"),
                         ontology_summary: ""+onto.getProperty("ontology_summary"),
                         username: ""+username,
                         userid: ""+userid,
-                        tot: terms.length
+                        tot: terms.length,
+                        oboTerms: oboTerms.length
                     });
                 }
             });

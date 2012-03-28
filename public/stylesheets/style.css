@@ -666,3 +666,11 @@ a.comments_rss {
 .somethingover {
     background: yellow !important;
 }
+
+h3.template a {
+    background-color: #4FA359 !important;
+}
+h3.template a.term {
+    color: #4FA359;
+    background:none !important;
+}
