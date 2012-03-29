@@ -1875,16 +1875,18 @@ apejs.urls = {
 
             var terms = googlestore.query("term")
                             .sort("ibfieldbook")
-                            .sort("name")
+                  //          .sort("name")
                             .filter("ibfieldbook", "!=", null)
                             .fetch();
             terms.forEach(function(term) {
                 var ontoId = term.getProperty("ontology_id");
                 if(!obj[ontoId])
                     obj[ontoId] = [];
+                
+                var jsTerm = googlestore.toJS(term);
                 obj[ontoId].push({
-                    id: ""+term.getProperty("id"),
-                    name: ""+term.getProperty("name")
+                    id: jsTerm.id,
+                    name: jsTerm.name[languages.default] || jsTerm.name
                 });
             });
 
