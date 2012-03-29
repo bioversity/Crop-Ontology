@@ -1865,6 +1865,7 @@ apejs.urls = {
     "/ibfieldbook": {
         get: function(req, res) {
             var ontologyId = req.getParameter("ontologyId");
+            var html = req.getParameter("html");
 
             var obj = {};
 
@@ -1887,6 +1888,11 @@ apejs.urls = {
             if(!isblank(ontologyId)) {
                 if(obj[ontologyId])
                     return print(res).json(obj[ontologyId]);
+            }
+
+            if(html) {
+                var html = renderIndex("skins/ibfieldbook.html");
+                return print(res).text(html);
             }
 
             print(res).json(obj);
