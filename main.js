@@ -1701,8 +1701,12 @@ apejs.urls = {
 
                     term.name = term["Name of Trait"];
 
-                    // set the actual id of this trait as the ontologyId:TERM-NAME
-                    term.id = ontologyId + ":" + pad((++id), idlen);
+                    if(term[mod]) { // an ID was provided in the template, use it
+                        term.id = term[mod];
+                    } else {
+                        // set the actual id of this trait as the ontologyId:TERM-NAME
+                        term.id = ontologyId + ":" + pad((++id), idlen);
+                    }
 
                     // also need reference to the ontology
                     term.ontology_name = ""+ontologyName;
