@@ -1,0 +1,35 @@
+<script>
+$(function(){
+
+$.getJSON("/ibfieldbook", function(data) {
+    var ontologies = false;
+    function getOntologies(cb) {
+        if(ontologies) return cb(ontologies);
+        $.getJSON("/get-ontologies", function(ontos) {
+            ontologies = ontos;
+            cb(ontologies);
+        });
+    }
+
+    $.each(data, function(ontoId) {
+        var len = this.length;
+        // get the name of this ontology
+        getOntologies(function(ontologies) {
+            var ontoName;
+            $.each(ontologies, function(catName) {
+                for(var i=0; i<this.length; i++) {
+                    if(this[i].ontology_id == ontoId) {
+                        ontoName = this[i].ontology_name; 
+                        return;
+                    }
+                }
+            });
+            $(".ibfieldbook").append("<b>"+ontoName+":</b> "+len+"<br>");
+        });
+    });
+
+});
+
+});
+</script>
+<div class="ibfieldbook"></div>
