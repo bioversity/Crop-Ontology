@@ -290,15 +290,17 @@ var TOKENS = {};
         });
 
         // load all crops (ontologies)
-        $.getJSON("/ontologies?category=300-499 Phenotype and Trait Ontology", function(data) {
+        $.getJSON("http://www.cropontology.org/ontologies?category=300-499 Phenotype and Trait Ontology&callback=?", function(data) {
             var $crop = $("#crop");
             $crop.html("");
             $crop.append($("<option value=\"All Crops\">Filter by crop</option>"));
             for(var i=0; i<data.length; i++) {
                 var term = data[i],
                     option = $("<option value=\""+term.ontology_name+"\">"+term.ontology_name+"</option>");
+                    
                 $crop.append(option);
             }
+            $crop.live('click',function(e){setOntology($(e.target).val())})
         });
 
         // hover
@@ -404,7 +406,7 @@ var TOKENS = {};
 // autoselect value script
 
 
-            var ontology = '';
+            var ontology = 'All Crops';
             function setOntology(onto){
             	ontology = onto
             }
@@ -414,18 +416,20 @@ var TOKENS = {};
             
             var loaderImg = $('<img id="loaderImg" src="/images/metabox_loader.gif" width="14" height="14" />');
  
-            function annotationColumn(num, ontology){
+            function annotationColumn(num, onto){
                 $(function(){
                     var table =$("table#newspaper-b tr");
                     var count = 1;
                     $("table#newspaper-b tr").each(function(el){
                     	var $tr = $(this);
-                    	var td = $tr.children('td')
+                    	var td = $tr.children('td');
                     	var currentValue = $(td[num])['context'].textContent
                     	$.getJSON("/search?q=" + currentValue, function(data){ 
                            	var arrayApp = new Array();
                            	for(var j=0; j<data.length; j++){
-                           		if(data[j].ontology_name==ontology)
+                           		if(onto=="All Crops")
+                           			arrayApp.push(data[j])
+                           		else if(data[j].ontology_name==onto)
                            			arrayApp.push(data[j])
                            	}
                            	if(el>0){
@@ -445,7 +449,7 @@ var TOKENS = {};
                 });
             }
  
-            function annotationRow(num, ontology){
+            function annotationRow(num, onto){
                 $(function(){
                     var table =$("table#newspaper-b tr");
                     var tr = $(table[num])
@@ -456,7 +460,9 @@ var TOKENS = {};
                     	$.getJSON("/search?q=" + currentValue, function(data){ 
                            	var arrayApp = new Array();
                            	for(var j=0; j<data.length; j++){
-                           		if(data[j].ontology_name==ontology)
+                           		if(onto=="All Crops")
+                           			arrayApp.push(data[j])
+                           		else if(data[j].ontology_name==onto)
                            			arrayApp.push(data[j])
                            	}
                            	if(el>0){
@@ -619,7 +625,7 @@ b {
         <input id="generate" type="button" value="Generate" />
 
         <h2>2) Here's the generated table. Choose your crop and select the cell in the table that you would like to annotate:</h2>
-            	<p><select id="crop" onclick="setOntology(value)"></select>
+            	<p><select id="crop"></select>
             	<button onclick="addRadio();">add radio button</button></p>
             	
         <!-- <input id="terminize" type="button" value="Terminize" />-->
