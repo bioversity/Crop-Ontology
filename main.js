@@ -222,7 +222,7 @@ apejs.urls = {
                 });
             });
 
-            response.getWriter().println(JSON.stringify(res));
+            print(response).json(res, request.getParameter("callback"));
             
         }
     },
