@@ -1883,10 +1883,17 @@ apejs.urls = {
                 if(!obj[ontoId])
                     obj[ontoId] = [];
                 
-                var jsTerm = googlestore.toJS(term);
+                // toJS is SLOW
+                // only do it if it has JSON
+                var name = term.getProperty("name");
+                if(name instanceof Text) name = name.getValue();
+                name = ""+name;
+                if(name.charAt(0) == "{") // wow weird JSON checkup lol
+                    name = JSON.parse(name)[languages.default] || "";
+
                 obj[ontoId].push({
-                    id: jsTerm.id,
-                    name: jsTerm.name[languages.default] || jsTerm.name
+                    id: ""+term.getProperty("id"),
+                    name: name
                 });
             });
 
