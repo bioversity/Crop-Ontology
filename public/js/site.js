@@ -41,7 +41,7 @@ function ibfieldbook() {
 $(function() {
     $.sammy(function() {
         // routes
-        //this.get("", index);
+        this.notFound = function(){};
         this.get("#!/", index);
         this.get("#!/ibfieldbook", ibfieldbook);
 
