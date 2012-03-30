@@ -42,6 +42,7 @@ $(function() {
     $.sammy(function() {
         // routes
         this.notFound = function(){};
+        this._checkFormSubmission = function(){};
         this.get("#!/", index);
         this.get("#!/ibfieldbook", ibfieldbook);
 
