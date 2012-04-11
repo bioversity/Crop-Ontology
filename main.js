@@ -487,9 +487,6 @@ apejs.urls = {
             delete attrObj.id;
             delete attrObj.normalized;
             delete attrObj.parent;
-            delete attrObj.ontology_id;
-            delete attrObj.ontology_name;
-            delete attrObj.is_a;
             delete attrObj.relationship;
             delete attrObj.obo_blob_key;
             delete attrObj.excel_blob_key;
@@ -515,11 +512,14 @@ apejs.urls = {
             var order = {
                 "creation_date":true,
                 "created_at": true,
+                "ontology_id":true,
+                "ontology_name":true,
                 "name":true,
                 "synonym":true,
                 "def":true,
                 "Description of Trait":true,
-                "comment":true
+                "comment":true,
+                "is_a":true
             };
 
             // do the first ones in order
