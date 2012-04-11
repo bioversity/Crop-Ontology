@@ -541,7 +541,6 @@ apejs.urls = {
                 });
             }
 
-
             print(response).json(attributes, request.getParameter("callback"));
         }
     },
@@ -591,18 +590,6 @@ apejs.urls = {
             }
             googlestore.put(termEntity);
 
-            /*
-            // the key is just key_GO:0000
-            var attribute = googlestore.entity("term", term_id, {
-                key: key,
-                filename: filename,
-                value: (value instanceof Blob ? value : new Text(value)),
-                term_id: term_id
-            });
-            // only if logged in and has permissions
-            googlestore.put(attribute);
-            */
-
             err("");
 
         }
@@ -637,10 +624,6 @@ apejs.urls = {
             termEntity.removeProperty(key);
             googlestore.put(termEntity);
 
-            /*
-            var k = googlestore.createKey("attribute", key + "_" + term_id);
-            googlestore.del(k);
-            */
         }
     },
     "/httpget": {
