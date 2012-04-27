@@ -53,6 +53,11 @@ var termmodel = (function(){
         if(term.def)
             term.def = new Text(term.def);
 
+        // XXX a bit hacky - make it faster
+        for(var i in term) {
+            if(term[i] != null && (typeof term[i] === "string") && term[i].length > 490)
+                term[i] = new Text(term[i]);
+        }
 
         var termEntity = googlestore.entity("term", term.id, term);
 

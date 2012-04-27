@@ -1719,7 +1719,7 @@ apejs.urls = {
                     for(var x in term) if(term[x] == "") delete term[x];
 
 
-                    taskqueue.createTask("/create-term", JSON.stringify(term));
+                    taskqueue.createTask("/create-term", URLEncoder.encode(JSON.stringify(term)));
                 });
 
                 // create the ontology
