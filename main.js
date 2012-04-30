@@ -1981,8 +1981,11 @@ apejs.urls = {
             var emailPar = req.getParameter('email');
             var secret = req.getParameter('secret');
             var newpassword = req.getParameter('newpassword');
+            var renewpassword = req.getParameter('renewpassword');
 
             var data = {};
+            data.email = emailPar;
+            data.secret = secret;
 
             var user = select('user')
                         .find({ 
@@ -1999,7 +2002,13 @@ apejs.urls = {
                 } else {
                     // we found a user, let's change its password
                     // we can get the user select scope from above, sweet!
-                    user.attr({ password: usermodel.sha1(newpassword) });
+                    if(isblank(newpassword)) {
+                        data.error = "Your password can't be blank";
+                    } else if(!newpassword.equals(renewpassword)) {
+                        data.error = "Your passwords don't match. Re-type them";
+                    } else {
+                        user.attr({ password: usermodel.sha1(newpassword) });
+                    }
                 }
             });
 
