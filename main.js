@@ -12,6 +12,7 @@ var usermodel = require("./usermodel.js");
 var fileupload = require("./fileupload.js");
 var auth = require("./auth.js");
 var log = require("./log.js");
+var email = require("./email.js");
 var rss = require("./rss.js");
 var httpget = require("./httpget.js");
 var blobstore = require("./blobstore.js");
@@ -24,6 +25,7 @@ var languages = require("./languages.js");
 var Mustache = require("./common/mustache.js");
 
 var VERSION = "0.8.6";
+var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
     if(javaStr == null || javaStr.equals(""))
@@ -1909,6 +1911,104 @@ apejs.urls = {
             }
 
             print(res).json(obj);
+        }
+    },
+    "/forgot-password": {
+        get: function(req, res) {
+            var html = renderIndex("skins/forgot-password.html");
+            print(res).text(html);
+        },
+        post: function(req, res) {
+            var data = {};
+            var emailPar = req.getParameter('email');
+
+            // find if this email exists
+            var foundUser = false;
+            select('user')
+                .find({ email: emailPar })
+                .limit(1)
+                .each(function() {
+                    foundUser = this; 
+                });
+
+            if(!foundUser) data.error = "User with this email doesn't exist";
+
+            if(!data.error) {
+                var from = {
+                    address: "admin@cropontology-curationtool.org",
+                    personal: "Crop Ontology Curation Tool"
+                };
+                var to = {
+                    address: foundUser.email,
+                    personal: foundUser.username
+                };
+                email.send(from, to, "Password reset!", "Please click on this link to reset your password: " + URL + '/reset-password?email=' + foundUser.email + '&secret=' + foundUser.password); 
+
+                data.success = "Check your email!";
+            }
+
+            var html = renderIndex("skins/forgot-password.html", data);
+            print(res).text(html);
+        }
+    },
+    "/reset-password": {
+        get: function(req, res) {
+            var emailPar = req.getParameter('email');
+            var secret = req.getParameter('secret');
+
+            var data = {};
+
+            data.email = emailPar;
+            data.secret = secret;
+
+            var foundUser = false;
+            select('user')
+                .find({ 
+                    email: emailPar,
+                    password: secret
+                })
+                .limit(1)
+                .each(function() {
+                    foundUser = this; 
+                });
+
+            if(!foundUser) data.error = 'Something went wrong. Please try again';
+
+            var html = renderIndex("skins/reset-password.html", data);
+            print(res).text(html);
+        },
+        post: function(req, res) {
+            var emailPar = req.getParameter('email');
+            var secret = req.getParameter('secret');
+            var newpassword = req.getParameter('newpassword');
+
+            var data = {};
+
+            var user = select('user')
+                        .find({ 
+                            email: emailPar,
+                            password: secret
+                        })
+                        .limit(1);
+
+                //.attr({ password: 
+
+            user.values(function(values) {
+                if(!values.length)  {
+                    data.error = 'Something went wrong. Try recovering your password again!';
+                } else {
+                    // we found a user, let's change its password
+                    // we can get the user select scope from above, sweet!
+                    user.attr({ password: usermodel.sha1(newpassword) });
+                }
+            });
+
+            if(!data.error) data.success = 'Your password was successfully changed! You can now log in using your new password';
+
+
+            var html = renderIndex("skins/reset-password.html", data);
+            print(res).text(html);
+
         }
     }
 };
