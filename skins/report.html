@@ -51,7 +51,7 @@ function addRow(trait) {
 
 var traits = [],
     $table;
-function getAttr(trait) {
+function getAttr(trait, cb, childrenIdx) {
   var newtrait = {};
   newtrait.id = trait.id;
   $.getJSON("/get-attributes/"+trait.id, function(attributes) {
@@ -61,36 +61,67 @@ function getAttr(trait) {
       newtrait[key] = value;
     });
     traits.push(newtrait);
+    cb(childrenIdx);
   });
-  $table.report(traits);
 }
 
-function getChildren(parentId) {
+var numchildren = {};
+
+function getChildren(parentId, cb, isRoot) {
   $.getJSON("/get-children/"+parentId, function(children) {
+    if(isRoot) {
+        numchildren[parentId] = children.length;
+    }
     for(var i=0; i<children.length; i++) {
       var child = children[i];
       if(child.has_children > 0) {
-        getChildren(child.id);
+        getChildren(child.id, cb);
       } else if (child.has_children == 0) { // it's a trait!!
-        getAttr(child);
+        getAttr(child, cb);
       }
     }
   });
 }
 
-$(function(){
-  $table = $("table");
-  $.getJSON("/get-ontology-roots/{{ontology_id}}", function(roots) {
-    for(var i=0; i<roots.length; i++) {
-      var onto = roots[i];
-      getChildren(onto.id);  
-    }
-  });
+function loader(show) {
+    var $loader = $('.loader');
+    if(show) $loader.show();
+    else $loader.hide();
+}
 
+var Root = {
+    currIdx: 0,
+    roots: [],
+    init: function(roots) {
+        this.roots = roots;
+    },
+    next: function() {
+        var r = this.roots[this.currIdx];
+        var idx = 0;
+        getChildren(r.id, function() {
+            if(numchildren[r.id] === (idx + 1)) {
+                loader(false); 
+                //console.log(traits);
+                $table.report(traits);
+            }
+            idx++;
+        }, true);
+    }
+};
+
+$(function(){
+    $table = $("table");
+    loader(true);
+    $.getJSON("/get-ontology-roots/{{ontology_id}}", function(roots) {
+        Root.init(roots);
+
+        Root.next();
+    });
 });
 </script>
   </head>
 <body>
+<div class="loader" style="display:none">Loading...</div>
 <table class="bordered-table zebra-striped">
 </table>
 </body>
