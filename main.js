@@ -1760,13 +1760,30 @@ apejs.urls = {
     },
     "/report": {
         get: function(request, response) {
-          var ontoId = request.getParameter("ontology_id");
-          if(isblank(ontoId)) return error(response, "Invalid parameter");
+            var ontoId = request.getParameter("ontology_id");
+            if(isblank(ontoId)) return error(response, "Invalid parameter");
+            select('term')
+                .find({ ontology_id: ontoId })
+                .each(function() {
+                    // check if this term has children
+                    var that = this;
+                    select('term')
+                        .find({ parent: this.id })
+                        .values(function(values) {
+                            if(values.length) { // this term has children
+                            } else { // no children, therefore trait!
+                                print(response).json(that); 
+                            }
+                        });
+                });
+
+            /*
           print(response).text(
               render("./skins/report.html")
                   .replace(/{{ontology_id}}/g, ""+ontoId)
                   .replace(/{{VERSION}}/g, VERSION)
           );
+          */
         }
     },
     "/edit-profile": {
