@@ -483,39 +483,6 @@ apejs.urls = {
             delete attrObj.obo_blob_key;
             delete attrObj.excel_blob_key;
 
-            /*
-            var properties = termEntity.getProperties(),
-                entries = properties.entrySet().iterator();
-
-            while(entries.hasNext()) {
-                var entry = entries.next(),
-                    key = entry.getKey(),
-                    value = entry.getValue();
-
-                if(!key || !value) continue;
-
-                // let's skip certain keys
-                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals("") || key.equals("excel_blob_key"))
-                    continue;
-
-                if(value instanceof BlobKey) {
-                    // get metadata
-                    var blobInfo = new BlobInfoFactory().loadBlobInfo(value),
-                        contentType = blobInfo.getContentType();
-                    // based on the mime type we need to figure out which image to show
-                    if(!contentType.startsWith("image")) { // default to plain text
-                        value = "<a target='_blank' href='/serve/"+value.getKeyString()+"'>"+blobInfo.getFilename()+"</a>";
-                    } else {
-                        value = "<a target='_blank' href='/serve/"+value.getKeyString()+"'><img src='/serve/"+value.getKeyString()+"' /></a>";
-                    }
-
-                } else if(value instanceof Text)
-                    value = value.getValue();
-
-                attrObj[""+key] = ""+value;
-            }
-            */
-
             var order = {
                 "creation_date":true,
                 "created_at": true,
@@ -549,7 +516,6 @@ apejs.urls = {
                 });
             }
 
-            //response.getWriter().println(JSON.stringify(attributes));
             print(response).json(attributes, request.getParameter("callback"));
         }
     },
@@ -599,18 +565,6 @@ apejs.urls = {
             }
             googlestore.put(termEntity);
 
-            /*
-            // the key is just key_GO:0000
-            var attribute = googlestore.entity("term", term_id, {
-                key: key,
-                filename: filename,
-                value: (value instanceof Blob ? value : new Text(value)),
-                term_id: term_id
-            });
-            // only if logged in and has permissions
-            googlestore.put(attribute);
-            */
-
             err("");
 
         }
@@ -645,10 +599,6 @@ apejs.urls = {
             termEntity.removeProperty(key);
             googlestore.put(termEntity);
 
-            /*
-            var k = googlestore.createKey("attribute", key + "_" + term_id);
-            googlestore.del(k);
-            */
         }
     },
     "/httpget": {
