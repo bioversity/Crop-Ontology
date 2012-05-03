@@ -1671,13 +1671,16 @@ var Term = (function(){
         $.getJSON("/get-term-parents/"+termId, function(data) {
           var $root = $("#root");
           for(var x=0; x<data.length; x++) {
+              var fatherId = data[x].length > 1 ? data[x][data[x].length - 2]['id'] : data[x][data[x].length - 1]['id'];
             var parent = $root;
             var li;
-            for(var i=0, len=data[x].length; i<len; i++) {
+            for(var i=0, len=data[x].length; i<(len-1); i++) {
                 var el = data[x][i];
                 el.has_children = true;
+                /*
                 if(i == (data[x].length-1))
                     el.has_children = false;
+                    */
 
                 li = make_li(el, true);
                 parent.append(li);
@@ -1686,10 +1689,28 @@ var Term = (function(){
                 parent.show();
             }
 
-            // great now laod the right sidebar with this current termId
-            if(x === 0)
-              load_term(li);
+            (function(x) {
+              // get children of the parent of this term
+              // to find out if there's embedded methods and scales
+              $.getJSON('/get-children/' + fatherId, function(children) {
+                var li;
+                for(var i=0; i<children.length; i++) {
+                    var el = children[i]; 
+                    if(el.id === termId) {
+                        li = make_li(el, true);
+                        parent.append(li);
+                        li.find(".hitarea").click();
+                        break;
+                    }
+                }
+                // great now laod the right sidebar with this current termId
+                if(x === 0) {
+                  load_term(li);
+                }
+              });
+            })(x);
           }
+
         });
     }
 
@@ -1790,6 +1811,7 @@ $(document).ready(function(){
 
       if(termid !== "") {
           Term.init(termid);
+          expand_collapse();
       }
     });
 
