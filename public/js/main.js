@@ -275,6 +275,13 @@ function expand_collapse() {
     });
  
 }
+function slugify(s) {
+    var _slugify_strip_re = /[^\w\s-]/g;
+    var _slugify_hyphenate_re = /[-\s]+/g;
+    s = s.replace(_slugify_strip_re, '').trim().toLowerCase();
+    s = s.replace(_slugify_hyphenate_re, '-');
+    return s;
+}
  
 // load comments on the right side
 var comments = (function(){
@@ -576,12 +583,12 @@ function make_li(obj, last) {
     return li;
 }
 
-function makeScaleLi(scale, obj, islast) {
+function makeScaleLi(scale, methodId, islast) {
     var scale_li = $("<li class='"+(islast ? "last": "")+"'></li>"),
         scale_link = $('<a title="'+scale+'" class="minibutton btn-watch"><span>'+scale+'</span></a>');
 
     // add a hidden input to track the id of this node
-    scale_li.append('<input type="hidden" class="id" value="'+obj.id+'" />');
+    scale_li.append('<input type="hidden" class="id" value="' + methodId + '/' + scale + '" />');
     scale_link.click(function(e) {
         load_term(scale_li);
         e.preventDefault();
@@ -606,7 +613,14 @@ function methodScale(obj) {
         method_link = $('<a title="'+obj.method+'" class="minibutton btn-watch"><span>'+obj.method+'</span></a>');
 
     // add a hidden input to track the id of this node
-    method_li.append('<input type="hidden" class="id" value="'+obj.id+'" />');
+    var slug = obj.method.split(" ");
+    var m = [];
+    for(var i=0; i<slug.length; i++) {
+        if(i > 1) break;
+        m.push(slug[i]);
+    }
+    var methodId = obj.id + '/' + slugify(m.join(" "));
+    method_li.append('<input type="hidden" class="id" value="'+  methodId + '" />');
 
     method_link.click(function(e) {
         load_term(method_li);
@@ -621,7 +635,7 @@ function methodScale(obj) {
     var scaleul = $("<ul></ul>");
     for(var i=0; i<obj.scales.length; i++) {
         var scale = obj.scales[i];
-            scaleli = makeScaleLi(scale, obj, (i == obj.scales.length-1)?true:false);
+            scaleli = makeScaleLi(scale, methodId, (i == obj.scales.length-1)?true:false);
         if(scale)
             scaleul.append(scaleli);
     }

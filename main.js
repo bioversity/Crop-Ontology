@@ -456,14 +456,19 @@ apejs.urls = {
             }
         }
     },
-    "/get-attributes/([^/]*)": {
+    "/get-attributes/(.*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            var term_id = matches[1];
+            var segments = matches[1].split('/');
+            var term_id = segments[0];
             if(!term_id) return response.getWriter().println("No term_id");
+
+            var method = segments[1],
+                scale = segments[2];
+
 
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
@@ -483,39 +488,24 @@ apejs.urls = {
             delete attrObj.obo_blob_key;
             delete attrObj.excel_blob_key;
 
-            /*
-            var properties = termEntity.getProperties(),
-                entries = properties.entrySet().iterator();
-
-            while(entries.hasNext()) {
-                var entry = entries.next(),
-                    key = entry.getKey(),
-                    value = entry.getValue();
-
-                if(!key || !value) continue;
-
-                // let's skip certain keys
-                if(key.equals("id") || key.equals("normalized") || key.equals("parent") || key.equals("ontology_id") || key.equals("ontology_name") || key.equals("is_a") || key.equals("relationship") || key.equals("obo_blob_key")|| value.equals("") || key.equals("excel_blob_key"))
-                    continue;
-
-                if(value instanceof BlobKey) {
-                    // get metadata
-                    var blobInfo = new BlobInfoFactory().loadBlobInfo(value),
-                        contentType = blobInfo.getContentType();
-                    // based on the mime type we need to figure out which image to show
-                    if(!contentType.startsWith("image")) { // default to plain text
-                        value = "<a target='_blank' href='/serve/"+value.getKeyString()+"'>"+blobInfo.getFilename()+"</a>";
-                    } else {
-                        value = "<a target='_blank' href='/serve/"+value.getKeyString()+"'><img src='/serve/"+value.getKeyString()+"' /></a>";
+            function newAttrs(keys, obj) {
+                var newAttrObj = {};
+                for(var i=0; i<keys.length; i++) {
+                    var key = keys[i];
+                    if(obj[key]) {
+                        newAttrObj[key] = obj[key];
                     }
-
-                } else if(value instanceof Text)
-                    value = value.getValue();
-
-                attrObj[""+key] = ""+value;
+                }
+                return newAttrObj;
             }
-            */
-
+        
+            if(method && !scale) { // only show specific attributes
+                var methodAttrs = ['Name of method','Describe how measured (method)','Growth stages','Bibliographic Reference Comments'];
+                attrObj = newAttrs(methodAttrs, attrObj);
+            } else if(scale) {
+                var scaleAttrs = ["Type of Measure (Continuous, Discrete or Categorical)","For Continuous: units of measurement","For Continuous: reporting units (if different from measurement)","For Continuous: minimum","For Continuous: maximum","For Discrete: Name of scale or units of measurement","For Categorical: Name of rating scale","For Categorical: Class 1 - value = meaning","For Categorical: Class 2 - value = meaning ","For Categorical: Class 3 - value = meaning","For Categorical: Class 4 - value = meaning","For Categorical: Class 5 - value = meaning","For Categorical: Class 6 - value = meaning","For Categorical: Class 7 - value = meaning","For Categorical: Class 8 - value = meaning","For Categorical: Class 9 - value = meaning","For Categorical: Class 10 - value = meaning","For Categorical: Class 11 - value = meaning","For Categorical: Class 12 - value = meaning","For Categorical: Class 13 - value = meaning","For Categorical: Class 14 - value = meaning","For Categorical: Class 15 - value = meaning","For Categorical: Class 16 - value = meaning","For Categorical: Class 17 - value = meaning","For Categorical: Class 18 - value = meaning","For Categorical: Class 19 - value = meaning","For Categorical: Class 20 - value = meaning","For Categorical: Class 21- value = meaning"];
+                attrObj = newAttrs(scaleAttrs, attrObj);
+            }
             var order = {
                 "creation_date":true,
                 "created_at": true,
@@ -525,10 +515,6 @@ apejs.urls = {
                 "Description of Trait":true,
                 "comment":true
             };
-
-            // need the current user info to figure out what
-            // language they set by default
-            var currUser = auth.getUser(request);
 
             // do the first ones in order
             for(var i in order) {
@@ -549,7 +535,7 @@ apejs.urls = {
                 });
             }
 
-            //response.getWriter().println(JSON.stringify(attributes));
+
             print(response).json(attributes, request.getParameter("callback"));
         }
     },
@@ -1385,7 +1371,7 @@ apejs.urls = {
 
         }
     },
-    "/get-term-parents/([^/]*)": {
+    "/get-term-parents/(.*)": {
         get: function(request, response, matches) {
             function getParent(arr, untouched, branch, termId) {
                 var termKey = googlestore.createKey("term", termId),
@@ -1433,7 +1419,7 @@ apejs.urls = {
                 }
             }
 
-            var termId = matches[1];
+            var termId = matches[1].split("/")[0];
             // start the array with the current term
             var termKey = googlestore.createKey("term", termId),
                 termEntity = googlestore.get(termKey);
@@ -1721,7 +1707,7 @@ apejs.urls = {
                     for(var x in term) if(term[x] == "") delete term[x];
 
 
-                    taskqueue.createTask("/create-term", URLEncoder.encode(JSON.stringify(term)));
+                    taskqueue.createTask("/create-term", JSON.stringify(term));
                 });
 
                 // create the ontology
