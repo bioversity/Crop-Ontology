@@ -845,7 +845,7 @@ function buildGraph($cont, data) {
     for(var i=0; i<el.length; i++) {
       var next = el[i+1];
       if(next) {
-        g.addEdge(next.id, el[i].id, {label: el[i].relationship});
+        g.addEdge(next.id, el[i].id, {label: next.relationship});
         //g.addEdge(next.id, el[i].id);
       }
     }

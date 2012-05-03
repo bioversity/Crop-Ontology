@@ -1427,7 +1427,8 @@ apejs.urls = {
             var name = termEntity.getProperty("name");
             var o = {
                 id: ""+termEntity.getProperty("id"),
-                name: ""+(name instanceof Text ? name.getValue() : name)
+                name: ""+(name instanceof Text ? name.getValue() : name),
+                relationship: defaultRelationship(termEntity.getProperty("relationship"))
             };
             var arr = [];
             var branch = [];
