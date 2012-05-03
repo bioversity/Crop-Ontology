@@ -1759,9 +1759,10 @@ apejs.urls = {
         }
     },
     "/report": {
-        get: function(request, response) {
+        post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
+            var traits = [];
             select('term')
                 .find({ ontology_id: ontoId })
                 .each(function() {
@@ -1771,19 +1772,22 @@ apejs.urls = {
                         .find({ parent: this.id })
                         .values(function(values) {
                             if(values.length) { // this term has children
-                            } else { // no children, therefore trait!
-                                print(response).json(that); 
+                            } else { // no children, therefore trait! - how lame!
+                                traits.push(that);
                             }
                         });
                 });
+            print(response).json(traits); 
+        },
+        get: function(request, response) {
+            var ontoId = request.getParameter("ontology_id");
+            if(isblank(ontoId)) return error(response, "Invalid parameter");
 
-            /*
-          print(response).text(
-              render("./skins/report.html")
-                  .replace(/{{ontology_id}}/g, ""+ontoId)
-                  .replace(/{{VERSION}}/g, VERSION)
-          );
-          */
+            print(response).text(
+                  render("./skins/report.html")
+                      .replace(/{{ontology_id}}/g, ""+ontoId)
+                      .replace(/{{VERSION}}/g, VERSION)
+            );
         }
     },
     "/edit-profile": {

@@ -110,12 +110,27 @@ var Root = {
 };
 
 $(function(){
+    /*
     $table = $("table");
     loader(true);
     $.getJSON("/get-ontology-roots/{{ontology_id}}", function(roots) {
         Root.init(roots);
 
         Root.next();
+    });
+    */
+    loader(true);
+    $.post('/report', { ontology_id: {{ontology_id}} }, function(data) {
+        loader(false);
+        var remove = ['normalized', 'parent', 'ontology_name', 'ontology_id'];
+        $.each(remove, function(i, val){
+            $.each(data, function(idx, value) {
+                delete data[idx][val];
+            });
+        });
+
+        $table = $("table");
+        $table.report(data);
     });
 });
 </script>
