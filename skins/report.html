@@ -120,7 +120,7 @@ $(function(){
     });
     */
     loader(true);
-    $.post('/report', { ontology_id: {{ontology_id}} }, function(data) {
+    $.post('/report', { ontology_id: "{{ontology_id}}" }, function(data) {
         loader(false);
         var remove = ['normalized', 'parent', 'ontology_name', 'ontology_id'];
         $.each(remove, function(i, val){
