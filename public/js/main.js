@@ -276,6 +276,7 @@ function expand_collapse() {
  
 }
 function slugify(s) {
+    if(!s) return s;
     var _slugify_strip_re = /[^\w\s-]/g;
     var _slugify_hyphenate_re = /[-\s]+/g;
     s = s.replace(_slugify_strip_re, '').trim().toLowerCase();
@@ -584,11 +585,12 @@ function make_li(obj, last) {
 }
 
 function makeScaleLi(scale, methodId, islast) {
+    scale = translate(currUser, scale).translation;
     var scale_li = $("<li class='"+(islast ? "last": "")+"'></li>"),
         scale_link = $('<a title="'+scale+'" class="minibutton btn-watch"><span>'+scale+'</span></a>');
 
     // add a hidden input to track the id of this node
-    scale_li.append('<input type="hidden" class="id" value="' + methodId + '/' + scale + '" />');
+    scale_li.append('<input type="hidden" class="id" value="' + methodId + '/' + slugify(scale) + '" />');
     scale_link.click(function(e) {
         load_term(scale_li);
         e.preventDefault();
@@ -606,6 +608,8 @@ function makeScaleLi(scale, methodId, islast) {
  * creates the methodScale "node" and assigns proper links to it
  */
 function methodScale(obj) {
+
+    obj.method = translate(currUser, obj.method).translation;
 
     // add an ul (parent) to this, so we can put stuff in it as a child
     var method_ul = $('<ul style="display:none;"></ul>'),
@@ -838,7 +842,7 @@ function buildGraph($cont, data) {
 
   $.each(data, function(idx, el) {
     for(var i=0; i<el.length; i++) {
-      g.addNode(el[i].id, {render:render, label: el[i].name});
+      g.addNode(el[i].id, {render:render, label: translate(currUser, el[i].name).translation});
     }
   });
   $.each(data, function(idx, el) {
