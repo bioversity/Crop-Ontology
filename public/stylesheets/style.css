@@ -674,3 +674,9 @@ h3.template a.term {
     color: #4FA359;
     background:none !important;
 }
+a.template {
+    background: #4FA359;
+}
+a.obo {
+    background: #4183C4;
+}
