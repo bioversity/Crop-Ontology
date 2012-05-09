@@ -31,6 +31,8 @@ function ibfieldbook() {
     var $ul = $("<ul class='treeview' id='ibfieldbook'></ul>");
     $(".cont").append($ul);
     load_branch($ul, "/get-ontology-roots/"+ontologyid, function(li) {
+        var $rootLi = $ul.find('li:first');
+        $rootLi.append("<span class='relationship' title='ibfieldbook'>ibfieldbook</span>");
         var parent = $("<ul></ul>");
         li.append(parent);
         load_branch(parent, "/ibfieldbook?ontologyId="+ontologyid);
