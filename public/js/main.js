@@ -1240,6 +1240,7 @@ var events = function(){
     var $languages_refresh = $(".languages_refresh");
     $languages_refresh.html(langs.html(languages));
     $languages_refresh.find("select").change(function(i) {
+        if(!currUser) currUser = {};
         currUser.language = $(this).val();
         $("#root").html("");
         LoadOntology(ontologyid);
