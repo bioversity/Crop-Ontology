@@ -1237,6 +1237,14 @@ var events = function(){
 
     $(".reg_lang").html(langs.html(languages));
 
+    var $languages_refresh = $(".languages_refresh");
+    $languages_refresh.html(langs.html(languages));
+    $languages_refresh.find("select").change(function(i) {
+        currUser.language = $(this).val();
+        $("#root").html("");
+        LoadOntology(ontologyid);
+    });
+
     $("#edit_profile").click(function(e) {
 
       Modal.show("edit_profile",function(){
@@ -1415,8 +1423,6 @@ function LoadOntology(ontoId) {
             $root.append(li);
         }
 
-        // events
-        expand_collapse();
     });
 }
 
@@ -1817,10 +1823,19 @@ $(document).ready(function(){
           Term.init(termid);
           expand_collapse();
       }
+
+        $(".languages_refresh").find("option").each(function(){
+            var $this = $(this);
+            if($this.val() === currUser.language) {
+                $this.attr('selected', 'selected');
+            }
+        });
     });
 
     if(ontologyid !== "") {
         LoadOntology(ontologyid);
+        // events
+        expand_collapse();
     }
 
 
