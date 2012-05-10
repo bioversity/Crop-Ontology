@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.8";
+var VERSION = "0.8.9";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -113,6 +113,12 @@ apejs.urls = {
     "/video-tutorials": {
         get: function(request, response) {
             var html = renderIndex("skins/video-tutorials.html");
+            print(response).text(html);
+        }
+    },
+    "/help": {
+        get: function(request, response) {
+            var html = renderIndex("skins/help.html");
             print(response).text(html);
         }
     },
