@@ -2033,5 +2033,11 @@ apejs.urls = {
             print(res).text(html);
 
         }
+    },
+    "/get-languages": {
+        get: function(req, res) {
+            var ontoId = req.getParameter('ontoId');
+            if(isblank(ontoId)) return error(res, 'Need ontoId');
+        }
     }
 };
