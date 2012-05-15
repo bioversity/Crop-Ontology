@@ -487,9 +487,6 @@ apejs.urls = {
             delete attrObj.id;
             delete attrObj.normalized;
             delete attrObj.parent;
-            delete attrObj.ontology_id;
-            delete attrObj.ontology_name;
-            delete attrObj.is_a;
             delete attrObj.relationship;
             delete attrObj.obo_blob_key;
             delete attrObj.excel_blob_key;
@@ -515,11 +512,14 @@ apejs.urls = {
             var order = {
                 "creation_date":true,
                 "created_at": true,
+                "ontology_id":true,
+                "ontology_name":true,
                 "name":true,
                 "synonym":true,
                 "def":true,
                 "Description of Trait":true,
                 "comment":true
+                "is_a":true,
             };
 
             // do the first ones in order
@@ -540,7 +540,6 @@ apejs.urls = {
                     "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
                 });
             }
-
 
             print(response).json(attributes, request.getParameter("callback"));
         }
@@ -591,18 +590,6 @@ apejs.urls = {
             }
             googlestore.put(termEntity);
 
-            /*
-            // the key is just key_GO:0000
-            var attribute = googlestore.entity("term", term_id, {
-                key: key,
-                filename: filename,
-                value: (value instanceof Blob ? value : new Text(value)),
-                term_id: term_id
-            });
-            // only if logged in and has permissions
-            googlestore.put(attribute);
-            */
-
             err("");
 
         }
@@ -637,10 +624,6 @@ apejs.urls = {
             termEntity.removeProperty(key);
             googlestore.put(termEntity);
 
-            /*
-            var k = googlestore.createKey("attribute", key + "_" + term_id);
-            googlestore.del(k);
-            */
         }
     },
     "/httpget": {
