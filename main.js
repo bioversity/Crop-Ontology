@@ -526,151 +526,6 @@ apejs.urls = {
             response.getWriter().println(string);
         }
     },
-    "/get-attributes/(.*)": {
-        get: function(request, response, matches) {
-            request.setCharacterEncoding("utf-8")
-            response.setContentType("text/html; charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-
-            var segments = matches[1].split('/');
-            var term_id = segments[0];
-            if(!term_id) return response.getWriter().println("No term_id");
-
-            var method = segments[1],
-                scale = segments[2];
-
-
-            var termKey = googlestore.createKey("term", term_id),
-                termEntity = googlestore.get(termKey);
-
-            var attributes = [];
-
-            var attrObj = googlestore.toJS(termEntity);
-
-            // let's skip certain keys
-            delete attrObj.id;
-            delete attrObj.normalized;
-            delete attrObj.parent;
-            delete attrObj.relationship;
-            delete attrObj.obo_blob_key;
-            delete attrObj.excel_blob_key;
-
-            function newAttrs(keys, obj) {
-                var newAttrObj = {};
-                for(var i=0; i<keys.length; i++) {
-                    var key = keys[i];
-                    if(obj[key]) {
-                        newAttrObj[key] = obj[key];
-                    }
-                }
-                return newAttrObj;
-            }
-        
-            if(method && !scale) { // only show specific attributes
-                var methodAttrs = ['Name of method','Describe how measured (method)','Growth stages','Bibliographic Reference Comments'];
-                attrObj = newAttrs(methodAttrs, attrObj);
-            } else if(scale) {
-                var scaleAttrs = ["Type of Measure (Continuous, Discrete or Categorical)","For Continuous: units of measurement","For Continuous: reporting units (if different from measurement)","For Continuous: minimum","For Continuous: maximum","For Discrete: Name of scale or units of measurement","For Categorical: Name of rating scale","For Categorical: Class 1 - value = meaning","For Categorical: Class 2 - value = meaning ","For Categorical: Class 3 - value = meaning","For Categorical: Class 4 - value = meaning","For Categorical: Class 5 - value = meaning","For Categorical: Class 6 - value = meaning","For Categorical: Class 7 - value = meaning","For Categorical: Class 8 - value = meaning","For Categorical: Class 9 - value = meaning","For Categorical: Class 10 - value = meaning","For Categorical: Class 11 - value = meaning","For Categorical: Class 12 - value = meaning","For Categorical: Class 13 - value = meaning","For Categorical: Class 14 - value = meaning","For Categorical: Class 15 - value = meaning","For Categorical: Class 16 - value = meaning","For Categorical: Class 17 - value = meaning","For Categorical: Class 18 - value = meaning","For Categorical: Class 19 - value = meaning","For Categorical: Class 20 - value = meaning","For Categorical: Class 21- value = meaning"];
-                attrObj = newAttrs(scaleAttrs, attrObj);
-            }
-            var order = {
-                "creation_date":true,
-                "created_at": true,
-                "ontology_id":true,
-                "ontology_name":true,
-                "name":true,
-                "synonym":true,
-                "def":true,
-                "Description of Trait":true,
-                "comment":true,
-                "is_a":true
-            };
-
-            // do the first ones in order
-            for(var i in order) {
-                if(attrObj[i]) {
-                    attributes.push({
-                        "key": i,
-                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
-                    });
-                }
-            }
-
-            // then do the rest
-            for(var i in attrObj) {
-                if(order[i]) continue; // skip the ones we already did above
-                attributes.push({
-                    "key": i,
-                    "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
-                });
-            }
-
-            print(response).json(attributes, request.getParameter("callback"));
-        }
-    },
-    "/get-attributes/([^/]*)/rdf": {
-        get: function(request, response, matches) {
-            request.setCharacterEncoding("utf-8");
-            response.setContentType("application/rdf+xml; charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-
-            var term_id = matches[1];
-            if(!term_id) return response.getWriter().println("No term_id");
-
-            var termKey = googlestore.createKey("term", term_id),
-                termEntity = googlestore.get(termKey);
-
-            var attributes = [];
-
-            var attrObj = googlestore.toJS(termEntity);
-
-            var string = '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
-                'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
-                'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
-                'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
-                '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
-                '<owl:Class rdf:about="http://www.cropontology.org/terms/' + attrObj["ontology_name"] + ":" + attrObj["ontology_id"] + '"> \n';
-
-            if (attrObj["name"]) {
-                string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
-            }
-
-            if (attrObj["def"]) {
-                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
-            }
-
-            if (attrObj["synonym"]) {
-                string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Synonym></oboInOwl:hasExactSynonym>';
-            }
-
-            if (attrObj["xref"]) {
-                string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
-                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n<oboInOwl:hasDbXref>';
-            }
-
-            if (attrObj["comment"]) {
-                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>';
-            }
-
-            if (attrObj["parent"]) {
-                string = string + '<rdfs:subClassOf rdf:resource=http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>';
-            }
-
-            if (attrObj["is_a"]) {
-                string = string + '<rdfs:subClassOf rdf:resource=http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>';
-            }
-
-            string = string + "</owl:Class>\n";
-
-            response.getWriter().println(string);
-        }
-    },
     "/get-attributes/([^/]*)/jsonrdf": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
@@ -780,6 +635,88 @@ apejs.urls = {
             var object = { uri : attributes };
 
             print(response).json(object, request.getParameter("callback"));
+        }
+    },
+    "/get-attributes/(.*)": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+            var segments = matches[1].split('/');
+            var term_id = segments[0];
+            if(!term_id) return response.getWriter().println("No term_id");
+
+            var method = segments[1],
+                scale = segments[2];
+
+
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            var attributes = [];
+
+            var attrObj = googlestore.toJS(termEntity);
+
+            // let's skip certain keys
+            delete attrObj.id;
+            delete attrObj.normalized;
+            delete attrObj.parent;
+            delete attrObj.relationship;
+            delete attrObj.obo_blob_key;
+            delete attrObj.excel_blob_key;
+
+            function newAttrs(keys, obj) {
+                var newAttrObj = {};
+                for(var i=0; i<keys.length; i++) {
+                    var key = keys[i];
+                    if(obj[key]) {
+                        newAttrObj[key] = obj[key];
+                    }
+                }
+                return newAttrObj;
+            }
+        
+            if(method && !scale) { // only show specific attributes
+                var methodAttrs = ['Name of method','Describe how measured (method)','Growth stages','Bibliographic Reference Comments'];
+                attrObj = newAttrs(methodAttrs, attrObj);
+            } else if(scale) {
+                var scaleAttrs = ["Type of Measure (Continuous, Discrete or Categorical)","For Continuous: units of measurement","For Continuous: reporting units (if different from measurement)","For Continuous: minimum","For Continuous: maximum","For Discrete: Name of scale or units of measurement","For Categorical: Name of rating scale","For Categorical: Class 1 - value = meaning","For Categorical: Class 2 - value = meaning ","For Categorical: Class 3 - value = meaning","For Categorical: Class 4 - value = meaning","For Categorical: Class 5 - value = meaning","For Categorical: Class 6 - value = meaning","For Categorical: Class 7 - value = meaning","For Categorical: Class 8 - value = meaning","For Categorical: Class 9 - value = meaning","For Categorical: Class 10 - value = meaning","For Categorical: Class 11 - value = meaning","For Categorical: Class 12 - value = meaning","For Categorical: Class 13 - value = meaning","For Categorical: Class 14 - value = meaning","For Categorical: Class 15 - value = meaning","For Categorical: Class 16 - value = meaning","For Categorical: Class 17 - value = meaning","For Categorical: Class 18 - value = meaning","For Categorical: Class 19 - value = meaning","For Categorical: Class 20 - value = meaning","For Categorical: Class 21- value = meaning"];
+                attrObj = newAttrs(scaleAttrs, attrObj);
+            }
+            var order = {
+                "creation_date":true,
+                "created_at": true,
+                "ontology_id":true,
+                "ontology_name":true,
+                "name":true,
+                "synonym":true,
+                "def":true,
+                "Description of Trait":true,
+                "comment":true,
+                "is_a":true
+            };
+
+            // do the first ones in order
+            for(var i in order) {
+                if(attrObj[i]) {
+                    attributes.push({
+                        "key": i,
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
+                    });
+                }
+            }
+
+            // then do the rest
+            for(var i in attrObj) {
+                if(order[i]) continue; // skip the ones we already did above
+                attributes.push({
+                    "key": i,
+                    "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
+                });
+            }
+
+            print(response).json(attributes, request.getParameter("callback"));
         }
     },
     "/add-attribute": {
