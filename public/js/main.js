@@ -346,7 +346,15 @@ function show_attributes(id, name, attributes) {
     // identifier is first
     str += '<div class="attribute"><label for="">Identifier</label><span class="value">'+id+'</span></div>';
 
+    // let's not show these attributes - even though they're returned from the API
+    var hide = {
+        ontology_id: true,
+        ontology_name: true,
+        is_a: true
+    };
+
     $.each(attributes, function(i){
+        if(hide[i] === true) return;
         count++;
         var t = translate(currUser, attributes[i]);
         str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';

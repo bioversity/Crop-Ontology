@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.10";
+var VERSION = "0.8.11";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
