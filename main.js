@@ -479,7 +479,7 @@ apejs.urls = {
             var attrObj = googlestore.toJS(termEntity);
 
 
-            var string = '<?xml version='1.0' encoding='UTF-8'?>\n' +
+            var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
                 '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
                 'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
                 'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
@@ -568,60 +568,61 @@ apejs.urls = {
             // do the first ones in order
             for(var i in order) {
                 if(attrObj[i]) {
-                    attributes.push({
-                        order[i]: [
-                            "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
-                            "type" : "Literal"
-                    });
+                    var obj = {};
+                    obj[order[i]] = {
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
+                        "type" : "Literal"
+                    };
+                    attributes.push(obj);
                 }
             }
 
             // Then do specific ones which have a specific type
             var i = "created_at";
-            order.push({ i: ""});
+            order[i] = "";
             if(attrObj[i]) {
                 attributes.push({
-                    "http://purl.org/dc/terms/created": [
+                    "http://purl.org/dc/terms/created": {
                         "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
                         "type": "http://purl.org/dc/terms/date"
-                        ]
+                        }
                 });
             }
 
             // I think this won't quite give us the expected output but
             // we can tune that later
             var i = "parent";
-            order.push({ i: ""});
+            order[i] = "";
             if(attrObj[i]) {
                 attributes.push({
-                    "http://www.w3.org/2000/01/rdf-schemaSubclassOf": [
+                    "http://www.w3.org/2000/01/rdf-schemaSubclassOf": {
                         "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
                         "type": "http://www.w3.org/2002/07/owl#class"
-                        ]
+                        }
                 });
             }
 
             // I think this won't quite give us the expected output but
             // we can tune that later
             var i = "is_a";
-            order.push({ i: ""});
+            order[i] = "";
             if(attrObj[i]) {
                 attributes.push({
-                    "http://www.w3.org/2000/01/rdf-schemaSubclassOf": [
+                    "http://www.w3.org/2000/01/rdf-schemaSubclassOf": {
                         "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
                         "type": "http://www.w3.org/2002/07/owl#class"
-                        ]
+                        }
                 });
             }
 
             var i = "creation_date";
-            order.push({ i: ""});
+            order[i] = "";
             if(attrObj[i]) {
                 attributes.push({
-                    "http://purl.org/dc/terms/created": [
+                    "http://purl.org/dc/terms/created": {
                         "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
                         "type": "http://www.w3.org/2001/XMLSchema#date"
-                        ]
+                        }
                 });
             }
 
