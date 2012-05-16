@@ -1237,14 +1237,6 @@ var events = function(){
 
     $(".reg_lang").html(langs.html(languages));
 
-    var $languages_refresh = $(".languages_refresh");
-    $languages_refresh.html(langs.html(languages));
-    $languages_refresh.find("select").change(function(i) {
-        if(!currUser) currUser = {};
-        currUser.language = $(this).val();
-        $("#root").html("");
-        LoadOntology(ontologyid);
-    });
 
     $("#edit_profile").click(function(e) {
 
@@ -1422,6 +1414,25 @@ function LoadOntology(ontoId) {
 
             var li = make_li(roots[i], last);
             $root.append(li);
+        }
+
+        // try to parse the name property to see if it's a JSON
+        try {
+            var j = JSON.parse(roots[0].name);
+
+            var ls = [];
+            for(var i in j) ls.push(i);
+
+            // make the language dropdown
+            var $languages_refresh = $(".languages_refresh");
+            $languages_refresh.html(langs.html(ls));
+            $languages_refresh.find("select").change(function(i) {
+                if(!currUser) currUser = {};
+                currUser.language = $(this).val();
+                $("#root").html("");
+                LoadOntology(ontologyid);
+            });
+        } catch(e) {
         }
 
     });

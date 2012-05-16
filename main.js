@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.9";
+var VERSION = "0.8.10";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -2032,12 +2032,6 @@ apejs.urls = {
             var html = renderIndex("skins/reset-password.html", data);
             print(res).text(html);
 
-        }
-    },
-    "/get-languages": {
-        get: function(req, res) {
-            var ontoId = req.getParameter('ontoId');
-            if(isblank(ontoId)) return error(res, 'Need ontoId');
         }
     }
 };
