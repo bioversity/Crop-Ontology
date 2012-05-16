@@ -526,6 +526,117 @@ apejs.urls = {
             response.getWriter().println(string);
         }
     },
+    "/get-attributes/([^/]*)/jsonrdf": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("application/rdf+json; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+            var term_id = matches[1];
+            if(!term_id) return response.getWriter().println("No term_id");
+
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            var attributes = [];
+
+            var attrObj = googlestore.toJS(termEntity);
+
+            // let's skip certain keys
+            delete attrObj.id;
+            delete attrObj.normalized;
+            delete attrObj.relationship;
+            delete attrObj.obo_blob_key;
+            delete attrObj.excel_blob_key;
+
+            var uri = "http://www.cropontology.org/terms/" + attrObj["ontology_name"] + ":" + attrObj["ontology_id"];
+
+            var order = {
+                //"created_date": true, // Skipped for the moment
+                "name":"http://www.w3.org/2000/01/rdf-schema#label",
+                "synonym":"http://www.w3.org/2000/01/rdf-schema#seeAlso",
+                "def":"http://www.w3.org/2000/01/rdf-schema#isDefinedBy",
+                //"Description of Trait":true, // I think this should go into comment
+                "comment":"http://www.w3.org/2000/01/rdf-schema#comment"
+            };
+
+            // need the current user info to figure out what
+            // language they set by default
+            var currUser = auth.getUser(request);
+
+            // do the first ones in order
+            for(var i in order) {
+                if(attrObj[i]) {
+                    attributes.push({
+                        order[i]: [
+                            "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
+                            "type" : "Literal"
+                    });
+                }
+            }
+
+            // Then do specific ones which have a specific type
+            var i = "created_at";
+            order.push({ i: ""});
+            if(attrObj[i]) {
+                attributes.push({
+                    "http://purl.org/dc/terms/created": [
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
+                        "type": "http://purl.org/dc/terms/date"
+                        ]
+                });
+            }
+
+            // I think this won't quite give us the expected output but
+            // we can tune that later
+            var i = "parent";
+            order.push({ i: ""});
+            if(attrObj[i]) {
+                attributes.push({
+                    "http://www.w3.org/2000/01/rdf-schemaSubclassOf": [
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
+                        "type": "http://www.w3.org/2002/07/owl#class"
+                        ]
+                });
+            }
+
+            // I think this won't quite give us the expected output but
+            // we can tune that later
+            var i = "is_a";
+            order.push({ i: ""});
+            if(attrObj[i]) {
+                attributes.push({
+                    "http://www.w3.org/2000/01/rdf-schemaSubclassOf": [
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
+                        "type": "http://www.w3.org/2002/07/owl#class"
+                        ]
+                });
+            }
+
+            var i = "creation_date";
+            order.push({ i: ""});
+            if(attrObj[i]) {
+                attributes.push({
+                    "http://purl.org/dc/terms/created": [
+                        "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i]),
+                        "type": "http://www.w3.org/2001/XMLSchema#date"
+                        ]
+                });
+            }
+
+            // then do the rest
+            for(var i in attrObj) {
+                if(order[i]) continue; // skip the ones we already did above
+                attributes.push({
+                    "key": i,
+                    "value": ((attrObj[i] instanceof Object) ? JSON.stringify(attrObj[i]) : attrObj[i])
+                });
+            }
+            var object = { uri : attributes };
+
+            print(response).json(object, request.getParameter("callback"));
+        }
+    },
     "/get-attributes/(.*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
