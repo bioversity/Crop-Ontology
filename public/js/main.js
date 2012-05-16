@@ -1426,8 +1426,7 @@ function LoadOntology(ontoId) {
 
         // try to parse the name property to see if it's a JSON
         try {
-            var j = JSON.parse(roots[0].name);
-
+            var j = $.parseJSON(roots[0].name);
             var ls = [];
             for(var i in j) ls.push(i);
 
