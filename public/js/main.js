@@ -1405,6 +1405,7 @@ function MakeTree(jel, arr) {
     }
 }
 
+var firstLoaded = false;
 function LoadOntology(ontoId) {
     var $root = $("#root");
     loader($root, true);
@@ -1425,21 +1426,24 @@ function LoadOntology(ontoId) {
         }
 
         // try to parse the name property to see if it's a JSON
-        try {
-            var j = $.parseJSON(roots[0].name);
-            var ls = [];
-            for(var i in j) ls.push(i);
+        if(!firstLoaded) {
+            try {
+                var j = $.parseJSON(roots[0].name);
+                var ls = [];
+                for(var i in j) ls.push(i);
 
-            // make the language dropdown
-            var $languages_refresh = $(".languages_refresh");
-            $languages_refresh.html(langs.html(ls));
-            $languages_refresh.find("select").change(function(i) {
-                if(!currUser) currUser = {};
-                currUser.language = $(this).val();
-                $("#root").html("");
-                LoadOntology(ontologyid);
-            });
-        } catch(e) {
+                // make the language dropdown
+                var $languages_refresh = $(".languages_refresh");
+                $languages_refresh.html(langs.html(ls));
+                $languages_refresh.find("select").change(function(i) {
+                    if(!currUser) currUser = {};
+                    currUser.language = $(this).val();
+                    $("#root").html("");
+                    firstLoaded = true;
+                    LoadOntology(ontologyid);
+                });
+            } catch(e) {
+            }
         }
 
     });
