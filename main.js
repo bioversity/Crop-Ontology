@@ -481,6 +481,7 @@ apejs.urls = {
 
             var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
                 '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
+                'xmlns:owl="http://www.w3.org/2002/07/owl#" \n' +
                 'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
                 'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
                 'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
@@ -492,7 +493,7 @@ apejs.urls = {
             }
 
             if (attrObj["def"]) {
-                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n<oboInOwl:Definition>\n' +
+                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
                     '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
                     '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
             }
@@ -500,12 +501,12 @@ apejs.urls = {
             if (attrObj["synonym"]) {
                 string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
                     '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Synonym></oboInOwl:hasExactSynonym>';
+                    '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';
             }
 
             if (attrObj["xref"]) {
                 string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
-                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n<oboInOwl:hasDbXref>\n';
+                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n</oboInOwl:hasDbXref>\n';
             }
 
             if (attrObj["comment"]) {
@@ -522,7 +523,7 @@ apejs.urls = {
                 + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>\n';
             }
 
-            string = string + "</owl:Class>\n";
+            string = string + "</owl:Class>\n</rdf:RDF>";
 
             response.getWriter().println(string);
         }
