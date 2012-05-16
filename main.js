@@ -479,7 +479,8 @@ apejs.urls = {
             var attrObj = googlestore.toJS(termEntity);
 
 
-            var string = '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
+            var string = '<?xml version='1.0' encoding='UTF-8'?>\n' +
+                '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
                 'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
                 'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
                 'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
@@ -504,21 +505,21 @@ apejs.urls = {
 
             if (attrObj["xref"]) {
                 string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
-                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n<oboInOwl:hasDbXref>';
+                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n<oboInOwl:hasDbXref>\n';
             }
 
             if (attrObj["comment"]) {
-                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>';
+                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>\n';
             }
 
             if (attrObj["parent"]) {
-                string = string + '<rdfs:subClassOf rdf:resource=http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>';
+                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
+                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>\n';
             }
 
             if (attrObj["is_a"]) {
-                string = string + '<rdfs:subClassOf rdf:resource=http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>';
+                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
+                + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>\n';
             }
 
             string = string + "</owl:Class>\n";
