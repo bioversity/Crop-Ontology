@@ -339,6 +339,39 @@ term_loader = function(show) {
     }
  
 }
+
+function firstWord(word) {
+    return word.split(" ")[0].toLowerCase();
+}
+
+function findWord(key, obj) {
+    for(var i in obj) {
+        var first = firstWord(i);
+        if(first === key) {
+            return i; 
+        }
+    }
+}
+
+function runInOrder(order, obj, cb, hideObj) {
+    var keys = {};
+    // first run the ones in order and call the callback if found
+    for(var i in order) {
+        var first = firstWord(i);
+        var key = findWord(first, obj);
+        if(key) {
+            keys[key] = true;
+            cb(key);
+        }
+    }
+
+    // now do the rest, omitting the keys we already did
+    for(var i in obj) {
+        if(hideObj[i]) continue;
+        if(keys[i]) continue; // already did this key
+        cb(i);
+    }
+}
  
 // attributes is an object of key:value pairs
 function show_attributes(id, name, attributes) {
@@ -353,12 +386,26 @@ function show_attributes(id, name, attributes) {
         is_a: true
     };
 
-    $.each(attributes, function(i){
-        if(hide[i] === true) return;
+    var order = {
+        'Abbreviated name': true,
+        'Synonyms': true,
+        'Trait class': true,
+        'Description': true,
+        'Attributes': true,
+        'Bibliographic': true,
+        'Updated': true,
+    };
+
+    runInOrder(order, attributes, function(i) {
         count++;
         var t = translate(currUser, attributes[i]);
         str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
+    }, hide);
+
+    /*
+    $.each(attributes, function(i){
     });
+    */
     if(count == 0)
         str += "<div class='error'>No additional information available.</div>";
     str += '<span class="add_attribute">Add a new attribute</span>';
@@ -368,34 +415,6 @@ function show_attributes(id, name, attributes) {
     $("#term_id").text(id);
     $(".term_id").attr("href", "/terms/"+id+"/"+name);
     $("#pages .general").html(str);
-    /*
-    var str = '<table cellspacing="0" cellpadding="0" class="attributes">';
-
-    $.each(attributes, function(i) {
-        var attr = this,
-            class_name = "";
-        if(i == attributes.length-1) // last
-            class_name = "last";
-
-        var storedLocallyClass = "";
-        if(attr.local)
-            storedLocallyClass = "storedLocally";
-
-        var iseven = false;
-        if(i%2 === 0) // is even
-            iseven = true;
-            
-        str += "<tr class='"+class_name+ " " +(iseven ? "even" : "")+" "+storedLocallyClass+"'><td class='key'>"+attr.key + "</td><td class='value'>"+ attr.value+"</td></tr>";
- 
-    });
-    if(!attributes.length)
-        str += "<tr class='last'><td class='error' colspan=2>No additional information available.</td><td></td></tr>";
-
-    str += "</table>";
-
-
- 
-    */
 }
 
 function highlight(li) {
