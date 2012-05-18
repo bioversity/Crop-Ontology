@@ -55,7 +55,7 @@ var termmodel = (function(){
 
         // XXX a bit hacky - make it faster
         for(var i in term) {
-            if(term[i] != null && (typeof term[i] === "string") && term[i].length > 490)
+            if(term[i] != null && term[i].length && term[i].length > 490)
                 term[i] = new Text(term[i]);
         }
 
@@ -75,15 +75,19 @@ var termmodel = (function(){
             var lang = languages.iso[term.language];
             for(var i in t) {
                 if(t[i] !== term[i]) { 
-                    var temp = term[i];
-                    // they're different, translate by 
-                    // making this property a JSON!
-                    term[i] = {};
-                    term[i]['english'] = t[i];
-                    term[i][lang] = temp;
+                    if(t[i] instanceof Object) {
+                        term[i][lang] = term[i];
+                    } else {
+                        var temp = term[i];
+                        // they're different, translate by 
+                        // making this property a JSON!
+                        term[i] = {};
+                        term[i]['english'] = t[i];
+                        term[i][lang] = temp;
 
-                    // ok no stringify it :)
-                    term[i] = JSON.stringify(term[i]);
+                        // ok no stringify it :)
+                        term[i] = JSON.stringify(term[i]);
+                    }
                 }
             }
 

@@ -1368,18 +1368,8 @@ apejs.urls = {
             // it's not ENglish, find the entity, and tranform its properties
             // into JSON - to represent both languages
             if(term.language && term.language !== 'EN') {
-                if(term.is_class) { 
-                    // we're dealing with a trait class
-                    // find it's EN counterpart
-                    var key = googlestore.createKey("term", term.is_class);
-                    var traitClass = googlestore.get(key).getProperty('Trait Class');
-
-                    term.id = term.ontology_id + ':' + traitClass;
-                }
-
                 var term = termmodel.translate(term, languages);
             }
-
             
             // add it to datastore
             termmodel.createTerm(term);
@@ -1865,15 +1855,23 @@ apejs.urls = {
 
                     // create the "trait class" term which is the parent
                     if(term["Trait Class"]) {
-                        // set the parent to be this trait
-                        parent = ontologyId + ":" + term["Trait Class"];
+                        if(term[langKey] != 'EN') {
+                            // we're dealing with a trait class
+                            // find its EN counterpart
+                            var key = googlestore.createKey("term", term[mod]);
+                            var traitClass = googlestore.get(key).getProperty('Trait Class');
+
+                            parent = ontologyId + ':' + traitClass;
+                        } else {
+                            // set the parent to be this trait
+                            parent = ontologyId + ":" + term["Trait Class"];
+                        }
                         taskqueue.createTask("/create-term", JSON.stringify({
                             id: parent,
                             ontology_name: ""+ontologyName,
                             ontology_id: ""+ontologyId,
                             name: term["Trait Class"],
                             language: term[langKey],
-                            is_class: term.id,
                             parent: rootId
                         }));
                     }
