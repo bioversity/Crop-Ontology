@@ -85,7 +85,7 @@ var termmodel = (function(){
                         term[i]['english'] = t[i];
                         term[i][lang] = temp;
 
-                        // ok no stringify it :)
+                        // ok now stringify it :)
                         term[i] = JSON.stringify(term[i]);
                     }
                 }
