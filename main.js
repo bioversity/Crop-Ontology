@@ -90,6 +90,13 @@ function renderIndex(htmlFile, data) {
   var html = Mustache.to_html(render("skins/index.html"), data, partials);
   return html;
 }
+function pad(number, length) {
+    var str = '' + number;
+    while (str.length < length) {
+        str = '0' + str;
+    }
+    return str;
+}
 
 apejs.urls = {
     "/": {
@@ -1356,6 +1363,23 @@ apejs.urls = {
             // parse the JSON
             var jsonTerm = request.getParameter("jsonTerm");
             var term = JSON.parse(jsonTerm);
+
+            // if there's a language passed and
+            // it's not ENglish, find the entity, and tranform its properties
+            // into JSON - to represent both languages
+            if(term.language && term.language !== 'EN') {
+                if(term.is_class) { 
+                    // we're dealing with a trait class
+                    // find it's EN counterpart
+                    var key = googlestore.createKey("term", term.is_class);
+                    var traitClass = googlestore.get(key).getProperty('Trait Class');
+
+                    term.id = term.ontology_id + ':' + traitClass;
+                }
+
+                var term = termmodel.translate(term, languages);
+            }
+
             
             // add it to datastore
             termmodel.createTerm(term);
@@ -1389,7 +1413,7 @@ apejs.urls = {
                     biggestInt = idInt;
 
             });
-            print(response).json({"id": biggestInt+1});
+            print(response).json({"id": pad(biggestInt+1, 7)});
         }
     },
 
@@ -1786,13 +1810,6 @@ apejs.urls = {
         },
         post: function(request, response) {
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
-            function pad(number, length) {
-                var str = '' + number;
-                while (str.length < length) {
-                    str = '0' + str;
-                }
-                return str;
-            }
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1813,8 +1830,12 @@ apejs.urls = {
 
             try {
                 // check wheter ontologyId already exists
-                if(ontologymodel.exists(ontologyId)) {
-                    return err("Ontology with this ID already exists");
+                var ontoEntity = ontologymodel.getById(ontologyId);
+                if(ontoEntity) {
+                    // check that we own this ontology
+                    if(!ontologymodel.owns(currUser, ontoEntity)) {
+                        return err("Ontology with this ID already exists");
+                    }
                 }
 
                 var id = 0; // start id at 0
@@ -1831,7 +1852,8 @@ apejs.urls = {
                 }));
 
                 var mod = "Trait ID for modification, Blank for New",
-                    ib = "ib primary traits";
+                    ib = "ib primary traits",
+                    langKey = "Language of submission (only in ISO 2 letter codes)";
 
                 // add the terms
                 excel.parseTemplate(6, blobKey, function(term) {
@@ -1850,10 +1872,11 @@ apejs.urls = {
                             ontology_name: ""+ontologyName,
                             ontology_id: ""+ontologyId,
                             name: term["Trait Class"],
+                            language: term[langKey],
+                            is_class: term.id,
                             parent: rootId
                         }));
                     }
-
 
                     term.name = term["Name of Trait"];
 
@@ -1869,17 +1892,20 @@ apejs.urls = {
                     term.ontology_id = ""+ontologyId;
                     term.parent = parent;
 
+                    term.language = term[langKey];
+
                     delete term[""]; // WTF DUDE OMG
 
                     // remove null
                     for(var x in term) if(term[x] == "") delete term[x];
 
-
                     taskqueue.createTask("/create-term", JSON.stringify(term));
                 });
 
                 // create the ontology
-                ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
+                if(!ontoEntity) {
+                    ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
+                }
                 return err("");
             } catch(e) {
                 return err(e);

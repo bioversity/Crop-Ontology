@@ -34,24 +34,31 @@ var ontologymodel = (function() {
         googlestore.put(ontoEntity);
         memcache.clearAll();
     }
-    function exists(ontologyId) {
+    function getById(ontologyId) {
         // check if this ontoId already exists
-        var doesExist = false;
         try {
             var ontoKey = googlestore.createKey("ontology", ontologyId);
             var ontoEntity = googlestore.get(ontoKey);
-            doesExist = true;
+            return ontoEntity;
         } catch (e) {
             // if we get here, ontology doesn't exist
-            doesExist = false;
+            return false;
         }
-        return doesExist;
+    }
+
+    function owns(currUser, ontoEntity) {
+        if(ontoEntity.getProperty("user_key").equals(currUser.getKey())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     return {
         catsSelectHtml: catsSelectHtml,
         create: create,
-        exists: exists
+        getById: getById,
+        owns: owns
     };
 })();
 exports = ontologymodel;

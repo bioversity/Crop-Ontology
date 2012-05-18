@@ -64,9 +64,40 @@ var termmodel = (function(){
         googlestore.put(termEntity);
     }
 
+    function translate(term, languages) {
+        // find the entity
+        try {
+            var termKey = googlestore.createKey("term", term.id),
+                termEntity = googlestore.get(termKey);
+
+            var t = googlestore.toJS(termEntity);
+
+            var lang = languages.iso[term.language];
+            for(var i in t) {
+                if(t[i] !== term[i]) { 
+                    var temp = term[i];
+                    // they're different, translate by 
+                    // making this property a JSON!
+                    term[i] = {};
+                    term[i]['english'] = t[i];
+                    term[i][lang] = temp;
+
+                    // ok no stringify it :)
+                    term[i] = JSON.stringify(term[i]);
+                }
+            }
+
+        } catch(e) { 
+            // getting here because entity is not found
+            // therefore can't translate it
+        }
+        return term;
+    }
+
     return {
         createTerm: createTerm,
-        normalize: normalize
+        normalize: normalize,
+        translate: translate
     };
 
 })();

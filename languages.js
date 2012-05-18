@@ -5,7 +5,12 @@ var languages = {
     "french",
     "spanish",
     "chinese"
-  ]
+  ],
+  iso: {
+    'EN': 'english',
+    'FR': 'french',
+    'ES': 'spanish'
+  }
 };
 
 exports = languages;
