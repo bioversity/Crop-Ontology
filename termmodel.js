@@ -55,7 +55,7 @@ var termmodel = (function(){
 
         // XXX a bit hacky - make it faster
         for(var i in term) {
-            if(term[i] != null && term[i].length && term[i].length > 490)
+            if(term[i] != null && term[i].length && term[i].length > 400)
                 term[i] = new Text(term[i]);
         }
 
@@ -73,11 +73,14 @@ var termmodel = (function(){
             var t = googlestore.toJS(termEntity);
 
             var lang = languages.iso[term.language];
-            for(var i in t) {
-                if(t[i] !== term[i]) { 
+            for(var i in term) {
+                if(t[i] && (t[i] !== term[i])) { 
+                    // check if t[i] is a JSON
                     if(t[i] instanceof Object) {
-                        term[i][lang] = term[i];
-                    } else {
+                        t[i][lang] = term[i];
+
+                        term[i] = JSON.stringify(t[i]);
+                    } else { // not json
                         var temp = term[i];
                         // they're different, translate by 
                         // making this property a JSON!
