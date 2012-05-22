@@ -504,72 +504,6 @@ apejs.urls = {
             }
         }
     },
-    "/get-attributes/([^/]*)/rdf": {
-        get: function(request, response, matches) {
-            request.setCharacterEncoding("utf-8");
-            response.setContentType("application/rdf+xml; charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-
-            var term_id = matches[1];
-            if(!term_id) return response.getWriter().println("No term_id");
-
-            var termKey = googlestore.createKey("term", term_id),
-                termEntity = googlestore.get(termKey);
-
-            var attributes = [];
-
-            var attrObj = googlestore.toJS(termEntity);
-
-
-            var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-                '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
-                'xmlns:owl="http://www.w3.org/2002/07/owl#" \n' +
-                'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
-                'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
-                'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
-                '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
-                '<owl:Class rdf:about="http://www.cropontology.org/terms/' + attrObj["ontology_name"] + ":" + attrObj["ontology_id"] + '"> \n';
-
-            if (attrObj["name"]) {
-                string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
-            }
-
-            if (attrObj["def"]) {
-                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
-            }
-
-            if (attrObj["synonym"]) {
-                string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';
-            }
-
-            if (attrObj["xref"]) {
-                string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
-                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n</oboInOwl:hasDbXref>\n';
-            }
-
-            if (attrObj["comment"]) {
-                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>\n';
-            }
-
-            if (attrObj["parent"]) {
-                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>\n';
-            }
-
-            if (attrObj["is_a"]) {
-                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>\n';
-            }
-
-            string = string + "</owl:Class>\n</rdf:RDF>";
-
-            response.getWriter().println(string);
-        }
-    },
     "/get-attributes/([^/]*)/jsonrdf": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
@@ -844,6 +778,72 @@ apejs.urls = {
             termEntity.removeProperty(key);
             googlestore.put(termEntity);
 
+        }
+    },
+    "/rdf/([^/]*)": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/rdf+xml; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+            var term_id = matches[1];
+            if(!term_id) return response.getWriter().println("No term_id");
+
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            var attributes = [];
+
+            var attrObj = googlestore.toJS(termEntity);
+
+
+            var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
+                'xmlns:owl="http://www.w3.org/2002/07/owl#" \n' +
+                'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
+                'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
+                'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
+                '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
+                '<owl:Class rdf:about="http://www.cropontology.org/terms/' + attrObj["ontology_name"] + ":" + attrObj["ontology_id"] + '"> \n';
+
+            if (attrObj["name"]) {
+                string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
+            }
+
+            if (attrObj["def"]) {
+                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
+                    '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
+                    '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
+            }
+
+            if (attrObj["synonym"]) {
+                string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
+                    '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
+                    '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';
+            }
+
+            if (attrObj["xref"]) {
+                string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
+                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n</oboInOwl:hasDbXref>\n';
+            }
+
+            if (attrObj["comment"]) {
+                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>\n';
+            }
+
+            if (attrObj["parent"]) {
+                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
+                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>\n';
+            }
+
+            if (attrObj["is_a"]) {
+                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
+                + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>\n';
+            }
+
+            string = string + "</owl:Class>\n</rdf:RDF>";
+
+            response.getWriter().println(string);
         }
     },
     "/httpget": {
