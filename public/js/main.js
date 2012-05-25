@@ -353,23 +353,35 @@ function findWord(key, obj) {
     }
 }
 
-function runInOrder(order, obj, cb, hideObj) {
+function runInOrder(first, last, obj, cb, hideObj) {
     var keys = {};
     // first run the ones in order and call the callback if found
-    for(var i in order) {
-        var first = firstWord(i);
-        var key = findWord(first, obj);
+    for(var i in first) {
+        var firstW = firstWord(i);
+        var key = findWord(firstW, obj);
         if(key) {
             keys[key] = true;
             cb(key);
         }
     }
+    for(var i in last) {
+        var firstW = firstWord(i);
+        var key = findWord(firstW, obj);
+        if(key) keys[key] = true;
+    }
+
 
     // now do the rest, omitting the keys we already did
     for(var i in obj) {
         if(hideObj[i]) continue;
         if(keys[i]) continue; // already did this key
         cb(i);
+    }
+
+    for(var i in last) {
+        var firstW = firstWord(i);
+        var key = findWord(firstW, obj);
+        if(key) cb(key)
     }
 }
  
@@ -383,20 +395,26 @@ function show_attributes(id, name, attributes) {
     var hide = {
         ontology_id: true,
         ontology_name: true,
-        is_a: true
+        is_a: true,
+        'Name of Trait': true
     };
 
-    var order = {
+    var first = {
         'Abbreviated name': true,
         'Synonyms': true,
-        'Trait class': true,
         'Description': true,
-        'Attributes': true,
+        'Trait class': true,
+        'How is trait': true
+    }
+    var last = {
+        'Name of submitting scientist': true,
+        'Institution': true,
+        'Date of submission': true,
         'Bibliographic': true,
         'Updated': true,
     };
 
-    runInOrder(order, attributes, function(i) {
+    runInOrder(first, last, attributes, function(i) {
         count++;
         var t = translate(currUser, attributes[i]);
         str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
