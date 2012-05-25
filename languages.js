@@ -4,12 +4,15 @@ var languages = {
     "english",
     "french",
     "spanish",
-    "chinese"
+    "chinese",
+    "portugese"
   ],
   iso: {
     'EN': 'english',
     'FR': 'french',
-    'ES': 'spanish'
+    'ES': 'spanish',
+    'CN': 'chinese',
+    'PT': 'portugese'
   }
 };
 

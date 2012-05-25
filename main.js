@@ -2089,8 +2089,10 @@ apejs.urls = {
                 var name = term.getProperty("name");
                 if(name instanceof Text) name = name.getValue();
                 name = ""+name;
+                /*
                 if(name.charAt(0) == "{") // wow weird JSON checkup lol
                     name = JSON.parse(name)[languages.default] || "";
+                */
 
                 obj[ontoId].push({
                     id: ""+term.getProperty("id"),

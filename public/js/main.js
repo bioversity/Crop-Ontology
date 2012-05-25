@@ -110,12 +110,12 @@ jQuery.prototype.draggable = function(dropSelector, cb){
     // Start the dragging
     this.live("mousedown", startDragging);    
 };
+var currUser = false;
 (function(){
  
 var URL = "http://test.development.grinfo.net/Luca/datadict";
 var OLS_MAINURL = "http://cropontology.org";
 var roots_loaded = false;
-var currUser = false;
  
 function tooltip() {
     // tool tip
@@ -1460,6 +1460,8 @@ function LoadOntology(ontoId) {
                     $("#root").html("");
                     firstLoaded = true;
                     LoadOntology(ontologyid);
+
+                    reloadIbfieldbook($('ul#ibfieldbook'));
                 });
             } catch(e) {
             }

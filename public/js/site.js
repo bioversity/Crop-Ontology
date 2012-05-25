@@ -30,6 +30,10 @@ function ibfieldbook() {
 
     var $ul = $("<ul class='treeview' id='ibfieldbook'></ul>");
     $(".cont").append($ul);
+    reloadIbfieldbook($ul);
+}
+reloadIbfieldbook = function($ul) {
+    $ul.html('');
     load_branch($ul, "/get-ontology-roots/"+ontologyid, function(li) {
         var $rootLi = $ul.find('li:first');
         $rootLi.append("<span class='relationship' title='ibfieldbook'>ibfieldbook</span>");
@@ -37,7 +41,6 @@ function ibfieldbook() {
         li.append(parent);
         load_branch(parent, "/ibfieldbook?ontologyId="+ontologyid);
     });
-
 }
 
 $(function() {
