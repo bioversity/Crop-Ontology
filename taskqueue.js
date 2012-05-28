@@ -4,7 +4,7 @@ var taskqueue = (function() {
 
     function createTask(url, jsonTerm) {
         var queue = QueueFactory.getDefaultQueue();
-        queue.add(TaskOptions.Builder.withUrl("/create-term").param("jsonTerm", jsonTerm));
+        queue.add(TaskOptions.Builder.withUrl(url).param("jsonTerm", jsonTerm));
     }
 
     return {

@@ -27,7 +27,7 @@ var excel = {
 
             var arr = [],
                 empty = true;
-            for (var i = 0; i < cols; i++) { // for each cell
+            for (var i = 0; i < (cols+1); i++) { // for each cell
                 var cell = myRow.getCell(i);
                 if(cell) {
                     cellContent = ""+cell.toString().trim();

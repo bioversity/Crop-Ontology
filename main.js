@@ -1364,12 +1364,6 @@ apejs.urls = {
             var jsonTerm = request.getParameter("jsonTerm");
             var term = JSON.parse(jsonTerm);
 
-            if(!term.id) {
-                var freeId = termmodel.findFreeId(term.ontology_id);
-                log(freeId);
-                term.id = term.ontology_id + ":" + pad(freeId, 7);
-            }
-
             // if there's a language passed and
             // it's not ENglish, find the entity, and tranform its properties
             // into JSON - to represent both languages
@@ -1811,6 +1805,28 @@ apejs.urls = {
             if(!currUser)
                 return err("Not logged in");
 
+            function getTrait(row) {
+                var obj = {};
+                for(var i in row) {
+                    obj[i] = row[i]; 
+                    if(i == 'Trait Class') break;
+                }
+                return obj;
+            }
+
+            function getMethod(row) {
+                var obj = {};
+                var startCopy = false;
+                for(var i in row) {
+                    if(startCopy) {
+                        obj[i] = row[i]; 
+                    }
+                    if(i == 'Comments') break;
+                    if(i == 'Trait Class') startCopy = true;
+                }
+                return obj;
+            }
+
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("excelfile"),
                 ontologyName = request.getParameter("ontology_name"),
@@ -1849,11 +1865,17 @@ apejs.urls = {
 
                 var mod = "Trait ID for modification, Blank for New",
                     ib = "ib primary traits",
-                    langKey = "Language of submission (only in ISO 2 letter codes)";
+                    langKey = "Language of submission (only in ISO 2 letter codes)",
+                    methodMod = "Method ID for modification, Blank for New";
 
+                // list of ids that are in the Term ID column to modify
+                // we do these, and then we do the new ones so we know what ID to start using
+                var editedIds = []; 
+                var newTerms = [];
+
+                var terms = [];
                 // add the terms
                 excel.parseTemplate(6, blobKey, function(term) {
-
                     // need a reference to the blob of the excel
                     term.excel_blob_key = ""+blobKeyString;
 
@@ -1882,33 +1904,96 @@ apejs.urls = {
                         }));
                     }
 
-                    term.name = term["Name of Trait"];
-
-                    if(term[mod]) { // an ID was provided in the template, use it
-                        term.id = term[mod];
-                    } else {
-                        // set the actual id of this trait as the ontologyId:TERM-NAME
-                        // here i have to make a request for a free id :(
-                        //term.id = false;
-                        
-                        // we delete it so we know that the taskque has to find a new id
-                        delete term['id'];
-                    }
-
-                    // also need reference to the ontology
-                    term.ontology_name = ""+ontologyName;
-                    term.ontology_id = ""+ontologyId;
-                    term.parent = parent;
-
-                    term.language = term[langKey];
-
                     delete term[""]; // WTF DUDE OMG
 
                     // remove null
                     for(var x in term) if(term[x] == "") delete term[x];
 
-                    taskqueue.createTask("/create-term", JSON.stringify(term));
+                    var trait = getTrait(term);
+                    trait.name = trait["Name of Trait"];
+                    trait.ontology_name = ""+ontologyName;
+                    trait.ontology_id = ""+ontologyId;
+                    trait.parent = parent; // parent is Trait Class
+                    trait.language = term[langKey];
+
+                    var method = getMethod(term);
+                    method.name = method["Name of method"] || method["Describe how measured (method)"];
+                    method.ontology_name = ""+ontologyName;
+                    method.ontology_id = ""+ontologyId;
+                    method.relationship = "method_of";
+                    method.language = term[langKey];
+
+                    // make method children of this trait
+                    trait.method = method;
+                    /*
+                    var scale = getScale(term);
+                    */
+
+                    if(term[mod]) editedIds.push(term[mod]);
+                    if(term[methodMod]) editedIds.push(term[methodMod]);
+                    // if(term['Method ID') editedIds.push(..
+
+                    terms.push(trait);
+
+                    /*
+                    if(trait[mod]) { // an ID was provided in the template, use it
+                        trait.id = trait[mod];
+                        editedIds.push(trait.id);
+                    //} else if(method[mod]) {
+                    } else {
+                        // set the actual id of this trait as the ontologyId:TERM-NAME
+                        // here i have to make a request for a free id :(
+                        //term.id = false;
+                        // gotta put this in queue, do the ones with MOD first
+                        newTerms.push(trait);
+                        return;
+                    }
+
+                    // EDIT trait
+                    taskqueue.createTask("/create-term", JSON.stringify(trait));
+                    */
                 });
+
+                // figure out the id, as in the biggest of the editedIds
+                // THIS SHIT SUCKS
+                var freeEditedId = 0;
+                if(editedIds.length) {
+                    freeEditedId = parseInt((editedIds.sort().reverse()[0]).split(':')[1], 10) + 1;
+                }
+                var freeStoreId = termmodel.findFreeId(ontologyId);
+                var freeId = freeEditedId;
+                if(freeStoreId > freeEditedId) {
+                    freeId = freeStoreId;
+                }
+
+                // MAIN LOOP
+                for(var i in terms) {
+                    var trait = terms[i];
+                    if(trait[mod]) {
+                        trait.id = trait[mod];
+                    } else {
+                        trait.id = ontologyId + ':' + pad(freeId++, 7);
+                    }
+
+                    var method = trait.method;
+                    if(method[methodMod]) {
+                        method.id = method[methodMod];
+                    } else {
+                        method.id = ontologyId + ':' + pad(freeId++, 7);
+                    }
+                    method.parent = trait.id;
+
+                    // add method
+                    taskqueue.createTask("/create-term", JSON.stringify(method));
+
+                    // add trait
+                    delete trait['method'];
+                    taskqueue.createTask("/create-term", JSON.stringify(trait));
+
+                    //var sca
+                }
+
+                taskqueue.createTask("/memcache-clear", "");
 
                 // create the ontology
                 if(!ontoEntity) {
@@ -2205,8 +2290,6 @@ apejs.urls = {
                         })
                         .limit(1);
 
-                //.attr({ password: 
-
             user.values(function(values) {
                 if(!values.length)  {
                     data.error = 'Something went wrong. Try recovering your password again!';
@@ -2229,6 +2312,11 @@ apejs.urls = {
             var html = renderIndex("skins/reset-password.html", data);
             print(res).text(html);
 
+        }
+    },
+    "/memcache-clear": {
+        post: function(req, res) {
+            memcache.clearAll();
         }
     }
 };
