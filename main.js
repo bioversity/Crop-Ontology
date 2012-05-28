@@ -1364,6 +1364,12 @@ apejs.urls = {
             var jsonTerm = request.getParameter("jsonTerm");
             var term = JSON.parse(jsonTerm);
 
+            if(!term.id) {
+                var freeId = termmodel.findFreeId(term.ontology_id);
+                log(freeId);
+                term.id = term.ontology_id + ":" + pad(freeId, 7);
+            }
+
             // if there's a language passed and
             // it's not ENglish, find the entity, and tranform its properties
             // into JSON - to represent both languages
@@ -1882,7 +1888,11 @@ apejs.urls = {
                         term.id = term[mod];
                     } else {
                         // set the actual id of this trait as the ontologyId:TERM-NAME
-                        term.id = ontologyId + ":" + pad((++id), idlen);
+                        // here i have to make a request for a free id :(
+                        //term.id = false;
+                        
+                        // we delete it so we know that the taskque has to find a new id
+                        delete term['id'];
                     }
 
                     // also need reference to the ontology

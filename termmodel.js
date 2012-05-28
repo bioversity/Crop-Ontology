@@ -101,10 +101,37 @@ var termmodel = (function(){
         return term;
     }
 
+    function findFreeId(ontologyId) {
+        // find all terms with this ontology_id
+        var terms = googlestore.query("term")
+                    .filter("ontology_id", "=", ontologyId)
+                    .filter('id', '>=', ontologyId + ':0')
+                    .filter('id', '<', ontologyId + ':0\ufffd')
+                    .sort('id', 'DESC')
+                    .limit(1)
+                    .fetch();
+
+        var id = 0;
+        if(terms.length) {
+            id = terms[0].getProperty('id');
+            id = id.split(':');
+            if(id.length > 1)
+                id = id[1];
+            else
+                id = id[0];
+
+            id = parseInt(id, 10);
+            id++;
+        }
+
+        return id;  
+    }
+
     return {
         createTerm: createTerm,
         normalize: normalize,
-        translate: translate
+        translate: translate,
+        findFreeId: findFreeId
     };
 
 })();
