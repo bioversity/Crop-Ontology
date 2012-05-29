@@ -150,12 +150,15 @@ function findTranslation(lang, obj) {
 }
 function translate(currUser, value) {
   try {
-    value = $.parseJSON(value);
+    var newValue = $.parseJSON(value);
+    if(!newValue) {
+        throw 'value is null';
+    }
     var lang = currUser.language;
     if(!lang) { // show default language
       lang = DEFAULT_LANGUAGE;
     }
-    var t = findTranslation(lang, value);
+    var t = findTranslation(lang, newValue);
     return {lang: t.lang, translation: t.translation};
   } catch(e) {
     // value is a string with no translations.
@@ -420,10 +423,6 @@ function show_attributes(id, name, attributes) {
         str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
     }, hide);
 
-    /*
-    $.each(attributes, function(i){
-    });
-    */
     if(count == 0)
         str += "<div class='error'>No additional information available.</div>";
     str += '<span class="add_attribute">Add a new attribute</span>';

@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.18";
+var VERSION = "0.8.22";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -1809,8 +1809,10 @@ apejs.urls = {
                 var obj = {};
                 for(var i in row) {
                     obj[i] = row[i]; 
+                    if(obj[i] == "") delete obj[i];
                     if(i == 'Trait Class') break;
                 }
+                if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
                 return obj;
             }
 
@@ -1820,10 +1822,25 @@ apejs.urls = {
                 for(var i in row) {
                     if(startCopy) {
                         obj[i] = row[i]; 
+                        if(obj[i] == "") delete obj[i];
                     }
                     if(i == 'Comments') break;
                     if(i == 'Trait Class') startCopy = true;
                 }
+                delete obj['ibfieldbook'];
+                return obj;
+            }
+            function getScale(row) {
+                var obj = {};
+                var startCopy = false;
+                for(var i in row) {
+                    if(startCopy) {
+                        obj[i] = row[i]; 
+                        if(obj[i] == "") delete obj[i];
+                    }
+                    if(i == 'Comments') startCopy = true;
+                }
+                delete obj['ibfieldbook'];
                 return obj;
             }
 
@@ -1866,7 +1883,8 @@ apejs.urls = {
                 var mod = "Trait ID for modification, Blank for New",
                     ib = "ib primary traits",
                     langKey = "Language of submission (only in ISO 2 letter codes)",
-                    methodMod = "Method ID for modification, Blank for New";
+                    methodMod = "Method ID for modification, Blank for New",
+                    scaleMod = "Scale ID for modification, Blank for New";
 
                 // list of ids that are in the Term ID column to modify
                 // we do these, and then we do the new ones so we know what ID to start using
@@ -1906,9 +1924,6 @@ apejs.urls = {
 
                     delete term[""]; // WTF DUDE OMG
 
-                    // remove null
-                    for(var x in term) if(term[x] == "") delete term[x];
-
                     var trait = getTrait(term);
                     trait.name = trait["Name of Trait"];
                     trait.ontology_name = ""+ontologyName;
@@ -1925,40 +1940,38 @@ apejs.urls = {
 
                     // make method children of this trait
                     trait.method = method;
-                    /*
+
                     var scale = getScale(term);
-                    */
+                    scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
+                    scale.ontology_name = ""+ontologyName;
+                    scale.ontology_id = ""+ontologyId;
+                    scale.relationship = "scale_of";
+                    scale.language = term[langKey];
+
+                    // make scale children of this method
+                    method.scale = scale;
 
                     if(term[mod]) editedIds.push(term[mod]);
                     if(term[methodMod]) editedIds.push(term[methodMod]);
-                    // if(term['Method ID') editedIds.push(..
+                    if(term[scaleMod]) editedIds.push(term[methodMod]);
 
                     terms.push(trait);
-
-                    /*
-                    if(trait[mod]) { // an ID was provided in the template, use it
-                        trait.id = trait[mod];
-                        editedIds.push(trait.id);
-                    //} else if(method[mod]) {
-                    } else {
-                        // set the actual id of this trait as the ontologyId:TERM-NAME
-                        // here i have to make a request for a free id :(
-                        //term.id = false;
-                        // gotta put this in queue, do the ones with MOD first
-                        newTerms.push(trait);
-                        return;
-                    }
-
-                    // EDIT trait
-                    taskqueue.createTask("/create-term", JSON.stringify(trait));
-                    */
                 });
+
+                // check that the terms array contains an element "Name of Trait".
+                // this is our validation to make sure the template is correct
+                if(terms.length && !(terms[0]['Name of Trait'])) {
+                    return err("Check that your template is structured correctly!");
+                }
 
                 // figure out the id, as in the biggest of the editedIds
                 // THIS SHIT SUCKS
                 var freeEditedId = 0;
                 if(editedIds.length) {
                     freeEditedId = parseInt((editedIds.sort().reverse()[0]).split(':')[1], 10) + 1;
+                    if(!freeEditedId) {
+                        return err("Something wrong with your template. Check that the ID's that you're providing are of correct form such as: C0_NNN:nnnnnnn");
+                    }
                 }
                 var freeStoreId = termmodel.findFreeId(ontologyId);
                 var freeId = freeEditedId;
@@ -1983,14 +1996,25 @@ apejs.urls = {
                     }
                     method.parent = trait.id;
 
+                    var scale = method.scale;
+                    if(scale[scaleMod]) {
+                        scale.id = scale[scaleMod];
+                    } else {
+                        scale.id = ontologyId + ':' + pad(freeId++, 7);
+                    }
+                    scale.parent = method.id;
+
+                    // add scale
+                    taskqueue.createTask("/create-term", JSON.stringify(scale));
+
                     // add method
+                    delete method['scale'];
                     taskqueue.createTask("/create-term", JSON.stringify(method));
 
                     // add trait
                     delete trait['method'];
                     taskqueue.createTask("/create-term", JSON.stringify(trait));
 
-                    //var sca
                 }
 
                 taskqueue.createTask("/memcache-clear", "");
