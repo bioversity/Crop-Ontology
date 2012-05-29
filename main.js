@@ -2059,21 +2059,65 @@ apejs.urls = {
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
-            var traits = [];
+            var terms = {};
             select('term')
                 .find({ ontology_id: ontoId })
                 .each(function() {
+                    terms[this.id] = this;
+
                     // check if this term has children
+                    /*
                     var that = this;
                     select('term')
                         .find({ parent: this.id })
                         .values(function(values) {
-                            if(values.length) { // this term has children
-                            } else { // no children, therefore trait! - how lame!
-                                traits.push(that);
+                            if(values.length) { 
+                                var firstChild = values[0];
+                                if(firstChild.relationship == 'method_of') { 
+                                    // first children is method_of, 
+                                    // therefore it's a trait
+                                    for(var i in firstChild) {
+                                        var newi = i;
+                                        if(i == 'id') newi = 'method_' + i;
+                                        if(i == 'relationship') newi = 'method_' + i;
+                                        that[newi] = firstChild[i];
+                                    }
+                                    traits.push(that);
+                                }
+                                if(firstChild.relationship == 'scale_of') { 
+
+                                }
+                            } else {
                             }
                         });
+                        */
                 });
+
+            function addTo(obj, obj2, id) {
+                for(var i in obj2) {
+                    var newi = i;
+                    if(i == 'id') newi = id + '_' + i;
+                    if(i == 'relationship') newi = id + '_' + i;
+                    obj[newi] = obj2[i];
+                }
+            }
+
+            var traits = [];
+            for(var id in terms) {
+                var term = terms[id];
+                if(term.relationship == 'scale_of') {
+                    var obj = {};
+                    var scale = term;
+                    var method = terms[scale.parent];
+                    var trait = terms[method.parent];
+
+                    addTo(obj, trait, 'trait');
+                    addTo(obj, method, 'method');
+                    addTo(obj, scale, 'scale');
+
+                    traits.push(obj);
+                }
+            }
             print(response).json(traits); 
         },
         get: function(request, response) {
