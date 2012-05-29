@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.22";
+var VERSION = "0.8.24";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -1870,15 +1870,7 @@ apejs.urls = {
                 var id = 0; // start id at 0
                 var idlen = 7;
 
-                // create a root term with ID the ontologyId:root
-                var rootId = ontologyId + ":" + pad(id, idlen);
-                taskqueue.createTask("/create-term", JSON.stringify({
-                    id: rootId,
-                    ontology_name: ""+ontologyName,
-                    ontology_id: ""+ontologyId,
-                    name: ""+ontologyName,
-                    parent: 0
-                }));
+                var rootId = ontologyId + ":ROOT";
 
                 var mod = "Trait ID for modification, Blank for New",
                     ib = "ib primary traits",
@@ -1924,6 +1916,7 @@ apejs.urls = {
 
                     delete term[""]; // WTF DUDE OMG
 
+
                     var trait = getTrait(term);
                     trait.name = trait["Name of Trait"];
                     trait.ontology_name = ""+ontologyName;
@@ -1958,11 +1951,24 @@ apejs.urls = {
                     terms.push(trait);
                 });
 
+
+                if(!terms.length) return err("Seems like an empty template?");
+
                 // check that the terms array contains an element "Name of Trait".
                 // this is our validation to make sure the template is correct
-                if(terms.length && !(terms[0]['Name of Trait'])) {
+                if(!(terms[0]['Name of Trait'])) {
                     return err("Check that your template is structured correctly!");
                 }
+
+                // create ROOT
+                taskqueue.createTask("/create-term", JSON.stringify({
+                    id: rootId,
+                    ontology_name: ""+ontologyName,
+                    ontology_id: ""+ontologyId,
+                    name: ""+ontologyName,
+                    language: terms[0][langKey],
+                    parent: 0
+                }));
 
                 // figure out the id, as in the biggest of the editedIds
                 // THIS SHIT SUCKS
@@ -2064,33 +2070,6 @@ apejs.urls = {
                 .find({ ontology_id: ontoId })
                 .each(function() {
                     terms[this.id] = this;
-
-                    // check if this term has children
-                    /*
-                    var that = this;
-                    select('term')
-                        .find({ parent: this.id })
-                        .values(function(values) {
-                            if(values.length) { 
-                                var firstChild = values[0];
-                                if(firstChild.relationship == 'method_of') { 
-                                    // first children is method_of, 
-                                    // therefore it's a trait
-                                    for(var i in firstChild) {
-                                        var newi = i;
-                                        if(i == 'id') newi = 'method_' + i;
-                                        if(i == 'relationship') newi = 'method_' + i;
-                                        that[newi] = firstChild[i];
-                                    }
-                                    traits.push(that);
-                                }
-                                if(firstChild.relationship == 'scale_of') { 
-
-                                }
-                            } else {
-                            }
-                        });
-                        */
                 });
 
             function addTo(obj, obj2, id) {

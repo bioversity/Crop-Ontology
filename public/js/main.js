@@ -591,7 +591,11 @@ function make_li(obj, last) {
     }
 
  
-    var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+translate(currUser, name).translation+'</span></a>');
+    var nameTrans = translate(currUser, name);
+    if(currUser.language !== nameTrans.lang) {
+        li.hide();
+    }
+    var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+nameTrans.translation+'</span></a>');
  
     link.click(function(e) {
         load_term(li);
