@@ -2238,7 +2238,8 @@ apejs.urls = {
 
                 obj[ontoId].push({
                     id: ""+term.getProperty("id"),
-                    name: name
+                    name: name,
+                    has_children: 1
                 });
             });
 
