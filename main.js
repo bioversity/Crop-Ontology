@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.26";
+var VERSION = "0.8.28";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -2076,7 +2076,7 @@ apejs.urls = {
                     var order = ['Method ID for modification, Blank for New',   'Name of method',  'Describe how measured (method)',  'Growth stages',   'Bibliographic Reference', 'Comments'];
 
                 } else if(id == 'scale') {
-                    var order = ['Scale ID for modification, Blank for New'];
+                    var order = ['Scale ID for modification, Blank for New', 'Type of Measure (Continuous, Discrete or Categorical)'];
 
                 }
                 for(var i in order) {

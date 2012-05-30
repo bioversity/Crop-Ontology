@@ -122,7 +122,7 @@ $(function(){
     loader(true);
     $.post('/report', { ontology_id: "{{ontology_id}}" }, function(data) {
         loader(false);
-        var remove = ['normalized', 'parent', 'ontology_name', 'ontology_id', 'excel_blob_key', 'obo_blob_key', 'is_a', 'created_at', 'language', 'name'];
+        var remove = ['normalized', 'parent', 'ontology_name', 'ontology_id', 'excel_blob_key', 'obo_blob_key', 'is_a', 'created_at', 'language', 'name', 'relationship'];
         $.each(remove, function(i, val){
             $.each(data, function(idx, value) {
                 delete data[idx][val];

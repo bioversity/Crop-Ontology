@@ -151,7 +151,7 @@ function findTranslation(lang, obj) {
 function translate(currUser, value) {
   try {
     var newValue = $.parseJSON(value);
-    if(!newValue || !currUser) {
+    if(!newValue) {
         throw 'value is null';
     }
     var lang = currUser.language;
