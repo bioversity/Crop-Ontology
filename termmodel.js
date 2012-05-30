@@ -74,6 +74,7 @@ var termmodel = (function(){
 
             var lang = languages.iso[term.language];
             for(var i in term) {
+                if(i == 'parent') continue;
                 if(t[i] && (t[i] !== term[i])) { 
                     // check if t[i] is a JSON
                     if(t[i] instanceof Object) {
