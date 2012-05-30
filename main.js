@@ -2069,11 +2069,32 @@ apejs.urls = {
                 });
 
             function addTo(obj, obj2, id) {
-                for(var i in obj2) {
-                    var newi = i;
-                    if(i == 'id') newi = id + '_' + i;
-                    if(i == 'relationship') newi = id + '_' + i;
-                    obj[newi] = obj2[i];
+                if(id == 'trait') {
+                    var order = ['ibfieldbook','Name of submitting scientist','Institution Language of submission (only in ISO 2 letter codes)', 'Date of submission'  ,'Crop'    ,'Name of Trait',   'Abbreviated name','Synonyms (separate by commas)','Trait ID for modification, Blank for New',    'Description of Trait',    'How is this trait routinely used?',   'Trait Class'];
+
+                } else if(id == 'method') {
+                    var order = ['Method ID for modification, Blank for New',   'Name of method',  'Describe how measured (method)',  'Growth stages',   'Bibliographic Reference', 'Comments'];
+
+                } else if(id == 'scale') {
+                    var order = ['Scale ID for modification, Blank for New'];
+
+                }
+                for(var i in order) {
+                    var o = order[i];
+                    var newo = o;
+                    if(o == 'Trait ID for modification, Blank for New' ||
+                        o == 'Method ID for modification, Blank for New' ||
+                        o == 'Scale ID for modification, Blank for New')
+                         {
+                        newo = 'id';
+                    }
+                    obj[o] = obj2[newo] || '';
+                }
+                if(id == 'scale') {
+                    for(var i in obj2) {
+                        if(i == 'id' || id == 'relationship') continue;
+                        obj[i] = obj2[i];
+                    }
                 }
             }
 
