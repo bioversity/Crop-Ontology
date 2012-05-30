@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.24";
+var VERSION = "0.8.26";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -977,19 +977,15 @@ apejs.urls = {
             // find user with this key and return its data
             var user = auth.getUser(request),
                 username = "",
-                userid = "",
-                language = "";
+                userid = "";
             if(user) {
                 username = user.getProperty("username");
                 userid = user.getKey().getId();
-                language = user.getProperty("language");
             }
-            if(!language) language = "";
             
             print(response).json({
                 username: ""+username,
-                userid: ""+userid,
-                language: ""+language
+                userid: ""+userid
             });
             //response.getWriter().println('{"username":"'+username+'"}');
         },

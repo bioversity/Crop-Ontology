@@ -151,7 +151,7 @@ function findTranslation(lang, obj) {
 function translate(currUser, value) {
   try {
     var newValue = $.parseJSON(value);
-    if(!newValue) {
+    if(!newValue || !currUser) {
         throw 'value is null';
     }
     var lang = currUser.language;
@@ -592,7 +592,7 @@ function make_li(obj, last) {
 
  
     var nameTrans = translate(currUser, name);
-    if(currUser.language !== nameTrans.lang) {
+    if(currUser.language && currUser.language !== nameTrans.lang) {
         li.hide();
     }
     var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+nameTrans.translation+'</span></a>');
@@ -1283,7 +1283,7 @@ var events = function(){
         e.stopPropagation();
     });
 
-    $(".reg_lang").html(langs.html(languages));
+    //$(".reg_lang").html(langs.html(languages));
 
 
     $("#edit_profile").click(function(e) {
@@ -1802,10 +1802,12 @@ UserWidget = (function() {
             var that = this;
             this.load(true);
 
+            /*
             if(currUser && currUser.userid === userid)
               this.curr.find(".profile").show();
             else
               this.curr.find(".profile").hide();
+            */
 
             $.getJSON("/users/"+userid, function(user){
                 // do replacement
@@ -1889,12 +1891,14 @@ $(document).ready(function(){
           expand_collapse();
       }
 
+        /*
         $(".languages_refresh").find("option").each(function(){
             var $this = $(this);
             if($this.val() === currUser.language) {
                 $this.attr('selected', 'selected');
             }
         });
+        */
     });
 
     if(ontologyid !== "") {
