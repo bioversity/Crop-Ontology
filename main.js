@@ -1556,6 +1556,10 @@ apejs.urls = {
     },
     "/get-term-parents/(.*)": {
         get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/rdf+xml; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
             function getParent(arr, untouched, branch, termId) {
                 var termKey = googlestore.createKey("term", termId),
                     termEntity = googlestore.get(termKey);
@@ -1864,8 +1868,10 @@ apejs.urls = {
                 var ontoEntity = ontologymodel.getById(ontologyId);
                 if(ontoEntity) {
                     // check that we own this ontology
-                    if(!ontologymodel.owns(currUser, ontoEntity)) {
-                        return err("Ontology with this ID already exists");
+                    if(!auth.isAdmin(currUser)) { // if we're not admins check that we own this ontology
+                        if(!ontologymodel.owns(currUser, ontoEntity)) {
+                            return err("Ontology with this ID already exists");
+                        }
                     }
                 }
 
