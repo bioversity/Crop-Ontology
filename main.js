@@ -300,6 +300,9 @@ apejs.urls = {
     },
     "/get-ontology-roots/([^/]*)": {
         get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/rdf+xml; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
             var ontoId = matches[1];
             try {
                 var rootTerms = googlestore.query("term")
