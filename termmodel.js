@@ -44,7 +44,7 @@ var termmodel = (function(){
         if(!term.ontology_id || !term.ontology_name)
             throw new Error("Missing references to ontology");
 
-        term.parent = term.parent || null; // important to track the roots
+        //term.parent = term.parent || null; // important to track the roots
 
         term.normalized = normalize(term); // important for search
 
@@ -59,7 +59,16 @@ var termmodel = (function(){
                 term[i] = new Text(term[i]);
         }
 
-        var termEntity = googlestore.entity("term", term.id, term);
+        var termEntity;
+        try {
+            var termKey = googlestore.createKey("term", term.id),
+                termEntity = googlestore.get(termKey);
+            googlestore.set(termEntity, term);
+        } catch (e) {
+            // no entity foudn with this id, create it
+            termEntity = googlestore.entity("term", term.id, term);
+        }
+
 
         googlestore.put(termEntity);
     }
@@ -74,7 +83,7 @@ var termmodel = (function(){
 
             var lang = languages.iso[term.language];
             for(var i in term) {
-                if(i == 'parent') continue;
+                if(i == 'parent' || i == 'relationship') continue;
                 if(t[i] && (t[i] !== term[i])) { 
                     // check if t[i] is a JSON
                     if(t[i] instanceof Object) {
@@ -92,6 +101,12 @@ var termmodel = (function(){
                         // ok now stringify it :)
                         term[i] = JSON.stringify(term[i]);
                     }
+                } else if(!t[i]) {
+                    // store the {"spanish":"xxx"} JSON string
+                    var obj = {}
+                    obj[lang] = term[i];
+
+                    term[i] = JSON.stringify(obj);
                 }
             }
 

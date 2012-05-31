@@ -138,13 +138,16 @@ function findTranslation(lang, obj) {
   var translation = "";
   translation = obj[lang];  
   if(!obj[lang]) { 
+    return false;
     // this object doesn't contain the language.
     // show the first key
+    /*
     for(var i in obj) {
       translation = obj[i];
       lang = i;
       break;
     }
+    */
   }
   return {lang: lang, translation: translation};
 }
@@ -159,6 +162,8 @@ function translate(currUser, value) {
       lang = DEFAULT_LANGUAGE;
     }
     var t = findTranslation(lang, newValue);
+    if(!t)  return false;
+
     return {lang: t.lang, translation: t.translation};
   } catch(e) {
     // value is a string with no translations.
@@ -420,6 +425,7 @@ function show_attributes(id, name, attributes) {
     runInOrder(first, last, attributes, function(i) {
         count++;
         var t = translate(currUser, attributes[i]);
+        if(!t) return;
         str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
     }, hide);
 

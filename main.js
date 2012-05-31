@@ -405,6 +405,10 @@ apejs.urls = {
     },
     "/get-children/([^/]*)": {
         get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
             var parentId = matches[1];
             if(!parentId)
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
@@ -1299,6 +1303,8 @@ apejs.urls = {
                         // it will not show up - it's the OBO's fault
                         term.ontology_id = ontologyId;
 
+                        if(!term.parent) term.parent = null;
+
 
                         // we found a term, let's save it in datastore.
                         // XXX, the .put() in here is expensive - takes more than 30secs
@@ -1917,7 +1923,9 @@ apejs.urls = {
                     trait.name = trait["Name of Trait"];
                     trait.ontology_name = ""+ontologyName;
                     trait.ontology_id = ""+ontologyId;
-                    trait.parent = parent; // parent is Trait Class
+                    if(term[langKey] == 'EN') {
+                        trait.parent = parent; // parent is Trait Class
+                    }
                     trait.language = term[langKey];
 
                     var method = getMethod(term);
@@ -1945,6 +1953,7 @@ apejs.urls = {
                     if(term[scaleMod]) editedIds.push(term[methodMod]);
 
                     terms.push(trait);
+
                 });
 
 
@@ -1996,7 +2005,9 @@ apejs.urls = {
                     } else {
                         method.id = ontologyId + ':' + pad(freeId++, 7);
                     }
-                    method.parent = trait.id;
+                    if(terms[0][langKey] == 'EN') {
+                        method.parent = trait.id;
+                    }
 
                     var scale = method.scale;
                     if(scale[scaleMod]) {
@@ -2004,8 +2015,10 @@ apejs.urls = {
                     } else {
                         scale.id = ontologyId + ':' + pad(freeId++, 7);
                     }
-                    scale.parent = method.id;
-
+                    if(terms[0][langKey] == 'EN') {
+                        scale.parent = method.id;
+                    }
+    
                     // add scale
                     taskqueue.createTask("/create-term", JSON.stringify(scale));
 
@@ -2070,13 +2083,14 @@ apejs.urls = {
 
             function addTo(obj, obj2, id) {
                 if(id == 'trait') {
-                    var order = ['ibfieldbook','Name of submitting scientist','Institution Language of submission (only in ISO 2 letter codes)', 'Date of submission'  ,'Crop'    ,'Name of Trait',   'Abbreviated name','Synonyms (separate by commas)','Trait ID for modification, Blank for New',    'Description of Trait',    'How is this trait routinely used?',   'Trait Class'];
+                    var order = ['ibfieldbook','Name of submitting scientist','Institution','Language of submission (only in ISO 2 letter codes)', 'Date of submission'  ,'Crop'    ,'Name of Trait',   'Abbreviated name','Synonyms (separate by commas)','Trait ID for modification, Blank for New',    'Description of Trait',    'How is this trait routinely used?',   'Trait Class'];
 
                 } else if(id == 'method') {
                     var order = ['Method ID for modification, Blank for New',   'Name of method',  'Describe how measured (method)',  'Growth stages',   'Bibliographic Reference', 'Comments'];
 
                 } else if(id == 'scale') {
-                    var order = ['Scale ID for modification, Blank for New', 'Type of Measure (Continuous, Discrete or Categorical)'];
+                    var order = ['Scale ID for modification, Blank for New', 'Type of Measure (Continuous, Discrete or Categorical)', 'For Continuous: units of measurement','For Continuous: reporting units (if different from measurement)','For Continuous: minimum','For Continuous: maximum','For Discrete: Name of scale or units of measurement','For Categorical: Name of rating scale','For Categorical: Class 1 - value = meaning','For Categorical: Class 2 - value = meaning','For Categorical: Class 3 - value = meaning','For Categorical: Class 4 - value = meaning','For Categorical: Class 5 - value = meaning','For Categorical: Class 6 - value = meaning','For Categorical: Class 7 - value = meaning','For Categorical: Class 8 - value = meaning','For Categorical: Class 9 - value = meaning','For Categorical: Class 10 - value = meaning', 'For Categorical: Class 11 - value = meaning', 'For Categorical: Class 12 - value = meaning'
+                    ];
 
                 }
                 for(var i in order) {
@@ -2088,7 +2102,11 @@ apejs.urls = {
                          {
                         newo = 'id';
                     }
-                    obj[o] = obj2[newo] || '';
+                    if(obj2[newo]) {
+                        obj[o] = obj2[newo];
+                    } else {
+                        obj[o] = '';
+                    }
                 }
                 if(id == 'scale') {
                     for(var i in obj2) {
