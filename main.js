@@ -2275,9 +2275,9 @@ apejs.urls = {
     },
     "/ibfieldbook": {
         get: function(req, res) {
-            request.setCharacterEncoding("utf-8")
-            response.setContentType("text/html; charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
+            req.setCharacterEncoding("utf-8")
+            res.setContentType("text/html; charset=UTF-8");
+            res.setCharacterEncoding("UTF-8");
 
             var ontologyId = req.getParameter("ontologyId");
             var html = req.getParameter("html");
