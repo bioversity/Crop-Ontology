@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.28";
+var VERSION = "0.8.32";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -301,7 +301,7 @@ apejs.urls = {
     "/get-ontology-roots/([^/]*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8");
-            response.setContentType("application/rdf+xml; charset=UTF-8");
+            response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
             var ontoId = matches[1];
             try {
@@ -1560,7 +1560,7 @@ apejs.urls = {
     "/get-term-parents/(.*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8");
-            response.setContentType("application/rdf+xml; charset=UTF-8");
+            response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
             function getParent(arr, untouched, branch, termId) {
@@ -1852,6 +1852,14 @@ apejs.urls = {
                 delete obj['ibfieldbook'];
                 return obj;
             }
+            
+            function getCol(obj, col) {
+                var count = 0;
+                for(var i in obj) { 
+                    count++; 
+                    if(count == col) return obj[i]; 
+                }
+            }
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("excelfile"),
@@ -1930,6 +1938,9 @@ apejs.urls = {
 
                     var trait = getTrait(term);
                     trait.name = trait["Name of Trait"];
+                    if(!trait.name) { // look in the 7th column
+                        trait.name = getCol(term, 6);
+                    }
                     trait.ontology_name = ""+ontologyName;
                     trait.ontology_id = ""+ontologyId;
                     if(term[langKey] == 'EN') {
@@ -1939,6 +1950,9 @@ apejs.urls = {
 
                     var method = getMethod(term);
                     method.name = method["Name of method"] || method["Describe how measured (method)"];
+                    if(!method.name) { // look in the 15th column
+                        method.name = getCol(method, 1);
+                    }
                     method.ontology_name = ""+ontologyName;
                     method.ontology_id = ""+ontologyId;
                     method.relationship = "method_of";
@@ -1949,6 +1963,9 @@ apejs.urls = {
 
                     var scale = getScale(term);
                     scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
+                    if(!scale.name) { // look in the 22nd column
+                        scale.name = getCol(scale, 1);
+                    }
                     scale.ontology_name = ""+ontologyName;
                     scale.ontology_id = ""+ontologyId;
                     scale.relationship = "scale_of";
@@ -1968,11 +1985,6 @@ apejs.urls = {
 
                 if(!terms.length) return err("Seems like an empty template?");
 
-                // check that the terms array contains an element "Name of Trait".
-                // this is our validation to make sure the template is correct
-                if(!(terms[0]['Name of Trait'])) {
-                    return err("Check that your template is structured correctly!");
-                }
 
                 // create ROOT
                 taskqueue.createTask("/create-term", JSON.stringify({
@@ -2027,6 +2039,14 @@ apejs.urls = {
                     if(terms[0][langKey] == 'EN') {
                         scale.parent = method.id;
                     }
+
+
+                    // check that the terms array contains an element "Name of Trait".
+                    // this is our validation to make sure the template is correct
+                    if(!trait.name) {
+                        return err("Check that your template is structured correctly!");
+                    }
+
     
                     // add scale
                     taskqueue.createTask("/create-term", JSON.stringify(scale));

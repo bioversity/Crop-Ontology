@@ -138,31 +138,27 @@ function findTranslation(lang, obj) {
   var translation = "";
   translation = obj[lang];  
   if(!obj[lang]) { 
-    return false;
     // this object doesn't contain the language.
     // show the first key
-    /*
     for(var i in obj) {
       translation = obj[i];
       lang = i;
       break;
     }
-    */
   }
   return {lang: lang, translation: translation};
 }
 function translate(currUser, value) {
   try {
-    var newValue = $.parseJSON(value);
-    if(!newValue) {
+    var obj = $.parseJSON(value);
+    if(!obj) {
         throw 'value is null';
     }
     var lang = currUser.language;
     if(!lang) { // show default language
       lang = DEFAULT_LANGUAGE;
     }
-    var t = findTranslation(lang, newValue);
-    if(!t)  return false;
+    var t = findTranslation(lang, obj);
 
     return {lang: t.lang, translation: t.translation};
   } catch(e) {
@@ -404,7 +400,12 @@ function show_attributes(id, name, attributes) {
         ontology_id: true,
         ontology_name: true,
         is_a: true,
-        'Name of Trait': true
+        'Name of Trait': true,
+        'language': true,
+        'Scale ID for modification, Blank for New':true,
+        'Method ID for modification, Blank for New': true,
+        'Trait ID for modification, Blank for New': true,
+        'Language of submission (only in ISO 2 letter codes)': true
     };
 
     var first = {
@@ -425,7 +426,8 @@ function show_attributes(id, name, attributes) {
     runInOrder(first, last, attributes, function(i) {
         count++;
         var t = translate(currUser, attributes[i]);
-        if(!t) return;
+        var lang = currUser.language || DEFAULT_LANGUAGE;
+        if(t.lang !== lang) return;
         str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
     }, hide);
 
