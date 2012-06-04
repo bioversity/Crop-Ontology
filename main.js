@@ -2159,8 +2159,17 @@ apejs.urls = {
             function translate(value, language) {
                 try {
                     var j = JSON.parse(value);
-                }catch(e) {
+                    if(j[language]) {
+                        value = j[language];
+                    } else {
+                        return false;
+                    } 
+                } catch(e) {
+                    if(language != languages.default) {
+                        return false;
+                    }
                 }
+                return value;
 
             }
             function addTo(obj, obj2, id) {
@@ -2233,9 +2242,17 @@ apejs.urls = {
                     var term = terms[id];
 
                     if(hasChildren(term.id)) {
+                        var empty = true;
                         var obj = {};
                         addTo(obj, term, 'obo');
-                        traits.push(obj);
+                        // check that obj is full before adding
+                        for(var x in obj) {
+                            empty = false;
+                            break;
+                        }
+                        if(!empty) {
+                            traits.push(obj);
+                        }
                     }
                 }
             }
@@ -2244,10 +2261,14 @@ apejs.urls = {
         get: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
+            var language = request.getParameter('language');
+            if(isblank(language)) 
+                language = languages.default;
 
             print(response).text(
                   render("./skins/report.html")
                       .replace(/{{ontology_id}}/g, ""+ontoId)
+                      .replace(/{{language}}/g, ""+language)
                       .replace(/{{VERSION}}/g, VERSION)
             );
         }
