@@ -34,6 +34,7 @@ var isblank = function(javaStr) {
 };
 
 var print = function(response) {
+    response.setCharacterEncoding("UTF-8");
     return {
         // callback is a Java string that contains the name
         // of the callback, so we can run JSONP if it exists
