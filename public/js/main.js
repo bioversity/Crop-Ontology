@@ -133,7 +133,7 @@ function tooltip() {
 }
 
 
-var DEFAULT_LANGUAGE = "english";
+DEFAULT_LANGUAGE = "english";
 function findTranslation(lang, obj) {
   var translation = "";
   translation = obj[lang];  
@@ -148,7 +148,7 @@ function findTranslation(lang, obj) {
   }
   return {lang: lang, translation: translation};
 }
-function translate(currUser, value) {
+translate = function(currUser, value) {
   try {
     var obj = $.parseJSON(value);
     if(!obj) {
@@ -357,7 +357,7 @@ function findWord(key, obj) {
     }
 }
 
-function runInOrder(first, last, obj, cb, hideObj) {
+runInOrder = function(first, last, obj, cb, hideObj) {
     var keys = {};
     // first run the ones in order and call the callback if found
     for(var i in first) {
@@ -436,7 +436,7 @@ function show_attributes(id, name, attributes) {
     str += '<span class="add_attribute">Add a new attribute</span>';
 
     $(".right ul.filters li a").text(name);
-    $("#static-html").attr("href", "/terms/"+id+"/"+name+"/static-html");
+    $("#static-html").attr("href", "/terms/"+id+"/"+name+"/static-html?language=" + (currUser ? (currUser.language || DEFAULT_LANGUAGE): DEFAULT_LANGUAGE));
     $("#term_id").text(id);
     $(".term_id").attr("href", "/terms/"+id+"/"+name);
     $("#pages .general").html(str);

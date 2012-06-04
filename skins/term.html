@@ -24,6 +24,15 @@
 <script>
 var term_name = "{{term_name}}";
 var term_id = "{{term_id}}";
+var languages = {{>languages}};
+var ontologyid = '';
+var termid = '';
+$.fn.autocomplete = function(){};
+
+</script>
+<script type="text/javascript" src="/js/main.js?{{>VERSION}}"></script>
+
+<script>
 $(function(){
 
 function loader(show) {
@@ -34,28 +43,65 @@ function loader(show) {
 }
 
 function show_attributes(attributes) {
-    $.each(attributes, function(i) {
+    // let's not show these attributes - even though they're returned from the API
+    var hide = {
+        ontology_id: true,
+        ontology_name: true,
+        is_a: true,
+        'Name of Trait': true,
+        'language': true,
+        'Scale ID for modification, Blank for New':true,
+        'Method ID for modification, Blank for New': true,
+        'Trait ID for modification, Blank for New': true,
+        'Language of submission (only in ISO 2 letter codes)': true
+    };
+
+    var first = {
+        'Abbreviated name': true,
+        'Synonyms': true,
+        'Description': true,
+        'Trait class': true,
+        'How is trait': true
+    }
+    var last = {
+        'Name of submitting scientist': true,
+        'Institution': true,
+        'Date of submission': true,
+        'Bibliographic': true,
+        'Updated': true,
+    };
+
+    runInOrder(first, last, attributes, function(i) {
+        var currUser = {};
+        currUser.language = "{{language}}";
+        var t = translate(currUser, attributes[i]);
+        var lang = currUser.language || DEFAULT_LANGUAGE;
+        if(t.lang !== lang) return;
         $(".yui-b").append('\
             <div class="yui-gf">\
                 <div class="yui-u first">\
-                    <h2>'+this.key+'</h2>\
+                    <h2>'+i+'</h2>\
                 </div>\
                 <div class="yui-u">\
-                    <p class="enlarge">'+markdown(this.value)+'</p>\
+                    <p class="enlarge">'+markdown(t.translation)+'</p>\
                     <p id="languages" class="enlarge"></p>\
                 </div>\
             </div>\
         ');
+    }, hide);
 
-    });
 }
 
 // load all the attributes retrieved from the ols (XML)
 function load_ols(func) {
     loader(true);
-    $.getJSON("/get-attributes/"+term_id, function(attributes) {
+    var attributes = {};
+    $.getJSON("/get-attributes/"+term_id, function(this_attrs) {
 
         // let's show the attributes
+        $.each(this_attrs, function(i) {
+            attributes[this_attrs[i].key] = this_attrs[i].value;
+        });
         show_attributes(attributes);
         loader(false);
     });
@@ -65,11 +111,8 @@ function load_ols(func) {
 
 
 load_ols();
-
 });
-
 </script>
-
 <style>
 .yui-gc div.first, .yui-gd .yui-u {
     width: 100%;

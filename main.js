@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.32";
+var VERSION = "0.8.34";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -53,6 +53,11 @@ var print = function(response) {
         text: function(text) {
             if(response == null) return;
             response.getWriter().println(text);
+        },
+        html: function(html) {
+            if(response == null) return;
+            response.setContentType("text/html");
+            response.getWriter().println(html);
         },
         rss: function(title, arr) {
             if(response == null) return;
@@ -884,25 +889,40 @@ apejs.urls = {
             var termId = matches[1],
                 info = matches[2];
 
+            var lang = request.getParameter('language');
+
+
             // if info contains the string "static-html", show static HTML of this term
             if(info.indexOf("static-html") != -1) {
                 // get the name of term from its ID
                 var termKey = googlestore.createKey("term", termId),
                     termEntity = googlestore.get(termKey);
 
+                var name = termEntity.getProperty('name');
+                if(name instanceof Text) name = name.getValue();
+                try { 
+                    var jname = JSON.parse(name);
+                    name = jname[lang] || jname[languages.default];
+                } catch(e) {
+                }
 
                 var skin = Mustache.to_html(render("skins/term.html"), {
-                  term_name:termEntity.getProperty("name"),
+                  term_name:name,
                   term_id:termId,
                   ontology_name: termEntity.getProperty("ontology_name"),
-                  ontology_id: termEntity.getProperty("ontology_id")
-                }, {VERSION:VERSION});
+                  ontology_id: termEntity.getProperty("ontology_id"),
+                  language: lang
+                }, {
+                    VERSION:VERSION,
+                    languages: JSON.stringify(languages.all)
+                });
             } else {
                 var skin = renderIndex("skins/onto.html", {
                   termid: termId
                 });
             }
-            response.getWriter().println(skin);
+            //response.getWriter().println(skin);
+            print(response).html(skin);
             /*
             var skin = render("skins/term.html")
                         .replace(/{{term_name}}/g, matches[2])
