@@ -71,12 +71,20 @@ var error = function(response, msg) {
 };
 
 function defaultRelationship(relationship) {
+    if(!relationship) relationship = 'is_a';
   // relationship could be an array
   if(relationship && (relationship instanceof java.util.List))
       relationship = relationship.get(0);
 
+  if(relationship.length)
+    relationship = relationship[0];
+
   if(relationship instanceof Text)
       relationship = relationship.getValue();
+
+  if(!(relationship instanceof java.lang.String)) {
+    relationship = new java.lang.String(relationship);
+  }
 
   if(!relationship || relationship.equals("")) {
       relationship = "is_a";
@@ -84,6 +92,18 @@ function defaultRelationship(relationship) {
       relationship = ""+relationship.trim().split(" ")[0];
   }
   return relationship;
+}
+
+function defaultParent(parent) {
+    if(!parent) parent = 0;
+    if(parent === 'null') parent = 0;
+    if(typeof parent === 'string')
+        return parent;
+
+    if(parent.length)
+        parent = parent[0];
+
+    return parent;
 }
 
 function renderIndex(htmlFile, data) {
@@ -2124,6 +2144,11 @@ apejs.urls = {
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
+
+            var language = request.getParameter('language');
+            if(isblank(language)) 
+                language = languages.default;
+
             var terms = {};
             select('term')
                 .find({ ontology_id: ontoId })
@@ -2131,6 +2156,13 @@ apejs.urls = {
                     terms[this.id] = this;
                 });
 
+            function translate(value, language) {
+                try {
+                    var j = JSON.parse(value);
+                }catch(e) {
+                }
+
+            }
             function addTo(obj, obj2, id) {
                 if(id == 'trait') {
                     var order = ['ibfieldbook','Name of submitting scientist','Institution','Language of submission (only in ISO 2 letter codes)', 'Date of submission'  ,'Crop'    ,'Name of Trait',   'Abbreviated name','Synonyms (separate by commas)','Trait ID for modification, Blank for New',    'Description of Trait',    'How is this trait routinely used?',   'Trait Class'];
@@ -2158,10 +2190,12 @@ apejs.urls = {
                         obj[o] = '';
                     }
                 }
-                if(id == 'scale') {
+                if(id == 'scale' || id == 'obo') {
                     for(var i in obj2) {
                         if(i == 'id' || id == 'relationship') continue;
-                        obj[i] = obj2[i];
+                        var t = translate(obj2[i], language);
+                        if(!t) continue;
+                        obj[i] = t;
                     }
                 }
             }
@@ -2169,10 +2203,13 @@ apejs.urls = {
             var traits = [];
             for(var id in terms) {
                 var term = terms[id];
-                if(term.relationship == 'scale_of') {
+                var relationship = defaultRelationship(term.relationship);
+                if(relationship == 'scale_of') {
                     var obj = {};
                     var scale = term;
+                    scale.parent = defaultParent(scale.parent);
                     var method = terms[scale.parent];
+                    method.parent = defaultParent(method.parent);
                     var trait = terms[method.parent];
 
                     addTo(obj, trait, 'trait');
@@ -2180,6 +2217,26 @@ apejs.urls = {
                     addTo(obj, scale, 'scale');
 
                     traits.push(obj);
+                }
+            }
+            if(!traits.length) { // probably no methods nor scales, just get the last child
+                function hasChildren(termId) {
+                    for(var i in terms) {
+                        var term = terms[i];
+                        term.parent = defaultParent(term.parent);
+                        if(term.parent == termId)
+                            return false;
+                    }
+                    return true;
+                }
+                for(var id in terms) {
+                    var term = terms[id];
+
+                    if(hasChildren(term.id)) {
+                        var obj = {};
+                        addTo(obj, term, 'obo');
+                        traits.push(obj);
+                    }
                 }
             }
             print(response).json(traits); 
