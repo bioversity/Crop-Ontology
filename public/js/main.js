@@ -1485,10 +1485,15 @@ function LoadOntology(ontoId) {
                 $languages_refresh.html(langs.html(ls));
                 $languages_refresh.find("select").change(function(i) {
                     if(!currUser) currUser = {};
-                    currUser.language = $(this).val();
+                    var lang = $(this).val();
+                    currUser.language = lang;
                     $("#root").html("");
                     firstLoaded = true;
                     LoadOntology(ontologyid);
+
+                    var $print = $('.print-button');
+                    var href = $print.attr('href');
+                    $print.attr('href', href + '&language=' + lang);
 
                     reloadIbfieldbook($('ul#ibfieldbook'));
                 });
