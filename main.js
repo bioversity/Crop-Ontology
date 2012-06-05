@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.36";
+var VERSION = "0.8.38";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -76,8 +76,10 @@ function defaultRelationship(relationship) {
   if(relationship && (relationship instanceof java.util.List))
       relationship = relationship.get(0);
 
+/*
   if(relationship.length)
     relationship = relationship[0];
+    */
 
   if(relationship instanceof Text)
       relationship = relationship.getValue();
@@ -2194,7 +2196,9 @@ apejs.urls = {
                         newo = 'id';
                     }
                     if(obj2[newo]) {
-                        obj[o] = obj2[newo];
+                        var t = translate(obj2[newo], language);
+                        if(!t) continue;
+                        obj[o] = t;
                     } else {
                         obj[o] = '';
                     }
@@ -2212,12 +2216,19 @@ apejs.urls = {
             var traits = [];
             for(var id in terms) {
                 var term = terms[id];
-                var relationship = defaultRelationship(term.relationship);
+                var relationship = term.relationship;
+                if(typeof relationship == 'object') {
+                    relationship = relationship[0];
+                }
+                if(relationship)
+                    relationship = relationship.split(' ')[0];
+
                 if(relationship == 'scale_of') {
                     var obj = {};
                     var scale = term;
                     scale.parent = defaultParent(scale.parent);
                     var method = terms[scale.parent];
+                    if(!method) continue;
                     method.parent = defaultParent(method.parent);
                     var trait = terms[method.parent];
 

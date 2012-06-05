@@ -1483,6 +1483,8 @@ function LoadOntology(ontoId) {
                 // make the language dropdown
                 var $languages_refresh = $(".languages_refresh");
                 $languages_refresh.html(langs.html(ls));
+                var $print = $('.print-button');
+                var href = $print.attr('href');
                 $languages_refresh.find("select").change(function(i) {
                     if(!currUser) currUser = {};
                     var lang = $(this).val();
@@ -1491,8 +1493,6 @@ function LoadOntology(ontoId) {
                     firstLoaded = true;
                     LoadOntology(ontologyid);
 
-                    var $print = $('.print-button');
-                    var href = $print.attr('href');
                     $print.attr('href', href + '&language=' + lang);
 
                     reloadIbfieldbook($('ul#ibfieldbook'));
