@@ -2043,16 +2043,6 @@ apejs.urls = {
                 if(!terms.length) return err("Seems like an empty template?");
 
 
-                // create ROOT
-                taskqueue.createTask("/create-term", JSON.stringify({
-                    id: rootId,
-                    ontology_name: ""+ontologyName,
-                    ontology_id: ""+ontologyId,
-                    name: ""+ontologyName,
-                    language: terms[0][langKey],
-                    parent: 0
-                }));
-
                 // figure out the id, as in the biggest of the editedIds
                 // THIS SHIT SUCKS
                 var freeEditedId = 0;
