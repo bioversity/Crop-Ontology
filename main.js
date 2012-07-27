@@ -832,18 +832,15 @@ apejs.urls = {
             }
 
             if (attrObj["parent"]) {
-                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>\n';
+                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>\n';
             }
 
             if (attrObj["is_a"]) {
-                if(attrObj["is_a" instanceof Text){
-                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                    + attrObj["is_a"] +  '"/>\n';
+                if(attrObj["is_a"] instanceof Text){
+                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' + attrObj["is_a"] +  '"/>\n';
                 } else {
                     for(var i=0; i<attrObj["is_a"]; i++) {
-                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                        + attrObj["is_a"][i] +  '"/>\n';
+                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' + attrObj["is_a"][i] +  '"/>\n';
                     }
                 }
             }
@@ -1941,11 +1938,21 @@ apejs.urls = {
 
                 var rootId = ontologyId + ":ROOT";
 
+
                 var mod = "Trait ID for modification, Blank for New",
                     ib = "ib primary traits",
                     langKey = "Language of submission (only in ISO 2 letter codes)",
                     methodMod = "Method ID for modification, Blank for New",
                     scaleMod = "Scale ID for modification, Blank for New";
+
+                // create root
+                taskqueue.createTask("/create-term", JSON.stringify({
+                    id: rootId,
+                    ontology_name: ""+ontologyName,
+                    ontology_id: ""+ontologyId,
+                    name: ""+ontologyName,
+                    parent: null
+                }));
 
                 // list of ids that are in the Term ID column to modify
                 // we do these, and then we do the new ones so we know what ID to start using
