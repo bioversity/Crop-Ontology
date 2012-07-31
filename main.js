@@ -1907,6 +1907,15 @@ apejs.urls = {
                     if(count == col) return obj[i]; 
                 }
             }
+            function isEmpty(obj) {
+                for(var prop in obj) {
+                    if(obj.hasOwnProperty(prop))
+                        return false;
+                }
+
+                return true;
+            }
+            
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("excelfile"),
@@ -2006,30 +2015,34 @@ apejs.urls = {
                     trait.language = term[langKey];
 
                     var method = getMethod(term);
-                    method.name = method["Name of method"] || method["Describe how measured (method)"];
-                    if(!method.name) { // look in the 15th column
-                        method.name = getCol(method, 1);
-                    }
-                    method.ontology_name = ""+ontologyName;
-                    method.ontology_id = ""+ontologyId;
-                    method.relationship = "method_of";
-                    method.language = term[langKey];
+                    if(!isEmpty(method)) {
+                        method.name = method["Name of method"] || method["Describe how measured (method)"];
+                        if(!method.name) { // look in the 15th column
+                            method.name = getCol(method, 1);
+                        }
+                        method.ontology_name = ""+ontologyName;
+                        method.ontology_id = ""+ontologyId;
+                        method.relationship = "method_of";
+                        method.language = term[langKey];
 
-                    // make method children of this trait
-                    trait.method = method;
+                        // make method children of this trait
+                        trait.method = method;
+                    }
 
                     var scale = getScale(term);
-                    scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
-                    if(!scale.name) { // look in the 22nd column
-                        scale.name = getCol(scale, 1);
-                    }
-                    scale.ontology_name = ""+ontologyName;
-                    scale.ontology_id = ""+ontologyId;
-                    scale.relationship = "scale_of";
-                    scale.language = term[langKey];
+                    if(!isEmpty(scale)) {
+                        scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
+                        if(!scale.name) { // look in the 22nd column
+                            scale.name = getCol(scale, 1);
+                        }
+                        scale.ontology_name = ""+ontologyName;
+                        scale.ontology_id = ""+ontologyId;
+                        scale.relationship = "scale_of";
+                        scale.language = term[langKey];
 
-                    // make scale children of this method
-                    method.scale = scale;
+                        // make scale children of this method
+                        method.scale = scale;
+                    }
 
                     if(term[mod]) editedIds.push(term[mod]);
                     if(term[methodMod]) editedIds.push(term[methodMod]);
@@ -2068,23 +2081,27 @@ apejs.urls = {
                     }
 
                     var method = trait.method;
-                    if(method[methodMod]) {
-                        method.id = method[methodMod];
-                    } else {
-                        method.id = ontologyId + ':' + pad(freeId++, 7);
-                    }
-                    if(terms[0][langKey] == 'EN') {
-                        method.parent = trait.id;
+                    if(method) {
+                        if(method[methodMod]) {
+                            method.id = method[methodMod];
+                        } else {
+                            method.id = ontologyId + ':' + pad(freeId++, 7);
+                        }
+                        if(terms[0][langKey] == 'EN') {
+                            method.parent = trait.id;
+                        }
                     }
 
-                    var scale = method.scale;
-                    if(scale[scaleMod]) {
-                        scale.id = scale[scaleMod];
-                    } else {
-                        scale.id = ontologyId + ':' + pad(freeId++, 7);
-                    }
-                    if(terms[0][langKey] == 'EN') {
-                        scale.parent = method.id;
+                    var scale = method ? method.scale : false;
+                    if(scale) {
+                        if(scale[scaleMod]) {
+                            scale.id = scale[scaleMod];
+                        } else {
+                            scale.id = ontologyId + ':' + pad(freeId++, 7);
+                        }
+                        if(terms[0][langKey] == 'EN') {
+                            scale.parent = method.id;
+                        }
                     }
 
 
@@ -2096,11 +2113,15 @@ apejs.urls = {
 
     
                     // add scale
-                    taskqueue.createTask("/create-term", JSON.stringify(scale));
+                    if(scale) {
+                        taskqueue.createTask("/create-term", JSON.stringify(scale));
+                    }
 
                     // add method
-                    delete method['scale'];
-                    taskqueue.createTask("/create-term", JSON.stringify(method));
+                    if(method) {
+                        delete method['scale'];
+                        taskqueue.createTask("/create-term", JSON.stringify(method));
+                    }
 
                     // add trait
                     delete trait['method'];
