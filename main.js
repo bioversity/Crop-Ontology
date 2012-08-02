@@ -804,7 +804,7 @@ apejs.urls = {
                 'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
                 'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
                 '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
-                '<owl:Class rdf:about="http://www.cropontology.org/terms/' + term_id + '"> \n';
+                '<owl:Class rdf:about="http://www.cropontology.org/rdf/' + term_id + '"> \n';
 
             if (attrObj["name"]) {
                 string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
@@ -833,11 +833,11 @@ apejs.urls = {
 
             if (attrObj["parent"]) {
                 if(attrObj["parent"] instanceof Text){
-                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' +
+                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' +
                         attrObj["parent"] +  '"/>\n';
                 } else {
                     for(var i=0; i<attrObj["parent"]; i++) {
-                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' +
+                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' +
                             attrObj["parent"] +  '"/>\n';
                     }
                 }
@@ -845,10 +845,10 @@ apejs.urls = {
 
             if (attrObj["is_a"]) {
                 if(attrObj["is_a"] instanceof Text){
-                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' + attrObj["is_a"] +  '"/>\n';
+                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' + attrObj["is_a"] +  '"/>\n';
                 } else {
                     for(var i=0; i<attrObj["is_a"]; i++) {
-                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/' + attrObj["is_a"][i] +  '"/>\n';
+                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' + attrObj["is_a"][i] +  '"/>\n';
                     }
                 }
             }
