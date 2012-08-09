@@ -1037,7 +1037,7 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
-    $('.print-button').click(function(e) {
+    $('.download-button').click(function(e) {
         Modal.show('download_onto')
         e.preventDefault()
         e.stopPropagation()
@@ -1465,6 +1465,7 @@ function LoadOntology(ontoId) {
     $.getJSON("/get-ontology-roots/"+ontoId, function(roots) {
         loader($root, false);
         //Search.init(jsonTree);
+        var oboBlobKey = false;
        
         for(var i=0, len=roots.length; i<len; i++) {
             var last = false;
@@ -1473,9 +1474,14 @@ function LoadOntology(ontoId) {
 
             // roots always have children :)
             roots[i].has_children = true;
+            oboBlobKey = roots[i].oboBlobKey
 
             var li = make_li(roots[i], last);
             $root.append(li);
+        }
+
+        if(oboBlobKey && oboBlobKey != 'null') {
+            $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
         }
 
         // try to parse the name property to see if it's a JSON

@@ -190,7 +190,7 @@ apejs.urls = {
 
                 } catch(e) {
                     // something happened, probably the term exists but not the ontology, which is BAD XXX
-                    ontologyName = term.getProperty("ontology_name");
+                    ontologyName = term.getProperty("uttontology_name");
                 }
 
                 latestTerms.push({
@@ -345,7 +345,8 @@ apejs.urls = {
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name)
+                        "name": ""+(name instanceof Text ? name.getValue() : name),
+                        oboBlobKey: ''+term.getProperty('obo_blob_key')
                     });
                 });
 
