@@ -1037,6 +1037,11 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
+    $('.print-button').click(function(e) {
+        Modal.show('download_onto')
+        e.preventDefault()
+        e.stopPropagation()
+    })
  
     $("#login_form").submit(function(e){
         $(".context-loader").show();
