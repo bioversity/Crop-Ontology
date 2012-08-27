@@ -2186,10 +2186,12 @@ apejs.urls = {
                 language = languages.default;
 
             var terms = {};
+            var parents = {};
             select('term')
                 .find({ ontology_id: ontoId })
                 .each(function() {
                     terms[this.id] = this;
+                    parents[defaultParent(this.parent)] = true;
                 });
 
             function translate(value, language) {
@@ -2269,6 +2271,25 @@ apejs.urls = {
                     addTo(obj, trait, 'trait');
                     addTo(obj, method, 'method');
                     addTo(obj, scale, 'scale');
+
+                    traits.push(obj);
+                } else if(relationship == 'method_of' && !parents[id]) { // this method isn't parent of anything
+                    var obj = {};
+                    var scale = {};
+                    var method = term;
+                    method.parent = defaultParent(method.parent);
+                    var trait = terms[method.parent];
+
+                    addTo(obj, method, 'method');
+
+                    traits.push(obj);
+                } else if(!parents[id]) { // this should be trait, isn't parent of anything
+                    var obj = {};
+                    var scale = {};
+                    var method = {};
+                    var trait = term;
+
+                    addTo(obj, trait, 'trait');
 
                     traits.push(obj);
                 }
