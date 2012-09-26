@@ -1253,7 +1253,13 @@ var events = function(){
         window.location.href = "/terms/"+$li.attr("term_id")+"/"+$li.attr("term_name");
     }
     function formatItem(term) {
-        return term.name + " ("+term.ontology_name+")";
+        var name = term.name
+        var ontologyName = term.ontology_name
+
+        if(name.english) name = name.english
+        if(ontologyName.english) ontologyName = ontologyName.english
+
+        return name + " ("+ontologyName+")";
     }
     $("#search").autocomplete(
         "/search",
@@ -1494,7 +1500,7 @@ function LoadOntology(ontoId) {
                 // make the language dropdown
                 var $languages_refresh = $(".languages_refresh");
                 $languages_refresh.html(langs.html(ls));
-                var $print = $('.print-button');
+                var $print = $('.print-button').eq(1);
                 var href = $print.attr('href');
                 $languages_refresh.find("select").change(function(i) {
                     if(!currUser) currUser = {};

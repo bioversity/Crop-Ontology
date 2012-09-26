@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.38";
+var VERSION = "0.8.42";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -2283,15 +2283,15 @@ apejs.urls = {
                     addTo(obj, method, 'method');
 
                     traits.push(obj);
-                } else if(!parents[id]) { // this should be trait, isn't parent of anything
+                } else if(!parents[id]) { // this should be trait, isn't parent of anything - or it could also be OBO last child
                     var obj = {};
                     var scale = {};
                     var method = {};
                     var trait = term;
 
-                    addTo(obj, trait, 'trait');
+                    //addTo(obj, trait, 'trait');
 
-                    traits.push(obj);
+                    traits.push(term);
                 }
             }
             if(!traits.length) { // probably no methods nor scales, just get the last child
