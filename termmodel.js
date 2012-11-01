@@ -83,7 +83,7 @@ var termmodel = (function(){
 
             var lang = languages.iso[term.language];
             for(var i in term) {
-                if(i == 'parent' || i == 'relationship') continue;
+                if(i == 'parent' || i == 'relationship' || i == 'id') continue;
                 //if(t[i]) { 
                 if(t[i] && (t[i] !== term[i])) {
                     // check if t[i] is a JSON

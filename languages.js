@@ -13,6 +13,13 @@ var languages = {
     'ES': 'spanish',
     'CN': 'chinese',
     'PT': 'portugese'
+  },
+  getIso: {
+    'english':'EN', 
+    'french':  'FR', 
+    'spanish': 'ES',
+    'chinese': 'CN',
+    'portugese':'PT'
   }
 };
 

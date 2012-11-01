@@ -2055,7 +2055,7 @@ apejs.urls = {
 
                     if(term[mod]) editedIds.push(term[mod]);
                     if(term[methodMod]) editedIds.push(term[methodMod]);
-                    if(term[scaleMod]) editedIds.push(term[methodMod]);
+                    if(term[scaleMod]) editedIds.push(term[scaleMod]);
 
                     terms.push(trait);
 
@@ -2188,8 +2188,13 @@ apejs.urls = {
             var terms = {};
             var parents = {};
             select('term')
-                .find({ ontology_id: ontoId })
+                .find({ 
+                    ontology_id: ontoId
+                })
                 .each(function() {
+                    if(language !== languages.default) {
+                        if(this.language == 'EN') return;
+                    }
                     terms[this.id] = this;
                     parents[defaultParent(this.parent)] = true;
                 });
