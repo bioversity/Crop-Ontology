@@ -20,6 +20,7 @@ var taskqueue = require("./taskqueue.js");
 var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
 var excel = require("./excel.js");
 var languages = require("./languages.js");
+var template = require('./template.js');
 
 // commonjs modules
 var Mustache = require("./common/mustache.js");
@@ -1298,7 +1299,7 @@ apejs.urls = {
     "/obo-upload" : {
         post: function(request, response) {
 
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(msg)); }
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1496,7 +1497,7 @@ apejs.urls = {
             response.setCharacterEncoding("UTF-8");
 
             var msg = request.getParameter("msg");
-            response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>');
+            response.getWriter().println('<script>window.top.fileupload_done('+msg+');</script>');
         }
     },
     "/attribute-upload": {
@@ -1505,7 +1506,7 @@ apejs.urls = {
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(msg)); }
 
             // only if logged in
             var currUser = auth.getUser(request);
@@ -1864,7 +1865,7 @@ apejs.urls = {
             response.getWriter().println(skin);
         },
         post: function(request, response) {
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+msg); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(msg)); }
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1951,26 +1952,9 @@ apejs.urls = {
                     }
                 }
 
-                var id = 0; // start id at 0
-                var idlen = 7;
-
-                var rootId = ontologyId + ":ROOT";
-
-
-                var mod = "Trait ID for modification, Blank for New",
-                    ib = "ib primary traits",
-                    langKey = "Language of submission (only in ISO 2 letter codes)",
-                    methodMod = "Method ID for modification, Blank for New",
-                    scaleMod = "Scale ID for modification, Blank for New";
-
-                // create root
-                taskqueue.createTask("/create-term", JSON.stringify({
-                    id: rootId,
-                    ontology_name: ""+ontologyName,
-                    ontology_id: ""+ontologyId,
-                    name: ""+ontologyName,
-                    parent: null
-                }));
+                // this has all the logics for parsing the template
+                new template(blobKey)
+                return;
 
                 // list of ids that are in the Term ID column to modify
                 // we do these, and then we do the new ones so we know what ID to start using
@@ -1979,87 +1963,6 @@ apejs.urls = {
 
                 var terms = [];
                 // add the terms
-                excel.parseTemplate(6, blobKey, function(term) {
-                    // need a reference to the blob of the excel
-                    term.excel_blob_key = ""+blobKeyString;
-
-                    var parent = rootId;
-
-                    // create the "trait class" term which is the parent
-                    if(term["Trait Class"]) {
-                        if(term[langKey] != 'EN') {
-                            // we're dealing with a trait class
-                            // find its EN counterpart
-                            var key = googlestore.createKey("term", term[mod]);
-                            var traitClass = googlestore.get(key).getProperty('Trait Class');
-
-                            parent = ontologyId + ':' + traitClass;
-                        } else {
-                            // set the parent to be this trait
-                            parent = ontologyId + ":" + term["Trait Class"];
-                        }
-                        taskqueue.createTask("/create-term", JSON.stringify({
-                            id: parent,
-                            ontology_name: ""+ontologyName,
-                            ontology_id: ""+ontologyId,
-                            name: term["Trait Class"],
-                            language: term[langKey],
-                            parent: rootId
-                        }));
-                    }
-
-                    delete term[""]; // WTF DUDE OMG
-
-
-                    var trait = getTrait(term);
-                    trait.name = trait["Name of Trait"];
-                    if(!trait.name) { // look in the 7th column
-                        trait.name = getCol(term, 6);
-                    }
-                    trait.ontology_name = ""+ontologyName;
-                    trait.ontology_id = ""+ontologyId;
-                    if(term[langKey] == 'EN') {
-                        trait.parent = parent; // parent is Trait Class
-                    }
-                    trait.language = term[langKey];
-
-                    var method = getMethod(term);
-                    if(!isEmpty(method)) {
-                        method.name = method["Name of method"] || method["Describe how measured (method)"];
-                        if(!method.name) { // look in the 15th column
-                            method.name = getCol(method, 1);
-                        }
-                        method.ontology_name = ""+ontologyName;
-                        method.ontology_id = ""+ontologyId;
-                        method.relationship = "method_of";
-                        method.language = term[langKey];
-
-                        // make method children of this trait
-                        trait.method = method;
-                    }
-
-                    var scale = getScale(term);
-                    if(!isEmpty(scale)) {
-                        scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
-                        if(!scale.name) { // look in the 22nd column
-                            scale.name = getCol(scale, 1);
-                        }
-                        scale.ontology_name = ""+ontologyName;
-                        scale.ontology_id = ""+ontologyId;
-                        scale.relationship = "scale_of";
-                        scale.language = term[langKey];
-
-                        // make scale children of this method
-                        method.scale = scale;
-                    }
-
-                    if(term[mod]) editedIds.push(term[mod]);
-                    if(term[methodMod]) editedIds.push(term[methodMod]);
-                    if(term[scaleMod]) editedIds.push(term[scaleMod]);
-
-                    terms.push(trait);
-
-                });
 
 
                 if(!terms.length) return err("Seems like an empty template?");
