@@ -24,7 +24,7 @@ var languages = require("./languages.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.38";
+var VERSION = "0.8.42";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -190,7 +190,7 @@ apejs.urls = {
 
                 } catch(e) {
                     // something happened, probably the term exists but not the ontology, which is BAD XXX
-                    ontologyName = term.getProperty("ontology_name");
+                    ontologyName = term.getProperty("uttontology_name");
                 }
 
                 latestTerms.push({
@@ -345,7 +345,8 @@ apejs.urls = {
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name)
+                        "name": ""+(name instanceof Text ? name.getValue() : name),
+                        oboBlobKey: ''+term.getProperty('obo_blob_key')
                     });
                 });
 
@@ -502,72 +503,6 @@ apejs.urls = {
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
-        }
-    },
-    "/get-attributes/([^/]*)/rdf": {
-        get: function(request, response, matches) {
-            request.setCharacterEncoding("utf-8");
-            response.setContentType("application/rdf+xml; charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-
-            var term_id = matches[1];
-            if(!term_id) return response.getWriter().println("No term_id");
-
-            var termKey = googlestore.createKey("term", term_id),
-                termEntity = googlestore.get(termKey);
-
-            var attributes = [];
-
-            var attrObj = googlestore.toJS(termEntity);
-
-
-            var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-                '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
-                'xmlns:owl="http://www.w3.org/2002/07/owl#" \n' +
-                'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
-                'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
-                'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
-                '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
-                '<owl:Class rdf:about="http://www.cropontology.org/terms/' + attrObj["ontology_name"] + ":" + attrObj["ontology_id"] + '"> \n';
-
-            if (attrObj["name"]) {
-                string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
-            }
-
-            if (attrObj["def"]) {
-                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
-            }
-
-            if (attrObj["synonym"]) {
-                string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';
-            }
-
-            if (attrObj["xref"]) {
-                string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
-                 attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n</oboInOwl:hasDbXref>\n';
-            }
-
-            if (attrObj["comment"]) {
-                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>\n';
-            }
-
-            if (attrObj["parent"]) {
-                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["parent"] +  '"/>\n';
-            }
-
-            if (attrObj["is_a"]) {
-                string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/terms/'
-                + attrObj["ontology_name"] + ":" + attrObj["is_a"] +  '"/>\n';
-            }
-
-            string = string + "</owl:Class>\n</rdf:RDF>";
-
-            response.getWriter().println(string);
         }
     },
     "/get-attributes/([^/]*)/jsonrdf": {
@@ -844,6 +779,84 @@ apejs.urls = {
             termEntity.removeProperty(key);
             googlestore.put(termEntity);
 
+        }
+    },
+    "/rdf/([^/]*)": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/rdf+xml; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+            var term_id = matches[1];
+            if(!term_id) return response.getWriter().println("No term_id");
+
+            var termKey = googlestore.createKey("term", term_id),
+                termEntity = googlestore.get(termKey);
+
+            var attributes = [];
+
+            var attrObj = googlestore.toJS(termEntity);
+
+
+            var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+                '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
+                'xmlns:owl="http://www.w3.org/2002/07/owl#" \n' +
+                'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
+                'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
+                'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
+                '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
+                '<owl:Class rdf:about="http://www.cropontology.org/rdf/' + term_id + '"> \n';
+
+            if (attrObj["name"]) {
+                string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
+            }
+
+            if (attrObj["def"]) {
+                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
+                    '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
+                    '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
+            }
+
+            if (attrObj["synonym"]) {
+                string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
+                    '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
+                    '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';
+            }
+
+            if (attrObj["xref"]) {
+                string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
+                    attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n</oboInOwl:hasDbXref>\n';
+            }
+
+            if (attrObj["comment"]) {
+                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>\n';
+            }
+
+            if (attrObj["parent"]) {
+                if(attrObj["parent"] instanceof Text){
+                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' +
+                        attrObj["parent"] +  '"/>\n';
+                } else {
+                    for(var i=0; i<attrObj["parent"]; i++) {
+                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' +
+                            attrObj["parent"] +  '"/>\n';
+                    }
+                }
+            }
+
+            if (attrObj["is_a"]) {
+                if(attrObj["is_a"] instanceof Text){
+                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' + attrObj["is_a"] +  '"/>\n';
+                } else {
+                    for(var i=0; i<attrObj["is_a"]; i++) {
+                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' + attrObj["is_a"][i] +  '"/>\n';
+                    }
+                }
+            }
+
+            string = string + "</owl:Class>\n</rdf:RDF>";
+
+            response.getWriter().println(string);
         }
     },
     "/httpget": {
@@ -1903,6 +1916,15 @@ apejs.urls = {
                     if(count == col) return obj[i]; 
                 }
             }
+            function isEmpty(obj) {
+                for(var prop in obj) {
+                    if(obj.hasOwnProperty(prop))
+                        return false;
+                }
+
+                return true;
+            }
+            
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("excelfile"),
@@ -1934,11 +1956,21 @@ apejs.urls = {
 
                 var rootId = ontologyId + ":ROOT";
 
+
                 var mod = "Trait ID for modification, Blank for New",
                     ib = "ib primary traits",
                     langKey = "Language of submission (only in ISO 2 letter codes)",
                     methodMod = "Method ID for modification, Blank for New",
                     scaleMod = "Scale ID for modification, Blank for New";
+
+                // create root
+                taskqueue.createTask("/create-term", JSON.stringify({
+                    id: rootId,
+                    ontology_name: ""+ontologyName,
+                    ontology_id: ""+ontologyId,
+                    name: ""+ontologyName,
+                    parent: null
+                }));
 
                 // list of ids that are in the Term ID column to modify
                 // we do these, and then we do the new ones so we know what ID to start using
@@ -1992,34 +2024,38 @@ apejs.urls = {
                     trait.language = term[langKey];
 
                     var method = getMethod(term);
-                    method.name = method["Name of method"] || method["Describe how measured (method)"];
-                    if(!method.name) { // look in the 15th column
-                        method.name = getCol(method, 1);
-                    }
-                    method.ontology_name = ""+ontologyName;
-                    method.ontology_id = ""+ontologyId;
-                    method.relationship = "method_of";
-                    method.language = term[langKey];
+                    if(!isEmpty(method)) {
+                        method.name = method["Name of method"] || method["Describe how measured (method)"];
+                        if(!method.name) { // look in the 15th column
+                            method.name = getCol(method, 1);
+                        }
+                        method.ontology_name = ""+ontologyName;
+                        method.ontology_id = ""+ontologyId;
+                        method.relationship = "method_of";
+                        method.language = term[langKey];
 
-                    // make method children of this trait
-                    trait.method = method;
+                        // make method children of this trait
+                        trait.method = method;
+                    }
 
                     var scale = getScale(term);
-                    scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
-                    if(!scale.name) { // look in the 22nd column
-                        scale.name = getCol(scale, 1);
-                    }
-                    scale.ontology_name = ""+ontologyName;
-                    scale.ontology_id = ""+ontologyId;
-                    scale.relationship = "scale_of";
-                    scale.language = term[langKey];
+                    if(!isEmpty(scale)) {
+                        scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
+                        if(!scale.name) { // look in the 22nd column
+                            scale.name = getCol(scale, 1);
+                        }
+                        scale.ontology_name = ""+ontologyName;
+                        scale.ontology_id = ""+ontologyId;
+                        scale.relationship = "scale_of";
+                        scale.language = term[langKey];
 
-                    // make scale children of this method
-                    method.scale = scale;
+                        // make scale children of this method
+                        method.scale = scale;
+                    }
 
                     if(term[mod]) editedIds.push(term[mod]);
                     if(term[methodMod]) editedIds.push(term[methodMod]);
-                    if(term[scaleMod]) editedIds.push(term[methodMod]);
+                    if(term[scaleMod]) editedIds.push(term[scaleMod]);
 
                     terms.push(trait);
 
@@ -2028,16 +2064,6 @@ apejs.urls = {
 
                 if(!terms.length) return err("Seems like an empty template?");
 
-
-                // create ROOT
-                taskqueue.createTask("/create-term", JSON.stringify({
-                    id: rootId,
-                    ontology_name: ""+ontologyName,
-                    ontology_id: ""+ontologyId,
-                    name: ""+ontologyName,
-                    language: terms[0][langKey],
-                    parent: 0
-                }));
 
                 // figure out the id, as in the biggest of the editedIds
                 // THIS SHIT SUCKS
@@ -2064,23 +2090,27 @@ apejs.urls = {
                     }
 
                     var method = trait.method;
-                    if(method[methodMod]) {
-                        method.id = method[methodMod];
-                    } else {
-                        method.id = ontologyId + ':' + pad(freeId++, 7);
-                    }
-                    if(terms[0][langKey] == 'EN') {
-                        method.parent = trait.id;
+                    if(method) {
+                        if(method[methodMod]) {
+                            method.id = method[methodMod];
+                        } else {
+                            method.id = ontologyId + ':' + pad(freeId++, 7);
+                        }
+                        if(terms[0][langKey] == 'EN') {
+                            method.parent = trait.id;
+                        }
                     }
 
-                    var scale = method.scale;
-                    if(scale[scaleMod]) {
-                        scale.id = scale[scaleMod];
-                    } else {
-                        scale.id = ontologyId + ':' + pad(freeId++, 7);
-                    }
-                    if(terms[0][langKey] == 'EN') {
-                        scale.parent = method.id;
+                    var scale = method ? method.scale : false;
+                    if(scale) {
+                        if(scale[scaleMod]) {
+                            scale.id = scale[scaleMod];
+                        } else {
+                            scale.id = ontologyId + ':' + pad(freeId++, 7);
+                        }
+                        if(terms[0][langKey] == 'EN') {
+                            scale.parent = method.id;
+                        }
                     }
 
 
@@ -2092,11 +2122,15 @@ apejs.urls = {
 
     
                     // add scale
-                    taskqueue.createTask("/create-term", JSON.stringify(scale));
+                    if(scale) {
+                        taskqueue.createTask("/create-term", JSON.stringify(scale));
+                    }
 
                     // add method
-                    delete method['scale'];
-                    taskqueue.createTask("/create-term", JSON.stringify(method));
+                    if(method) {
+                        delete method['scale'];
+                        taskqueue.createTask("/create-term", JSON.stringify(method));
+                    }
 
                     // add trait
                     delete trait['method'];
@@ -2152,10 +2186,17 @@ apejs.urls = {
                 language = languages.default;
 
             var terms = {};
+            var parents = {};
             select('term')
-                .find({ ontology_id: ontoId })
+                .find({ 
+                    ontology_id: ontoId
+                })
                 .each(function() {
+                    if(language !== languages.default) {
+                        if(this.language == 'EN') return;
+                    }
                     terms[this.id] = this;
+                    parents[defaultParent(this.parent)] = true;
                 });
 
             function translate(value, language) {
@@ -2237,6 +2278,25 @@ apejs.urls = {
                     addTo(obj, scale, 'scale');
 
                     traits.push(obj);
+                } else if(relationship == 'method_of' && !parents[id]) { // this method isn't parent of anything
+                    var obj = {};
+                    var scale = {};
+                    var method = term;
+                    method.parent = defaultParent(method.parent);
+                    var trait = terms[method.parent];
+
+                    addTo(obj, method, 'method');
+
+                    traits.push(obj);
+                } else if(!parents[id]) { // this should be trait, isn't parent of anything - or it could also be OBO last child
+                    var obj = {};
+                    var scale = {};
+                    var method = {};
+                    var trait = term;
+
+                    //addTo(obj, trait, 'trait');
+
+                    traits.push(term);
                 }
             }
             if(!traits.length) { // probably no methods nor scales, just get the last child

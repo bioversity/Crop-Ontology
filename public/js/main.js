@@ -1037,6 +1037,11 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
+    $('.download-button').click(function(e) {
+        Modal.show('download_onto')
+        e.preventDefault()
+        e.stopPropagation()
+    })
  
     $("#login_form").submit(function(e){
         $(".context-loader").show();
@@ -1248,7 +1253,13 @@ var events = function(){
         window.location.href = "/terms/"+$li.attr("term_id")+"/"+$li.attr("term_name");
     }
     function formatItem(term) {
-        return term.name + " ("+term.ontology_name+")";
+        var name = term.name
+        var ontologyName = term.ontology_name
+
+        if(name.english) name = name.english
+        if(ontologyName.english) ontologyName = ontologyName.english
+
+        return name + " ("+ontologyName+")";
     }
     $("#search").autocomplete(
         "/search",
@@ -1460,6 +1471,7 @@ function LoadOntology(ontoId) {
     $.getJSON("/get-ontology-roots/"+ontoId, function(roots) {
         loader($root, false);
         //Search.init(jsonTree);
+        var oboBlobKey = false;
        
         for(var i=0, len=roots.length; i<len; i++) {
             var last = false;
@@ -1468,9 +1480,14 @@ function LoadOntology(ontoId) {
 
             // roots always have children :)
             roots[i].has_children = true;
+            oboBlobKey = roots[i].oboBlobKey
 
             var li = make_li(roots[i], last);
             $root.append(li);
+        }
+
+        if(oboBlobKey && oboBlobKey != 'null') {
+            $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
         }
 
         // try to parse the name property to see if it's a JSON
@@ -1483,7 +1500,7 @@ function LoadOntology(ontoId) {
                 // make the language dropdown
                 var $languages_refresh = $(".languages_refresh");
                 $languages_refresh.html(langs.html(ls));
-                var $print = $('.print-button');
+                var $print = $('.print-button').eq(1);
                 var href = $print.attr('href');
                 $languages_refresh.find("select").change(function(i) {
                     if(!currUser) currUser = {};
