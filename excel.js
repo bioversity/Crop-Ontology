@@ -60,7 +60,6 @@ var excel = {
             }
             callback(term);
         });
-
     }
 };
 exports = excel;

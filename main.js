@@ -1299,7 +1299,7 @@ apejs.urls = {
     "/obo-upload" : {
         post: function(request, response) {
 
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(msg)); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1506,7 +1506,7 @@ apejs.urls = {
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(msg)); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
             // only if logged in
             var currUser = auth.getUser(request);
@@ -1865,7 +1865,7 @@ apejs.urls = {
             response.getWriter().println(skin);
         },
         post: function(request, response) {
-            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(msg)); }
+            function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
             var currUser = auth.getUser(request);
             if(!currUser)
@@ -1947,14 +1947,14 @@ apejs.urls = {
                     // check that we own this ontology
                     if(!auth.isAdmin(currUser)) { // if we're not admins check that we own this ontology
                         if(!ontologymodel.owns(currUser, ontoEntity)) {
-                            return err("Ontology with this ID already exists");
+                            return err("Ontology with this ID already exists, and you don't own it");
                         }
                     }
                 }
 
                 // this has all the logics for parsing the template
-                new template(blobKey)
-                return;
+                new template(blobKey, ontologyId, ontologyName)
+                return err('ciao');
 
                 // list of ids that are in the Term ID column to modify
                 // we do these, and then we do the new ones so we know what ID to start using
