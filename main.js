@@ -1429,9 +1429,9 @@ apejs.urls = {
             // if there's a language passed and
             // it's not ENglish, find the entity, and tranform its properties
             // into JSON - to represent both languages
-            if(term.language && term.language !== 'EN') {
-                var term = termmodel.translate(term, languages);
-            }
+
+            // every term should have a langauge
+            var term = termmodel.translate(term, languages);
             
             // add it to datastore
             termmodel.createTerm(term);

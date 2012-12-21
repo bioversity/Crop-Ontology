@@ -75,45 +75,25 @@ var termmodel = (function(){
 
     function translate(term, languages) {
         // find the entity
+        var termStored = false;
         try {
             var termKey = googlestore.createKey("term", term.id),
                 termEntity = googlestore.get(termKey);
 
-            var t = googlestore.toJS(termEntity);
+            termStored = googlestore.toJS(termEntity);
+        } catch(e) { // not found
+        }
 
-            var lang = languages.iso[term.language];
-            for(var i in term) {
-                if(i == 'parent' || i == 'relationship' || i == 'id') continue;
-                //if(t[i]) { 
-                if(t[i] && (t[i] !== term[i])) {
-                    // check if t[i] is a JSON
-                    if(t[i] instanceof Object) {
-                        t[i][lang] = term[i];
+        // each value should be a JSON
+        for(var i in term) {
+            if(i == 'parent' || i == 'relationship' || i == 'id') continue;
+            var obj = {}
+            if(termStored && termStored[i]) { // fill obj, with info from termStored
+                obj = termStored[i]  
+            } 
+            obj[languages.iso[term.language]] = term[i]
 
-                        term[i] = JSON.stringify(t[i]);
-                    } else { // not json
-                        var temp = term[i];
-                        // they're different, translate by 
-                        // making this property a JSON!
-                        term[i] = {};
-                        term[i]['english'] = t[i];
-                        term[i][lang] = temp;
-
-                        // ok now stringify it :)
-                        term[i] = JSON.stringify(term[i]);
-                    }
-                } else if(!t[i]) {
-                    // store the {"spanish":"xxx"} JSON string
-                    var obj = {}
-                    obj[lang] = term[i];
-
-                    term[i] = JSON.stringify(obj);
-                }
-            }
-
-        } catch(e) { 
-            // getting here because entity is not found
-            // therefore can't translate it
+            term[i] = JSON.stringify(obj)
         }
         return term;
     }
