@@ -2192,9 +2192,16 @@ apejs.urls = {
                     ontology_id: ontoId
                 })
                 .each(function() {
-                    if(language !== languages.default) {
-                        if(this.language == 'EN') return;
+                    /*
+                    var isoLang = languages.getIso[language]
+                    try {
+                        var jlang = JSON.parse(this.language)
+                        if(!jlang[language]) return;
+                        
+                    } catch(e) { // it's just a regular string
+                        if(this.language != isoLang) return;
                     }
+                    */
                     terms[this.id] = this;
                     parents[defaultParent(this.parent)] = true;
                 });
@@ -2216,6 +2223,7 @@ apejs.urls = {
 
             }
             function addTo(obj, obj2, id) {
+                if(!obj2) return;
                 if(id == 'trait') {
                     var order = ['ibfieldbook','Name of submitting scientist','Institution','Language of submission (only in ISO 2 letter codes)', 'Date of submission'  ,'Crop'    ,'Name of Trait',   'Abbreviated name','Synonyms (separate by commas)','Trait ID for modification, Blank for New',    'Description of Trait',    'How is this trait routinely used?',   'Trait Class'];
 
