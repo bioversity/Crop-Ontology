@@ -16,7 +16,6 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
     this.terms = []
     this.editedIds = []
 
-    this.createRoot()
     this.parseTemplate()
 }
 t.prototype.createRoot = function() {
@@ -25,6 +24,7 @@ t.prototype.createRoot = function() {
         ontology_name: ""+this.ontologyName,
         ontology_id: ""+this.ontologyId,
         name: ""+this.ontologyName,
+        language: this.terms[0][langKey],
         parent: null
     }));
 }
@@ -120,7 +120,12 @@ t.prototype.parseTemplate = function() {
     // now that we parsed, and have all the terms nice and clean
     // inside this.terms
     // let's actually store them in datastore
-    this.processTerms()
+    if(this.terms.length) {
+        this.processTerms()
+        this.createRoot()
+    } else {
+        throw 'We weren\'t able to parse your template. Check that the format is correct and the sheets are in the correct order.'
+    }
 }
 t.prototype.parseTerm = function(term) {
     // need a reference to the blob of the excel

@@ -74,6 +74,14 @@ var termmodel = (function(){
     }
 
     function translate(term, languages) {
+        var ignore = {
+            'parent': true,
+            'relationship': true,
+            'id': true,
+            ontology_id: true,
+            ontology_name: true,
+            language: true
+        }
         // find the entity
         var termStored = false;
         try {
@@ -82,11 +90,12 @@ var termmodel = (function(){
 
             termStored = googlestore.toJS(termEntity);
         } catch(e) { // not found
+            termStored = false;
         }
 
         // each value should be a JSON
         for(var i in term) {
-            if(i == 'parent' || i == 'relationship' || i == 'id') continue;
+            if(ignore[i]) continue;
             var obj = {}
             if(termStored && termStored[i]) { // fill obj, with info from termStored
                 obj = termStored[i]  
