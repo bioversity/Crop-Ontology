@@ -12,6 +12,10 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
     this.ontologyId = ontologyId
     this.ontologyName = ontologyName
     this.rootId = this.ontologyId + ':ROOT'
+
+    this.terms = []
+    this.editedIds = []
+
     //this.createRoot()
     this.parseTemplate()
 }
@@ -53,12 +57,81 @@ t.prototype.createTraitClass = function(term) {
         }));
     }
 }
+t.prototype.getTrait = function(row) {
+    var obj = {};
+    for(var i in row) {
+        obj[i] = row[i]; 
+        if(obj[i] == "") delete obj[i];
+        if(i == 'Trait Class') break;
+    }
+    // this is because it may be at the end of the template as well
+    if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
+    // always need a reference to its language
+    obj['language'] = row[langKey]
+    obj.name = trait["Name of Trait"];
+    if(!obj.name) {
+        obj.name = 'No trait name found'
+    }
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_id = ""+this.ontologyId;
+
+    return obj;
+}
+t.prototype.getMethod = function(row) {
+    var obj = {};
+    var startCopy = false;
+    for(var i in row) {
+        if(startCopy) {
+            obj[i] = row[i]; 
+            if(obj[i] == "") delete obj[i];
+        }
+        if(i == 'Comments') break;
+        if(i == 'Trait Class') startCopy = true;
+    }
+    delete obj['ibfieldbook'];
+    // always need a reference to its language
+    obj['language'] = row[langKey]
+
+    obj.name = obj["Name of method"] || obj["Describe how measured (method)"];
+    if(!obj.name) { 
+        obj.name = 'No method name found';
+    }
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_id = ""+this.ontologyId;
+    obj.relationship = "method_of";
+    return obj;
+}
+t.prototype.getScale = function(row) {
+    var obj = {};
+    var startCopy = false;
+    for(var i in row) {
+        if(startCopy) {
+            obj[i] = row[i]; 
+            if(obj[i] == "") delete obj[i];
+        }
+        if(i == 'Comments') startCopy = true;
+    }
+    delete obj['ibfieldbook'];
+    // always need a reference to its language
+    obj['language'] = row[langKey]
+
+    obj.name = obj["Type of Measure (Continuous, Discrete or Categorical)"];
+    if(!obj.name) { // look in the 22nd column
+        obj.name = 'No scale name found';
+    }
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_id = ""+this.ontologyId;
+    obj.relationship = "scale_of";
+    return obj;
+}
 t.prototype.parseTemplate = function() {
     var that = this
     // start at row with index 6
     excel.parseTemplate(6, this.blobKey, function(term) {
         that.parseTerm(term)
     });
+    // now that we parsed, and have all the terms nice and clean
+    // let's actually store them in datastore
 }
 t.prototype.parseTerm = function(term) {
     // need a reference to the blob of the excel
@@ -66,63 +139,22 @@ t.prototype.parseTerm = function(term) {
 
     // get the Trait, Method and Scale
     var trait = this.getTrait(term)
-    log(JSON.stringify(trait))
-    return;
+    var method = this.getMethod(term)
+    var scale = this.getScale(term)
 
+    // make method children of this trait
+    trait.method = method;
+    // make scale children of this method
+    method.scale = scale;
 
-    var traitClassId = this.createTraitClass(term)
-    log(JSON.stringify(traitClassId))
-    return;
+    // fill in the editable ids so later we can figure out the one we can use
+    if(term[mod]) this.editedIds.push(term[mod]);
+    if(term[methodMod]) this.editedIds.push(term[methodMod]);
+    if(term[scaleMod]) this.editedIds.push(term[scaleMod]);
 
     delete term[""]; // WTF DUDE OMG
 
-
-    var trait = getTrait(term);
-    trait.name = trait["Name of Trait"];
-    if(!trait.name) { // look in the 7th column
-        trait.name = getCol(term, 6);
-    }
-    trait.ontology_name = ""+ontologyName;
-    trait.ontology_id = ""+ontologyId;
-    if(term[langKey] == 'EN') {
-        trait.parent = parent; // parent is Trait Class
-    }
-    trait.language = term[langKey];
-
-    var method = getMethod(term);
-    if(!isEmpty(method)) {
-        method.name = method["Name of method"] || method["Describe how measured (method)"];
-        if(!method.name) { // look in the 15th column
-            method.name = getCol(method, 1);
-        }
-        method.ontology_name = ""+ontologyName;
-        method.ontology_id = ""+ontologyId;
-        method.relationship = "method_of";
-        method.language = term[langKey];
-
-        // make method children of this trait
-        trait.method = method;
-    }
-
-    var scale = getScale(term);
-    if(!isEmpty(scale)) {
-        scale.name = scale["Type of Measure (Continuous, Discrete or Categorical)"];
-        if(!scale.name) { // look in the 22nd column
-            scale.name = getCol(scale, 1);
-        }
-        scale.ontology_name = ""+ontologyName;
-        scale.ontology_id = ""+ontologyId;
-        scale.relationship = "scale_of";
-        scale.language = term[langKey];
-
-        // make scale children of this method
-        method.scale = scale;
-    }
-
-    if(term[mod]) editedIds.push(term[mod]);
-    if(term[methodMod]) editedIds.push(term[methodMod]);
-    if(term[scaleMod]) editedIds.push(term[scaleMod]);
-
-    terms.push(trait);
+    // build terms array
+    this.terms.push(trait);
 }
 
