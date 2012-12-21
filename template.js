@@ -1,6 +1,4 @@
-var id = 0; // start id at 0
-var idlen = 7;
-
+// some column identifiers needed to parse the template
 var mod = "Trait ID for modification, Blank for New",
     ib = "ib primary traits",
     langKey = "Language of submission (only in ISO 2 letter codes)",
@@ -29,19 +27,29 @@ t.prototype.createRoot = function() {
     }));
 }
 t.prototype.createTraitClass = function(term) {
-    // create the "trait class" term which is the parent
-    if(term["Trait Class"]) {
-        // set the parent to be this trait
-        var parent = this.ontologyId + ":" + term["Trait Class"];
-        taskqueue.createTask("/create-term", JSON.stringify({
-            id: parent,
-            ontology_name: ""+this.ontologyName,
-            ontology_id: ""+this.ontologyId,
-            name: term["Trait Class"],
-            language: term[langKey],
-            parent: this.rootId
-        }));
+    var parent = this.ontologyId + ":" + term["Trait Class"];
+    if(term[mod]) { 
+        // if this trait exists in db, 
+        // use its parentId as current parent instead of 'Trait Class'
+        try {
+            var termKey = googlestore.createKey("term", term.id),
+                termEntity = googlestore.get(termKey);
+
+            // term found! overwrite parent
+            parent = '' + termEntity.getProperty('parent');
+        } catch(e) { // not found
+        }
     }
+
+    // creates or modifies a Trait Class based on its id
+    taskqueue.createTask("/create-term", JSON.stringify({
+        id: parent,
+        ontology_name: ""+this.ontologyName,
+        ontology_id: ""+this.ontologyId,
+        name: term["Trait Class"],
+        language: term[langKey],
+        parent: this.rootId
+    }));
     return parent;
 }
 t.prototype.getTrait = function(row) {
@@ -182,7 +190,7 @@ t.prototype.processTerms = function() {
         }
 
         // TRAIT CLASS
-        var traitClassId = this.createTraitClass(this.terms[i])
+        var traitClassId = this.createTraitClass(trait)
         trait.parent = traitClassId
 
         // METHOD

@@ -1516,9 +1516,17 @@ function LoadOntology(ontoId) {
                 });
             } catch(e) {
             }
+            var $sel = $('select[name=language]')
+            // try select default language
+            $sel.val(DEFAULT_LANGUAGE)
         }
 
-        DEFAULT_LANGUAGE = $('select[name=language]').val()
+        var exists = $('select[name=language] option[value='+DEFAULT_LANGUAGE+']').length
+        if(!exists) {
+            // default language doesnt exist
+            // set it to whatever it is
+            DEFAULT_LANGUAGE = $('select[name=language]').val()
+        }
     });
 }
 
