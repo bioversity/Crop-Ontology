@@ -1518,6 +1518,7 @@ function LoadOntology(ontoId) {
             }
         }
 
+        DEFAULT_LANGUAGE = $('select[name=language]').val()
     });
 }
 
