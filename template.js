@@ -131,7 +131,9 @@ t.prototype.parseTemplate = function() {
         that.parseTerm(term)
     });
     // now that we parsed, and have all the terms nice and clean
+    // inside this.terms
     // let's actually store them in datastore
+    this.processTerms()
 }
 t.prototype.parseTerm = function(term) {
     // need a reference to the blob of the excel
@@ -156,5 +158,27 @@ t.prototype.parseTerm = function(term) {
 
     // build terms array
     this.terms.push(trait);
+}
+t.prototype.findFreeId = function() {
+    var freeEditedId = 0;
+    if(this.editedIds.length) {
+        freeEditedId = parseInt((this.editedIds.sort().reverse()[0]).split(':')[1], 10) + 1;
+        if(!freeEditedId) {
+            throw "Something wrong with your template. Check that the ID's that you're providing are of correct form such as: C0_NNN:nnnnnnn";
+        }
+    }
+    var freeStoreId = termmodel.findFreeId(this.ontologyId);
+    var freeId = freeEditedId;
+    if(freeStoreId > freeEditedId) {
+        freeId = freeStoreId;
+    }
+    return freeId;
+}
+// let's process this.terms
+t.prototype.processTerms = function() {
+    // find freeId
+    var freeId = this.findFreeId()
+    log(''+freeId)
+
 }
 
