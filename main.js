@@ -25,7 +25,7 @@ var template = require('./template.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.42";
+var VERSION = "0.8.43";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -1953,93 +1953,8 @@ apejs.urls = {
                 }
 
                 // this has all the logics for parsing the template
+                // and creating terms
                 new template(blobKey, ontologyId, ontologyName)
-                return err('ciao');
-
-                // list of ids that are in the Term ID column to modify
-                // we do these, and then we do the new ones so we know what ID to start using
-                var editedIds = []; 
-                var newTerms = [];
-
-                var terms = [];
-                // add the terms
-
-
-                if(!terms.length) return err("Seems like an empty template?");
-
-
-                // figure out the id, as in the biggest of the editedIds
-                // THIS SHIT SUCKS
-                var freeEditedId = 0;
-                if(editedIds.length) {
-                    freeEditedId = parseInt((editedIds.sort().reverse()[0]).split(':')[1], 10) + 1;
-                    if(!freeEditedId) {
-                        return err("Something wrong with your template. Check that the ID's that you're providing are of correct form such as: C0_NNN:nnnnnnn");
-                    }
-                }
-                var freeStoreId = termmodel.findFreeId(ontologyId);
-                var freeId = freeEditedId;
-                if(freeStoreId > freeEditedId) {
-                    freeId = freeStoreId;
-                }
-
-                // MAIN LOOP
-                for(var i in terms) {
-                    var trait = terms[i];
-                    if(trait[mod]) {
-                        trait.id = trait[mod];
-                    } else {
-                        trait.id = ontologyId + ':' + pad(freeId++, 7);
-                    }
-
-                    var method = trait.method;
-                    if(method) {
-                        if(method[methodMod]) {
-                            method.id = method[methodMod];
-                        } else {
-                            method.id = ontologyId + ':' + pad(freeId++, 7);
-                        }
-                        if(terms[0][langKey] == 'EN') {
-                            method.parent = trait.id;
-                        }
-                    }
-
-                    var scale = method ? method.scale : false;
-                    if(scale) {
-                        if(scale[scaleMod]) {
-                            scale.id = scale[scaleMod];
-                        } else {
-                            scale.id = ontologyId + ':' + pad(freeId++, 7);
-                        }
-                        if(terms[0][langKey] == 'EN') {
-                            scale.parent = method.id;
-                        }
-                    }
-
-
-                    // check that the terms array contains an element "Name of Trait".
-                    // this is our validation to make sure the template is correct
-                    if(!trait.name) {
-                        return err("Check that your template is structured correctly!");
-                    }
-
-    
-                    // add scale
-                    if(scale) {
-                        taskqueue.createTask("/create-term", JSON.stringify(scale));
-                    }
-
-                    // add method
-                    if(method) {
-                        delete method['scale'];
-                        taskqueue.createTask("/create-term", JSON.stringify(method));
-                    }
-
-                    // add trait
-                    delete trait['method'];
-                    taskqueue.createTask("/create-term", JSON.stringify(trait));
-
-                }
 
                 taskqueue.createTask("/memcache-clear", "");
 

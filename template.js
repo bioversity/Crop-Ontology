@@ -16,7 +16,7 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
     this.terms = []
     this.editedIds = []
 
-    //this.createRoot()
+    this.createRoot()
     this.parseTemplate()
 }
 t.prototype.createRoot = function() {
@@ -29,33 +29,20 @@ t.prototype.createRoot = function() {
     }));
 }
 t.prototype.createTraitClass = function(term) {
-    return term[mod];
     // create the "trait class" term which is the parent
     if(term["Trait Class"]) {
-        // ok here's the rule for trait classes:
-        // If the Trait ID modification column is filled out, don't
-        // change
-        // create trait class with freeId (numerical)
-        if(term[langKey] != 'EN') {
-            // we're dealing with a trait class
-            // find its EN counterpart
-            var key = googlestore.createKey("term", term[mod]);
-            var traitClass = googlestore.get(key).getProperty('Trait Class');
-
-            parent = ontologyId + ':' + traitClass;
-        } else {
-            // set the parent to be this trait
-            parent = ontologyId + ":" + term["Trait Class"];
-        }
+        // set the parent to be this trait
+        var parent = this.ontologyId + ":" + term["Trait Class"];
         taskqueue.createTask("/create-term", JSON.stringify({
             id: parent,
-            ontology_name: ""+ontologyName,
-            ontology_id: ""+ontologyId,
+            ontology_name: ""+this.ontologyName,
+            ontology_id: ""+this.ontologyId,
             name: term["Trait Class"],
             language: term[langKey],
-            parent: rootId
+            parent: this.rootId
         }));
     }
+    return parent;
 }
 t.prototype.getTrait = function(row) {
     var obj = {};
@@ -68,7 +55,7 @@ t.prototype.getTrait = function(row) {
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
     // always need a reference to its language
     obj['language'] = row[langKey]
-    obj.name = trait["Name of Trait"];
+    obj.name = obj["Name of Trait"];
     if(!obj.name) {
         obj.name = 'No trait name found'
     }
@@ -178,7 +165,63 @@ t.prototype.findFreeId = function() {
 t.prototype.processTerms = function() {
     // find freeId
     var freeId = this.findFreeId()
-    log(''+freeId)
+    
+    // MAIN LOOP
+    for(var i in this.terms) {
+        // TRAIT
+        var trait = this.terms[i];
+        if(trait[mod]) {
+            trait.id = trait[mod];
+        } else {
+            trait.id = this.ontologyId + ':' + pad(freeId++, 7);
+        }
 
+        // TRAIT CLASS
+        var traitClassId = this.createTraitClass(this.terms[i])
+        trait.parent = traitClassId
+
+        // METHOD
+        var method = trait.method;
+        if(method) {
+            if(method[methodMod]) {
+                method.id = method[methodMod];
+            } else {
+                method.id = this.ontologyId + ':' + pad(freeId++, 7);
+            }
+            method.parent = trait.id;
+        }
+
+        // SCALE
+        var scale = method ? method.scale : false;
+        if(scale) {
+            if(scale[scaleMod]) {
+                scale.id = scale[scaleMod];
+            } else {
+                scale.id = this.ontologyId + ':' + pad(freeId++, 7);
+            }
+            scale.parent = method.id;
+        }
+
+        // check that the terms array contains an element "Name of Trait".
+        // this is our validation to make sure the template is correct
+        if(!trait.name) {
+            throw "Check that your template is structured correctly! Seems like the 'Name of Trait' columns is missing";
+        }
+
+        // add scale
+        if(scale) {
+            taskqueue.createTask("/create-term", JSON.stringify(scale));
+        }
+
+        // add method
+        if(method) {
+            delete method['scale'];
+            taskqueue.createTask("/create-term", JSON.stringify(method));
+        }
+
+        // add trait
+        delete trait['method'];
+        taskqueue.createTask("/create-term", JSON.stringify(trait));
+    }
 }
 

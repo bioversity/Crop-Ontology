@@ -4,9 +4,11 @@ function err(msg) {
     $error.show(); 
     $error.text(msg);
 
+    /*
     setTimeout(function(){
         $error.fadeOut();
     }, 3000);
+    */
 }
 
 function getTerm() {
