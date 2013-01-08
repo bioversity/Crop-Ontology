@@ -798,6 +798,12 @@ apejs.urls = {
 
             var attrObj = googlestore.toJS(termEntity);
 
+            // check english
+            for(var i in attrObj) {
+                if(attrObj[i].english) {
+                    attrObj[i] = attrObj[i].english;
+                }
+            }
 
             var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
                 '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
@@ -813,12 +819,18 @@ apejs.urls = {
             }
 
             if (attrObj["def"]) {
+                if(attrObj['def']['english']) {
+                    attrObj['def'] = attrObj['def']['english']; 
+                }
                 string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
                     '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
                     '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
             }
 
             if (attrObj["synonym"]) {
+                if(attrObj['synonym']['english']) {
+                    attrObj['synonym'] = attrObj['synonym']['english']; 
+                }
                 string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
                     '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
                     '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';

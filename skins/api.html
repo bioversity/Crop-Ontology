@@ -66,13 +66,6 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Example:</strong> <span class="example" query="stem rust"></span></li>
 </ul>
 
-<h2>Retrieve IB Fieldbook Default List</h2>
-<ul>
-    <li><strong>URL:</strong> <code>{{URL}}/ibfieldbook</code></li>
-    <li><strong>Method:</strong> <code>GET</code></li>
-    <li><strong>Returns:</strong> An object - each key being the ontology name and the value being the array of ids</li>
-</ul>
-
 <h2>Retrieve all Ontologies</h2>
 <ul>
     <li><strong>URL:</strong> <code>{{URL}}/get-ontologies</code></li>
@@ -102,6 +95,15 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Method:</strong> <code>GET</code></li>
     <li><strong>Returns:</strong> Array of objects; each one representing an ontology</li>
     <li><strong>Example:</strong> <span class="example" category="010-089 General Germplasm Ontology"></span></li>
+</ul>
+
+<a name="rdf"></a>
+<h2>Retrieve Terms in RDF</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/rdf/{termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> XML related RDF</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
 </ul>
 
 <h2>Retrieve Root Terms of an Ontology</h2>
@@ -179,6 +181,14 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Method:</strong> <code>POST</code>. {ontologyID}</li>
     <li><strong>Returns:</strong> HTTP error if something went wrong</li>
 </ul>
+
+<h2>Retrieve IB Fieldbook Default List</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/ibfieldbook</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> An object - each key being the ontology name and the value being the array of ids</li>
+</ul>
+
 </div><!-- /api_left -->
 <div class="api_right">
     <div id="disqus_thread"></div>
