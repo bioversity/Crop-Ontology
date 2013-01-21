@@ -48,6 +48,20 @@ var languages = {{>languages}};
 
 </script>
 
+<script>
+$(function() {
+
+    var helpUrl = 'https://sites.google.com/feeds/content/cgxchange.org/genesys?path=/help&callback=?';
+
+    $.getJSON(helpUrl, function(data) {
+        var $data = $(data);
+        var html =  $data.find("content div");
+        $(".help_content").html(html);
+    });
+});
+
+</script>
+
 </head> 
  
 <body class="explore"> 
@@ -86,7 +100,8 @@ var languages = {{>languages}};
             </div> 
         </div>
         <div id="survey">
-            <img src="/images/lightbulb.png" /> <a href="http://wiki.plantontology.org/index.php/Plant_Ontology_and_Crop_Annotation_Workshop_OSU_2012">Plant Trait Ontology and Crop Annotation Workshop,  at Oregon State University, US,  12th-15th September 2012 - consult the wiki!</a>
+            <img src="/images/lightbulb.png" style="float: left" /> 
+            <div class="help_content" style="margin-left: 20px;">Loading...</div>
         </div>
         <div class="site"> 
 <div class="pagehead"> 

@@ -1,19 +1,3 @@
-<script>
-$(function() {
-
-    var helpUrl = 'https://sites.google.com/feeds/content/cgxchange.org/genesys?path=/help&callback=?';
-
-    $.getJSON(helpUrl, function(data) {
-        var $data = $(data);
-        var html =  $data.find("content div");
-        $(".help_content").html(html);
-    });
-});
-
-</script>
-<h2>Help</h2>
-
-<p class="help_content">Loading...</p>
 
 <h2>Video Tutorials</h2>
 <style type="text/css"> 
