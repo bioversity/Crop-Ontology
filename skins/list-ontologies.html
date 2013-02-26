@@ -37,7 +37,7 @@ function addRow(obj, par) {
     $row.find(".comments_rss")
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
     $row.find(".n-triples")
-                .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/nt");
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/ttl");
 
     $row.find("a.username").click(function(e) {
         UserWidget.show(obj.userid);

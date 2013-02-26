@@ -291,11 +291,16 @@ apejs.urls = {
 
                 return;
             }
-            if(matches[3] && matches[3] == "nt") {
+            if(matches[3] && matches[3] == "ttl") {
                 response.setContentType('text/plain');
 
-                var ntriples = new rdf(ontoId).nTriples();
-                print(response).text(ntriples);
+                // get this ontology data from it's id
+                var ontoKey = googlestore.createKey("ontology", ontoId),
+                    ontoEntity = googlestore.get(ontoKey);
+
+
+                var turtle = new rdf(ontoEntity).buildTurtle();
+                print(response).text(turtle);
                 
                 return;
             }
