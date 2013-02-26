@@ -14,6 +14,7 @@ var auth = require("./auth.js");
 var log = require("./log.js");
 var email = require("./email.js");
 var rss = require("./rss.js");
+var rdf = require("./rdf.js");
 var httpget = require("./httpget.js");
 var blobstore = require("./blobstore.js");
 var taskqueue = require("./taskqueue.js");
@@ -288,6 +289,14 @@ apejs.urls = {
                 response.setContentType("application/xml");
                 print(response).rss(matches[2] + " ("+matches[1]+") - Latest Comments", ontoComments);
 
+                return;
+            }
+            if(matches[3] && matches[3] == "nt") {
+                response.setContentType('text/plain');
+
+                var ntriples = new rdf(ontoId).nTriples();
+                print(response).text(ntriples);
+                
                 return;
             }
             var assoc = {

@@ -636,6 +636,17 @@ text-decoration: none;
 }
 
 
+a.n-triples {
+    display: block;
+    position: absolute;
+    top: 8px;
+    right: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    background: url("/images/n-triples.gif") no-repeat;
+    height: 15px;
+    width: 14px;
+}
 a.comments_rss {
     display: block;
     position: absolute;

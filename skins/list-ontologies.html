@@ -36,6 +36,8 @@ function addRow(obj, par) {
 
     $row.find(".comments_rss")
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
+    $row.find(".n-triples")
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/nt");
 
     $row.find("a.username").click(function(e) {
         UserWidget.show(obj.userid);
@@ -124,6 +126,7 @@ $.getJSON("/get-ontologies", function(cats) {
                     <ol class="ranked-repositories row" style="display: none;">
                         <li>
                             <a href="#" title="Comments RSS" class="comments_rss"></a>
+                            <a href="#" title="RDF/N-Triples" class="n-triples"></a>
                             <h3>
                                 <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a> <small></small><a href="#" class="username">Ciao</a>
                             </h3>
