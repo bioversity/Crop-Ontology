@@ -26,7 +26,7 @@ var template = require('./template.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.47";
+var VERSION = "0.8.48";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
