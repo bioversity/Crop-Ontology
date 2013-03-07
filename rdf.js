@@ -108,6 +108,7 @@ rdf.prototype.buildTurtle = function() {
         .find({ 
             ontology_id: this.ontology.ontology_id
         })
+        .sort('id', 'DESC')
         .each(function() {
             if(this.relationship) {
                 that.buildProperty(this);
