@@ -2498,6 +2498,12 @@ apejs.urls = {
                     // if parsing failed, revert to what it was
                     obj.name = obj.name;
                 }
+                try {
+                    obj.ontology_name = JSON.parse(obj.ontology_name);
+                } catch(e) {
+                    // if parsing failed, revert to what it was
+                    obj.ontology_name = obj.ontology_name;
+                }
                 arr.push(obj);
             }
             print(res).json(arr);
