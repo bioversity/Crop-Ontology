@@ -31,11 +31,12 @@ s.prototype.add = function(doc) {
         if(text instanceof Text) {
             text = text.getValue();
         }
-        /*
-        if(name == 'id') {
+        if(name == 'xref' || name == 'synonym' || name == 'is_a' || name == 'part_of') {
             text = JSON.stringify(text);
         }
-        */
+        if(!name.match(/^[A-Za-z][A-Za-z0-9_]*$/g)) {
+            continue; // skip
+        }
         if(text) {
             docBuilder.addField(com.google.appengine.api.search.Field.newBuilder().setName(name).setText(text));
         }

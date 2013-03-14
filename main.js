@@ -2457,15 +2457,18 @@ apejs.urls = {
     },
     "/rebuild-search-index": {
         get: function(req, res) {
-            taskqueue.createTask("/rebuild-search-index-task", "");
+            var ontology_id = req.getParameter('ontology_id');
+            taskqueue.createTask("/rebuild-search-index-task", ontology_id);
         }
     },
     "/rebuild-search-index-task": {
         post: function(req, res) {
             var s = new search();
+            // default is jsonTerm whatever!
+            var ontology_id = req.getParameter('jsonTerm');
             // get all terms :/
             select('term')
-                .find()
+                .find({ ontology_id: ontology_id })
                 .each(function() {
                     // add document to search index
                     s.add(this);
