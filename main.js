@@ -22,11 +22,12 @@ var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET
 var excel = require("./excel.js");
 var languages = require("./languages.js");
 var template = require('./template.js');
+var search = require('./search.js');
 
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.48";
+var VERSION = "0.8.50";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -993,6 +994,7 @@ apejs.urls = {
             */
         }
     },
+    /*
     "/search" : {
         get: function(request, response, matches) {
             var q = request.getParameter("q");
@@ -1062,6 +1064,7 @@ apejs.urls = {
             return print(response).json(res, callback);
         }
     },
+    */
     "/login" : {
         get: function(request, response) {
             // find user with this key and return its data
@@ -2450,6 +2453,51 @@ apejs.urls = {
             var html = renderIndex("skins/reset-password.html", data);
             print(res).text(html);
 
+        }
+    },
+    "/rebuild-search-index": {
+        get: function(req, res) {
+            taskqueue.createTask("/rebuild-search-index-task", "");
+        }
+    },
+    "/rebuild-search-index-task": {
+        post: function(req, res) {
+            var s = new search();
+            // get all terms :/
+            select('term')
+                .find()
+                .each(function() {
+                    // add document to search index
+                    s.add(this);
+                });
+        }
+    },
+    "/search": {
+        get: function(req, res) {
+            var q = req.getParameter('q');
+            var s = new search();
+            var results = s.search(q);
+            var iter = results.iterator();
+            var arr = [];
+            while(iter.hasNext()) {
+                var scoredDoc = iter.next();
+
+                var fields = scoredDoc.getExpressions();
+
+                var obj = {}
+                obj.id = ''+scoredDoc.getOnlyField('id').getText();
+                obj.name = ''+scoredDoc.getOnlyField('name').getText();
+                obj.ontology_name = ''+scoredDoc.getOnlyField('ontology_name').getText();
+                // try parsing the name as it might be a JSON string
+                try {
+                    obj.name = JSON.parse(obj.name);
+                } catch(e) {
+                    // if parsing failed, revert to what it was
+                    obj.name = obj.name;
+                }
+                arr.push(obj);
+            }
+            print(res).json(arr);
         }
     },
     "/memcache-clear": {

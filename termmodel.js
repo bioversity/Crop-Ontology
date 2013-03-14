@@ -46,7 +46,7 @@ var termmodel = (function(){
 
         //term.parent = term.parent || null; // important to track the roots
 
-        term.normalized = normalize(term); // important for search
+        //term.normalized = normalize(term); // important for search
 
         if(term.comment)
             term.comment = new Text(term.comment);

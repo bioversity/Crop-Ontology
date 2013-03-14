@@ -1250,14 +1250,28 @@ var events = function(){
     // search
     function selectItem(li) {
         var $li = $(li);
-        window.location.href = "/terms/"+$li.attr("term_id")+"/"+$li.attr("term_name");
+        window.location.href = "/terms/"+$li.attr("term_id")+'/';
     }
     function formatItem(term) {
         var name = term.name
         var ontologyName = term.ontology_name
 
-        if(name.english) name = name.english
-        if(ontologyName.english) ontologyName = ontologyName.english
+        if(name.english) { 
+            name = name.english
+        } else if($.isPlainObject(name)) {
+            for(var i in name) {
+                name = name[i];
+                break;
+            }
+        }
+        if(ontologyName.english) { 
+            ontologyName = ontologyName.english
+        } else if($.isPlainObject(ontologyName)) {
+            for(var i in ontologyName) {
+                ontologyName = ontologyName[i];
+                break;
+            }
+        }
 
         return name + " ("+ontologyName+")";
     }
