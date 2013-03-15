@@ -357,7 +357,7 @@ apejs.urls = {
 
                 rootTerms.forEach(function(term) {
                     var name = term.getProperty("name");
-                    if(term.getProperty("is_obsolete") && term.getProperty("is_obsolete").equals("true")) return;
+                    if(term.getProperty("is_obsolete")) return;
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
