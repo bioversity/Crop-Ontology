@@ -122,7 +122,8 @@ var bindEvents = function() {
             window.location.href = "/";
 
         }).error(function(e) {
-            err("Something went wrong. Retry!");
+            var responseText = $(e.responseText).eq(0).text();
+            err(responseText);
             $this.show();
         });
         

@@ -59,6 +59,7 @@ var termmodel = (function(){
                 term[i] = new Text(term[i]);
         }
 
+        // create in datastore
         var termEntity;
         try {
             var termKey = googlestore.createKey("term", term.id),
