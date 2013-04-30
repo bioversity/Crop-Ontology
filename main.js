@@ -1228,8 +1228,6 @@ apejs.urls = {
             var currUser = auth.getUser(request);
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-            if(!auth.isAdmin(currUser)) 
-                return error(response, "Need to be an admin to upload ontologies. Request upload rights from the 'Contact Us' link at the bottom of the page");
                 
             var json = request.getParameter("json");
 
@@ -1335,8 +1333,6 @@ apejs.urls = {
             var currUser = auth.getUser(request);
             if(!currUser)
                 return err("Not logged in");
-            if(!auth.isAdmin(currUser)) 
-                return err("Need to be an admin to upload ontologies. Request upload rights from the 'Contact Us' link at the bottom of the page");
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 oboBlobKey = blobs.get("obofile");
@@ -1903,8 +1899,6 @@ apejs.urls = {
             var currUser = auth.getUser(request);
             if(!currUser)
                 return err("Not logged in");
-            if(!auth.isAdmin(currUser)) 
-                return err("Need to be an admin to upload ontologies. Request upload rights from the 'Contact Us' link at the bottom of the page");
 
             function getTrait(row) {
                 var obj = {};
