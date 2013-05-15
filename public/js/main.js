@@ -1486,6 +1486,7 @@ function LoadOntology(ontoId) {
         loader($root, false);
         //Search.init(jsonTree);
         var oboBlobKey = false;
+        var excelBlobKey = false;
        
         for(var i=0, len=roots.length; i<len; i++) {
             var last = false;
@@ -1494,12 +1495,16 @@ function LoadOntology(ontoId) {
 
             // roots always have children :)
             roots[i].has_children = true;
-            oboBlobKey = roots[i].oboBlobKey
+            oboBlobKey = roots[i].oboBlobKey;
+            excelBlobKey = roots[i].excelBlobKey;
 
             var li = make_li(roots[i], last);
             $root.append(li);
         }
 
+        if(excelBlobKey && excelBlobKey != 'null') {
+            $('.excel-blob-key').attr('href', '/serve/'+excelBlobKey).show() 
+        }
         if(oboBlobKey && oboBlobKey != 'null') {
             $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
         }

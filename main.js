@@ -27,7 +27,7 @@ var search = require('./search.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.50";
+var VERSION = "0.8.52";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -355,6 +355,26 @@ apejs.urls = {
                                 .fetch();
                 var ret = [];
 
+                var excelBlobKey = googlestore.query('term')
+                                    .filter("ontology_id", "=", ontoId)
+                                    .filter("excel_blob_key", "!=", null)
+                                    .limit(1)
+                                    .fetch();
+                if(excelBlobKey.length)
+                    excelBlobKey = excelBlobKey[0].getProperty('excel_blob_key')
+
+                try {
+                    var o = JSON.parse(excelBlobKey);
+
+                    for(var i in o) {
+                        excelBlobKey = o[i]; 
+                        break;
+                    }
+
+
+                }catch(e){}
+
+
                 rootTerms.forEach(function(term) {
                     var name = term.getProperty("name");
                     if(term.getProperty("is_obsolete")) return;
@@ -362,7 +382,8 @@ apejs.urls = {
                     ret.push({
                         "id": ""+term.getProperty("id"),
                         "name": ""+(name instanceof Text ? name.getValue() : name),
-                        oboBlobKey: ''+term.getProperty('obo_blob_key')
+                        oboBlobKey: ''+term.getProperty('obo_blob_key'),
+                        excelBlobKey: ''+excelBlobKey
                     });
                 });
 
