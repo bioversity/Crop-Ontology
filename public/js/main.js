@@ -1503,7 +1503,9 @@ function LoadOntology(ontoId) {
         }
 
         if(excelBlobKey && excelBlobKey != 'null') {
-            $('.excel-blob-key').attr('href', '/serve/'+excelBlobKey).show() 
+            if(excelBlobKey.charAt(0) != '[') {
+                $('.excel-blob-key').attr('href', '/serve/'+excelBlobKey).show() 
+            }
         }
         if(oboBlobKey && oboBlobKey != 'null') {
             $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
