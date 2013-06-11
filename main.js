@@ -2534,5 +2534,23 @@ apejs.urls = {
         post: function(req, res) {
             memcache.clearAll();
         }
+    },
+    "/get-terms-by-property": {
+        get: function(req, res) {
+            var property = req.getParameter('property');
+
+            var terms = googlestore.query("term")
+                            .filter(property, "!=", null)
+                            .fetch();
+
+            var result = [];
+            terms.forEach(function(term){
+                result.push(googlestore.toJS(term));
+            });
+
+
+            print(res).json(result);
+            
+        }
     }
 };
