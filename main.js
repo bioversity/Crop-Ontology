@@ -2558,5 +2558,27 @@ apejs.urls = {
             print(res).json(result);
             
         }
+    },
+    "/dump": {
+        get: function(req, res) {
+            var offset = req.getParameter('offset') || 0;
+            var terms = googlestore.query("term")
+                            .offset(offset)
+                            .fetch(1000);
+            var arr = []
+            for(var i=0; i<terms.length; i++) {
+                var t = terms[i];
+                var j = select.fn.toJS(t);
+                if(j.normalized)
+                    delete j.normalized;
+                if(j.obo_blob_key)
+                    delete j.obo_blob_key;
+                if(j.excel_blob_key)
+                    delete j.excel_blob_key;
+
+                arr.push(j);
+            }
+            print(res).json(arr);
+        }
     }
 };
