@@ -395,6 +395,10 @@ apejs.urls = {
     },
     "/get-ontology-id": {
         get: function(request, response) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/json; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
             var ontology_name = request.getParameter("ontology_name");
             if(isblank(ontology_name))
                 return error(response, "Missing ontology_name");
@@ -410,7 +414,9 @@ apejs.urls = {
             if(!ontology)
                 return error(response, "No traits found for this ontology crop");
 
-            print(response).text(ontology.getProperty("ontology_id"));
+            var ret = [];
+            ret.push({"id": ""+ontology.getProperty("ontology_id")});
+            print(response).json(ret, request.getParameter("callback"));
         }
     },
     "/delete-ontology": {
