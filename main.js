@@ -842,7 +842,7 @@ apejs.urls = {
 
             // check english
             for(var i in attrObj) {
-                if(attrObj[i].english) {
+                if(attrObj[i] && attrObj[i].english) {
                     attrObj[i] = attrObj[i].english;
                 }
             }

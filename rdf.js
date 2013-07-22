@@ -11,10 +11,7 @@ rdf.prototype.buildPrefix = function() {
     this.turtle += ['@prefix : <'+this.uri +'>.',
         '@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.',
         '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.',
-        '@prefix owl: <http://www.w3.org/2002/07/owl#>.',
-        '@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.',
-        '@prefix foaf: <http://xmlns.com/foaf/0.1/>.',
-        '@prefix dct: <http://purl.org/dc/terms/>.'].join('\n');
+        '@prefix skos: <http://www.w3.org/2004/02/skos/core#>.'].join('\n');
 
     this.turtle += '\n\n';
 }
@@ -98,11 +95,59 @@ rdf.prototype.buildClass = function(term) {
 
     this.turtle += '   .\n';
 }
+rdf.prototype.convertId = function(id) {
+    function idUrl() { return arguments[1].toUpperCase(); };
+    id = id.replace(/ (.)/g, idUrl);
+    id = id.replace(/\(|\)|,|&|\/| |%/g, '');
+    return id;
+}
+rdf.prototype.buildConcept = function(term) {
+    var names = this.findLangs(term.name);
+    if(names.english == 'Categorical' || names.english == 'Continuous' || names.english == 'Discrete') {
+        return;
+    }
+
+    // make term.id and term.parent a nice CamelCase if it has words
+    term.id = this.convertId(term.id);
+    term.parent = this.convertId(term.parent);
+
+    this.turtle += ':' + term.id + ' a skos:Concept;\n';
+    
+    // do name
+    for(var i in names) {
+        var jsonName = JSON.stringify(names[i]);
+        if(jsonName != undefined) {
+            this.turtle += '   rdfs:label ' + jsonName + '@' + languages.getIso[i].toLowerCase() + ';\n';
+        }
+    }
+
+    // do description
+    if(term.description) {
+        var desc = this.findLangs(term.description);
+    } else if(term['Describe how measured (method)']) {
+        var desc = this.findLangs(term['Describe how measured (method)']);
+    } else { // no descritption
+        var desc = {};
+    }
+    for(var i in desc) {
+        var jsonDesc = JSON.stringify(desc[i]);
+        if(jsonDesc != undefined) {
+            this.turtle += '   rdfs:comment ' + jsonDesc + '@' + languages.getIso[i].toLowerCase() + ';\n';
+        }
+    }
+
+    // broader
+    if(term.parent != 'null') {
+        this.turtle += '   skos:broader :' + term.parent + ';\n';
+    }
+
+    this.turtle += '   .\n';
+}
 rdf.prototype.buildTurtle = function() {
     var that = this;
 
     this.buildPrefix();
-    this.buildOnto();
+    //this.buildOnto();
 
     select('term')
         .find({ 
@@ -110,11 +155,14 @@ rdf.prototype.buildTurtle = function() {
         })
         .sort('id', 'DESC')
         .each(function() {
+            that.buildConcept(this);
+            /*
             if(this.relationship) {
                 that.buildProperty(this);
             } else {
                 that.buildClass(this);
             }
+            */
         });
 
     return this.turtle;
