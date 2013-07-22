@@ -143,6 +143,46 @@ rdf.prototype.buildConcept = function(term) {
 
     this.turtle += '   .\n';
 }
+rdf.prototype.buildTriple = function(term) {
+    var names = this.findLangs(term.name);
+    if(names.english == 'Categorical' || names.english == 'Continuous' || names.english == 'Discrete') {
+        return;
+    }
+    
+    // let's escape the ID
+    term.id = encodeURIComponent(term.id);
+    term.parent = encodeURIComponent(term.parent);
+
+    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
+    
+    // do name
+    for(var i in names) {
+        var jsonName = JSON.stringify(names[i]);
+        if(jsonName != undefined) {
+            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#label> ' + jsonName + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+        }
+    }
+
+    // do description
+    if(term.description) {
+        var desc = this.findLangs(term.description);
+    } else if(term['Describe how measured (method)']) {
+        var desc = this.findLangs(term['Describe how measured (method)']);
+    } else { // no descritption
+        var desc = {};
+    }
+    for(var i in desc) {
+        var jsonDesc = JSON.stringify(desc[i]);
+        if(jsonDesc != undefined) {
+            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#comment> ' + jsonDesc + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+        }
+    }
+
+    // broader
+    if(term.parent != 'null') {
+        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + term.parent + '> .\n';
+    }
+}
 rdf.prototype.buildTurtle = function() {
     var that = this;
 
@@ -156,6 +196,28 @@ rdf.prototype.buildTurtle = function() {
         .sort('id', 'DESC')
         .each(function() {
             that.buildConcept(this);
+            /*
+            if(this.relationship) {
+                that.buildProperty(this);
+            } else {
+                that.buildClass(this);
+            }
+            */
+        });
+
+    return this.turtle;
+};
+
+rdf.prototype.buildNtriples = function() {
+    var that = this;
+
+    select('term')
+        .find({ 
+            ontology_id: this.ontology.ontology_id
+        })
+        .sort('id', 'DESC')
+        .each(function() {
+            that.buildTriple(this);
             /*
             if(this.relationship) {
                 that.buildProperty(this);

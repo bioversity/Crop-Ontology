@@ -38,7 +38,7 @@ function addRow(obj, par) {
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
     if(obj.oboTerms == 0) {
         $row.find(".n-triples")
-                    .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/ttl");
+                    .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/nt");
     } else {
         $row.find(".n-triples").hide();
     }

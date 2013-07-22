@@ -27,7 +27,7 @@ var search = require('./search.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.54";
+var VERSION = "0.8.56";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -293,6 +293,9 @@ apejs.urls = {
                 return;
             }
             if(matches[3] && matches[3] == "ttl") {
+                response.sendRedirect('nt');
+                return;
+
                 response.setContentType('text/plain');
 
                 // get this ontology data from it's id
@@ -303,6 +306,16 @@ apejs.urls = {
                 var turtle = new rdf(ontoEntity).buildTurtle();
                 print(response).text(turtle);
                 
+                return;
+            }
+            if(matches[3] && matches[3] == "nt") {
+                response.setContentType('text/plain');
+                // get this ontology data from it's id
+                var ontoKey = googlestore.createKey("ontology", ontoId),
+                    ontoEntity = googlestore.get(ontoKey);
+
+                var nt = new rdf(ontoEntity).buildNtriples();
+                print(response).text(nt);
                 return;
             }
             var assoc = {
