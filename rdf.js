@@ -182,7 +182,7 @@ rdf.prototype.buildTriple = function(term) {
 
     // broader
     if(term.parent != 'null') {
-        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#narrower> <' + this.uri + term.parent + '> .\n';
+        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + term.parent + '> .\n';
     }
 }
 rdf.prototype.buildTurtle = function() {

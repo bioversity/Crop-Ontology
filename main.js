@@ -316,7 +316,7 @@ apejs.urls = {
 
                 var nt = new rdf(ontoEntity).buildNtriples();
                 if(matches[3] == 'rdf') { // send this triple data to converter!
-                    var converter = 'http://rdf-translator.appspot.com/convert/nt/pretty-xml/http%3A%2F%2Fwww.cropontology.org%2Fontology%2F'+matches[1]+'%2F'+matches[2]+'%2Fnt';
+                    var converter = 'http://rdf-translator.appspot.com/convert/nt/pretty-xml/http%3A%2F%2Fwww.cropontology.org%2Fontology%2F'+encodeURIComponent(matches[1])+'%2Ffoo%2Fnt';
                     response.sendRedirect(converter);
                     return;
                 }
