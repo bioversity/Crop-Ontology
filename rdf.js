@@ -145,7 +145,7 @@ rdf.prototype.buildConcept = function(term) {
 }
 rdf.prototype.buildTriple = function(term) {
     var names = this.findLangs(term.name);
-    if(names.english == 'Categorical' || names.english == 'Continuous' || names.english == 'Discrete') {
+    if(term.relationship == 'scale_of' || term.relationship == 'method_of') {
         return;
     }
     
@@ -166,6 +166,8 @@ rdf.prototype.buildTriple = function(term) {
     // do description
     if(term.description) {
         var desc = this.findLangs(term.description);
+    } else if(term['Description of Trait']) {
+        var desc = this.findLangs(term['Description of Trait']);
     } else if(term['Describe how measured (method)']) {
         var desc = this.findLangs(term['Describe how measured (method)']);
     } else { // no descritption
