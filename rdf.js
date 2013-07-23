@@ -153,7 +153,7 @@ rdf.prototype.buildTriple = function(term) {
     term.id = encodeURIComponent(term.id);
     term.parent = encodeURIComponent(term.parent);
 
-    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
+    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
     
     // do name
     for(var i in names) {
