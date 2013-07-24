@@ -295,31 +295,20 @@ apejs.urls = {
             if(matches[3] && matches[3] == "ttl") {
                 response.sendRedirect('nt');
                 return;
-
-                response.setContentType('text/plain');
-
-                // get this ontology data from it's id
-                var ontoKey = googlestore.createKey("ontology", ontoId),
-                    ontoEntity = googlestore.get(ontoKey);
-
-
-                var turtle = new rdf(ontoEntity).buildTurtle();
-                print(response).text(turtle);
-                
-                return;
             }
             if(matches[3] && (matches[3] == "nt" || matches[3] == "rdf")) {
-                response.setContentType('text/plain');
-                // get this ontology data from it's id
-                var ontoKey = googlestore.createKey("ontology", ontoId),
-                    ontoEntity = googlestore.get(ontoKey);
-
-                var nt = new rdf(ontoEntity).buildNtriples();
                 if(matches[3] == 'rdf') { // send this triple data to converter!
                     var converter = 'http://rdf-translator.appspot.com/convert/nt/pretty-xml/http%3A%2F%2Fwww.cropontology.org%2Fontology%2F'+encodeURIComponent(matches[1])+'%2Ffoo%2Fnt';
                     response.sendRedirect(converter);
                     return;
                 }
+                response.setContentType('text/plain');
+                // get this ontology data from it's id
+                var ontoKey = googlestore.createKey("ontology", ontoId),
+                    ontoEntity = googlestore.get(ontoKey),
+                    ontologyId = ontoEntity.getProperty('ontology_id');
+
+                var nt = new rdf().buildNtriples(ontologyId);
                 print(response).text(nt);
                 return;
             }
@@ -845,8 +834,8 @@ apejs.urls = {
     "/rdf/([^/]*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8");
-            response.setContentType("application/rdf+xml; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
+            response.setContentType('text/plain');
 
             var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
@@ -854,82 +843,10 @@ apejs.urls = {
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
 
-            var attributes = [];
+            var termJS = select.fn.toJS(termEntity);
 
-            var attrObj = googlestore.toJS(termEntity);
-
-            // check english
-            for(var i in attrObj) {
-                if(attrObj[i] && attrObj[i].english) {
-                    attrObj[i] = attrObj[i].english;
-                }
-            }
-
-            var string = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-                '<rdf:RDF xmlns="http://purl.org/obo/owl/" \n' +
-                'xmlns:owl="http://www.w3.org/2002/07/owl#" \n' +
-                'xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#" \n' +
-                'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" \n' +
-                'xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" > \n' +
-                '<owl:AnnotationProperty rdf:about="http://www.geneontology.org/formats/oboInOwl#hasSynonym"/> \n' +
-                '<owl:Class rdf:about="http://www.cropontology.org/rdf/' + term_id + '"> \n';
-
-            if (attrObj["name"]) {
-                string = string + '<rdfs:label xml:lang="en">' + attrObj["name"] + '</rdfs:label>\n';
-            }
-
-            if (attrObj["def"]) {
-                if(attrObj['def']['english']) {
-                    attrObj['def'] = attrObj['def']['english']; 
-                }
-                string = string + '<oboInOwl:hasDefinition>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["def"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:hasDefinition>';
-            }
-
-            if (attrObj["synonym"]) {
-                if(attrObj['synonym']['english']) {
-                    attrObj['synonym'] = attrObj['synonym']['english']; 
-                }
-                string = string + '<oboInOwl:hasExactSynonym>\n<oboInOwl:Synonym>\n<oboInOwl:Definition>\n' +
-                    '<rdfs:label xml:lang="en">' + attrObj["synonym"] + '</rdfs:label>\n' +
-                    '</oboInOwl:Definition>\n</oboInOwl:Synonym>\n</oboInOwl:hasExactSynonym>';
-            }
-
-            if (attrObj["xref"]) {
-                string = string + '<oboInOwl:hasDbXref>\n<oboInOwl:DbXref>\n<rdfs:label xml:lang="en">' +
-                    attrObj["def"] + '</rdfs:label>\n</oboInOwl:DbXref>\n</oboInOwl:hasDbXref>\n';
-            }
-
-            if (attrObj["comment"]) {
-                string = string + '<rdfs:comment>' + attrObj["comment"] + '</rdfs:comment>\n';
-            }
-
-            if (attrObj["parent"]) {
-                if(attrObj["parent"] instanceof Text){
-                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' +
-                        attrObj["parent"] +  '"/>\n';
-                } else {
-                    for(var i=0; i<attrObj["parent"]; i++) {
-                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' +
-                            attrObj["parent"] +  '"/>\n';
-                    }
-                }
-            }
-
-            if (attrObj["is_a"]) {
-                if(attrObj["is_a"] instanceof Text){
-                    string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' + attrObj["is_a"] +  '"/>\n';
-                } else {
-                    for(var i=0; i<attrObj["is_a"]; i++) {
-                        string = string + '<rdfs:subClassOf rdf:resource="http://www.cropontology.org/rdf/' + attrObj["is_a"][i] +  '"/>\n';
-                    }
-                }
-            }
-
-            string = string + "</owl:Class>\n</rdf:RDF>";
-
-            response.getWriter().println(string);
+            var nt = new rdf().buildTriple(termJS);
+            print(response).text(nt);
         }
     },
     "/httpget": {
