@@ -27,7 +27,7 @@ var search = require('./search.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.56";
+var VERSION = "0.8.58";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {

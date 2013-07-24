@@ -19,18 +19,17 @@ rdf.prototype.convertId = function(id) {
     return id;
 }
 rdf.prototype.buildTriple = function(term) {
-    var names = this.findLangs(term.name);
     if(term.relationship == 'scale_of' || term.relationship == 'method_of') {
         return;
     }
     
     // let's escape the ID
     term.id = encodeURIComponent(term.id);
-    term.parent = encodeURIComponent(term.parent);
 
     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
     
     // do name
+    var names = this.findLangs(term.name);
     for(var i in names) {
         var jsonName = JSON.stringify(names[i]);
         if(jsonName != undefined) {
@@ -41,6 +40,8 @@ rdf.prototype.buildTriple = function(term) {
     // do description
     if(term.description) {
         var desc = this.findLangs(term.description);
+    } else if(term['def']) {
+        var desc = this.findLangs(term['def']);
     } else if(term['Description of Trait']) {
         var desc = this.findLangs(term['Description of Trait']);
     } else if(term['Describe how measured (method)']) {
@@ -57,7 +58,13 @@ rdf.prototype.buildTriple = function(term) {
 
     // broader
     if(term.parent != 'null') {
-        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + term.parent + '> .\n';
+        if(typeof term.parent != 'string') { // multiple broader
+            for(var i in term.parent) {
+                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + encodeURIComponent(term.parent[i]) + '> .\n';
+            }
+        } else { // just a single broader
+            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + encodeURIComponent(term.parent) + '> .\n';
+        }
     }
 
     return this.turtle;

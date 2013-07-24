@@ -247,7 +247,8 @@ select.fn = {
 
             if(value instanceof java.util.List) {
                 // this is how we convert Java Lists into JavaScript native arrays
-                ret[key] = org.mozilla.javascript.NativeArray(value.toArray());
+                //ret[key] = org.mozilla.javascript.NativeArray(value.toArray());
+                ret[key] = value.toArray();
             } else {
                 // putting an empty string in front of it
                 // casts it to a JavaScript string even if it's

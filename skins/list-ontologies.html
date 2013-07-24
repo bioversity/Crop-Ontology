@@ -36,12 +36,9 @@ function addRow(obj, par) {
 
     $row.find(".comments_rss")
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
-    if(obj.oboTerms == 0) {
-        $row.find(".n-triples")
-                    .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/nt");
-    } else {
-        $row.find(".n-triples").hide();
-    }
+
+    $row.find(".n-triples")
+                .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/nt");
 
     $row.find("a.username").click(function(e) {
         UserWidget.show(obj.userid);
