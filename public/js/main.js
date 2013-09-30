@@ -1502,11 +1502,13 @@ function LoadOntology(ontoId) {
             $root.append(li);
         }
 
+        /*
         if(excelBlobKey && excelBlobKey != 'null') {
             if(excelBlobKey.charAt(0) != '[') {
                 $('.excel-blob-key').attr('href', '/serve/'+excelBlobKey).show() 
             }
         }
+        */
         if(oboBlobKey && oboBlobKey != 'null') {
             $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
         }

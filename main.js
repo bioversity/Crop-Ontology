@@ -2149,6 +2149,34 @@ apejs.urls = {
         get: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
+
+            var excels = {
+                'CO_334': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Cassava%2020120524%20EN-Default%20trait%20set%20english.xlsx',
+                'CO_324': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Sorghum%2020130121%20EN%20Trait%20Dicitonary%20ver%204.xls',
+                'CO_338': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Chickpea%2020120801%20EN%20TD_Ontology.xls?attredirects=0&d=1',
+                'CO_335': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Common%20Bean%20EN%2020121102%20200%20Traits%20Template%204%20plus%20term_ids%20.xlsx?attredirects=0&d=1',
+                'CO_340': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Cowpea%2020120413%20EN-50TraitTemplatever3_1FINAL.xlsx?attredirects=0&d=1',
+                'CO_337': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Groundnut%2020120529%20EN-Default%20Trait%20Set.xls?attredirects=0&d=1',
+                'CO_322': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Maize%2020120327%20EN-50%20Trait_TTemplate_ver3-IBP-RS-1_EAIDs.xlsx?attredirects=0&d=1',
+                'CO_327': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Pearl%20millet%2020130116%20EN%20TraitTemplate_ver_4.xlsx?attredirects=0&d=1',
+                'CO_341': 'http://www.cropontology.org/serve/AMIfv96Hm4mX_ThvGCrodMBSLgoa3XENZFuQY-9HsSlTLfJyP7yCl4aci4jbhX1l682H-woHvN8a6FmJZgfr4VlVM_aLiMje7uOMt-maPD_RKb6oiB1OaXBRL1sEgpFF-jKUJHALrzQDg2HcpSMq5DuoJMj7PRIjv5whgOBaOIao1-OXdorcqvyqtEYawhKr8MYsEt768k3B',
+                'CO_320': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Rice%2020120521%20CN%20-Default%20Set%20NB%20plus%20revised%20method%20names.xlsx?attredirects=0&d=1',
+                'CO_321': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Wheat%2020120506%20EN-50%20Traits-AP-RS-Revised-.xlsx?attredirects=0&d=1',
+                'CO_343': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Yam%2020121129%20EN%20Traits%20Template%20v4.xlsx?attredirects=0&d=1'
+              
+            };
+
+            if(excels[ontoId]) {
+
+                return response.sendRedirect(excels[ontoId]);
+            } else {
+                return error(response, "Sorry there's no Excel version of this ontology");
+            }
+
+            return;
+
+            var ontoId = request.getParameter("ontology_id");
+            if(isblank(ontoId)) return error(response, "Invalid parameter");
             var language = request.getParameter('language');
             if(isblank(language)) 
                 language = languages.default;
