@@ -170,7 +170,7 @@ translate = function(currUser, value) {
 
 // does login WOW this code is so messy it's not even funny
 // but there's a demo in 2 weeks and i have to build facebook like interface
-function Login(func) {
+Login = function(func) {
     // reach /login and see if there's a session
     $.get("/login", function(data) {
         if(data.username != "") {

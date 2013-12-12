@@ -27,7 +27,7 @@ var search = require('./search.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.58";
+var VERSION = "0.8.8";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -134,6 +134,23 @@ apejs.urls = {
         get: function(request, response) {
             var html = renderIndex("skins/list-ontologies.html");
             print(response).text(html);
+
+            var token = request.getParameter("token"); 
+            if(!isblank(token)) {
+                try {
+                    var url = 'https://www.integratedbreeding.net/auth/?key=cropon_nc39F34j&token=' + token;
+                    var result = httpget(url);
+                    var j = JSON.parse(result);
+                    if(j.error) throw "Invalid token";
+                    // if we get here, we can login this user!
+                    // try logging in with username=username and password=token
+                    // if not, register (all on the client using Ajax APIs)
+                    j.token = token;
+                    var ibpHtml = Mustache.to_html(render("skins/ibp.html"), j);
+                    print(response).text(ibpHtml);
+                } catch(e) {
+                }
+            }
         }
     },
     "/api": {
@@ -2012,7 +2029,7 @@ apejs.urls = {
                     }
                     */
                     terms[this.id] = this;
-                    parents[defaultParent(this.parent)] = true;
+                    parents[''+defaultParent(this.parent)] = true;
                 });
 
             function translate(value, language) {
@@ -2054,7 +2071,7 @@ apejs.urls = {
                         newo = 'id';
                     }
                     if(obj2[newo]) {
-                        var t = translate(obj2[newo], language);
+                        var t = ''+translate(obj2[newo], language);
                         if(!t) continue;
                         obj[o] = t;
                     } else {
@@ -2064,7 +2081,7 @@ apejs.urls = {
                 if(id == 'scale' || id == 'obo') {
                     for(var i in obj2) {
                         if(i == 'id' || id == 'relationship') continue;
-                        var t = translate(obj2[i], language);
+                        var t = ''+translate(obj2[i], language);
                         if(!t) continue;
                         obj[i] = t;
                     }
@@ -2076,18 +2093,18 @@ apejs.urls = {
                 var term = terms[id];
                 var relationship = term.relationship;
                 if(typeof relationship == 'object') {
-                    relationship = relationship[0];
+                    relationship = ''+relationship[0];
                 }
                 if(relationship)
-                    relationship = relationship.split(' ')[0];
+                    relationship = ''+relationship.split(' ')[0];
 
                 if(relationship == 'scale_of') {
                     var obj = {};
                     var scale = term;
-                    scale.parent = defaultParent(scale.parent);
+                    scale.parent = ''+defaultParent(scale.parent);
                     var method = terms[scale.parent];
                     if(!method) continue;
-                    method.parent = defaultParent(method.parent);
+                    method.parent = ''+defaultParent(method.parent);
                     var trait = terms[method.parent];
 
                     addTo(obj, trait, 'trait');
@@ -2099,7 +2116,7 @@ apejs.urls = {
                     var obj = {};
                     var scale = {};
                     var method = term;
-                    method.parent = defaultParent(method.parent);
+                    method.parent = ''+defaultParent(method.parent);
                     var trait = terms[method.parent];
 
                     addTo(obj, method, 'method');
@@ -2120,7 +2137,7 @@ apejs.urls = {
                 function hasChildren(termId) {
                     for(var i in terms) {
                         var term = terms[i];
-                        term.parent = defaultParent(term.parent);
+                        term.parent = ''+defaultParent(term.parent);
                         if(term.parent == termId)
                             return false;
                     }
@@ -2150,6 +2167,8 @@ apejs.urls = {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
+            /*
+
             var excels = {
                 'CO_334': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Cassava%2020120524%20EN-Default%20trait%20set%20english.xlsx',
                 'CO_324': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Sorghum%2020130121%20EN%20Trait%20Dicitonary%20ver%204.xls',
@@ -2174,6 +2193,7 @@ apejs.urls = {
             }
 
             return;
+            */
 
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
