@@ -1,0 +1,20 @@
+<script>
+// first try logging in
+$(function() {
+
+$.post('/login', { username: "{{username}}", password: "{{token}}"}, function(data) {
+    var data = $.trim(data);
+    if(data == 'Username or password is wrong!') {
+        // first time from IBP, register user!
+        console.log('registering');
+        $.post('/register', { username: "{{username}}", password: "{{token}}", email: "{{email}}"}, function(data) {
+            Login(function(){});
+        });
+
+    }
+
+});
+
+});
+
+</script>
