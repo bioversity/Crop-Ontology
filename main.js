@@ -1,28 +1,4 @@
 var apejs = require("apejs.js");
-var googlestore = require("googlestore.js");
-var memcache = require("memcache.js");
-var select = require("select.js");
-
-var usermodel = require("./usermodel.js");
-var ontologymodel = require("./ontologymodel.js");
-var commentmodel = require("./commentmodel.js");
-var termmodel = require("./termmodel.js");
-var usermodel = require("./usermodel.js");
-
-var fileupload = require("./fileupload.js");
-var auth = require("./auth.js");
-var log = require("./log.js");
-var email = require("./email.js");
-var rss = require("./rss.js");
-var rdf = require("./rdf.js");
-var httpget = require("./httpget.js");
-var blobstore = require("./blobstore.js");
-var taskqueue = require("./taskqueue.js");
-var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
-var excel = require("./excel.js");
-var languages = require("./languages.js");
-var template = require('./template.js');
-var search = require('./search.js');
 
 // commonjs modules
 var Mustache = require("./common/mustache.js");
@@ -73,60 +49,15 @@ var error = function(response, msg) {
     response.sendError(response.SC_BAD_REQUEST, msg);
 };
 
-function defaultRelationship(relationship) {
-    if(!relationship) relationship = 'is_a';
-  // relationship could be an array
-  if(relationship && (relationship instanceof java.util.List))
-      relationship = relationship.get(0);
-
-/*
-  if(relationship.length)
-    relationship = relationship[0];
-    */
-
-  if(relationship instanceof Text)
-      relationship = relationship.getValue();
-
-  if(!(relationship instanceof java.lang.String)) {
-    relationship = new java.lang.String(relationship);
-  }
-
-  if(!relationship || relationship.equals("")) {
-      relationship = "is_a";
-  } else {
-      relationship = ""+relationship.trim().split(" ")[0];
-  }
-  return relationship;
-}
-
-function defaultParent(parent) {
-    if(!parent) parent = 0;
-    if(parent === 'null') parent = 0;
-    if(typeof parent === 'string')
-        return parent;
-
-    if(parent.length)
-        parent = parent[0];
-
-    return parent;
-}
-
 function renderIndex(htmlFile, data) {
   if(!data) data = {};
   var partials = { 
     CONTENT: render(htmlFile), 
     VERSION: VERSION,
-    languages: JSON.stringify(languages.all)
+    LANGUAGES: ''
   };
   var html = Mustache.to_html(render("skins/index.html"), data, partials);
   return html;
-}
-function pad(number, length) {
-    var str = '' + number;
-    while (str.length < length) {
-        str = '0' + str;
-    }
-    return str;
 }
 
 apejs.urls = {
