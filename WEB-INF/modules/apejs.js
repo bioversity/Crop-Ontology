@@ -3,7 +3,8 @@ importPackage(java.io);
 var apejs = {
     urls: {},
     run: function(request, response) {
-        var path = request.getPathInfo();
+        //var path = request.getPathInfo();
+        var path = request.getRequestURI();
         var httpMethod = request.getMethod().toLowerCase();
 
         // before running the http verb method run the before handler

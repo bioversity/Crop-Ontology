@@ -5,15 +5,15 @@
 <meta property="og:description" content="The curation and annotation web site is a participatory and intuitive tool for browsing the Crop Ontology of the Generation Challenge Programme. It gives access to specific crop trait terms with definition, measurement methods, scales and photos. Anyone can post a suggestion  for a term. The annotation tool is still a prototype.  Please provide feedback and consult the video tutorials to get a visual explanation of the web site use." />
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 
-<link href="/stylesheets/bundle_common.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
-<link href="/stylesheets/bundle_github.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="/jquery.treeview.css?{{>VERSION}}" />
-<link href="/stylesheets/style.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="/js/jquery.min.1.5.2.js"></script>
+<link href="/public/stylesheets/bundle_common.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
+<link href="/public/stylesheets/bundle_github.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/public/jquery.treeview.css?{{>VERSION}}" />
+<link href="/public/stylesheets/style.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/public/js/jquery.min.1.5.2.js"></script>
 
 <!-- autocomplete -->
-<script type='text/javascript' src='/js/jquery.autocomplete.js?{{>VERSION}}'></script>
-<link rel="stylesheet" type="text/css" href="/stylesheets/jquery.autocomplete.css?{{>VERSION}}" />
+<script type='text/javascript' src='/public/js/jquery.autocomplete.js?{{>VERSION}}'></script>
+<link rel="stylesheet" type="text/css" href="/public/stylesheets/jquery.autocomplete.css?{{>VERSION}}" />
 
 <script>
 var ontologyid = "{{ontologyid}}";
@@ -28,12 +28,12 @@ $(function(){
 });
 var languages = {{>languages}};
 </script>
-<script type="text/javascript" src="/js/markdown.js?{{>VERSION}}"></script>
-<script type="text/javascript" src="/js/main.js?{{>VERSION}}"></script>
+<script type="text/javascript" src="/public/js/markdown.js?{{>VERSION}}"></script>
+<script type="text/javascript" src="/public/js/main.js?{{>VERSION}}"></script>
 
 <!-- new sammy refactoring happening here -->
-<script type='text/javascript' src='/js/sammy-0.7.1.min.js'></script>
-<script type='text/javascript' src='/js/site.js?{{>VERSION}}'></script>
+<script type='text/javascript' src='/public/js/sammy-0.7.1.min.js'></script>
+<script type='text/javascript' src='/public/js/site.js?{{>VERSION}}'></script>
 
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -69,7 +69,7 @@ $(function() {
         <div class="header_top">
             <div class="gcp_logo">
                 <span class="crop-logos" style="display: none">{{{CROP_LOGOS}}}</span>
-                <a href="http://www.generationcp.org/"><img src="/images/gcp-logo.png?{{>VERSION}}" /></a>
+                <a href="http://www.generationcp.org/"><img src="/public/images/gcp-logo.png?{{>VERSION}}" /></a>
             </div>
             <div class="header_logo">
                 <h1><a href="/"><span>Crop Ontology</span> Curation Tool</h1></a>
@@ -92,15 +92,15 @@ $(function() {
                 </div>
                 
                 <div class="header_images"> 
-                    <img src="/images/2_test.png?1" />
-                    <img src="/images/1_test.png?1" />
-                    <img src="/images/wheat.jpg?01" />
-                    <img src="/images/rice.png?01" />
+                    <img src="/public/images/2_test.png?1" />
+                    <img src="/public/images/1_test.png?1" />
+                    <img src="/public/images/wheat.jpg?01" />
+                    <img src="/public/images/rice.png?01" />
                 </div> 
             </div> 
         </div>
         <div id="survey">
-            <img src="/images/lightbulb.png" style="float: left" /> 
+            <img src="/public/images/lightbulb.png" style="float: left" /> 
             <div class="help_content" style="margin-left: 20px;">Loading...</div>
         </div>
         <div class="site"> 
@@ -297,7 +297,7 @@ $(function() {
             </div><!-- /download_onto -->
         </div> <!-- /content -->
         <a href="#" class="close"> 
-            <img src="/images/closelabel.png" title="Close" class="close_image"> 
+            <img src="/public/images/closelabel.png" title="Close" class="close_image"> 
         </a> 
  
     </div> 
