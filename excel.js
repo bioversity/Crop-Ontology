@@ -2,11 +2,15 @@ importPackage(org.apache.poi.ss.usermodel);
 
 var excel = {
 
-    read: function(firstRow, blobKey, callback) {
+    read: function(firstRow, inputStream, callback) {
         // Create a workbook using the File System
-        var myWorkBook = new WorkbookFactory.create(new BlobstoreInputStream(blobKey));
+        var myWorkBook = new WorkbookFactory.create(inputStream);
         // Get the first sheet from workbook
-        var mySheet = myWorkBook.getSheetAt(1);
+        try {
+            var mySheet = myWorkBook.getSheetAt(1);
+        } catch(e) { // try sheet 0
+            var mySheet = myWorkBook.getSheetAt(0);
+        }
 
         // We now need something to iterate through the cells.
         var rowIter = mySheet.rowIterator(); 
@@ -44,9 +48,9 @@ var excel = {
     },
     // firstRow is the number where the first row is...
     // remember that all blank rows are skipped
-    parseTemplate: function(firstRow, blobKey, callback) {
+    parseTemplate: function(firstRow, inputStream, callback) {
         var idValMap = {};
-        excel.read(firstRow, blobKey, function(row, idx) {
+        excel.read(firstRow, inputStream, function(row, idx) {
             var term = {};
             if(idx == 0) { // first row, build map
                 row.forEach(function(item, i) {

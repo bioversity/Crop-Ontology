@@ -1,31 +1,29 @@
 importPackage(org.apache.commons.fileupload);
 importPackage(org.apache.commons.fileupload.servlet);
+importPackage(org.apache.commons.fileupload.disk);
 importPackage(org.apache.commons.io);
-importPackage(com.google.appengine.api.datastore);
 importPackage(java.lang);
 
 var fileupload = {
     getData: function(request) {
         var data = [];
         try {
-            var upload = new ServletFileUpload();
-            var iter = upload.getItemIterator(request);
-            while(iter.hasNext()) {
-                var item = iter.next();
-                var stream = item.openStream();
+            var items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(request);
+            for(var i=0; i<items.size(); i++) {
+                var item = items.get(i);
 
                 if(item.isFormField()) {
                     data.push({
                         file: false,
                         fieldName: item.getFieldName(),
                         // added the "" at the end to convert it to JS string
-                        fieldValue: new java.lang.String(IOUtils.toByteArray(stream), "utf-8")
+                        fieldValue: item.getString()
                     });
                 } else {
                     data.push({
                         file: true,
                         fieldName: item.getName(),
-                        fieldValue: new Blob(IOUtils.toByteArray(stream))
+                        fieldValue: item.getInputStream()
                     });
                 }
 

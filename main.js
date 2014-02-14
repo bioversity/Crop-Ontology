@@ -1,5 +1,8 @@
 var apejs = require("apejs.js");
 
+var auth = require("./auth.js");
+var fileupload = require("./fileupload.js");
+var excel = require("./excel.js");
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
@@ -978,8 +981,8 @@ apejs.urls = {
     "/login" : {
         get: function(request, response) {
             // find user with this key and return its data
-            var user = auth.getUser(request),
-                username = "",
+            var user = auth.getUser(request);
+            var username = "",
                 userid = "";
             if(user) {
                 username = user.getProperty("username");
@@ -1124,20 +1127,16 @@ apejs.urls = {
     "/add-ontology" : {
         get: function(request, response) {
 
-            var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
-            var EXCEL_UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
 
-            var html = renderIndex("skins/add-ontology.html", {
-                ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
-                UPLOAD_URL: UPLOAD_URL,
-                EXCEL_UPLOAD_URL: EXCEL_UPLOAD_URL
-            });
+            var html = renderIndex("skins/add-ontology.html");
             response.getWriter().println(html);
         },
         post: function(request, response) {
             var currUser = auth.getUser(request);
+            /*
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+            */
                 
             var json = request.getParameter("json");
 
@@ -1154,19 +1153,6 @@ apejs.urls = {
                 if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "")
                     return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 
-                // create ontology
-                var ontoEntity = googlestore.entity("ontology", ontologyId, {
-                    created_at: new java.util.Date(),
-                    user_key: currUser.getKey(),
-                    ontology_id: ontologyId,
-                    ontology_name: ontologyName,
-                    ontology_summary: ontologySummary,
-                    category: request.getParameter("category")
-                });
-
-                googlestore.put(ontoEntity);
-
-                memcache.clearAll();
 
                 // now create the terms.
                 // a term is each item in the JSON array
@@ -1798,73 +1784,41 @@ apejs.urls = {
         }
     },
     "/excel-template-upload": {
-        get: function(request, response) {
-            var UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
-            var skin = "<form method='post' enctype='multipart/form-data' action='"+UPLOAD_URL+"'><input type='file' name='excelfile' /><input type='submit' /></form>";
-            response.getWriter().println(skin);
-        },
         post: function(request, response) {
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
             var currUser = auth.getUser(request);
+            /*
             if(!currUser)
                 return err("Not logged in");
+            */
 
-            function getTrait(row) {
-                var obj = {};
-                for(var i in row) {
-                    obj[i] = row[i]; 
-                    if(obj[i] == "") delete obj[i];
-                    if(i == 'Trait Class') break;
+
+            var data = fileupload.getData(request);
+            var filename = '',
+                value = '';
+
+            for(var i=0; i<data.length; i++) {
+                var fieldName = data[i].fieldName,
+                    fieldValue = data[i].fieldValue,
+                    isFile = data[i].file;
+
+                if(isFile) {
+                    //err("Got file with name: "+fieldName+"<br>");
+                    filename = fieldName;
+                    value = fieldValue;
                 }
-                if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
-                return obj;
             }
 
-            function getMethod(row) {
-                var obj = {};
-                var startCopy = false;
-                for(var i in row) {
-                    if(startCopy) {
-                        obj[i] = row[i]; 
-                        if(obj[i] == "") delete obj[i];
-                    }
-                    if(i == 'Comments') break;
-                    if(i == 'Trait Class') startCopy = true;
-                }
-                delete obj['ibfieldbook'];
-                return obj;
-            }
-            function getScale(row) {
-                var obj = {};
-                var startCopy = false;
-                for(var i in row) {
-                    if(startCopy) {
-                        obj[i] = row[i]; 
-                        if(obj[i] == "") delete obj[i];
-                    }
-                    if(i == 'Comments') startCopy = true;
-                }
-                delete obj['ibfieldbook'];
-                return obj;
-            }
-            
-            function getCol(obj, col) {
-                var count = 0;
-                for(var i in obj) { 
-                    count++; 
-                    if(count == col) return obj[i]; 
-                }
-            }
-            function isEmpty(obj) {
-                for(var prop in obj) {
-                    if(obj.hasOwnProperty(prop))
-                        return false;
-                }
 
-                return true;
-            }
-            
+            excel.parseTemplate(7, value, function(term) {
+                
+                print(response).text(JSON.stringify(term, null, 2));
+            });
+
+            return;
+
+
 
             var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("excelfile"),
@@ -1873,7 +1827,7 @@ apejs.urls = {
                 ontologySummary = request.getParameter("ontology_summary"),
                 category = request.getParameter("category");
 
-            if(blobKey == null || isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || isblank(category)) {
+            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || isblank(category)) {
                 return err("Something is missing. Did you fill out all the fields?");
             }
 
@@ -1895,12 +1849,6 @@ apejs.urls = {
                 // and creating terms
                 new template(blobKey, ontologyId, ontologyName)
 
-                taskqueue.createTask("/memcache-clear", "");
-
-                // create the ontology
-                if(!ontoEntity) {
-                    ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
-                }
                 return err("");
             } catch(e) {
                 return err(e);

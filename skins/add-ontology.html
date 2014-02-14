@@ -1,4 +1,3 @@
-<script type="text/javascript" src="/js/add.js?{{>VERSION}}"></script>
             <div class="left browser-content" style="width: 100%;"> 
                 <div class="cont" style="width: 877px;"> 
 
@@ -14,10 +13,9 @@
 
                     <div id="upload_obo_cont">
 
-                        <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="obo_upload_iframe">
+                        <form action="" method="post" enctype="multipart/form-data" target="obo_upload_iframe">
                             <p>
                             Category:
-                            {{{ONTOLOGY_CATEGORIES}}}
                             </p>
                             <p>
                             <input name="ontology_name" type="text" placeholder="Ontology Name" />
@@ -39,7 +37,6 @@
                     <div id="create_ontology_cont" style="display: none">
                             <p>
                             Category:
-                            {{{ONTOLOGY_CATEGORIES}}}
                             </p>
                         <ul class="treeview" id="cont"> 
                             <li class="last" id="ontology">
@@ -57,12 +54,11 @@
                         </div>
                     </div><!-- create_ontology_cont -->
                     <div id="upload_excel_cont" style="display: none">
-                        <p><b>Note:</b> Be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href="/TraitTemplate_ver_4.xls">TraitTemplate_ver_4.xls</a></p>
+                        <p><b>Note:</b> Be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href="/public/TraitTemplate_ver_4.xls">TraitTemplate_ver_4.xls</a></p>
 
-                        <form action="{{EXCEL_UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="excel_upload_iframe">
+                        <form action="/excel-template-upload" method="post" enctype="multipart/form-data" target="excel_upload_iframe">
                             <p>
                             Category:
-                            {{{ONTOLOGY_CATEGORIES}}}
                             </p>
                             <p>
                                 <input type="text" name="ontology_id" placeholder="Ontology ID" />
