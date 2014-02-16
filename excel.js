@@ -9,14 +9,23 @@ var excel = {
         // Create a workbook using the File System
         var myWorkBook = new WorkbookFactory.create(inputStream);
         // Get the first sheet from workbook
+        var sheetIdx = 1;
         try {
-            var mySheet = myWorkBook.getSheetAt(1);
+            var mySheet = myWorkBook.getSheetAt(sheetIdx);
         } catch(e) { // try sheet 0
-            var mySheet = myWorkBook.getSheetAt(0);
+            sheetIdx = sheetIdx - 1;
+            var mySheet = myWorkBook.getSheetAt(sheetIdx);
         }
 
         // We now need something to iterate through the cells.
         var rowIter = mySheet.rowIterator(); 
+        if(!rowIter.hasNext()) { // sheet is empty!
+            if(sheetIdx == 1) { // try sheet 0, otherwise exit
+                mySheet = myWorkBook.getSheetAt(0);
+                rowIter = mySheet.rowIterator(); 
+            }
+
+        }
 
         var idx = 0,
             rows = 0,
@@ -76,7 +85,7 @@ var excel = {
 
                 });
             }
-            callback(rdf);
+            callback(term);
         });
     }
 };
