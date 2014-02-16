@@ -1,6 +1,9 @@
 importPackage(org.apache.poi.ss.usermodel);
 
 var excel = {
+    rdfMapping: {
+        'Name of submitting scientist': 'http://xmlns.com/foaf/0.1/name'
+    },
 
     read: function(inputStream, callback) {
         // Create a workbook using the File System
@@ -56,6 +59,7 @@ var excel = {
         var idValMap = {};
         excel.read(inputStream, function(row, idx) {
             var term = {};
+            var rdf = '';
             if(idx == 0) { // first row, build map
                 row.forEach(function(item, i) {
                     idValMap[i] = item;
@@ -64,9 +68,15 @@ var excel = {
             } else {
                 row.forEach(function(item, i) {
                     term[idValMap[i]] = item;
+
+                    var uri = excel.rdfMapping[idValMap[i]];
+                    if(uri) {
+                        rdf += '<#i> <'+uri+'> '+JSON.stringify(item)+'@en\n';
+                    }
+
                 });
             }
-            callback(term);
+            callback(rdf);
         });
     }
 };

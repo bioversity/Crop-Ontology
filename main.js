@@ -1813,7 +1813,7 @@ apejs.urls = {
 
             excel.parseTemplate(value, function(term) {
                 
-                print(response).text(JSON.stringify(term, null, 2));
+                print(response).text(term);
             });
 
             return;
