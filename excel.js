@@ -2,7 +2,7 @@ importPackage(org.apache.poi.ss.usermodel);
 
 var excel = {
 
-    read: function(firstRow, inputStream, callback) {
+    read: function(inputStream, callback) {
         // Create a workbook using the File System
         var myWorkBook = new WorkbookFactory.create(inputStream);
         // Get the first sheet from workbook
@@ -18,20 +18,20 @@ var excel = {
         var idx = 0,
             rows = 0,
             cellContent,
-            cols = 0;
+            cells = 0,
+            cols = false;
         while(rowIter.hasNext()){ // for each row
             var myRow = rowIter.next();
 
-            // skip until we reach firstRow (it's not an index)
-            rows++;
-            if(rows < firstRow) continue;
-
-            if(idx == 0) // first row must tell us how many cols we have
-                cols = myRow.getPhysicalNumberOfCells();
+            if(cols) {
+                cells = cols;
+            } else {
+                cells = myRow.getPhysicalNumberOfCells();
+            }
 
             var arr = [],
                 empty = true;
-            for (var i = 0; i < (cols+1); i++) { // for each cell
+            for (var i = 0; i < (cells+1); i++) { // for each cell
                 var cell = myRow.getCell(i);
                 if(cell) {
                     cellContent = ""+cell.toString().trim();
@@ -40,17 +40,21 @@ var excel = {
                 } else {
                     cellContent = "";
                 }
+                if(cellContent == 'Name of Trait' || cellContent == 'Name of submitting scientist') {
+                    // it's header
+                    cols = cells;
+                }
                 arr.push(cellContent);
             }
-            if(!empty)
+            if(!empty && cols)
                 callback(arr, idx++);
         }
     },
     // firstRow is the number where the first row is...
     // remember that all blank rows are skipped
-    parseTemplate: function(firstRow, inputStream, callback) {
+    parseTemplate: function(inputStream, callback) {
         var idValMap = {};
-        excel.read(firstRow, inputStream, function(row, idx) {
+        excel.read(inputStream, function(row, idx) {
             var term = {};
             if(idx == 0) { // first row, build map
                 row.forEach(function(item, i) {

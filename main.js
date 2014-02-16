@@ -1811,7 +1811,7 @@ apejs.urls = {
             }
 
 
-            excel.parseTemplate(4, value, function(term) {
+            excel.parseTemplate(value, function(term) {
                 
                 print(response).text(JSON.stringify(term, null, 2));
             });
