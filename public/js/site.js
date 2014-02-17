@@ -54,7 +54,7 @@ $(function() {
 
         this.get("/add-ontology#!/add/:action", function() {
             var action = this.params["action"];
-            $("#upload_obo_cont, #create_ontology_cont, #upload_excel_cont").hide(); // hide all
+            $("#upload_obo_cont, #upload_rdf_cont, #upload_excel_cont").hide(); // hide all
             $(".add_title a").removeClass("selected");
 
             var $this = $("[cont=" + action + "_cont]");

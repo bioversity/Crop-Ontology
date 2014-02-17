@@ -3,6 +3,7 @@ var apejs = require("apejs.js");
 var auth = require("./auth.js");
 var fileupload = require("./fileupload.js");
 var excel = require("./excel.js");
+var rdf = require('./rdf.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
@@ -1853,6 +1854,29 @@ apejs.urls = {
             } catch(e) {
                 return err(e);
             }
+        }
+    },
+    "/upload-rdf": {
+        post: function(req, res) {
+            var data = fileupload.getData(req);
+            var filename = '',
+                value = '';
+
+            for(var i=0; i<data.length; i++) {
+                var fieldName = data[i].fieldName,
+                    fieldValue = data[i].fieldValue,
+                    isFile = data[i].file;
+
+                if(isFile) {
+                    //err("Got file with name: "+fieldName+"<br>");
+                    filename = fieldName;
+                    value = fieldValue;
+                }
+            }
+            
+            res.setContentType("text/plain; charset=UTF-8");
+            rdf.convert(value, 'n3', res.getOutputStream());
+                
         }
     },
     "/backup": {

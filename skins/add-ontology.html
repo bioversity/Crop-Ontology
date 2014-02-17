@@ -4,7 +4,7 @@
                     <div class="add_title">
                         <a href="#!/add/upload_obo" title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch selected"><span>Upload an OBO File</span></a>
                         or
-                        <a href="#!/add/create_ontology" title="Generate Ontology" cont="create_ontology_cont" class="minibutton btn-watch"><span>Create an Ontology</span></a>
+                        <a href="#!/add/upload_rdf" title="Upload RDF" cont="upload_rdf_cont" class="minibutton btn-watch"><span>Upload RDF</span></a>
                         or
                         <a href="#!/add/upload_excel" title="Upload Excel Template" cont="upload_excel_cont" class="minibutton btn-watch"><span>Upload Excel Trait Template</span></a>
                     </div>
@@ -34,24 +34,19 @@
                     </div><!-- upload obo -->
 
 
-                    <div id="create_ontology_cont" style="display: none">
+                    <div id="upload_rdf_cont" style="display: none">
+                        <form action="/upload-rdf" enctype="multipart/form-data" method="post">
                             <p>
-                            Category:
+                            RDF:
                             </p>
-                        <ul class="treeview" id="cont"> 
-                            <li class="last" id="ontology">
-                                <input type="text" id="ontology_name" name="name" placeholder="Ontology Name" />
-                                <input type="text" id="ontology_id" name="id" placeholder="Ontology ID" />
-                                <br>
-                            <textarea name="ontology_summary" id="ontology_summary" placeholder="Ontology Summary"></textarea>
-                                <a title="Add" class="add minibutton btn-watch"><span>+</span></a>
+                        <p>
+                            <input name="rdf" type="file" /> 
+                        </p>
 
-                                
-                            </li>
-                        </ul> 
-                        <div class="buttons">
-                            <a title="Save" id="save" class="minibutton btn-watch"><span>Save</span></a>
-                        </div>
+                            <p>
+                            <input type="submit" value="Upload" />
+                            </p>
+                        </form>
                     </div><!-- create_ontology_cont -->
                     <div id="upload_excel_cont" style="display: none">
                         <p><b>Note:</b> Be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href="/public/TraitTemplate_ver_4.xls">TraitTemplate_ver_4.xls</a></p>
