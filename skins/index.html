@@ -15,25 +15,10 @@
 <script type='text/javascript' src='/public/js/jquery.autocomplete.js?{{>VERSION}}'></script>
 <link rel="stylesheet" type="text/css" href="/public/stylesheets/jquery.autocomplete.css?{{>VERSION}}" />
 
-<script>
-var ontologyid = "{{ontologyid}}";
-var ontologyname = "{{ontologyname}}";
-var termid = "{{termid}}";
-var searchQuery = "";
-$(function(){
-  if(ontologyid !== "") {
-    $(".crop-logos").show();
-  }
-
-});
-var languages = [];
-</script>
 <script type="text/javascript" src="/public/js/markdown.js?{{>VERSION}}"></script>
-<script type="text/javascript" src="/public/js/main.js?{{>VERSION}}"></script>
 
 <!-- new sammy refactoring happening here -->
 <script type='text/javascript' src='/public/js/sammy-0.7.1.min.js'></script>
-<script type='text/javascript' src='/public/js/site.js?{{>VERSION}}'></script>
 
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -110,7 +95,7 @@ $(function() {
     </div> 
     <div class="head_right"> 
  
-          <a href="#" id="dologin" class="feed" style="background: none">Login</a>
+          <a href="#" id="dologin" class="feed" style="background: none">{{USER.name}} Login</a>
           <a href="#" id="doregister" class="feed" style="background: none">Register</a>
           <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
           <a href="#" id="dologout" class="feed" style="background: none; display: none;">Logout</a>
@@ -119,7 +104,7 @@ $(function() {
           <a href="/agtrials" class="feed" style="background: none; padding-right: 20px;">Agtrials</a>
           <a href="/help" class="feed" style="background: none; padding-right: 20px;">Help</a>
           <a href="/api" class="feed" style="background: none; padding-right: 20px;">API</a>
-          <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add New Terms</a>
+          <a href="/dashboard" class="feed" style="background: none; padding-right: 20px;">Dashboard</a>
     </div> 
 </div> 
  

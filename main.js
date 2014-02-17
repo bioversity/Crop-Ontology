@@ -57,11 +57,20 @@ function renderIndex(htmlFile, data) {
   if(!data) data = {};
   var partials = { 
     CONTENT: render(htmlFile), 
-    VERSION: VERSION,
-    LANGUAGES: ''
+    VERSION: VERSION
   };
+  // get info from memory/session
+  if(apejs.session.getAttribute('user')) {
+      data.USER = apejs.session.getAttribute('user');
+  }
   var html = Mustache.to_html(render("skins/index.html"), data, partials);
   return html;
+}
+
+apejs.before = function(request, response) {
+    apejs.session = request.getSession(true);
+System.out.println(new File("").getAbsolutePath())
+
 }
 
 apejs.urls = {
@@ -69,6 +78,7 @@ apejs.urls = {
         get: function(request, response) {
             var html = renderIndex("skins/list-ontologies.html");
             print(response).text(html);
+            /*
 
             var token = request.getParameter("token"); 
             if(!isblank(token)) {
@@ -86,6 +96,7 @@ apejs.urls = {
                 } catch(e) {
                 }
             }
+            */
         }
     },
     "/api": {
@@ -981,20 +992,8 @@ apejs.urls = {
     */
     "/login" : {
         get: function(request, response) {
-            // find user with this key and return its data
-            var user = auth.getUser(request);
-            var username = "",
-                userid = "";
-            if(user) {
-                username = user.getProperty("username");
-                userid = user.getKey().getId();
-            }
-            
-            print(response).json({
-                username: ""+username,
-                userid: ""+userid
-            });
-            //response.getWriter().println('{"username":"'+username+'"}');
+            var html = renderIndex("skins/login.html");
+            print(response).text(html);
         },
         post: function(request, response) {
             var username = request.getParameter("username"),
