@@ -70,8 +70,7 @@ function renderIndex(htmlFile, data) {
   return html;
 }
 
-apejs.before = function(request, response, config) {
-    apejs.config = config;
+apejs.before = function(request, response) {
     apejs.session = request.getSession(true);
 
 }
@@ -1057,8 +1056,13 @@ apejs.urls = {
                 // sha1 the password
                 user.password = usermodel.sha1(user.password);
 
-                var entity = googlestore.entity("user", user);
-                var userKey = googlestore.put(entity);
+                sparql('\
+                PREFIX dc: <http://purl.org/dc/elements/1.1/>\
+                INSERT DATA\
+                { <http://example/book3> dc:title    "A new book" ;\
+                                         dc:creator  "A.N.Other" .\
+                                         }\
+                ');
 
                 // ok just login
                 auth.login(response, user.username, user.password);

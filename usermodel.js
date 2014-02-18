@@ -2,6 +2,7 @@ importPackage(java.lang);
 
 var usermodel = {
     emailExists: function(email) {
+        return false;
         var res = sparql('');
         var result = googlestore.query("user")
             .filter("email", "=", email)
@@ -12,6 +13,7 @@ var usermodel = {
             return false;
     },
     usernameExists: function(username) {
+        return false;
         var result = googlestore.query("user")
             .filter("username", "=", username)
             .fetch(1);

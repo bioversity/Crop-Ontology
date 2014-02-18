@@ -1,4 +1,5 @@
-var sparqlUrl = apejs.config.getInitParameter('sparql');
+var sparqlUrl = getServletConfig().getInitParameter('sparql');
 exports = function(query) {
+    
 
 };
