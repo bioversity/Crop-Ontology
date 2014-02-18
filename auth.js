@@ -55,6 +55,8 @@ var auth = (function(){
      * and add the "user" cookie
      */
     function login(response, username, hashedPassword) {
+
+        return sparql.query('select * where { ?s ?p ?o }');
         var res = googlestore.query("user")
             .filter("username", "=", username)
             .filter("password", "=", hashedPassword)

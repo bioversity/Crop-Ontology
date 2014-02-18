@@ -7,6 +7,7 @@ var rdf = require('./rdf.js');
 var sparql = require('./sparql.js');
 
 var usermodel = require('./usermodel.js');
+var auth = require('./auth.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
@@ -994,6 +995,8 @@ apejs.urls = {
     */
     "/login" : {
         get: function(request, response) {
+            var obj = sparql.query('select * where { ?s a foaf:Person; cov:username ?username. }')
+        return print(response).json(obj);
             var html = renderIndex("skins/login.html");
             print(response).text(html);
         },
@@ -1056,15 +1059,18 @@ apejs.urls = {
                 // sha1 the password
                 user.password = usermodel.sha1(user.password);
 
-                sparql.update('\
+                var result = sparql.update('\
                     INSERT DATA\
                     {\
-                        co:user/'+user.username+' a foaf:Person ;\
+                        co:user:'+user.username+' a foaf:Person ;\
                                                   cov:username  '+JSON.stringify(''+user.username)+' ;\
                                                   cov:email  '+JSON.stringify(''+user.email)+' ;\
                                                   cov:password  '+JSON.stringify(''+user.password)+'\
                                                   .\
                     }');
+
+                print(response).text(result);
+
 
                 // ok just login
                 //auth.login(response, user.username, user.password);
