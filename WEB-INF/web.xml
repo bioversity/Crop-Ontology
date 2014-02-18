@@ -14,8 +14,12 @@
             <param-value>true</param-value>
         </init-param>
         <init-param>
-            <param-name>sparql</param-name>
-            <param-value>http://localhost:3030/data/</param-value>
+            <param-name>sparql-query</param-name>
+            <param-value>http://localhost:3030/data/query</param-value>
+        </init-param>
+        <init-param>
+            <param-name>sparql-update</param-name>
+            <param-value>http://localhost:3030/data/update</param-value>
         </init-param>
     </servlet>
 

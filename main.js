@@ -1056,16 +1056,18 @@ apejs.urls = {
                 // sha1 the password
                 user.password = usermodel.sha1(user.password);
 
-                sparql('\
-                PREFIX dc: <http://purl.org/dc/elements/1.1/>\
-                INSERT DATA\
-                { <http://example/book3> dc:title    "A new book" ;\
-                                         dc:creator  "A.N.Other" .\
-                                         }\
-                ');
+                sparql.update('\
+                    INSERT DATA\
+                    {\
+                        co:user/'+user.username+' a foaf:Person ;\
+                                                  cov:username  '+JSON.stringify(''+user.username)+' ;\
+                                                  cov:email  '+JSON.stringify(''+user.email)+' ;\
+                                                  cov:password  '+JSON.stringify(''+user.password)+'\
+                                                  .\
+                    }');
 
                 // ok just login
-                auth.login(response, user.username, user.password);
+                //auth.login(response, user.username, user.password);
 
             }
         }
