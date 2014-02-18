@@ -4,6 +4,9 @@ var auth = require("./auth.js");
 var fileupload = require("./fileupload.js");
 var excel = require("./excel.js");
 var rdf = require('./rdf.js');
+var sparql = require('./sparql.js');
+
+var usermodel = require('./usermodel.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
@@ -67,9 +70,9 @@ function renderIndex(htmlFile, data) {
   return html;
 }
 
-apejs.before = function(request, response) {
+apejs.before = function(request, response, config) {
+    apejs.config = config;
     apejs.session = request.getSession(true);
-System.out.println(new File("").getAbsolutePath())
 
 }
 
@@ -1017,6 +1020,10 @@ apejs.urls = {
         }
     },
     "/register": {
+        get: function(request, response, config) {
+            var html = renderIndex("skins/register.html");
+            print(response).text(html);
+        },
         post: function(request, response) {
             var user = {
                 created: new java.util.Date(),
@@ -1028,7 +1035,6 @@ apejs.urls = {
 
             for(var i in user)
                 if(user[i] == "") error = "Complete the entire form!";
-
 
             user.admin = false;
 

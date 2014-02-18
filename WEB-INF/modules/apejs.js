@@ -2,14 +2,14 @@ importPackage(java.io);
 
 var apejs = {
     urls: {},
-    run: function(request, response) {
+    run: function(request, response, config) {
         //var path = request.getPathInfo();
         var path = request.getRequestURI();
         var httpMethod = request.getMethod().toLowerCase();
 
         // before running the http verb method run the before handler
         if(this.before)
-            this.before(request, response);
+            this.before(request, response, config);
 
         var matchedUrl = false;
         for(var i in this.urls) {
