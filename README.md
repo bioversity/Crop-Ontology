@@ -1,7 +1,7 @@
 # Crop Ontology curation tool to help organize and share ontologies.
 
 The system is built using the [ApeJS](https://github.com/lmatteis/apejs)
-framework and is meant to be used with [Google App Engine](http://code.google.com/appengine/).
+framework.
 
 ## Installation
 
@@ -9,13 +9,15 @@ framework and is meant to be used with [Google App Engine](http://code.google.co
 
 Simply clone the project:
 
-    git clone git@github.com:lmatteis/Crop-Ontology.git
+    git clone git@github.com:bioversity/Crop-Ontology.git
 
-The generated `Crop-Ontology` directory acts as a `war` directory. Before you can deploy this to App Engine you must first copy `appengine-sdk/lib/users/appengine-api-1.0-sdk-x.y.z.jar` from the App Engine Java SDK into the `Crop-Ontology/WEB-INF/lib/` folder of the project.
+The generated `Crop-Ontology` directory acts as a standard `war` directory that you can deploy in any servlet container. 
 
-Make sure all the settings inside `WEB-INF/appengine-web.xml` are correct (most specifically the application id of your app) and type this to deploy:
+Make sure all the settings inside `WEB-INF/web.xml` are correct (most specifically the URLs of your SPARQL endpoint). You could use `jetty-runner` to serve Crop Ontology:
 
-    sh appengine-sdk/bin/appcfg.sh update Crop-Ontology
+    java -jar jetty-runner.jar Crop-Ontology/
+    
+For SPARQL we suggest using Fuseki, however other standard HTTP-based endpoints, such as 4store, will work.
 
 That's it! File an issue if you need help, or just fork the project to improve it!
 
