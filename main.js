@@ -995,8 +995,6 @@ apejs.urls = {
     */
     "/login" : {
         get: function(request, response) {
-            var obj = sparql.query('select * where { ?s a foaf:Person; cov:username ?username. }')
-        return print(response).json(obj);
             var html = renderIndex("skins/login.html");
             print(response).text(html);
         },
@@ -1008,17 +1006,15 @@ apejs.urls = {
 
             if(!l)
                 response.getWriter().println("Username or password is wrong!");
+            else
+                response.sendRedirect('/');
 
         }
     },
     "/logout": {
         get: function(request, response) {
-            // just delete it on the server
-            var userEntity = auth.getUser(request);
-            if(userEntity) {
-                userEntity.setProperty("token", null); 
-                googlestore.put(userEntity);
-            }
+            apejs.session.removeAttribute('user');
+            response.sendRedirect('/');
         }
     },
     "/register": {
@@ -1069,11 +1065,9 @@ apejs.urls = {
                                                   .\
                     }');
 
-                print(response).text(result);
 
-
-                // ok just login
-                //auth.login(response, user.username, user.password);
+                auth.login(response, user.username, user.password);
+                response.sendRedirect('/');
 
             }
         }
@@ -1145,16 +1139,13 @@ apejs.urls = {
     "/add-ontology" : {
         get: function(request, response) {
 
-
             var html = renderIndex("skins/add-ontology.html");
             response.getWriter().println(html);
         },
         post: function(request, response) {
             var currUser = auth.getUser(request);
-            /*
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-            */
                 
             var json = request.getParameter("json");
 
@@ -1806,10 +1797,8 @@ apejs.urls = {
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
             var currUser = auth.getUser(request);
-            /*
             if(!currUser)
                 return err("Not logged in");
-            */
 
 
             var data = fileupload.getData(request);

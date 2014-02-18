@@ -95,8 +95,13 @@ $(function() {
     </div> 
     <div class="head_right"> 
  
-          <a href="/login" id="dologin" class="feed" style="background: none">{{USER.name}} Login</a>
+          <a href="/login" id="dologin" class="feed" style="background: none">{{#USER.username.value}}{{USER.username.value}}{{/USER.username.value}}{{^USER.username.value}}Login{{/USER.username.value}}</a>
+          {{#USER.username.value}}
+          <a href="/logout" id="doregister" class="feed" style="background: none">Logout</a>
+          {{/USER.username.value}}
+          {{^USER.username.value}}
           <a href="/register" id="doregister" class="feed" style="background: none">Register</a>
+          {{/USER.username.value}}
           <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
           <a href="#" id="dologout" class="feed" style="background: none; display: none;">Logout</a>
 
@@ -104,7 +109,7 @@ $(function() {
           <a href="/agtrials" class="feed" style="background: none; padding-right: 20px;">Agtrials</a>
           <a href="/help" class="feed" style="background: none; padding-right: 20px;">Help</a>
           <a href="/api" class="feed" style="background: none; padding-right: 20px;">API</a>
-          <a href="/dashboard" class="feed" style="background: none; padding-right: 20px;">Dashboard</a>
+          <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add ontology</a>
     </div> 
 </div> 
  

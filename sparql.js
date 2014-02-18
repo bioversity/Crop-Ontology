@@ -17,9 +17,10 @@ exports = {
         var sparqlResult = Request.Get(sparqlQuery + '?output=json&query=' + encodeURIComponent(q))
             .execute().returnContent();
             
-        sparqlResult = JSON.parse(sparqlResult.asString());
+        var obj = JSON.parse(sparqlResult.asString());
+        var bindings = obj.results.bindings;
 
-        return sparqlResult;
+        return bindings;
     },
     update: function(q) {
         for(var i=0; i<this.prefixes.length; i++) {

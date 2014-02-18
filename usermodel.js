@@ -2,22 +2,15 @@ importPackage(java.lang);
 
 var usermodel = {
     emailExists: function(email) {
-        return false;
-        var res = sparql('');
-        var result = googlestore.query("user")
-            .filter("email", "=", email)
-            .fetch(1);
-        if(result.length)
+        var arr = sparql.query('SELECT * WHERE { ?s a foaf:Person; cov:email ?email. FILTER(?email = '+JSON.stringify(''+email)+'  )}');
+        if(arr.length)
             return true;
         else 
             return false;
     },
     usernameExists: function(username) {
-        return false;
-        var result = googlestore.query("user")
-            .filter("username", "=", username)
-            .fetch(1);
-        if(result.length)
+        var arr = sparql.query('SELECT * WHERE { ?s a foaf:Person; cov:username ?username. FILTER(?username = '+JSON.stringify(''+username)+'  )}');
+        if(arr.length)
             return true;
         else 
             return false;
