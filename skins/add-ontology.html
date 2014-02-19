@@ -2,16 +2,16 @@
                 <div class="cont" style="width: 877px;"> 
 
                     <div class="add_title">
-                        <a href="#!/add/upload_obo" title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch selected"><span>Upload an OBO File</span></a>
+                        <a href="#!/add/upload_rdf" title="Upload RDF" cont="upload_rdf_cont" class="minibutton btn-watch selected"><span>Upload RDF</span></a>
                         or
-                        <a href="#!/add/upload_rdf" title="Upload RDF" cont="upload_rdf_cont" class="minibutton btn-watch"><span>Upload RDF</span></a>
+                        <a href="#!/add/upload_obo" title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch"><span>Upload an OBO File</span></a>
                         or
                         <a href="#!/add/upload_excel" title="Upload Excel Template" cont="upload_excel_cont" class="minibutton btn-watch"><span>Upload Excel Trait Template</span></a>
                     </div>
 
                     <a class="button" id="error" style="display: none; margin-bottom: 10px;"></a>
 
-                    <div id="upload_obo_cont">
+                    <div id="upload_obo_cont" style="display: none">
 
                         <form action="" method="post" enctype="multipart/form-data" target="obo_upload_iframe">
                             <p>
@@ -34,7 +34,7 @@
                     </div><!-- upload obo -->
 
 
-                    <div id="upload_rdf_cont" style="display: none">
+                    <div id="upload_rdf_cont">
                         <form action="/upload-rdf" enctype="multipart/form-data" method="post">
                             <p>
                             RDF:

@@ -1863,7 +1863,15 @@ apejs.urls = {
         }
     },
     "/upload-rdf": {
+        get: function(request, response) {
+            var html = renderIndex("skins/upload-rdf.html");
+            response.getWriter().println(html);
+        },
         post: function(req, res) {
+            var currUser = auth.getUser(req);
+            if(!currUser)
+                return error(res, "Not logged in");
+
             var data = fileupload.getData(req);
             var filename = '',
                 value = '';
@@ -1883,6 +1891,18 @@ apejs.urls = {
             res.setContentType("text/plain; charset=UTF-8");
             rdf.convert(value, 'n3', res.getOutputStream());
                 
+        }
+    },
+    "/upload-obo": {
+        get: function(request, response) {
+            var html = renderIndex("skins/upload-obo.html");
+            response.getWriter().println(html);
+        }
+    },
+    "/upload-excel": {
+        get: function(request, response) {
+            var html = renderIndex("skins/upload-excel.html");
+            response.getWriter().println(html);
         }
     },
     "/backup": {

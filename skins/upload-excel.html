@@ -1,0 +1,44 @@
+
+            <div class="left browser-content" style="width: 100%;"> 
+                <div class="cont" style="width: 877px;"> 
+
+                    <div class="add_title">
+                        <a href="/upload-rdf" title="Upload RDF" cont="upload_rdf_cont" class="minibutton btn-watch"><span>Upload RDF</span></a>
+                        or
+                        <a href="/upload-obo" title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch "><span>Upload an OBO File</span></a>
+                        or
+                        <a href="/upload-excel" title="Upload Excel Template" cont="upload_excel_cont" class="minibutton btn-watch selected"><span>Upload Excel Trait Template</span></a>
+                    </div>
+
+                    <a class="button" id="error" style="display: none; margin-bottom: 10px;"></a>
+
+                    <div id="upload_excel_cont">
+                        <p><b>Note:</b> Be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href="/public/TraitTemplate_ver_4.xls">TraitTemplate_ver_4.xls</a></p>
+
+                        <form action="/excel-template-upload" method="post" enctype="multipart/form-data" target="excel_upload_iframe">
+                            <p>
+                            Category:
+                            </p>
+                            <p>
+                                <input type="text" name="ontology_id" placeholder="Ontology ID" />
+                            </p>
+                            <p>
+                            <input name="ontology_name" type="text" placeholder="Ontology Name" />
+                            </p>
+                            <p>
+                            <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
+                            </p>
+                            <p>
+                            <input name="excelfile" type="file" /> 
+                            </p>
+                            <p>
+                            <input type="submit" value="Upload Excel" />
+                            </p>
+                        </form>
+                        <iframe name="excel_upload_iframe" style="display: none"></iframe>
+                    </div><!-- upload_excel_cont  -->
+
+                    
+                </div> 
+            </div><!-- end left --> 
+
