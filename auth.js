@@ -11,8 +11,48 @@ var auth = (function(){
      * if it exists, return the entire user-entity of that result,
      * otherwise return false
      */
-    function getUser(request) {
-        return apejs.session.getAttribute('user');
+    function getUser() {
+        var userInSession = apejs.session.getAttribute('user');
+        if(userInSession) {
+            return userInSession;
+        } else { // let's use the remember-me cookie to get user from db
+            var cookies = apejs.cookies;
+
+            if(!cookies)
+                return false;
+            
+            // find the user cookie
+            var userCookie = false;
+            for(var i=0; i<cookies.length; i++) {
+                if(cookies[i].getName().equals("user")) {
+                    userCookie = cookies[i];
+                }
+            }
+
+            if(!userCookie) // no user cookie found
+                return false;
+
+            // get the token (value of cookie)
+            var token = userCookie.getValue();
+
+            // make sure the token is not an empty string :)
+            if(token.equals("") || !token)
+                return false;
+
+            var t = token.split(':');
+            var username = t[0];
+            var hashedPassword = t[1];
+
+            // check if it exists in datastore
+            var arr = sparql.query('select * where { ?s a foaf:Person; cov:username ?username; cov:password ?password. FILTER(?username = '+JSON.stringify(''+username)+' && ?password = '+JSON.stringify(''+hashedPassword)+')}')
+
+            if(!arr.length) // doesn't exist
+                return false;
+
+            apejs.session.setAttribute('user', arr[0]);
+
+            return arr[0];
+        }
     }
 
     /**
@@ -26,6 +66,12 @@ var auth = (function(){
             return false;
         } else {
             apejs.session.setAttribute('user', arr[0]);
+
+            // add a cookie
+            var cookie = new Cookie("user", username + ':' + hashedPassword);
+            // 30 years :)
+            cookie.setMaxAge(30 * 365 * 24 * 60 * 60);
+            response.addCookie(cookie);
 
             return true;
         }

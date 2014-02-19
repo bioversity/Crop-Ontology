@@ -64,8 +64,9 @@ function renderIndex(htmlFile, data) {
     VERSION: VERSION
   };
   // get info from memory/session
-  if(apejs.session.getAttribute('user')) {
-      data.USER = apejs.session.getAttribute('user');
+  var currUser = auth.getUser();
+  if(currUser) {
+      data.USER = currUser;
   }
   var html = Mustache.to_html(render("skins/index.html"), data, partials);
   return html;
@@ -73,6 +74,7 @@ function renderIndex(htmlFile, data) {
 
 apejs.before = function(request, response) {
     apejs.session = request.getSession(true);
+    apejs.cookies = request.getCookies();
 
 }
 
@@ -1014,6 +1016,19 @@ apejs.urls = {
     "/logout": {
         get: function(request, response) {
             apejs.session.removeAttribute('user');
+            var cookies = request.getCookies();
+
+            if(!cookies)
+                return false;
+            
+            // find the user cookie
+            var userCookie = false;
+            for(var i=0; i<cookies.length; i++) {
+                if(cookies[i].getName().equals("user")) {
+                    userCookie = cookies[i];
+                }
+            }
+            userCookie.setValue('');
             response.sendRedirect('/');
         }
     },
