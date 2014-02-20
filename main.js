@@ -1904,7 +1904,11 @@ apejs.urls = {
             }
             
             res.setContentType("text/plain; charset=UTF-8");
-            rdf.convert(value, 'n3', res.getOutputStream());
+            // filename is needed to get extension,
+            // value is inputStream,
+            // outputStream is where to put data
+            // ttl is the output format
+            rdf.convert(filename, value, res.getOutputStream(), 'ttl');
                 
         }
     },
