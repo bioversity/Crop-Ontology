@@ -1891,6 +1891,7 @@ apejs.urls = {
             var filename = '',
                 value = '';
 
+
             for(var i=0; i<data.length; i++) {
                 var fieldName = data[i].fieldName,
                     fieldValue = data[i].fieldValue,
@@ -1900,15 +1901,43 @@ apejs.urls = {
                     //err("Got file with name: "+fieldName+"<br>");
                     filename = fieldName;
                     value = fieldValue;
+                } else {
+                    if(fieldName == 'ontology_name')
+                        var ontologyName = ''+fieldValue;
+                    if(fieldName == 'ontology_id')
+                        var ontologyId = ''+fieldValue;
+                    if(fieldName == 'ontology_summary')
+                        var ontologySummary = ''+fieldValue;
+
                 }
             }
+
+            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary)) {
+                return error(res, "Something is missing. Did you fill out all the fields?");
+            }
+
+            
             
             res.setContentType("text/plain; charset=UTF-8");
+
+            // baseUri is needed in case for shit like <#foo> <#bar> "hoo"
             // filename is needed to get extension,
             // value is inputStream,
             // outputStream is where to put data
             // ttl is the output format
-            rdf.convert(filename, value, res.getOutputStream(), 'ttl');
+            rdf.convert(baseUri, filename, value, res.getOutputStream(), 'ttl');
+
+            // write the baseUri to this outputStream
+            var base = '';
+            var baseUri = 'http://www.cropontology.org/rdf/' + ontologyId + '/';
+
+            base = '\n<'+baseUri+'> a owl:Ontology ;\n';
+            base += '             rdfs:label ' +JSON.stringify(ontologyName)+ ';\n';
+            base += '             rdfs:comment ' +JSON.stringify(ontologySummary)+ '\n';
+            base += '             .';
+            base = new java.lang.String(base);
+
+            res.getOutputStream().write(base.getBytes(java.nio.charset.Charset.forName("UTF-8"))); 
                 
         }
     },

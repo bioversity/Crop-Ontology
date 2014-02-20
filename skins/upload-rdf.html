@@ -16,11 +16,16 @@
                     <div id="upload_rdf_cont">
                         <form action="/upload-rdf" enctype="multipart/form-data" method="post">
                             <p>
-                            RDF:
+                            Category:
                             </p>
                             <p>
-                                Main URI:
-                                <input type="text" name="main-uri" />
+                                <input type="text" name="ontology_id" placeholder="Ontology ID" />
+                            </p>
+                            <p>
+                            <input name="ontology_name" type="text" placeholder="Ontology Name" />
+                            </p>
+                            <p>
+                            <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
                             </p>
                         <p>
                             <input name="rdf" type="file" /> 
