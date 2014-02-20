@@ -1918,6 +1918,7 @@ apejs.urls = {
 
             
             
+            var baseUri = '';
             res.setContentType("text/plain; charset=UTF-8");
 
             // baseUri is needed in case for shit like <#foo> <#bar> "hoo"
@@ -1925,10 +1926,15 @@ apejs.urls = {
             // value is inputStream,
             // outputStream is where to put data
             // ttl is the output format
-            rdf.convert(baseUri, filename, value, res.getOutputStream(), 'ttl');
+            var out = new StringWriter();
+            rdf.convert(baseUri, filename, value, out, 'ttl');
+            var rdfString = out.toString();
+
+            var result = sparql.update(out);
+            print(res).text(result);
 
             // write the baseUri to this outputStream
-            var base = '';
+            /*
             var baseUri = 'http://www.cropontology.org/rdf/' + ontologyId + '/';
 
             base = '\n<'+baseUri+'> a owl:Ontology ;\n';
@@ -1938,6 +1944,7 @@ apejs.urls = {
             base = new java.lang.String(base);
 
             res.getOutputStream().write(base.getBytes(java.nio.charset.Charset.forName("UTF-8"))); 
+            */
                 
         }
     },
