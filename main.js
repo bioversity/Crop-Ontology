@@ -1891,7 +1891,6 @@ apejs.urls = {
             var filename = '',
                 value = '';
 
-
             for(var i=0; i<data.length; i++) {
                 var fieldName = data[i].fieldName,
                     fieldValue = data[i].fieldValue,
@@ -1917,7 +1916,6 @@ apejs.urls = {
             }
 
             
-            
             var baseUri = '';
             res.setContentType("text/plain; charset=UTF-8");
 
@@ -1927,10 +1925,10 @@ apejs.urls = {
             // outputStream is where to put data
             // ttl is the output format
             var out = new StringWriter();
-            rdf.convert(baseUri, filename, value, out, 'ttl');
+            rdf.convert(baseUri, filename, value, out, 'n-triples');
             var rdfString = out.toString();
 
-            var result = sparql.update(out);
+            var result = sparql.update('INSERT DATA { '+ rdfString +' }');
             print(res).text(result);
 
             // write the baseUri to this outputStream

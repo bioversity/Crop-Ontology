@@ -26,10 +26,14 @@ exports = {
         for(var i=0; i<this.prefixes.length; i++) {
             q = this.prefixes[i] + '\n' + q;
         }
+        
+        // convert string to stream
+        var javaStr = new java.lang.String(q);
+        var stream = new ByteArrayInputStream(javaStr.getBytes("UTF-8"));
+        
         var sparqlResult = Request.Post(sparqlUpdate)
-            .bodyString(q, ContentType.create('application/sparql-update'))
+            .bodyStream(stream, ContentType.create('application/sparql-update'))
             .execute().returnContent().asString();
-
 
         return sparqlResult;
     }
