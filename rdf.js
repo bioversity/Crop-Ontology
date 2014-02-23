@@ -18,13 +18,23 @@ exports = {
     // cb() is cb(triple)
     parse: function(inputStream, fileName, baseUri, cb) {
         var lang = RDFLanguages.filenameToLang(fileName);
+        var model = ModelFactory.createDefaultModel();
+
+        model.read(inputStream, baseUri, lang.getLabel());
+
+        for(var iter = model.listStatements(); iter.hasNext(); ) {
+            var elem = iter.next();
+            cb(elem.asTriple());
+        }
+    }
+    /*
+    parse: function(inputStream, fileName, baseUri, cb) {
+        var lang = RDFLanguages.filenameToLang(fileName);
         //var output = new SinkTripleOutput(System.out, null, SyntaxLabels.createNodeToLabel());
         var o = {
-            /*
-            triple: function(triple) {
-                output.send(triple);
-            }
-            */
+            //triple: function(triple) {
+            //    output.send(triple);
+            //}
             triple: cb
         }
         var rdfBase = new JavaAdapter(StreamRDFBase, o);
@@ -32,4 +42,5 @@ exports = {
         RDFDataMgr.parse(rdfBase, inputStream, baseUri, lang);
 
     }
+    */
 };
