@@ -1889,7 +1889,7 @@ apejs.urls = {
 
             var data = fileupload.getData(req);
             var filename = '',
-                value = '';
+                inpStream = '';
 
             for(var i=0; i<data.length; i++) {
                 var fieldName = data[i].fieldName,
@@ -1899,7 +1899,7 @@ apejs.urls = {
                 if(isFile) {
                     //err("Got file with name: "+fieldName+"<br>");
                     filename = fieldName;
-                    value = fieldValue;
+                    inpStream = fieldValue;
                 } else {
                     if(fieldName == 'ontology_name')
                         var ontologyName = ''+fieldValue;
@@ -1919,17 +1919,23 @@ apejs.urls = {
             var baseUri = '';
             res.setContentType("text/plain; charset=UTF-8");
 
+            rdf.parse(inpStream, filename, baseUri, function(triple) {
+                print(res).text(triple);
+            });
+
             // baseUri is needed in case for shit like <#foo> <#bar> "hoo"
             // filename is needed to get extension,
-            // value is inputStream,
+            // inpStream is inputStream,
             // outputStream is where to put data
             // ttl is the output format
+            /*
             var out = new StringWriter();
-            rdf.convert(baseUri, filename, value, out, 'n-triples');
+            rdf.convert(baseUri, filename, inpStream, out, 'n-triples');
             var rdfString = out.toString();
 
             var result = sparql.update('INSERT DATA { '+ rdfString +' }');
             print(res).text(result);
+            */
 
             // write the baseUri to this outputStream
             /*
