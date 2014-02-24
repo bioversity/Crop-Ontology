@@ -1,6 +1,7 @@
 importPackage(org.apache.commons.io);
 importPackage(com.hp.hpl.jena.rdf.model);
 importPackage(com.hp.hpl.jena.rdf.model.impl);
+importPackage(com.hp.hpl.jena.query);
 importPackage(org.apache.jena.riot);
 importPackage(org.apache.jena.riot.system);
 importPackage(org.apache.jena.riot.out);
@@ -26,6 +27,38 @@ exports = {
             var elem = iter.next();
             cb(elem.asTriple());
         }
+    },
+    createModel: function(inputStream, fileName, baseUri) {
+        var lang = RDFLanguages.filenameToLang(fileName);
+        var model = ModelFactory.createDefaultModel();
+
+        model.read(inputStream, baseUri, lang.getLabel());
+        return model;
+    },
+    queryModel: function(queryString, model) {
+        var query = QueryFactory.create(queryString);
+
+        // Execute the query and obtain results
+        var qe = QueryExecutionFactory.create(query, model);
+        var results = qe.execSelect();
+
+        var arr = [];
+        while(results.hasNext()) {
+            var querySolution = results.next();
+            var obj = {};
+
+            var iter = querySolution.varNames();
+            while(iter.hasNext()) {
+                var varName = iter.next();
+                var rdfNode = querySolution.get(varName);
+                obj[varName] = rdfNode;
+            }
+
+            arr.push(obj);
+        }
+
+        qe.close();
+        return arr;
     }
     /*
     parse: function(inputStream, fileName, baseUri, cb) {

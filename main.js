@@ -1919,9 +1919,11 @@ apejs.urls = {
             var baseUri = '';
             res.setContentType("text/plain; charset=UTF-8");
 
-            rdf.parse(inpStream, filename, baseUri, function(triple) {
-                print(res).text(triple);
-            });
+            var model = rdf.createModel(inpStream, filename, baseUri);
+            var results = rdf.queryModel('SELECT * WHERE {<'+baseUri+'> ?p ?o} LIMIT 1', model);
+
+            print(res).json(results.length);
+            return;
 
             // baseUri is needed in case for shit like <#foo> <#bar> "hoo"
             // filename is needed to get extension,
