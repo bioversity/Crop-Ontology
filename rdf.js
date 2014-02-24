@@ -11,7 +11,11 @@ exports = {
         var lang = RDFLanguages.filenameToLang(fileName);
         var model = ModelFactory.createDefaultModel();
 
-        model.read(inpStream, baseUri, lang.getLabel());
+        if(lang != null) {
+            lang = lang.getLabel(); 
+        }
+
+        model.read(inpStream, baseUri, lang);
         model.write(outputStream, langOut.toUpperCase());
 
         //IOUtils.copy(inpStream, outputStream);
@@ -21,7 +25,11 @@ exports = {
         var lang = RDFLanguages.filenameToLang(fileName);
         var model = ModelFactory.createDefaultModel();
 
-        model.read(inputStream, baseUri, lang.getLabel());
+        if(lang != null) {
+            lang = lang.getLabel(); 
+        }
+
+        model.read(inputStream, baseUri, lang);
 
         for(var iter = model.listStatements(); iter.hasNext(); ) {
             var elem = iter.next();
@@ -31,8 +39,10 @@ exports = {
     createModel: function(inputStream, fileName, baseUri) {
         var lang = RDFLanguages.filenameToLang(fileName);
         var model = ModelFactory.createDefaultModel();
-
-        model.read(inputStream, baseUri, lang.getLabel());
+        if(lang != null) {
+            lang = lang.getLabel(); 
+        }
+        model.read(inputStream, baseUri, lang);
         return model;
     },
     queryModel: function(queryString, model) {

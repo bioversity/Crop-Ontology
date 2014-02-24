@@ -1920,9 +1920,39 @@ apejs.urls = {
             res.setContentType("text/plain; charset=UTF-8");
 
             var model = rdf.createModel(inpStream, filename, baseUri);
-            var results = rdf.queryModel('SELECT * WHERE {<'+baseUri+'> ?p ?o} LIMIT 1', model);
 
-            print(res).json(results.length);
+            // get the root nodes based on rdfs:subClassOf
+            var results = rdf.queryModel('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+                                          SELECT DISTINCT ?root\
+                                          WHERE {\
+                                            ?node1 rdfs:subClassOf ?root .\
+                                            FILTER(NOT EXISTS { ?root rdfs:subClassOf ?node3 })\
+                                          }', model);
+
+            var roots = [];
+            results.forEach(function(obj) {
+                if(obj['root'])
+                    roots.push(obj['root']);
+                print(res).text(obj['root']);
+            });
+
+            if(roots.length == 0) {
+                // try broaderTransitive
+                var results = rdf.queryModel('PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
+                                              SELECT DISTINCT ?root\
+                                              WHERE {\
+                                                ?node1 skos:broaderTransitive ?root .\
+                                                FILTER(NOT EXISTS { ?root skos:broaderTransitive ?node3 })\
+                                              }', model);
+                results.forEach(function(obj) {
+                    if(obj['root'])
+                        roots.push(obj['root']);
+                    print(res).text(obj['root']);
+                });
+            }
+
+
+
             return;
 
             // baseUri is needed in case for shit like <#foo> <#bar> "hoo"
