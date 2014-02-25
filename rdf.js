@@ -2,6 +2,7 @@ importPackage(org.apache.commons.io);
 importPackage(com.hp.hpl.jena.rdf.model);
 importPackage(com.hp.hpl.jena.rdf.model.impl);
 importPackage(com.hp.hpl.jena.query);
+importPackage(com.hp.hpl.jena.update);
 importPackage(org.apache.jena.riot);
 importPackage(org.apache.jena.riot.system);
 importPackage(org.apache.jena.riot.out);
@@ -69,6 +70,11 @@ exports = {
 
         qe.close();
         return arr;
+    },
+    updateModel: function(updateString, model) {
+        var updateRequest = UpdateFactory.create(updateString);
+
+        UpdateAction.execute(updateRequest, model);
     }
     /*
     parse: function(inputStream, fileName, baseUri, cb) {

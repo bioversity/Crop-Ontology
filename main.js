@@ -1975,10 +1975,15 @@ apejs.urls = {
                 model.add(stmt);
             }
 
+            var results = rdf.queryModel('SELECT * WHERE {?s ?p ?o. FILTER(contains(STR(?s), ""))}', model);
+
+            return print(res).text(results.length);
+
+
             // cool now we have a model with everything attached properly hopefully
             // let's add it to the triple store!
             var sw = new StringWriter();
-            model.write(sw, 'N-TRIPLES', baseUri);
+            model.write(sw, 'TURTLE', baseUri);
             var rdfString = sw.toString();
 
             print(res).text(rdfString);
