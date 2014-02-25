@@ -1916,7 +1916,7 @@ apejs.urls = {
             }
 
             
-            var baseUri = '';
+            var baseUri = 'http://www.cropontology.org/rdf/';
             res.setContentType("text/plain; charset=UTF-8");
 
             var model = rdf.createModel(inpStream, filename, baseUri);
@@ -1933,7 +1933,6 @@ apejs.urls = {
             results.forEach(function(obj) {
                 if(obj['root'])
                     roots.push(obj['root']);
-                print(res).text(obj['root']);
             });
 
             if(roots.length == 0) {
@@ -1947,10 +1946,47 @@ apejs.urls = {
                 results.forEach(function(obj) {
                     if(obj['root'])
                         roots.push(obj['root']);
-                    print(res).text(obj['root']);
                 });
             }
 
+
+
+
+            // we must now create the owl:Ontology statement
+            // and attach these roots under it
+            var s = model.createResource(baseUri); 
+            var p = model.createProperty('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'type');
+            var o = model.createResource('http://www.w3.org/2002/07/owl#Ontology');
+            var stmt = model.createStatement(s, p, o);
+
+            // add this statement to the model
+            model.add(stmt);
+
+
+            for(var i=0; i<roots.length; i++) {
+                var rdfNode = roots[i];
+
+                var s = rdfNode.asResource(); 
+                var p = model.createProperty('http://www.w3.org/2000/01/rdf-schema#', 'subClassOf');
+                var o = model.createResource(baseUri);
+                var stmt = model.createStatement(s, p, o);
+
+                // add this statement to the model
+                model.add(stmt);
+            }
+
+            // cool now we have a model with everything attached properly hopefully
+            // let's add it to the triple store!
+            var sw = new StringWriter();
+            model.write(sw, 'N-TRIPLES', baseUri);
+            var rdfString = sw.toString();
+
+            print(res).text(rdfString);
+
+            /*
+            var result = sparql.update('INSERT DATA { '+ rdfString +' }');
+            print(res).text(result);
+            */
 
 
             return;
