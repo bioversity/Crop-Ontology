@@ -1,15 +1,16 @@
 importPackage(java.lang);
 
+var usersFile = 'users.ttl';
 var usermodel = {
     emailExists: function(email) {
-        var arr = sparql.query('SELECT * WHERE { ?s a foaf:Person; cov:email ?email. FILTER(?email = '+JSON.stringify(''+email)+'  )}');
+        var arr = rdf.query(usersFile, 'SELECT * WHERE { ?s a foaf:Person; cov:email ?email. FILTER(?email = '+JSON.stringify(''+email)+'  )}');
         if(arr.length)
             return true;
         else 
             return false;
     },
     usernameExists: function(username) {
-        var arr = sparql.query('SELECT * WHERE { ?s a foaf:Person; cov:username ?username. FILTER(?username = '+JSON.stringify(''+username)+'  )}');
+        var arr = rdf.query(usersFile, 'SELECT * WHERE { ?s a foaf:Person; cov:username ?username. FILTER(?username = '+JSON.stringify(''+username)+'  )}');
         if(arr.length)
             return true;
         else 

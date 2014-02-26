@@ -1070,7 +1070,7 @@ apejs.urls = {
                 // sha1 the password
                 user.password = usermodel.sha1(user.password);
 
-                var result = sparql.update('\
+                var result = rdf.update('users.ttl', '\
                     INSERT DATA\
                     {\
                         co:user:'+user.username+' a foaf:Person ;\

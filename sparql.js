@@ -1,8 +1,7 @@
 importPackage(org.apache.http.client.fluent);
 importPackage(org.apache.http.entity);
 
-var sparqlQuery = getServletConfig().getInitParameter('sparql-query');
-var sparqlUpdate = getServletConfig().getInitParameter('sparql-update');
+var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
 exports = {
     prefixes: [
         'PREFIX foaf: <http://xmlns.com/foaf/0.1/>',

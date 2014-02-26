@@ -44,7 +44,7 @@ var auth = (function(){
             var hashedPassword = t[1];
 
             // check if it exists in datastore
-            var arr = sparql.query('select * where { ?s a foaf:Person; cov:username ?username; cov:password ?password. FILTER(?username = '+JSON.stringify(''+username)+' && ?password = '+JSON.stringify(''+hashedPassword)+')}')
+            var arr = rdf.query('users.ttl', 'select * where { ?s a foaf:Person; cov:username ?username; cov:password ?password. FILTER(?username = '+JSON.stringify(''+username)+' && ?password = '+JSON.stringify(''+hashedPassword)+')}')
 
             if(!arr.length) // doesn't exist
                 return false;
@@ -60,7 +60,7 @@ var auth = (function(){
      * and add the "user" cookie
      */
     function login(response, username, hashedPassword) {
-        var arr = sparql.query('select * where { ?s a foaf:Person; cov:username ?username; cov:password ?password. FILTER(?username = '+JSON.stringify(''+username)+' && ?password = '+JSON.stringify(''+hashedPassword)+')}')
+        var arr = rdf.query('users.ttl', 'select * where { ?s a foaf:Person; cov:username ?username; cov:password ?password. FILTER(?username = '+JSON.stringify(''+username)+' && ?password = '+JSON.stringify(''+hashedPassword)+')}')
 
         if(!arr.length) { // user not found 
             return false;
