@@ -1060,6 +1060,7 @@ apejs.urls = {
                 }
             }
             userCookie.setValue('');
+            response.addCookie(userCookie);
             response.sendRedirect('/');
         }
     },
