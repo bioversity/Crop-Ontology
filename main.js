@@ -1877,9 +1877,33 @@ apejs.urls = {
             }
         }
     },
+    "/dashboard": {
+        get: function(req, res) {
+            var currUser = auth.getUser();
+            var ontologies = rdf.query('users.ttl', 'SELECT * WHERE { <'+currUser.s+'> cov:ontologyId ?ontologyId }');
+            var data = {};
+            data.ontologies = [];
+            ontologies.forEach(function(obj) {
+                var files = fileupload.getFiles(obj.ontologyId);
+                data.ontologies.push({ ontologyId : obj.ontologyId, files: files });
+            });
+            var html = renderIndex("skins/dashboard.html", data);
+            res.getWriter().println(html);
+        }
+    },
     "/upload-rdf": {
         get: function(request, response) {
-            var html = renderIndex("skins/upload-rdf.html");
+            var categories = [
+                "010-089 General Germplasm Ontology",
+                "090-099 Taxonomic Ontology",
+                "100-299 Plant Anatomy & Development Ontology",
+                "300-499 Phenotype and Trait Ontology",
+                "500-699 Structural and Functional Genomic Ontology",
+                "700-799 Location and Environmental Ontology",
+                "800-899 General Science Ontology",
+                "900-999 Other (Sub-domain or Site-Specific) Ontology"
+            ];
+            var html = renderIndex("skins/upload-rdf.html", { categories: categories});
             response.getWriter().println(html);
         },
         post: function(req, res) {
@@ -1907,17 +1931,43 @@ apejs.urls = {
                         var ontologyId = ''+fieldValue;
                     if(fieldName == 'ontology_summary')
                         var ontologySummary = ''+fieldValue;
+                    if(fieldName == 'category')
+                        var category = ''+fieldValue;
 
                 }
             }
 
-            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary)) {
+            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || !filename) {
                 return error(res, "Something is missing. Did you fill out all the fields?");
             }
 
-            
-            var baseUri = 'http://www.cropontology.org/rdf/';
             res.setContentType("text/plain; charset=UTF-8");
+
+            ontologyId = ontologyId.toUpperCase();
+
+            // check that we own this ontologyId
+            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontologyId "'+ontologyId+'" .  }');
+            var ontoError = true;
+            if(!arr.length) { // nobody owns it
+                ontoError = false;
+                // if directory doesn't exist, this user owns it
+                rdf.update('users.ttl', 'INSERT DATA { <'+currUser.s+'> cov:ontologyId "'+ontologyId+'"; cov:ontologyName '+JSON.stringify(ontologyName)+'; cov:ontologySummary '+JSON.stringify(ontologySummary)+'; cov:category '+JSON.stringify(category)+' .  }');
+            } else {
+                // check we own it
+                if(arr[0].user.equals(currUser.s)) {
+                    // we own it
+                    ontoError = false;
+                }
+            }
+            if(ontoError)
+                return error(res, "Someone already owns this Ontology ID. Try a different one.");
+
+
+            fileupload.upload(ontologyId + '/' + filename, inpStream);
+
+            res.sendRedirect('/dashboard');
+
+            return;
 
             var model = rdf.createModel(inpStream, filename, baseUri);
 

@@ -1,0 +1,14 @@
+            <div class="left browser-content" style="width: 100%;"> 
+                <div class="cont" style="width: 877px;"> 
+                    <h1>Dashboard <small><a href="/upload-rdf">upload</a></small></h1>
+                    {{#ontologies}}
+                        <h2>{{ontologyId}}</h2>
+                        {{#files}}
+                            <p>{{.}}</p>
+                        {{/files}}
+                    {{/ontologies}}
+                    
+                </div> 
+            </div><!-- end left --> 
+
+

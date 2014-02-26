@@ -2,6 +2,7 @@
             <div class="left browser-content" style="width: 100%;"> 
                 <div class="cont" style="width: 877px;"> 
 
+                    <!--
                     <div class="add_title">
                         <a href="/upload-rdf" title="Upload RDF" cont="upload_rdf_cont" class="minibutton btn-watch selected"><span>Upload RDF</span></a>
                         or
@@ -11,13 +12,21 @@
                     </div>
 
                     <a class="button" id="error" style="display: none; margin-bottom: 10px;"></a>
+                    -->
 
 
                     <div id="upload_rdf_cont">
+                        <h2>Upload RDF</h2>
                         <form action="/upload-rdf" enctype="multipart/form-data" method="post">
                             <p>
                             Category:
+                            <select name="category">
+                            {{#categories}}
+                                <option value="{{.}}">{{.}}</option>
+                            {{/categories}}
+                            </select>
                             </p>
+
                             <p>
                                 <input type="text" name="ontology_id" placeholder="Ontology ID" />
                             </p>

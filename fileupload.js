@@ -4,6 +4,7 @@ importPackage(org.apache.commons.fileupload.disk);
 importPackage(org.apache.commons.io);
 importPackage(java.lang);
 
+var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
 var fileupload = {
     getData: function(request) {
         var data = [];
@@ -33,6 +34,26 @@ var fileupload = {
         }
 
         return data;
+    },
+    upload: function(filePath, inputStream) {
+        var filePath = rdfPath + filePath;
+        var file = new File(filePath);
+        if(!file.exists()) {
+            // create intermediate paths
+            file.getParentFile().mkdirs();
+        }
+        var fileOut = new FileOutputStream(file);
+        IOUtils.copy(inputStream, fileOut);
+    },
+    getFiles: function(folderName) {
+        var file = new File(rdfPath + folderName);
+        var files = file.listFiles();
+        var ret = [];
+        for(var i=0; i<files.length; i++) {
+            var f = files[i];
+            ret.push(''+f.getName());
+        }
+        return ret;
     }
 };
 exports = fileupload;
