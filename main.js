@@ -1880,7 +1880,11 @@ apejs.urls = {
     "/dashboard": {
         get: function(req, res) {
             var currUser = auth.getUser();
-            var ontologies = rdf.query('users.ttl', 'SELECT * WHERE { <'+currUser.s+'> cov:ontologyId ?ontologyId }');
+            var ontologies = rdf.query('users.ttl', 'SELECT ?ontologyId WHERE {\
+                    <'+currUser.s+'> a foaf:Person;\
+                                    cov:ontology ?ontology.\
+                    ?ontology cov:ontologyId ?ontologyId .\
+                    }');
             var data = {};
             data.ontologies = [];
             ontologies.forEach(function(obj) {
@@ -1937,7 +1941,7 @@ apejs.urls = {
                 }
             }
 
-            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || !filename) {
+            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || filename == '') {
                 return error(res, "Something is missing. Did you fill out all the fields?");
             }
 
@@ -1946,12 +1950,12 @@ apejs.urls = {
             ontologyId = ontologyId.toUpperCase();
 
             // check that we own this ontologyId
-            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontologyId "'+ontologyId+'" .  }');
+            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontology <'+ontologyId+'> .  }');
             var ontoError = true;
             if(!arr.length) { // nobody owns it
                 ontoError = false;
                 // if directory doesn't exist, this user owns it
-                rdf.update('users.ttl', 'INSERT DATA { <'+currUser.s+'> cov:ontologyId "'+ontologyId+'"; cov:ontologyName '+JSON.stringify(ontologyName)+'; cov:ontologySummary '+JSON.stringify(ontologySummary)+'; cov:category '+JSON.stringify(category)+' .  }');
+                rdf.update('users.ttl', 'INSERT DATA { cov:ontology:'+ontologyId+' a owl:Ontology; rdfs:label '+JSON.stringify(ontologyName)+'; rdfs:comment '+JSON.stringify(ontologySummary)+'; cov:category '+JSON.stringify(category)+'; cov:ontologyId '+JSON.stringify(ontologyId)+' . <'+currUser.s+'> cov:ontology cov:ontology:'+ontologyId+' }');
             } else {
                 // check we own it
                 if(arr[0].user.equals(currUser.s)) {
