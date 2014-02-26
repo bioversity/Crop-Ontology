@@ -81,7 +81,30 @@ apejs.before = function(request, response) {
 apejs.urls = {
     "/": {
         get: function(request, response) {
-            var html = renderIndex("skins/list-ontologies.html");
+            var ontos = rdf.query('users.ttl', 'SELECT * WHERE {\
+                    ?onto a owl:Ontology;\
+                          cov:ontologyId ?ontologyId;\
+                          cov:category ?cat;\
+                          rdfs:label ?label;\
+                          rdfs:comment ?comment .\
+                    ?user cov:ontology ?onto;\
+                          cov:username ?username;\
+                    }');
+            var cats = {};
+            ontos.forEach(function(obj) {
+                if(!cats[obj.cat])
+                    cats[obj.cat] = [];
+                
+                cats[obj.cat].push(obj);
+            });
+            var categories = [];
+            for(var i in cats) {
+                categories.push({
+                    cat: i,
+                    ontologies: cats[i]
+                });
+            }
+            var html = renderIndex("skins/list-ontologies.html", { categories: categories });
             print(response).text(html);
             /*
 

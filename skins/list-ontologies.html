@@ -11,19 +11,23 @@
  
  </div>
             <div class="list-ontologies"> 
-                <img src="/images/metabox_loader.gif" class="loader"/>
-                <div class="bar left" style="display: none;">
-                    <h2 class="featured-heading"><span>Crop Ontologies</span></h2>
+                
+                {{#categories}}
+                <div class="bar left" style="">
+                    <h2 class="featured-heading"><span>{{cat}}</span></h2>
 
-                    <ol class="ranked-repositories row" style="display: none;">
+                    {{#ontologies}}
+                    <ol class="ranked-repositories row">
                         <li>
                             <a href="#" title="Comments RSS" class="comments_rss"></a>
                             <a href="#" title="RDF/N-Triples" class="n-triples"></a>
                             <h3>
-                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">AccessionLocalUniqueIdentifier</a> <small></small><a href="#" class="username">Ciao</a>
+                                <a title="AccessionLocalUniqueIdentifier" class="term" href="/data-dictionary/AccessionLocalUniqueIdentifier">{{label}}</a> <small></small><a href="#" class="username">{{username}}</a>
                             </h3>
                             <p class="description"><span class="description">Here's a test of an ontology</span> </p>
                         </li>
                     </ol>
+                    {{/ontologies}}
                 </div>
+                {{/categories}}
             </div><!-- end list-onto --> 

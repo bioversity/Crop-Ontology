@@ -250,7 +250,7 @@ border-top-right-radius: 15px;
 border-bottom-right-radius: 10px;
 }
 .toolbar_edit {
-    background:url("/images/sprite.png") no-repeat scroll 2px center transparent;
+    background:url("/public/images/sprite.png") no-repeat scroll 2px center transparent;
     height:30px;
     margin:auto;
     width:17px;
@@ -259,7 +259,7 @@ border-bottom-right-radius: 10px;
     background-position: -14px center; 
 }
 .toolbar_remove {
-    background:url("/images/sprite.png") no-repeat scroll -30px center transparent;
+    background:url("/public/images/sprite.png") no-repeat scroll -30px center transparent;
     height:30px;
     margin:auto;
     width: 17px;
@@ -643,7 +643,7 @@ a.n-triples {
     right: 20px;
     font-size: 11px;
     font-weight: bold;
-    background: url("/images/n-triples.gif") no-repeat;
+    background: url("/public/images/n-triples.gif") no-repeat;
     height: 15px;
     width: 14px;
 }
@@ -654,7 +654,7 @@ a.comments_rss {
     right: 0;
     font-size: 11px;
     font-weight: bold;
-    background: url("/images/feed.png") no-repeat;
+    background: url("/public/images/feed.png") no-repeat;
     height: 14px;
     width: 14px;
 }
