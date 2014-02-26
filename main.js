@@ -832,11 +832,9 @@ apejs.urls = {
             if(!ontologyId) return response.getWriter().println("No ontology id");
 
             // get all files within this folder
-            var results = rdf.query(ontologyId, 'SELECT * WHERE {?s ?p ?o}');
-            results.forEach(function(obj) {
-                print(response).text(obj.s);
+            var model = rdf.createModelAndFile(ontologyId).model;
+            model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
 
-            });
             return;
 
             var termKey = googlestore.createKey("term", term_id),

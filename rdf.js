@@ -8,8 +8,8 @@ importPackage(org.apache.jena.riot.system);
 importPackage(org.apache.jena.riot.out);
 
 var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
-var baseUri = 'http://www.cropontology.org/rdf/';
 exports = {
+    baseUri: 'http://www.cropontology.org/rdf/',
     prefixes: [
         'PREFIX foaf: <http://xmlns.com/foaf/0.1/>',
         'PREFIX co: <http://www.cropontology.org/>',
@@ -73,7 +73,7 @@ exports = {
                 var f = files[i];
                 var inputStream = new FileInputStream(f);
                 try {
-                    model.read(inputStream, baseUri, lang);
+                    model.read(inputStream, this.baseUri, lang);
                 } catch(e) { // not rdf
                 }
             }
@@ -92,7 +92,7 @@ exports = {
                 var inputStream = new FileInputStream(file);
             }        
 
-            var model = rdf.createModel(inputStream, filePath, baseUri);
+            var model = rdf.createModel(inputStream, filePath, this.baseUri);
             return {
                 model: model,
                 file: file
@@ -153,7 +153,7 @@ exports = {
 
         // persist to disk
         var fileOut = new FileOutputStream(modelAndFile.file);
-        model.write(fileOut, 'TURTLE', baseUri);
+        model.write(fileOut, 'TURTLE', this.baseUri);
         model.close();
     }
     /*
