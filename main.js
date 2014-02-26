@@ -828,8 +828,16 @@ apejs.urls = {
             response.setCharacterEncoding("UTF-8");
             response.setContentType('text/plain');
 
-            var term_id = matches[1];
-            if(!term_id) return response.getWriter().println("No term_id");
+            var ontologyId = matches[1];
+            if(!ontologyId) return response.getWriter().println("No ontology id");
+
+            // get all files within this folder
+            var results = rdf.query(ontologyId, 'SELECT * WHERE {?s ?p ?o}');
+            results.forEach(function(obj) {
+                print(response).text(obj.s);
+
+            });
+            return;
 
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
@@ -1920,6 +1928,7 @@ apejs.urls = {
     },
     "/upload-rdf": {
         get: function(request, response) {
+            var ontologyId = request.getParameter('ontologyId');
             var categories = [
                 "010-089 General Germplasm Ontology",
                 "090-099 Taxonomic Ontology",
@@ -1930,7 +1939,7 @@ apejs.urls = {
                 "800-899 General Science Ontology",
                 "900-999 Other (Sub-domain or Site-Specific) Ontology"
             ];
-            var html = renderIndex("skins/upload-rdf.html", { categories: categories});
+            var html = renderIndex("skins/upload-rdf.html", { categories: categories, ontologyId: ontologyId});
             response.getWriter().println(html);
         },
         post: function(req, res) {
@@ -1964,8 +1973,11 @@ apejs.urls = {
                 }
             }
 
-            if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || filename == '') {
-                return error(res, "Something is missing. Did you fill out all the fields?");
+            if(filename == '') {
+                return error(res, "File is missing");
+            }
+            if(isblank(ontologyId)) {
+                return error(res, "Ontology ID missing");
             }
 
             res.setContentType("text/plain; charset=UTF-8");
@@ -1973,11 +1985,14 @@ apejs.urls = {
             ontologyId = ontologyId.toUpperCase();
 
             // check that we own this ontologyId
-            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontology <'+ontologyId+'> .  }');
+            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontology cov:ontology:'+ontologyId+' .  }');
             var ontoError = true;
             if(!arr.length) { // nobody owns it
                 ontoError = false;
-                // if directory doesn't exist, this user owns it
+
+                if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || filename == '')
+                    return error(res, "Something is missing. Did you fill out all the fields?");
+                    
                 rdf.update('users.ttl', 'INSERT DATA { cov:ontology:'+ontologyId+' a owl:Ontology; rdfs:label '+JSON.stringify(ontologyName)+'; rdfs:comment '+JSON.stringify(ontologySummary)+'; cov:category '+JSON.stringify(category)+'; cov:ontologyId '+JSON.stringify(ontologyId)+' . <'+currUser.s+'> cov:ontology cov:ontology:'+ontologyId+' }');
             } else {
                 // check we own it

@@ -16,8 +16,14 @@
 
 
                     <div id="upload_rdf_cont">
-                        <h2>Upload RDF</h2>
+                        <h2>Upload Ontology{{#ontologyId}} <small>{{ontologyId}}{{/ontologyId}}</h2>
                         <form action="/upload-rdf" enctype="multipart/form-data" method="post">
+                        {{#ontologyId}}
+                            <input type="hidden" value="{{.}}" name="ontology_id" />
+                        {{/ontologyId}}
+
+
+                        {{^ontologyId}}
                             <p>
                             Category:
                             <select name="category">
@@ -36,6 +42,7 @@
                             <p>
                             <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
                             </p>
+                        {{/ontologyId}}
                         <p>
                             <input name="rdf" type="file" /> 
                         </p>

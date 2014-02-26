@@ -60,24 +60,44 @@ exports = {
     createModelAndFile: function(filePath) {
         var filePath = rdfPath + filePath;
         var file = new File(filePath);
-        try {
-            var inputStream = new FileInputStream(file);
-        } catch(e) {
-            if(e.javaException instanceof FileNotFoundException) {
-                // create intermediate paths
-                file.getParentFile().mkdirs();
-                file.createNewFile();
+        if(file.isDirectory()) { 
+            var files = file.listFiles();
+            // create a model
+            // and read() all these files
+            var lang = RDFLanguages.filenameToLang(filePath);
+            if(lang != null) {
+                lang = lang.getLabel(); 
             }
-        }
-        if(!inputStream) {
-            var inputStream = new FileInputStream(file);
-        }        
+            var model = ModelFactory.createDefaultModel();
+            for(var i=0; i<files.length; i++) {
+                var f = files[i];
+                var inputStream = new FileInputStream(f);
+                try {
+                    model.read(inputStream, baseUri, lang);
+                } catch(e) { // not rdf
+                }
+            }
+            return { model: model }
+        } else {
+            try {
+                var inputStream = new FileInputStream(file);
+            } catch(e) {
+                if(e.javaException instanceof FileNotFoundException) {
+                    // create intermediate paths
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                }
+            }
+            if(!inputStream) {
+                var inputStream = new FileInputStream(file);
+            }        
 
-        var model = rdf.createModel(inputStream, filePath, baseUri);
-        return {
-            model: model,
-            file: file
-        };
+            var model = rdf.createModel(inputStream, filePath, baseUri);
+            return {
+                model: model,
+                file: file
+            };
+        }
     },
     queryModel: function(queryString, model) {
         var query = QueryFactory.create(queryString);
