@@ -64,13 +64,13 @@ exports = {
             var files = file.listFiles();
             // create a model
             // and read() all these files
-            var lang = RDFLanguages.filenameToLang(filePath);
-            if(lang != null) {
-                lang = lang.getLabel(); 
-            }
             var model = ModelFactory.createDefaultModel();
             for(var i=0; i<files.length; i++) {
                 var f = files[i];
+                var lang = RDFLanguages.filenameToLang(f.getName());
+                if(lang != null) {
+                    lang = lang.getLabel(); 
+                }
                 var inputStream = new FileInputStream(f);
                 try {
                     model.read(inputStream, this.baseUri, lang);

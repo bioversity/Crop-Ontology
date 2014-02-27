@@ -831,11 +831,40 @@ apejs.urls = {
             var ontologyId = matches[1];
             if(!ontologyId) return response.getWriter().println("No ontology id");
 
-            // get all files within this folder
             var model = rdf.createModelAndFile(ontologyId).model;
             model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
 
             return;
+
+            // get all files within this folder
+            var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
+            // read this directory /CO_321
+            var dir = new File(rdfPath + ontologyId);
+            if(dir.isDirectory()) { 
+                var files = dir.listFiles();
+                for(var i=0; i<files.length; i++) {
+                    var f = files[i];
+                    var fileName = f.getName();
+                    var lang = RDFLanguages.filenameToLang(fileName);
+                    if(lang != null) {
+                        lang = lang.getLabel(); 
+                    }
+                    if(lang) {
+                        // this means it's RDF, do the model.read stuff
+                    } else {
+                        // figure out format using extension
+                        var ext = FilenameUtils.getExtension(fileName).toLowerCase();
+                        if(ext == 'obo') {
+                            // convert OBO to rdf
+                        } else if(ext == 'csv'){
+                        }
+                        print(response).text(ext);
+                    }
+                }
+            } 
+
+            return;
+
 
             var termKey = googlestore.createKey("term", term_id),
                 termEntity = googlestore.get(termKey);
