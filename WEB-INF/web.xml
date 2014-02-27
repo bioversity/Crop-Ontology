@@ -8,7 +8,7 @@
         <description>Location to store/query uploaded rdf data</description> 
         <param-name>rdf-path</param-name> 
         <param-value>
-            ~/co-data/
+            co-data/
         </param-value> 
     </context-param>
 
