@@ -13,11 +13,13 @@ Simply clone the project:
 
 The generated `Crop-Ontology` directory acts as a standard `war` directory that you can deploy in any servlet container. 
 
-Make sure all the settings inside `WEB-INF/web.xml` are correct (most specifically the URLs of your SPARQL endpoint). You could use `jetty-runner` to serve Crop Ontology:
+Make sure all the settings inside `WEB-INF/web.xml` are correct. Most specifically the `development` init parameter and the `rdf-path` location which is where all your data is going to be stored. 
+
+## Running
+
+To run Crop Ontology you could use `jetty-runner`:
 
     java -jar jetty-runner.jar Crop-Ontology/
-    
-For SPARQL we suggest using Fuseki, however other standard HTTP-based endpoints, such as 4store, will work.
 
 That's it! File an issue if you need help, or just fork the project to improve it!
 
