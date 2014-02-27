@@ -5,7 +5,7 @@ framework.
 
 ## Installation
 
-**You need to have latest Java to run this**.
+**You need to have at least Java 1.7.x to run Crop Ontology**.
 
 Simply clone the project:
 
