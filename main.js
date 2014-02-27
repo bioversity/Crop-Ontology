@@ -350,10 +350,15 @@ apejs.urls = {
 
             var results = rdf.queryModel('SELECT DISTINCT ?id ?name\
                                           WHERE {\
-                                            ?node1 rdfs:subClassOf ?id.\
+                                            OPTIONAL { ?node1 rdfs:subClassOf ?id }\
+                                            OPTIONAL { ?node1 skos:broaderTransitive ?id }\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
-                                            FILTER(NOT EXISTS { ?id rdfs:subClassOf ?node3 })\
+                                            FILTER(NOT EXISTS {\
+                                                { ?id rdfs:subClassOf ?node3 }\
+                                                UNION\
+                                                { ?id skos:broaderTransitive ?node3 }\
+                                            })\
                                           }', model);
 
             results = results.map(function(obj) {
@@ -461,15 +466,16 @@ apejs.urls = {
             if(!uri)
                 return response.sendError(response.SC_BAD_REQUEST, "missing URI");
 
-            var model = rdf.createModelAndFile('CO_123').model;
+            var model = rdf.createModelAndFile('CO_44').model;
 
-            var results = rdf.queryModel('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
-                                          SELECT DISTINCT ?id ?name\
+            /*
+            var results = rdf.queryModel('SELECT *\
                                           WHERE {\
-                                            ?node1 rdfs:subClassOf ?id.\
-                                            ?id  rdfs:label ?name\
-                                            FILTER(NOT EXISTS { ?id rdfs:subClassOf ?node3 })\
+                                            ' + uri + ' ?p ?o .\
                                           }', model);
+                                          */
+
+            return print(response).text(uri);
 
             try {
                 var children = googlestore.query("term")
@@ -817,7 +823,7 @@ apejs.urls = {
             if(!ontologyId) return response.getWriter().println("No ontology id");
 
             var model = rdf.createModelAndFile(ontologyId).model;
-            model.write(response.getOutputStream(), 'JSON-LD', rdf.baseUri);
+            model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
 
             return;
 
