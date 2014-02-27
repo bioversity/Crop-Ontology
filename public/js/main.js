@@ -708,7 +708,7 @@ function methodScale(obj) {
 }
  
 function loader(parent, show) {
-    var jimg = $("<img>").attr("src", "/images/metabox_loader.gif");
+    var jimg = $("<img>").attr("src", "/public/images/metabox_loader.gif");
  
     if(show) {
         jimg.insertBefore(parent);
@@ -1017,93 +1017,12 @@ var events = function(){
         e.preventDefault();
         e.stopPropagation();
     });
-    $("#dologin").click(function(e){
-        Modal.show("login");
- 
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    $("#dologout").click(function(e){
-        $.get("/logout", function() {
-            Login(); 
-        });
- 
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    $("#doregister").click(function(e){
-        Modal.show("register");
- 
-        e.preventDefault();
-        e.stopPropagation();
-    });
     $('.download-button').click(function(e) {
         Modal.show('download_onto')
         e.preventDefault()
         e.stopPropagation()
     })
  
-    $("#login_form").submit(function(e){
-        $(".context-loader").show();
-        $.ajax({
-          type: 'POST',
-          url: '/login',
-          dataType: 'json',
-          data: {
-            "username":$("#login_form input[name=username]").val(),
-            "password":$("#login_form input[name=password]").val()
-          },
-          success: function(data){
-            if(data && data.error) {
-                $(".error_box").show(); 
-                $(".error_box").html(data.error); 
-            } else {
-                Login(function(user) {
-                    if(ontologyid !== "")
-                        Editable.init(ontologyid);
-                });
-                Modal.hide();
-                $(".error").hide();
-                $(".error_box").hide();
-            }
-            
-            term_loader(false);
-          }
-        });
- 
-        e.preventDefault();
-        e.stopPropagation();
-    });
-    $("#register_form").submit(function(e){
-        $(".context-loader").show();
-        $.ajax({
-          type: 'POST',
-          url: '/register',
-            dataType: 'json',
-          data: {
-            "username":$("#register_form input[name=username]").val(),
-            "email":$("#register_form input[name=email]").val(),
-            "password":$("#register_form input[name=password]").val(),
-            "language":$("#register_form [name=language]").val()
-          },
-          success: function(data){
-            if(data && data.error) {
-                $(".error_box").show(); 
-                $(".error_box").html(data.error); 
-            } else {
-                $(".error").hide();
-                $(".error_box").hide();
-                Modal.hide();
-                Login(function(){});
-            }
-            term_loader(false);
-          }
-        });
- 
-        e.preventDefault();
-        e.stopPropagation();
-    });
-
 
     // adding new attribute
     jcurrAdding = false;

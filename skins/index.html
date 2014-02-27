@@ -15,7 +15,21 @@
 <script type='text/javascript' src='/public/js/jquery.autocomplete.js?{{>VERSION}}'></script>
 <link rel="stylesheet" type="text/css" href="/public/stylesheets/jquery.autocomplete.css?{{>VERSION}}" />
 
+<script>
+var ontologyid = "{{ontologyid}}";
+var ontologyname = "{{ontologyname}}";
+var termid = "{{termid}}";
+var searchQuery = "";
+$(function(){
+    if(ontologyid !== "") {
+        $(".crop-logos").show();
+    }
+});
+var languages = [];
+</script>
+
 <script type="text/javascript" src="/public/js/markdown.js?{{>VERSION}}"></script>
+<script type="text/javascript" src="/public/js/main.js?0.8.8"></script>
 
 <!-- new sammy refactoring happening here -->
 <script type='text/javascript' src='/public/js/sammy-0.7.1.min.js'></script>

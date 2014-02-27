@@ -16,7 +16,8 @@ exports = {
         'PREFIX owl: <http://www.w3.org/2002/07/owl#>',
         'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
         'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>',
-        'PREFIX cov: <http://www.cropontology.org/vocab/>'
+        'PREFIX cov: <http://www.cropontology.org/vocab/>',
+        'PREFIX dc: <http://purl.org/dc/elements/1.1/>'
 
     ],
     convert: function(baseUri, fileName, inpStream, outputStream, langOut) {
@@ -100,6 +101,10 @@ exports = {
         }
     },
     queryModel: function(queryString, model) {
+        // add prefixes to sparql query
+        for(var i=0; i<this.prefixes.length; i++) {
+            queryString = this.prefixes[i] + '\n' + queryString;
+        }
         var query = QueryFactory.create(queryString);
 
         // Execute the query and obtain results
@@ -125,10 +130,6 @@ exports = {
         return arr;
     },
     query: function(filePath, queryString) {
-        // add prefixes to sparql query
-        for(var i=0; i<this.prefixes.length; i++) {
-            queryString = this.prefixes[i] + '\n' + queryString;
-        }
 
         var modelAndFile = rdf.createModelAndFile(filePath);
 

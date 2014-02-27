@@ -317,7 +317,6 @@ apejs.urls = {
 
             var html = renderIndex("skins/onto.html", {
               URL:"http://www.cropontology.org",
-              ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
               ontologyid: matches[1],
               ontologyname: matches[2],
               CROP_LOGOS: cropLogos
@@ -345,50 +344,26 @@ apejs.urls = {
             request.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
-            var ontoId = matches[1];
-            try {
-                var rootTerms = googlestore.query("term")
-                                .filter("parent", "=", null)
-                                .filter("ontology_id", "=", ontoId)
-                                .fetch();
-                var ret = [];
+            var ontologyId = matches[1];
 
-                var excelBlobKey = googlestore.query('term')
-                                    .filter("ontology_id", "=", ontoId)
-                                    .filter("excel_blob_key", "!=", null)
-                                    .limit(1)
-                                    .fetch();
-                if(excelBlobKey.length)
-                    excelBlobKey = excelBlobKey[0].getProperty('excel_blob_key')
+            var model = rdf.createModelAndFile(ontologyId).model;
 
-                try {
-                    var o = JSON.parse(excelBlobKey);
+            var results = rdf.queryModel('SELECT DISTINCT ?id ?name\
+                                          WHERE {\
+                                            ?node1 rdfs:subClassOf ?id.\
+                                            OPTIONAL { ?id rdfs:label ?name }\
+                                            OPTIONAL { ?id dc:title ?name }\
+                                            FILTER(NOT EXISTS { ?id rdfs:subClassOf ?node3 })\
+                                          }', model);
 
-                    for(var i in o) {
-                        excelBlobKey = o[i]; 
-                        break;
-                    }
-
-
-                }catch(e){}
-
-
-                rootTerms.forEach(function(term) {
-                    var name = term.getProperty("name");
-                    if(term.getProperty("is_obsolete")) return;
-
-                    ret.push({
-                        "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name),
-                        oboBlobKey: ''+term.getProperty('obo_blob_key'),
-                        excelBlobKey: ''+excelBlobKey
-                    });
-                });
-
-                print(response).json(ret, request.getParameter("callback"));
-            } catch (e) {
-                response.sendError(response.SC_BAD_REQUEST, e);
-            }
+            results = results.map(function(obj) {
+                var o = {};
+                for(var i in obj) {
+                    o[i] = ''+obj[i].toString();
+                }
+                return o;
+            });
+            return print(response).json(results);
         }
     },
     "/get-ontology-id": {
@@ -476,15 +451,25 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/([^/]*)": {
+    "/get-children/(.*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            var parentId = matches[1];
-            if(!parentId)
-                return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
+            var uri = matches[1];
+            if(!uri)
+                return response.sendError(response.SC_BAD_REQUEST, "missing URI");
+
+            var model = rdf.createModelAndFile('CO_123').model;
+
+            var results = rdf.queryModel('PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+                                          SELECT DISTINCT ?id ?name\
+                                          WHERE {\
+                                            ?node1 rdfs:subClassOf ?id.\
+                                            ?id  rdfs:label ?name\
+                                            FILTER(NOT EXISTS { ?id rdfs:subClassOf ?node3 })\
+                                          }', model);
 
             try {
                 var children = googlestore.query("term")
@@ -832,7 +817,7 @@ apejs.urls = {
             if(!ontologyId) return response.getWriter().println("No ontology id");
 
             var model = rdf.createModelAndFile(ontologyId).model;
-            model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
+            model.write(response.getOutputStream(), 'JSON-LD', rdf.baseUri);
 
             return;
 
