@@ -260,7 +260,7 @@ function expand_collapse() {
  
                 var id = li.find(".id").val();
 
-                load_branch(parent, "/get-children/"+id);
+                load_branch(parent, "/get-children", id);
                 // TODO - fix this - for now we just have a global variable tracking if we
                 // need to load the root ontology (only the first time) and nodes for the rest
                 /*
@@ -773,7 +773,7 @@ function do_search() {
  *           this gets populated with the elements
  * @url - the json array of objects to do an AJAX request to
  */
-load_branch = function(parent, url, cb) {
+load_branch = function(parent, url, uri) {
     var obj, li;
  
     // insert before the parent a loading image
@@ -781,7 +781,7 @@ load_branch = function(parent, url, cb) {
  
     parent.show();
  
-    $.getJSON(url, function(children) {
+    $.getJSON(url,{uri: uri, ontologyId: ontologyid}, function(children) {
         
         for(var i=0,len=children.length; i<len; i++) {
             var child = children[i];

@@ -456,26 +456,41 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/(.*)": {
+    "/get-children": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            var uri = matches[1];
-            if(!uri)
+            var uri = request.getParameter('uri');
+            var ontologyId = request.getParameter('ontologyId');
+            if(!uri && !ontologyId)
                 return response.sendError(response.SC_BAD_REQUEST, "missing URI");
 
-            var model = rdf.createModelAndFile('CO_44').model;
 
-            /*
-            var results = rdf.queryModel('SELECT *\
+            var model = rdf.createModelAndFile(ontologyId).model;
+
+            var results = rdf.queryModel('SELECT ?id ?name\
                                           WHERE {\
-                                            ' + uri + ' ?p ?o .\
+                                            ?id ?p <'+uri+'> .\
+                                            OPTIONAL { ?id rdfs:label ?name }\
+                                            OPTIONAL { ?id dc:title ?name }\
                                           }', model);
-                                          */
+                                          
+            results = results.map(function(obj) {
+                var o = {};
+                for(var i in obj) {
+                    var rdfNode = obj[i];
+                    if(rdfNode.isLiteral()) {
+                        o[i] = ''+rdfNode.asLiteral().getString();
+                    } else if(rdfNode.isResource()) {
+                        o[i] = ''+rdfNode.asResource().getURI();
+                    }
+                }
+                return o;
+            });
 
-            return print(response).text(uri);
+            return print(response).json(results);
 
             try {
                 var children = googlestore.query("term")
