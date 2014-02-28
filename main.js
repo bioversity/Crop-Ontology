@@ -664,15 +664,43 @@ apejs.urls = {
             print(response).json(object, request.getParameter("callback"));
         }
     },
-    "/get-attributes/(.*)": {
+    "/get-attributes": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            var segments = matches[1].split('/');
-            var term_id = segments[0];
-            if(!term_id) return response.getWriter().println("No term_id");
+            var uri = request.getParameter('uri');
+            var ontologyId = request.getParameter('ontologyId')
+
+            if(!uri || ! ontologyId) 
+                return response.getWriter().println("No uri or ontologyId");
+
+            var model = rdf.createModelAndFile(ontologyId).model;
+
+            var results = rdf.queryModel('SELECT ?key ?value\
+                                          WHERE {\
+                                            <'+uri+'> ?key ?value .\
+                                          }', model);
+                                          
+            results = results.map(function(obj) {
+                var o = {};
+                for(var i in obj) {
+                    var rdfNode = obj[i];
+                    if(rdfNode.isLiteral()) {
+                        o[i] = ''+rdfNode.asLiteral().getString();
+                    } else if(rdfNode.isResource()) {
+                        o[i] = ''+rdfNode.asResource().getURI();
+
+                        // replace uri with prefix
+                        if(i == 'key')
+                            o[i] = rdf.prefixURI(o[i]);
+                    }
+                }
+                return o;
+            });
+
+            return print(response).json(results);
 
             var method = segments[1],
                 scale = segments[2];

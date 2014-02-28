@@ -10,17 +10,33 @@ importPackage(org.apache.jena.riot.out);
 var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
 exports = {
     baseUri: 'http://www.cropontology.org/rdf/',
-    prefixes: [
-        'PREFIX foaf: <http://xmlns.com/foaf/0.1/>',
-        'PREFIX co: <http://www.cropontology.org/>',
-        'PREFIX owl: <http://www.w3.org/2002/07/owl#>',
-        'PREFIX skos: <http://www.w3.org/2004/02/skos/core#>',
-        'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
-        'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>',
-        'PREFIX cov: <http://www.cropontology.org/vocab/>',
-        'PREFIX dc: <http://purl.org/dc/elements/1.1/>'
-
-    ],
+    prefixes: {
+        'foaf': 'http://xmlns.com/foaf/0.1/',
+        'co': 'http://www.cropontology.org/',
+        'owl': 'http://www.w3.org/2002/07/owl#',
+        'skos': 'http://www.w3.org/2004/02/skos/core#',
+        'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+        'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        'cov': 'http://www.cropontology.org/vocab/',
+        'dc': 'http://purl.org/dc/elements/1.1/'
+    },
+    prefixURI: function(uri) {
+        for(var i in rdf.prefixes) {
+            var prefixVal = rdf.prefixes[i];
+            if(uri.indexOf(prefixVal) == 0) { // starts with
+                return uri.replace(prefixVal, i + ':');
+            }
+        }
+        // hrm no prefix available, shorten the URI?
+        return uri;
+    },
+    buildSparqlPrefixes: function() {
+        var str = '';
+        for(var i in this.prefixes) {
+            str += 'PREFIX '+i+': <'+this.prefixes[i]+'>\n';
+        }
+        return str;
+    },
     convert: function(baseUri, fileName, inpStream, outputStream, langOut) {
         var lang = RDFLanguages.filenameToLang(fileName);
         var model = ModelFactory.createDefaultModel();
@@ -103,9 +119,7 @@ exports = {
     },
     queryModel: function(queryString, model) {
         // add prefixes to sparql query
-        for(var i=0; i<this.prefixes.length; i++) {
-            queryString = this.prefixes[i] + '\n' + queryString;
-        }
+        queryString = rdf.buildSparqlPrefixes() + queryString;
         var query = QueryFactory.create(queryString);
 
         // Execute the query and obtain results
@@ -146,9 +160,7 @@ exports = {
     update: function(filePath, updateString) {
         var modelAndFile = rdf.createModelAndFile(filePath);
 
-        for(var i=0; i<this.prefixes.length; i++) {
-            updateString = this.prefixes[i] + '\n' + updateString;
-        }
+        updateString = rdf.buildSparqlPrefixes() + updateString;
 
         var model = modelAndFile.model;
         rdf.updateModel(updateString, model);

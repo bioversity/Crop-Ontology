@@ -515,7 +515,7 @@ load_term = function(li) {
  
     var attributes = {};
     
-    $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
+    $.getJSON("/get-attributes", {uri: id, ontologyId: ontologyid}, function(this_attrs) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
         });
@@ -526,6 +526,7 @@ load_term = function(li) {
     });
  
     /* get comments */
+    /*
     $.get("/get-comments", {termId: id}, function(data){
         comments.load(data);
     }, "json");
@@ -537,6 +538,7 @@ load_term = function(li) {
       $graph.show();
       buildGraph($graph, data);
     });
+    */
 
     /* get relationship */
     /*
