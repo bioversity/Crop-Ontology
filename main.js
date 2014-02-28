@@ -484,9 +484,16 @@ apejs.urls = {
                     if(rdfNode.isLiteral()) {
                         o[i] = ''+rdfNode.asLiteral().getString();
                     } else if(rdfNode.isResource()) {
-                        o[i] = ''+rdfNode.asResource().getURI();
+                        var resource = rdfNode.asResource();
+                        if(resource.isAnon()) {
+                            o[i] = ''+resource.getId().getLabelString();
+                        } else { // it's not blank node, get URI
+                            o[i] = ''+rdfNode.asResource().getURI();
+                        }
                     }
+
                 }
+                o['has_children'] = 1;
                 return o;
             });
 
