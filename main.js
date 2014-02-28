@@ -346,7 +346,7 @@ apejs.urls = {
             response.setCharacterEncoding("UTF-8");
             var ontologyId = matches[1];
 
-            var model = rdf.createModelAndFile(ontologyId).model;
+            var model = rdf.createModelFrom(ontologyId);
 
             var results = rdf.queryModel('SELECT DISTINCT ?id ?name\
                                           WHERE {\
@@ -471,7 +471,7 @@ apejs.urls = {
                 return response.sendError(response.SC_BAD_REQUEST, "missing URI");
 
 
-            var model = rdf.createModelAndFile(ontologyId).model;
+            var model = rdf.createModelFrom(ontologyId);
 
             var results = rdf.queryModel('SELECT ?id ?name\
                                           WHERE {\
@@ -687,7 +687,7 @@ apejs.urls = {
             if(!uri || ! ontologyId) 
                 return response.getWriter().println("No uri or ontologyId");
 
-            var model = rdf.createModelAndFile(ontologyId).model;
+            var model = rdf.createModelFrom(ontologyId);
 
             var results = rdf.queryModel('SELECT ?key ?value\
                                           WHERE {\
@@ -876,8 +876,29 @@ apejs.urls = {
             var ontologyId = matches[1];
             if(!ontologyId) return response.getWriter().println("No ontology id");
 
-            var model = rdf.createModelAndFile(ontologyId).model;
-            model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
+            try {
+                var model = rdf.createModelFrom(ontologyId);
+                model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
+            } catch(e) {
+                if(e.javaException instanceof FileNotFoundException) {
+                    // read the whole fucking thing (ALL FILES)
+                    // for an id such as http://www.cropontology.org/{ontologyId}
+                    var model = rdf.createModelFrom('/');
+                    var queryString = 'CONSTRUCT { ?s ?p ?o }\
+                                       WHERE {\
+                                        ?s ?p ?o .\
+                                        FILTER(STR(?s) = "http://www.cropontology.org/rdf/'+ontologyId+'")\
+                                       }';
+
+                    var query = QueryFactory.create(queryString);
+                    // Execute the query and obtain results
+                    var qe = QueryExecutionFactory.create(query, model);
+
+                    model = qe.execConstruct();
+
+                    model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
+                }
+            }
 
             return;
 

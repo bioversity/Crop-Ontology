@@ -66,6 +66,28 @@ exports = {
             cb(elem.asTriple());
         }
     },
+    // gets all files and sub-files
+    getAllFiles: function(dir, ret) {
+        var ret = ret || [];
+        var files = dir.listFiles();
+        for(var i=0; i<files.length; i++) {
+            var f = files[i];
+            if(f.isDirectory()) {
+                rdf.getAllFiles(f, ret);
+            } else {
+                ret.push(f);
+            }
+        }
+        return ret;
+    },
+    createPath: function(filePath) {
+        var file = new File(rdfPath + filePath);
+        if(!file.exists()) {
+            // create intermediate paths
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+    },
     createModel: function(inputStream, fileName, baseUri) {
         var lang = RDFLanguages.filenameToLang(fileName);
         var model = ModelFactory.createDefaultModel();
@@ -75,11 +97,13 @@ exports = {
         model.read(inputStream, baseUri, lang);
         return model;
     },
-    createModelAndFile: function(filePath) {
+    createModelFrom: function(filePath) {
         var filePath = rdfPath + filePath;
         var file = new File(filePath);
         if(file.isDirectory()) { 
-            var files = file.listFiles();
+            // get all files (and subfiles) within this dir
+            var files = rdf.getAllFiles(file);
+
             // create a model
             // and read() all these files
             var model = ModelFactory.createDefaultModel();
@@ -95,26 +119,12 @@ exports = {
                 } catch(e) { // not rdf
                 }
             }
-            return { model: model }
+            return model;
         } else {
-            try {
-                var inputStream = new FileInputStream(file);
-            } catch(e) {
-                if(e.javaException instanceof FileNotFoundException) {
-                    // create intermediate paths
-                    file.getParentFile().mkdirs();
-                    file.createNewFile();
-                }
-            }
-            if(!inputStream) {
-                var inputStream = new FileInputStream(file);
-            }        
+            var inputStream = new FileInputStream(file);
 
             var model = rdf.createModel(inputStream, filePath, this.baseUri);
-            return {
-                model: model,
-                file: file
-            };
+            return model;
         }
     },
     queryModel: function(queryString, model) {
@@ -145,10 +155,11 @@ exports = {
         return arr;
     },
     query: function(filePath, queryString) {
+        // create file if it doesn't exist
+        rdf.createPath(filePath);
 
-        var modelAndFile = rdf.createModelAndFile(filePath);
-
-        var results = rdf.queryModel(queryString, modelAndFile.model);
+        var model = rdf.createModelFrom(filePath);
+        var results = rdf.queryModel(queryString, model);
 
         return results;
     },
@@ -158,15 +169,16 @@ exports = {
         UpdateAction.execute(updateRequest, model);
     },
     update: function(filePath, updateString) {
-        var modelAndFile = rdf.createModelAndFile(filePath);
+        // create file if it doesn't exist
+        rdf.createPath(filePath);
 
+        var model = rdf.createModelFrom(filePath);
         updateString = rdf.buildSparqlPrefixes() + updateString;
 
-        var model = modelAndFile.model;
         rdf.updateModel(updateString, model);
 
         // persist to disk
-        var fileOut = new FileOutputStream(modelAndFile.file);
+        var fileOut = new FileOutputStream(rdfPath + filePath);
         model.write(fileOut, 'TURTLE', this.baseUri);
         model.close();
     }
