@@ -2734,36 +2734,28 @@ apejs.urls = {
     },
     "/search": {
         get: function(req, res) {
-            var q = req.getParameter('q');
-            var s = new search();
-            var results = s.search(q);
-            var iter = results.iterator();
+            var q = ''+req.getParameter('q');
             var arr = [];
-            while(iter.hasNext()) {
-                var scoredDoc = iter.next();
 
-                var fields = scoredDoc.getExpressions();
+            // '/' queries it all!
+            var model = rdf.createModelFrom('/');
 
-                var obj = {}
-                obj.id = ''+scoredDoc.getOnlyField('id').getText();
-                obj.name = ''+scoredDoc.getOnlyField('name').getText();
-                obj.ontology_name = ''+scoredDoc.getOnlyField('ontology_name').getText();
-                // try parsing the name as it might be a JSON string
-                try {
-                    obj.name = JSON.parse(obj.name);
-                } catch(e) {
-                    // if parsing failed, revert to what it was
-                    obj.name = obj.name;
+            var results = rdf.queryModel('SELECT ?id ?name\
+                                          WHERE {\
+                                            ?id ?p ?o .\
+                                            OPTIONAL { ?id rdfs:label ?name }\
+                                            OPTIONAL { ?id dc:title ?name }\
+                                            FILTER(REGEX(?o, '+JSON.stringify(q)+'))\
+                                          }', model);
+            results = results.map(function(obj) {
+                var o = {};
+                for(var i in obj) {
+                    o[i] = ''+obj[i].toString();
                 }
-                try {
-                    obj.ontology_name = JSON.parse(obj.ontology_name);
-                } catch(e) {
-                    // if parsing failed, revert to what it was
-                    obj.ontology_name = obj.ontology_name;
-                }
-                arr.push(obj);
-            }
-            print(res).json(arr);
+                return o;
+            });
+            return print(res).json(results);
+
         }
     },
     "/memcache-clear": {
