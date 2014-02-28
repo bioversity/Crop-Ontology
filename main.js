@@ -352,12 +352,15 @@ apejs.urls = {
                                           WHERE {\
                                             OPTIONAL { ?node1 rdfs:subClassOf ?id }\
                                             OPTIONAL { ?node1 skos:broaderTransitive ?id }\
+                                            OPTIONAL { ?node1 skos:broader ?id }\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
                                             FILTER(NOT EXISTS {\
                                                 { ?id rdfs:subClassOf ?node3 }\
                                                 UNION\
                                                 { ?id skos:broaderTransitive ?node3 }\
+                                                UNION\
+                                                { ?id skos:broader ?node3 }\
                                             })\
                                           }', model);
 
