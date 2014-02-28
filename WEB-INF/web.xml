@@ -26,6 +26,10 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/public/*</url-pattern>
+        <init-param>
+            <param-name>cacheControl</param-name>
+            <param-value>max-age=3600,public</param-value>
+        </init-param>
     </servlet-mapping>  
 
     <servlet-mapping>
