@@ -478,6 +478,7 @@ apejs.urls = {
                                             ?id ?p <'+uri+'> .\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
+                                            FILTER(!isBlank(?id))\
                                           }', model);
                                           
             results = results.map(function(obj) {
