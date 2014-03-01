@@ -165,7 +165,7 @@ exports = {
                 // update @context
                 var context = {};
                 for(var i in term) {
-                    context[i] = 'http://';
+                    context[i] = 'http://' + i;
                 }
                 jsonld['@context'] = context;
                 jsonld['@graph'].push(term);
