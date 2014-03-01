@@ -2745,7 +2745,7 @@ apejs.urls = {
                                             ?id ?p ?o .\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
-                                            FILTER(REGEX(?o, '+JSON.stringify(q)+'))\
+                                            FILTER(REGEX(?o, '+JSON.stringify(q)+', "i"))\
                                           }', model);
             results = results.map(function(obj) {
                 var o = {};
