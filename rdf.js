@@ -113,10 +113,17 @@ exports = {
                 if(lang != null) {
                     lang = lang.getLabel(); 
                 }
-                var inputStream = new FileInputStream(f);
-                try {
-                    model.read(inputStream, this.baseUri, lang);
-                } catch(e) { // not rdf
+                if(lang) {
+                    // this means it's RDF, do the model.read stuff
+                    var inputStream = new FileInputStream(f);
+                    try {
+                        model.read(inputStream, this.baseUri, lang);
+                    } catch(e) { // invalid rdf
+                    }
+                } else {
+                    // not rdf, figure out which file it is
+                    // figure out format using extension
+                    rdf.readNonRDFInto(model, f);
                 }
             }
             return model;
@@ -125,6 +132,48 @@ exports = {
 
             var model = rdf.createModel(inputStream, filePath, this.baseUri);
             return model;
+        }
+    },
+    readNonRDFInto: function(model, file) {
+        var ext = FilenameUtils.getExtension(file.getName()).toLowerCase();
+        var inputStream = new FileInputStream(file);
+
+        var jsonld = { '@graph': [], '@context': {} };
+        /*
+        var jsonld = {
+            "@context": {
+                "name": "http://",
+                "homepage": {
+                    "@id": "http://xmlns.com/foaf/0.1/homepage",
+                    "@type": "@id"
+                }
+            },
+            "@graph": [{
+                name: "bar"
+            }]
+        };
+        */
+        if(ext == 'obo') {
+            // convert OBO to rdf
+        } else if(ext == 'csv' || ext == 'xls' || ext == 'xlsx'){
+            // convert template to rdf
+            excel.parseTemplate(inputStream, function(term) {
+                /*
+                term['@id'] = 'foo';
+                term['@type'] = 'foo';
+                */
+                // update @context
+                var context = {};
+                for(var i in term) {
+                    context[i] = 'http://';
+                }
+                jsonld['@context'] = context;
+                jsonld['@graph'].push(term);
+            });
+
+            var jsonldStringified = new java.lang.String(JSON.stringify(jsonld));
+            var jsonStream = new ByteArrayInputStream(jsonldStringified.getBytes("UTF-8"));
+            model.read(jsonStream, this.baseUri, 'JSON-LD');
         }
     },
     queryModel: function(queryString, model) {

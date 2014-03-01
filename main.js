@@ -897,6 +897,8 @@ apejs.urls = {
                     model = qe.execConstruct();
 
                     model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
+                } else {
+                    throw e;
                 }
             }
 
