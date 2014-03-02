@@ -1,8 +1,8 @@
 importPackage(org.apache.poi.ss.usermodel);
 
 var excel = {
-    rdfMapping: {
-        'Name of submitting scientist': 'http://xmlns.com/foaf/0.1/name'
+    excelMapping: {
+        'Name of submitting scientist': 'foaf:name'
     },
 
     read: function(inputStream, callback) {
@@ -52,7 +52,7 @@ var excel = {
                 } else {
                     cellContent = "";
                 }
-                if(cellContent == 'Name of Trait' || cellContent == 'Name of submitting scientist') {
+                if(cellContent.toLowerCase() == 'name of trait' || cellContent.toLowerCase() == 'name of submitting scientist') {
                     // it's header
                     cols = cells;
                 }
@@ -71,22 +71,92 @@ var excel = {
             var rdf = '';
             if(idx == 0) { // first row, build map
                 row.forEach(function(item, i) {
-                    idValMap[i] = item;
+                    idValMap[i] = item.toLowerCase();
                 });
                 return;
             } else {
                 row.forEach(function(item, i) {
                     term[idValMap[i]] = item;
 
+                    /*
                     var uri = excel.rdfMapping[idValMap[i]];
                     if(uri) {
                         rdf += '<#i> <'+uri+'> '+JSON.stringify(item)+'@en\n';
                     }
+                    */
 
                 });
             }
             callback(term);
         });
+    },
+    getTrait: function(row) {
+        var obj = {};
+        obj['@type'] = 'skos:Concept';
+
+        for(var i in row) {
+            if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
+                break; // stop recording trait info
+            }
+            if(i == 'trait id for modification, blank for new') {
+                obj['@id'] = rdf.baseUri + row['trait id for modification, blank for new'];
+            }
+
+            if(row[i])
+                obj[i] = row[i];
+        }
+
+        return obj;
+    },
+    getMethod: function(row, broader) {
+        var obj = {};
+        obj['@type'] = 'skos:Concept';
+        obj['skos:broader'] = broader['@id'];
+
+        var startRecording = false;
+
+        for(var i in row) {
+            if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
+                // start recording
+                startRecording = true;
+            }
+            if(i == 'Scale ID for modification, Blank for New'.toLowerCase()) {
+                startRecording = false;
+            }
+            if(!startRecording) continue;
+
+            if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
+                obj['@id'] = rdf.baseUri + row['Method ID for modification, blank for new'.toLowerCase()];
+            }
+            if(row[i])
+                obj[i] = row[i];
+        }
+
+        return obj;
+    },
+    getScale: function(row, broader) {
+        var obj = {};
+        obj['@type'] = 'skos:Concept';
+        obj['skos:broader'] = broader['@id'];
+
+        var startRecording = false;
+
+        for(var i in row) {
+            if(i == 'Scale ID for modification, Blank for New'.toLowerCase()) {
+                // start recording
+                startRecording = true;
+            }
+            if(!startRecording) continue;
+
+            if(i == 'Scale ID for modification, Blank for New'.toLowerCase()) {
+                obj['@id'] = rdf.baseUri + row['Scale ID for modification, Blank for New'.toLowerCase()];
+            }
+            if(row[i])
+                obj[i] = row[i];
+        }
+
+        return obj;
     }
+
 };
 exports = excel;

@@ -157,18 +157,39 @@ exports = {
             // convert OBO to rdf
         } else if(ext == 'csv' || ext == 'xls' || ext == 'xlsx'){
             // convert template to rdf
-            excel.parseTemplate(inputStream, function(term) {
-                /*
-                term['@id'] = 'foo';
-                term['@type'] = 'foo';
-                */
+
+            // add regular prefixes such as skos:Concept
+            var context = {};
+            for(var p in rdf.prefixes) {
+                context[p] = rdf.prefixes[p]; 
+            }
+
+            excel.parseTemplate(inputStream, function(row) {
                 // update @context
-                var context = {};
-                for(var i in term) {
-                    context[i] = 'http://' + i;
+                for(var i in row) {
+                    if(!context[i])
+                        context[i] = rdf.baseUri + convertToSlug(i);
+                    if(i == 'Name of Trait'.toLowerCase()) {
+                        context[i] = 'rdfs:label';
+                        context[i] = 'dc:title';
+                    }
+                    if(i == 'Name of method'.toLowerCase()) {
+                        context[i] = 'rdfs:label';
+                    }
+                    if(i == 'Type of Measure (Continuous, Discrete or Categorical)'.toLowerCase()) {
+                        context[i] = 'rdfs:label';
+                    }
                 }
                 jsonld['@context'] = context;
-                jsonld['@graph'].push(term);
+
+                // these are json-ld objects
+                var trait = excel.getTrait(row);
+                var method = excel.getMethod(row, trait);
+                var scale = excel.getScale(row, method);
+
+                jsonld['@graph'].push(trait);
+                jsonld['@graph'].push(method);
+                jsonld['@graph'].push(scale);
             });
 
             var jsonldStringified = new java.lang.String(JSON.stringify(jsonld));
@@ -248,3 +269,13 @@ exports = {
     }
     */
 };
+function convertToSlug(Text)
+{
+    return Text
+        .replace(/^\s+|\s+$/g, '') // trim
+        .toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+        .replace(/\s+/g, '-') // collapse whitespace and replace by -
+        .replace(/-+/g, '-') // collapse dashes
+        ;
+}
