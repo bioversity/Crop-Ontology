@@ -350,9 +350,6 @@ apejs.urls = {
 
             var results = rdf.queryModel('SELECT DISTINCT ?id ?name\
                                           WHERE {\
-                                            OPTIONAL { ?node1 rdfs:subClassOf ?id }\
-                                            OPTIONAL { ?node1 skos:broaderTransitive ?id }\
-                                            OPTIONAL { ?node1 skos:broader ?id }\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
                                             FILTER(NOT EXISTS {\
@@ -401,6 +398,37 @@ apejs.urls = {
         }
     },
     "/delete-ontology": {
+        get: function(req, res) {
+            var ontologyId = req.getParameter('ontologyId');
+
+            var currUser = auth.getUser(req);
+            if(!currUser)
+                return error(res, "Not logged in");
+            if(!ontologyId)
+                return error(res, "No ontology id");
+
+            // see if we own this ontology
+            var arr = rdf.query('users.ttl', 'SELECT * WHERE {\
+                        ?onto a owl:Ontology;\
+                              cov:ontologyId '+JSON.stringify(''+ontologyId)+' .\
+                        ?user a foaf:Person;\
+                              cov:ontology ?onto\
+                              .\
+                        } LIMIT 1');
+
+            if(!arr[0]['user'].equals(currUser.s)) {
+                return error(res, "You can't delete an ontology you don't own");
+            }
+
+            // delete it from rdf
+            var result = rdf.update('users.ttl', 'DELETE { ?onto ?p ?o . ?user ?p1 ?onto . } WHERE { ?onto a owl:Ontology; cov:ontologyId '+JSON.stringify(''+ontologyId)+' . ?onto ?p ?o . ?user ?p1 ?onto .}');
+
+            // delete folder
+            var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
+            FileUtils.deleteDirectory(new File(rdfPath + ontologyId));
+            
+            res.sendRedirect('/dashboard');
+        },
         post: function(request, response) {
             try {
                 var ontologyId = request.getParameter("ontologyId");

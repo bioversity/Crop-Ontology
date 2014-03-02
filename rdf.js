@@ -12,7 +12,7 @@ exports = {
     baseUri: 'http://www.cropontology.org/rdf/',
     prefixes: {
         'foaf': 'http://xmlns.com/foaf/0.1/',
-        'co': 'http://www.cropontology.org/',
+        'co': 'http://www.cropontology.org/rdf/',
         'owl': 'http://www.w3.org/2002/07/owl#',
         'skos': 'http://www.w3.org/2004/02/skos/core#',
         'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
@@ -171,7 +171,6 @@ exports = {
                         context[i] = rdf.baseUri + convertToSlug(i);
                     if(i == 'Name of Trait'.toLowerCase()) {
                         context[i] = 'rdfs:label';
-                        context[i] = 'dc:title';
                     }
                     if(i == 'Name of method'.toLowerCase()) {
                         context[i] = 'rdfs:label';
@@ -186,6 +185,10 @@ exports = {
                 var trait = excel.getTrait(row);
                 var method = excel.getMethod(row, trait);
                 var scale = excel.getScale(row, method);
+
+                // add language in context
+                jsonld['@context']['@language'] = trait['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+
 
                 jsonld['@graph'].push(trait);
                 jsonld['@graph'].push(method);

@@ -93,6 +93,7 @@ var excel = {
     getTrait: function(row) {
         var obj = {};
         obj['@type'] = 'skos:Concept';
+        obj['@type'] = 'co:Trait';
 
         for(var i in row) {
             if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
@@ -111,7 +112,7 @@ var excel = {
     getMethod: function(row, broader) {
         var obj = {};
         obj['@type'] = 'skos:Concept';
-        obj['skos:broader'] = broader['@id'];
+        obj['skos:broader'] = { '@id' : broader['@id'] };
 
         var startRecording = false;
 
@@ -137,7 +138,7 @@ var excel = {
     getScale: function(row, broader) {
         var obj = {};
         obj['@type'] = 'skos:Concept';
-        obj['skos:broader'] = broader['@id'];
+        obj['skos:broader'] = { '@id' : broader['@id'] };
 
         var startRecording = false;
 
