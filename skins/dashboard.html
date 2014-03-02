@@ -4,11 +4,14 @@
                     {{#ontologies}}
                         <h2>{{ontologyId}} <small><a href="/upload-rdf?ontologyId={{ontologyId}}">Upload file +</a> <a href="/delete-ontology?ontologyId={{ontologyId}}" class="red">Delete ontology -</a></small></h2>
                         {{#files}}
-                            <p>{{.}}</p>
+                            <p>{{.}} <small><a href="/delete-file?ontologyId={{ontologyId}}&fileName={{.}}" class="red" style="margin-left: 20px">delete file</a></small></p>
                         {{/files}}
                     {{/ontologies}}
                     
                 </div> 
             </div><!-- end left --> 
+
+<script>
+</script>
 
 

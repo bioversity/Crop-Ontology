@@ -397,6 +397,41 @@ apejs.urls = {
             print(response).json(ret, request.getParameter("callback"));
         }
     },
+    "/delete-file": {
+        get: function(req, res) {
+            var ontologyId = req.getParameter('ontologyId');
+            var fileName = req.getParameter('fileName');
+
+            var currUser = auth.getUser(req);
+            if(!currUser)
+                return error(res, "Not logged in");
+            if(!ontologyId)
+                return error(res, "No ontology id");
+            if(!fileName)
+                return error(res, "No fileName");
+
+            // see if we own this ontology
+            var arr = rdf.query('users.ttl', 'SELECT * WHERE {\
+                        ?onto a owl:Ontology;\
+                              cov:ontologyId '+JSON.stringify(''+ontologyId)+' .\
+                        ?user a foaf:Person;\
+                              cov:ontology ?onto\
+                              .\
+                        } LIMIT 1');
+
+            if(!arr[0]['user'].equals(currUser.s)) {
+                return error(res, "You can't delete an ontology you don't own");
+            }
+
+            // proceed to delete file
+            var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
+            var file = new File(rdfPath + ontologyId + '/' + fileName);
+            file.delete();
+
+            res.sendRedirect('/dashboard');
+            
+        }
+    },
     "/delete-ontology": {
         get: function(req, res) {
             var ontologyId = req.getParameter('ontologyId');
@@ -507,6 +542,7 @@ apejs.urls = {
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
                                             FILTER(!isBlank(?id))\
+                                            FILTER(langMatches(lang(?name), "en"))\
                                           }', model);
                                           
             results = results.map(function(obj) {
