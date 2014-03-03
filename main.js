@@ -358,6 +358,10 @@ apejs.urls = {
                                                 { ?id skos:broaderTransitive ?node3 }\
                                                 UNION\
                                                 { ?id skos:broader ?node3 }\
+                                                UNION\
+                                                { ?id rdfs:domain ?node3 }\
+                                                UNION\
+                                                { ?id rdfs:subPropertyOf ?node3 }\
                                             })\
                                           }', model);
 
