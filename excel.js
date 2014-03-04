@@ -127,7 +127,7 @@ var excel = {
     getTrait: function(row, person, traitClass) {
         var obj = {};
         obj['@id'] = rdf.baseUri + row['trait id for modification, blank for new'];
-        obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
+        obj['@type'] = [ 'skos:Concept', 'owl:Class', 'cov:Trait' ];
 
         obj['rdfs:label'] = row['Name of Trait'.toLowerCase()];
 
@@ -178,7 +178,7 @@ var excel = {
     getMethod: function(row, trait) {
         var obj = {};
         obj['@id'] = rdf.baseUri + row['Method ID for modification, blank for new'.toLowerCase()];
-        obj['@type'] = 'skos:Concept';
+        obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
         obj['cov:methodOf'] = { '@id' : trait['@id'] };
 
         var methodName = row['Name of method'.toLowerCase()];
@@ -194,33 +194,87 @@ var excel = {
 
         obj['dct:source'] = row['Bibliographic Reference'.toLowerCase()];
             
+        return obj;
+    },
+    getScale: function(row, method) {
+        var obj = {};
+        obj['@id'] = rdf.baseUri + row['Scale ID for modification, Blank for New'.toLowerCase()];
+        obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
+        obj['cov:scaleOf'] = { '@id' : method['@id'] };
+        
+        var type = row['Type of Measure (Continuous, Discrete or Categorical)'.toLowerCase()].toLowerCase();
+        var scaleName = '';
 
+        if(type == 'continuous') {
+            obj['@type'].push('cov:Continuous');
+
+            scaleName = row['For Continuous: units of measurement'.toLowerCase()];
+            var maxValue = row['For Continuous: maximum'.toLowerCase()];
+            if(maxValue) {
+                obj['cov:maxValue'] = parseInt(maxValue, 10);
+            }
+            var minValue = row['For Continuous: minimum'.toLowerCase()];
+            if(minValue) {
+                obj['cov:minValue'] = parseInt(minValue, 10);
+            }
+        } else if(type == 'discrete') {
+            obj['@type'].push('cov:Discrete');
+            scaleName = row['For Discrete: Name of scale or units of measurement'.toLowerCase()];
+        } else if(type == 'categorical') {
+            obj['@type'].push('cov:Categorical');
+            scaleName = row['For Categorical: Name of rating scale'.toLowerCase()];
+        }
+        if(!scaleName) return obj;
+
+        obj['rdfs:label'] = scaleName;
+        obj['skosxl:prefLabel'] = {
+            '@type': 'skosxl:Label',
+            'skosxl:literalForm': scaleName
+        };
 
 
         return obj;
     },
-    getScale: function(row, broader) {
-        var obj = {};
-        obj['@type'] = 'skos:Concept';
-        obj['skos:broader'] = { '@id' : broader['@id'] };
+    getCategories: function(row, scale) {
+        var arr = [];
 
         var startRecording = false;
-
         for(var i in row) {
-            if(i == 'Scale ID for modification, Blank for New'.toLowerCase()) {
-                // start recording
+            if(i == 'For Categorical: Class 1 - value = meaning'.toLowerCase()) {
                 startRecording = true;
             }
             if(!startRecording) continue;
+            
+            // start recording categories
+            var obj = {};
+            var split = row[i].split('=');
+            split = split.map(function(el) {
+                return el.trim();
+            });
+            if(split.length < 2) continue;
 
-            if(i == 'Scale ID for modification, Blank for New'.toLowerCase()) {
-                obj['@id'] = rdf.baseUri + row['Scale ID for modification, Blank for New'.toLowerCase()];
+            obj['@id'] = scale['@id'] + '/' + split[0];
+            obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
+
+            obj['rdfs:subClassOf'] = { '@id': scale['@id'] };
+            obj['skos:broaderTransitive'] = { '@id': scale['@id'] };
+
+            obj['rdfs:label'] = split[1];
+            obj['skosxl:prefLabel'] = {
+                '@type': 'skosxl:Label',
+                'skosxl:literalForm': split[1]
             }
-            if(row[i])
-                obj[i] = row[i];
-        }
 
-        return obj;
+            obj['skosxl:altLabel'] = {
+                '@type': 'skosxl:Label',
+                'skosxl:literalForm': split[0]
+            }
+
+            arr.push(obj);
+
+        }
+        
+        return arr;
     }
 
 };

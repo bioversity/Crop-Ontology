@@ -170,6 +170,14 @@ exports = {
                 var method = excel.getMethod(row, trait);
                 var scale = excel.getScale(row, method);
 
+                if(scale['@type'].indexOf('cov:Categorical') > -1) {
+                    // this will return multiple json-ld objects
+                    var categories = excel.getCategories(row, scale);
+                    for(var i=0; i<categories.length; i++) {
+                        jsonld['@graph'].push(categories[i]);
+                    }
+                }
+
                 // add language in context
                 //jsonld['@context']['@language'] = trait['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
 
@@ -182,6 +190,7 @@ exports = {
 
                 jsonld['@graph'].push(method);
                 jsonld['@graph'].push(scale);
+
             });
 
             var jsonldStringified = new java.lang.String(JSON.stringify(jsonld));
