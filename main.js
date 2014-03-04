@@ -362,6 +362,10 @@ apejs.urls = {
                                                 { ?id rdfs:domain ?node3 }\
                                                 UNION\
                                                 { ?id rdfs:subPropertyOf ?node3 }\
+                                                UNION\
+                                                { ?id cov:methodOf ?node3 }\
+                                                UNION\
+                                                { ?id cov:scaleOf ?node3 }\
                                             })\
                                           }', model);
 
@@ -540,13 +544,12 @@ apejs.urls = {
 
             var model = rdf.createModelFrom(ontologyId);
 
-            var results = rdf.queryModel('SELECT ?id ?name\
+            var results = rdf.queryModel('SELECT DISTINCT ?id ?name\
                                           WHERE {\
                                             ?id ?p <'+uri+'> .\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
                                             FILTER(!isBlank(?id))\
-                                            FILTER(langMatches(lang(?name), "en"))\
                                           }', model);
                                           
             results = results.map(function(obj) {
@@ -759,7 +762,18 @@ apejs.urls = {
 
             var results = rdf.queryModel('SELECT ?key ?value\
                                           WHERE {\
-                                            <'+uri+'> ?key ?value .\
+                                            { <'+uri+'> ?key ?value }\
+                                            UNION\
+                                            {\
+                                            <'+uri+'> ?key ?blank .\
+                                            ?blank skosxl:literalForm ?value .\
+                                            }\
+                                            UNION\
+                                            {\
+                                            <'+uri+'> ?prop ?blank .\
+                                            ?blank ?key ?blank2 .\
+                                            ?blank2 skosxl:literalForm ?value .\
+                                            }\
                                           }', model);
                                           
             results = results.map(function(obj) {

@@ -175,29 +175,27 @@ var excel = {
 
         return obj;
     },
-    getMethod: function(row, broader) {
+    getMethod: function(row, trait) {
         var obj = {};
+        obj['@id'] = rdf.baseUri + row['Method ID for modification, blank for new'.toLowerCase()];
         obj['@type'] = 'skos:Concept';
-        obj['skos:broader'] = { '@id' : broader['@id'] };
+        obj['cov:methodOf'] = { '@id' : trait['@id'] };
 
-        var startRecording = false;
-
-        for(var i in row) {
-            if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
-                // start recording
-                startRecording = true;
-            }
-            if(i == 'Scale ID for modification, Blank for New'.toLowerCase()) {
-                startRecording = false;
-            }
-            if(!startRecording) continue;
-
-            if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
-                obj['@id'] = rdf.baseUri + row['Method ID for modification, blank for new'.toLowerCase()];
-            }
-            if(row[i])
-                obj[i] = row[i];
+        var methodName = row['Name of method'.toLowerCase()];
+        // XXX add skosxl:prefLabel
+        if(methodName) {
+            obj['rdfs:label'] = methodName;
+        } else {
+            obj['rdfs:label'] = 'Method of ' + trait['rdfs:label'];
         }
+
+        obj['skos:definition'] = row['Describe how measured (method)'.toLowerCase()];
+        obj['rdfs:comment'] = row['Describe how measured (method)'.toLowerCase()];
+
+        obj['dct:source'] = row['Bibliographic Reference'.toLowerCase()];
+            
+
+
 
         return obj;
     },
