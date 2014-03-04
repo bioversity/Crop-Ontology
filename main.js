@@ -2495,8 +2495,62 @@ apejs.urls = {
             print(response).json(traits); 
         },
         get: function(request, response) {
-            var ontoId = request.getParameter("ontology_id");
-            if(isblank(ontoId)) return error(response, "Invalid parameter");
+            var ontologyId = request.getParameter("ontology_id");
+            if(isblank(ontologyId)) return error(response, "Invalid parameter");
+
+            response.setContentType("application/json");
+            var model = rdf.createModelFrom(ontologyId);
+            var results = rdf.queryModel('\
+SELECT ?id ?date ?method ?scale ?catMeaning ?catValue\
+(group_concat(distinct ?synonym ; separator = ",") AS ?s) \
+(group_concat(distinct ?abrev ; separator = ",") AS ?a) \
+WHERE {\
+   ?id rdf:type cov:Trait .\
+   ?id dc:date ?date.\
+   ?id skosxl:altLabel ?altlabel .\
+   ?altlabel skosxl:literalForm ?synonym .\
+   ?id skosxl:prefLabel ?prefLabel .\
+   ?prefLabel skosxl:literalForm ?traitName .\
+   ?prefLabel cov:acronym ?acronymLabel.\
+   ?acronymLabel skosxl:literalForm ?abrev.\
+   ?method cov:methodOf ?id . \
+   ?scale cov:scaleOf ?method .\
+\
+   ?categories rdfs:subClassOf ?scale .\
+   ?categories skosxl:prefLabel ?prefLabelC .\
+   ?prefLabelC skosxl:literalForm ?catMeaning .\
+   ?categories skosxl:altLabel ?altlabelC .\
+   ?altlabelC skosxl:literalForm ?catValue .\
+} GROUP BY ?id ?date ?method ?scale ?catMeaning ?catValue \
+order by ?id \
+            ', model);
+            /*
+            for(var i=0; i<results.length; i++) {
+                var obj = results[i];
+                if(i == 0) { // print header
+                    var header = [];
+                    for(var x in obj) {
+                        header.push(x);
+                    }
+                    print(response).text(header.join(','));
+                }
+                // print content
+                var content = [];
+                for(var x in obj) {
+                    content.push(obj[x]);
+                }
+                print(response).text(content.join(','));
+
+            }
+            */
+            results = results.map(function(obj) {
+                var o = {};
+                for(var i in obj) {
+                    o[i] = ''+obj[i].toString();
+                }
+                return o;
+            });
+            return print(response).text(JSON.stringify(results, null, 2));
 
             /*
 
@@ -2524,7 +2578,6 @@ apejs.urls = {
             }
 
             return;
-            */
 
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
@@ -2538,6 +2591,7 @@ apejs.urls = {
                       .replace(/{{language}}/g, ""+language)
                       .replace(/{{VERSION}}/g, VERSION)
             );
+            */
         }
     },
     "/edit-profile": {
