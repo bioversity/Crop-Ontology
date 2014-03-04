@@ -13,12 +13,15 @@ exports = {
     prefixes: {
         'foaf': 'http://xmlns.com/foaf/0.1/',
         'co': 'http://www.cropontology.org/rdf/',
+        'cov': 'http://www.cropontology.org/vocab/',
         'owl': 'http://www.w3.org/2002/07/owl#',
         'skos': 'http://www.w3.org/2004/02/skos/core#',
+        'skosxl': 'http://www.w3.org/2008/05/skos-xl#',
         'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
         'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-        'cov': 'http://www.cropontology.org/vocab/',
-        'dc': 'http://purl.org/dc/elements/1.1/'
+        'dc': 'http://purl.org/dc/elements/1.1/',
+        'xsd': 'http://www.w3.org/2001/XMLSchema#',
+        'dwc': 'http://rs.tdwg.org/dwc/terms/'
     },
     prefixURI: function(uri) {
         for(var i in rdf.prefixes) {
@@ -139,20 +142,6 @@ exports = {
         var inputStream = new FileInputStream(file);
 
         var jsonld = { '@graph': [], '@context': {} };
-        /*
-        var jsonld = {
-            "@context": {
-                "name": "http://",
-                "homepage": {
-                    "@id": "http://xmlns.com/foaf/0.1/homepage",
-                    "@type": "@id"
-                }
-            },
-            "@graph": [{
-                name: "bar"
-            }]
-        };
-        */
         if(ext == 'obo') {
             // convert OBO to rdf
         } else if(ext == 'csv' || ext == 'xls' || ext == 'xlsx'){
@@ -164,33 +153,32 @@ exports = {
                 context[p] = rdf.prefixes[p]; 
             }
 
+            jsonld['@context'] = context;
+
             excel.parseTemplate(inputStream, function(row) {
                 // update @context
-                for(var i in row) {
-                    if(!context[i])
-                        context[i] = rdf.baseUri + convertToSlug(i);
-                    if(i == 'Name of Trait'.toLowerCase()) {
-                        context[i] = 'rdfs:label';
-                    }
-                    if(i == 'Name of method'.toLowerCase()) {
-                        context[i] = 'rdfs:label';
-                    }
-                    if(i == 'Type of Measure (Continuous, Discrete or Categorical)'.toLowerCase()) {
-                        context[i] = 'rdfs:label';
-                    }
-                }
-                jsonld['@context'] = context;
+                
 
                 // these are json-ld objects
-                var trait = excel.getTrait(row);
+                var person = excel.getPerson(row);
+                var institution = excel.getInstitution(row, person);
+
+                var traitClass = excel.getTraitClass(row);
+                var trait = excel.getTrait(row, person, traitClass);
+
                 var method = excel.getMethod(row, trait);
                 var scale = excel.getScale(row, method);
 
                 // add language in context
-                jsonld['@context']['@language'] = trait['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+                //jsonld['@context']['@language'] = trait['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
 
 
+                jsonld['@graph'].push(person);
+                jsonld['@graph'].push(institution);
+
+                jsonld['@graph'].push(traitClass);
                 jsonld['@graph'].push(trait);
+
                 jsonld['@graph'].push(method);
                 jsonld['@graph'].push(scale);
             });
@@ -254,6 +242,16 @@ exports = {
         var fileOut = new FileOutputStream(rdfPath + filePath);
         model.write(fileOut, 'TURTLE', this.baseUri);
         model.close();
+    },
+    convertToSlug: function(Text)
+    {
+        return Text
+            .replace(/^\s+|\s+$/g, '') // trim
+            .toLowerCase()
+            .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+            .replace(/\s+/g, '-') // collapse whitespace and replace by -
+            .replace(/-+/g, '-') // collapse dashes
+            ;
     }
     /*
     parse: function(inputStream, fileName, baseUri, cb) {
@@ -272,13 +270,3 @@ exports = {
     }
     */
 };
-function convertToSlug(Text)
-{
-    return Text
-        .replace(/^\s+|\s+$/g, '') // trim
-        .toLowerCase()
-        .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-        .replace(/\s+/g, '-') // collapse whitespace and replace by -
-        .replace(/-+/g, '-') // collapse dashes
-        ;
-}

@@ -90,21 +90,88 @@ var excel = {
             callback(term);
         });
     },
-    getTrait: function(row) {
+    getPerson: function(row) {
         var obj = {};
-        obj['@type'] = 'skos:Concept';
+        obj['@id'] = rdf.baseUri + rdf.convertToSlug(row['Name of submitting scientist'.toLowerCase()]),
+        obj['@type'] = 'foaf:Person';
 
-        for(var i in row) {
-            if(i == 'Method ID for modification, Blank for New'.toLowerCase()) {
-                break; // stop recording trait info
-            }
-            if(i == 'trait id for modification, blank for new') {
-                obj['@id'] = rdf.baseUri + row['trait id for modification, blank for new'];
-            }
+        obj['foaf:name'] = row['Name of submitting scientist'.toLowerCase()];
 
-            if(row[i])
-                obj[i] = row[i];
+        return obj;
+    },
+    getInstitution: function(row, person) {
+        var obj = {};
+        obj['@id'] = rdf.baseUri + rdf.convertToSlug(row['Institution'.toLowerCase()]),
+        obj['@type'] = 'foaf:Organisation';
+
+        obj['foaf:name'] = row['Institution'.toLowerCase()];
+        obj['foaf:member'] = { '@id' : person['@id'] };
+
+        return obj;
+    },
+    getTraitClass: function(row) {
+        var obj = {};
+        obj['@id'] = rdf.baseUri + rdf.convertToSlug(row['Trait Class'.toLowerCase()]);
+        obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
+
+        obj['rdfs:label'] = row['Trait Class'.toLowerCase()];
+        /*
+        obj['skosxl:prefLabel'] = {
+            '@type': 'skosxl:Label',
+            'skosxl:literalForm': row['Trait Class'.toLowerCase()]
         }
+        */
+        return obj;
+        
+    },
+    getTrait: function(row, person, traitClass) {
+        var obj = {};
+        obj['@id'] = rdf.baseUri + row['trait id for modification, blank for new'];
+        obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
+
+        obj['rdfs:label'] = row['Name of Trait'.toLowerCase()];
+
+        obj['skos:definition'] = row['Description of Trait'.toLowerCase()];
+        obj['rdfs:comment'] = row['description of trait'.toLowerCase()];
+
+        obj['dc:date'] = row['Date of submission'.toLowerCase()];
+
+        obj['cov:ibfieldbook'] = row['ibfieldbook'.toLowerCase()];
+
+        obj['dc:creator'] = { '@id': person['@id'] };
+
+        obj['dwc:vernacularName'] = row['crop'];
+
+        obj['skosxl:prefLabel'] = {
+            '@type': 'skosxl:Label',
+            'skosxl:literalForm': row['Name of Trait'.toLowerCase()],
+            'cov:acronym': {
+                '@type': 'skosxl:Label',
+                'skosxl:literalForm': row['Abbreviated name'.toLowerCase()]
+            }
+
+        };
+
+        var synonyms = row['Synonyms (separate by commas)'.toLowerCase()].split(',');
+        synonyms = synonyms.map(function(el) {
+            return el.trim();
+        });
+        if(synonyms.length && synonyms[0] != '') {
+            obj['skosxl:altLabel'] = []
+            for(var i=0; i<synonyms.length; i++) {
+                obj['skosxl:altLabel'].push({
+                    '@type': 'skosxl:Label',
+                    'skosxl:literalForm': synonyms[i],
+                });
+            }
+        }
+
+
+        obj['cov:usedFor'] = row['How is this trait routinely used?'.toLowerCase()];
+
+        obj['rdfs:subClassOf'] = { '@id': traitClass['@id'] };
+        obj['skos:broaderTransitive'] = { '@id': traitClass['@id'] };
+
 
         return obj;
     },
