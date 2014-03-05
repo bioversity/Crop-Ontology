@@ -15,6 +15,7 @@ importPackage(org.semanticweb.owlapi.io);
 var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
 exports = {
     baseUri: 'http://www.cropontology.org/rdf/',
+    covUri: 'http://www.cropontology.org/vocab/',
     prefixes: {
         'foaf': 'http://xmlns.com/foaf/0.1/',
         'co': 'http://www.cropontology.org/rdf/',
@@ -168,17 +169,83 @@ exports = {
 
             // read it into a model in memory
             var rdfXmlModel = rdf.createModelFrom(tempFile);
-            var queryString = 'CONSTRUCT { ?s ?p ?o }\
+            var queryString = 'PREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>\n CONSTRUCT { \
+                                ?uri a skos:Concept, owl:Class;\
+                                    rdfs:label ?label;\
+                                    rdfs:subClassOf ?subClassOfUri;\
+                                    ?relPropUri ?relUri;\
+                                    skosxl:prefLabel [\
+                                        a skosxl:Label;\
+                                        skosxl:literalForm ?label\
+                                    ];\
+                                    skosxl:altLabel [\
+                                        a skosxl:Label;\
+                                        skosxl:literalForm ?synonym\
+                                    ];\
+                                    skosxl:altLabel [\
+                                        a skosxl:Label;\
+                                        skosxl:literalForm ?relatedSyonym\
+                                    ];\
+                                    skos:definition ?skosDefinition;\
+                                    rdfs:comment ?skosDefinition;\
+                                    skos:broaderTransitive ?subClassOfUri;\
+                                    dc:creator [\
+                                        rdf:type foaf:Person;\
+                                        foaf:name ?creatorName\
+                                    ];\
+                                    dc:date ?date;\
+                                    dct:source ?source.\
+                               }\
                                WHERE {\
-                                ?s ?p ?o .\
+                                ?s a owl:Class;\
+                                    rdfs:label ?label;\
+                                    obo:IAO_0000115 ?skosDefinition;\
+                                OPTIONAL { ?s rdfs:subClassOf ?subClassOf }\
+                                OPTIONAL { ?s rdfs:subClassOf [\
+                                                owl:onProperty ?relProp;\
+                                                owl:someValuesFrom ?rel\
+                                            ]\
+                                }\
+                                OPTIONAL { ?s oboInOwl:created_by ?creatorName }\
+                                OPTIONAL { ?s oboInOwl:creation_date ?date }\
+                                OPTIONAL { ?s oboInOwl:hasDbXref ?source }\
+                                OPTIONAL { ?s oboInOwl:hasExactSynonym ?synonym }\
+                                OPTIONAL { ?s oboInOwl:hasRelatedSynonym ?relatedSyonym }\
+                                BIND ( iri(\
+                                    replace(\
+                                        replace(str(?s), "_(?!.*_)", ":"),\
+                                        "http://purl.obolibrary.org/obo/",\
+                                        "'+this.baseUri+'"\
+                                    )\
+                                ) AS ?uri )\
+                                BIND ( iri(\
+                                    replace(\
+                                        replace(str(?subClassOf), "_(?!.*_)", ":"),\
+                                        "http://purl.obolibrary.org/obo/",\
+                                        "'+this.baseUri+'"\
+                                    )\
+                                ) AS ?subClassOfUri )\
+                                BIND ( iri(\
+                                    replace(\
+                                        str(?relProp),\
+                                        "http://purl.obolibrary.org/obo/TEMP#",\
+                                        "'+this.covUri+'"\
+                                    )\
+                                ) AS ?relPropUri )\
+                                BIND ( iri(\
+                                    replace(\
+                                        replace(str(?rel), "_(?!.*_)", ":"),\
+                                        "http://purl.obolibrary.org/obo/",\
+                                        "'+this.baseUri+'"\
+                                    )\
+                                ) AS ?relUri )\
                                }';
-
+            queryString = rdf.buildSparqlPrefixes() + queryString;
             var query = QueryFactory.create(queryString);
             // Execute the query and obtain results
             var qe = QueryExecutionFactory.create(query, rdfXmlModel);
 
-            // Execute a CONSTRUCT query, putting the statements into 'rdfXmlModel'.
-            qe.execConstruct(rdfXmlModel);
+            rdfXmlModel = qe.execConstruct();
 
             // add these statements to the overall model
             model.add(rdfXmlModel);
