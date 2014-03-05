@@ -517,7 +517,12 @@ load_term = function(li) {
     
     $.getJSON("/get-attributes", {uri: id, ontologyId: ontologyid}, function(this_attrs) {
         $.each(this_attrs, function(i) {
-            attributes[this_attrs[i].key] = this_attrs[i].value;
+            if(attributes[this_attrs[i].key]) {
+                var arr = [ attributes[this_attrs[i].key], this_attrs[i].value];
+                attributes[this_attrs[i].key] = arr.join(', ');
+            } else {
+                attributes[this_attrs[i].key] = this_attrs[i].value;
+            }
         });
 
         // let's show the attributes

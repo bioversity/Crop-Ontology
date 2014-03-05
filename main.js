@@ -437,7 +437,6 @@ apejs.urls = {
             file.delete();
 
             res.sendRedirect('/dashboard');
-            
         }
     },
     "/delete-ontology": {
@@ -780,6 +779,7 @@ apejs.urls = {
                 var o = {};
                 for(var i in obj) {
                     var rdfNode = obj[i];
+                    var value = '';
                     if(rdfNode.isLiteral()) {
                         o[i] = ''+rdfNode.asLiteral().getString();
                     } else if(rdfNode.isResource()) {

@@ -6,6 +6,11 @@ importPackage(com.hp.hpl.jena.update);
 importPackage(org.apache.jena.riot);
 importPackage(org.apache.jena.riot.system);
 importPackage(org.apache.jena.riot.out);
+importPackage(org.obolibrary.obo2owl);
+importPackage(org.obolibrary.oboformat.model);
+importPackage(org.obolibrary.oboformat.parser);
+importPackage(org.semanticweb.owlapi.model);
+importPackage(org.semanticweb.owlapi.io);
 
 var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
 exports = {
@@ -145,6 +150,39 @@ exports = {
         var jsonld = { '@graph': [], '@context': {} };
         if(ext == 'obo') {
             // convert OBO to rdf
+            var parser = new OBOFormatParser();
+            var obodoc = parser.parse(file.getPath());
+            
+            // create a translator object and feed it the OBO Document
+            var bridge = new Obo2Owl();
+            var manager = bridge.getManager();
+            var ontology = bridge.convert(obodoc);
+
+            var format = new RDFXMLOntologyFormat();
+            var tempFile = 'temp.rdf';
+            var filePath = rdfPath + tempFile;
+
+            // save rdf file
+            var out = new FileOutputStream(filePath);
+            manager.saveOntology(ontology, format, out);
+
+            // read it into a model in memory
+            var rdfXmlModel = rdf.createModelFrom(tempFile);
+            var queryString = 'CONSTRUCT { ?s ?p ?o }\
+                               WHERE {\
+                                ?s ?p ?o .\
+                               }';
+
+            var query = QueryFactory.create(queryString);
+            // Execute the query and obtain results
+            var qe = QueryExecutionFactory.create(query, rdfXmlModel);
+
+            // Execute a CONSTRUCT query, putting the statements into 'rdfXmlModel'.
+            qe.execConstruct(rdfXmlModel);
+
+            // add these statements to the overall model
+            model.add(rdfXmlModel);
+
         } else if(ext == 'csv' || ext == 'xls' || ext == 'xlsx'){
             // convert template to rdf
 
