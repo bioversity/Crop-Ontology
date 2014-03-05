@@ -543,13 +543,14 @@ apejs.urls = {
 
             var model = rdf.createModelFrom(ontologyId);
 
-            var results = rdf.queryModel('SELECT DISTINCT ?id ?name\
+            var results = rdf.queryModel('SELECT DISTINCT ?id ?name (COUNT (?s1) as ?has_children)\
                                           WHERE {\
                                             ?id ?p <'+uri+'> .\
+                                            OPTIONAL { ?s1 ?p1 ?id .}\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
                                             FILTER(!isBlank(?id))\
-                                          }', model);
+                                          } GROUP BY ?id ?name', model);
                                           
             results = results.map(function(obj) {
                 var o = {};
@@ -567,7 +568,9 @@ apejs.urls = {
                     }
 
                 }
-                o['has_children'] = 1;
+                if(o['has_children'] == "0") {
+                    o['has_children'] = false;
+                }
                 return o;
             });
 
