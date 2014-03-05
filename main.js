@@ -2504,12 +2504,17 @@ apejs.urls = {
             response.setContentType("application/json");
             var model = rdf.createModelFrom(ontologyId);
             var results = rdf.queryModel('\
-SELECT ?id ?date ?method ?scale ?catMeaning ?catValue\
+SELECT ?id ?date ?method ?scale ?ibfieldbook ?catMeaning ?catValue ?creator ?orgName \
 (group_concat(distinct ?synonym ; separator = ",") AS ?s) \
 (group_concat(distinct ?abrev ; separator = ",") AS ?a) \
 WHERE {\
    ?id rdf:type cov:Trait .\
    ?id dc:date ?date.\
+   ?id cov:ibfieldbook ?ibfieldbook.\
+   ?id dc:creator ?creatorId.\
+   ?creatorId foaf:name ?creator.\
+   ?org foaf:member ?creatorId.\
+   ?org foaf:name ?orgName.\
    ?id skosxl:altLabel ?altlabel .\
    ?altlabel skosxl:literalForm ?synonym .\
    ?id skosxl:prefLabel ?prefLabel .\
@@ -2524,28 +2529,29 @@ WHERE {\
    ?prefLabelC skosxl:literalForm ?catMeaning .\
    ?categories skosxl:altLabel ?altlabelC .\
    ?altlabelC skosxl:literalForm ?catValue .\
-} GROUP BY ?id ?date ?method ?scale ?catMeaning ?catValue \
+} GROUP BY ?id ?date ?method ?scale ?catMeaning ?catValue ?creator ?ibfieldbook ?orgName \
 order by ?id \
             ', model);
-            /*
+
+            var obj = {"ibfieldbook":"ibfieldbook","Name of submitting scientist":"creator","Institution":"orgName","Language of submission (only in ISO 2 letter codes)":true,"Date of submission":"date","Crop":true,"Name of Trait":true,"Abbreviated name ":true,"Synonyms (separate by commas)":true,"Trait ID for modification, Blank for New":true,"Description of Trait":true,"How is this trait routinely used?":true,"Trait Class":true,"Method ID for modification, Blank for New":true,"Name of method":true,"Describe how measured (method)":true,"Growth stages":true,"Bibliographic Reference":true,"Comments":true,"Scale ID for modification, Blank for New":true,"Type of Measure (Continuous, Discrete or Categorical)":true,"For Continuous: units of measurement":true,"For Continuous: reporting units (if different from measurement)":true,"For Continuous: minimum":true,"For Continuous: maximum":true,"For Discrete: Name of scale or units of measurement":true,"For Categorical: Name of rating scale":true};
+
+            var header = [];
+            for(var i in obj) {
+                header.push('"' + i.trim() + '"');
+            }
+            print(response).text(header.join(','));
+
             for(var i=0; i<results.length; i++) {
-                var obj = results[i];
-                if(i == 0) { // print header
-                    var header = [];
-                    for(var x in obj) {
-                        header.push(x);
-                    }
-                    print(response).text(header.join(','));
-                }
+                var res = results[i];
                 // print content
                 var content = [];
                 for(var x in obj) {
-                    content.push(obj[x]);
+                    var value = obj[x];
+                    content.push('"' + (res[value] || '') + '"');
                 }
                 print(response).text(content.join(','));
-
             }
-            */
+            return;
             results = results.map(function(obj) {
                 var o = {};
                 for(var i in obj) {
