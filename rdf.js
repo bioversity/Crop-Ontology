@@ -109,6 +109,15 @@ exports = {
     },
     createModelFrom: function(filePath) {
         var filePath = rdfPath + filePath;
+
+        /* XXX cache
+        var modelCache = apejs.session.getAttribute(filePath);
+        if(modelCache) {
+            System.out.println('from cache');
+            return modelCache;
+        }
+        */
+
         var file = new File(filePath);
         if(file.isDirectory()) { 
             // get all files (and subfiles) within this dir
@@ -136,6 +145,10 @@ exports = {
                     rdf.readNonRDFInto(model, f);
                 }
             }
+            /* XXX cache
+            System.out.println('from file');
+            apejs.session.setAttribute(filePath, model);
+            */
             return model;
         } else {
             var inputStream = new FileInputStream(file);
@@ -284,7 +297,7 @@ exports = {
                 }
 
                 // add language in context
-                //jsonld['@context']['@language'] = trait['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+                jsonld['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
 
 
                 jsonld['@graph'].push(person);

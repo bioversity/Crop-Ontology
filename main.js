@@ -77,6 +77,7 @@ apejs.before = function(request, response) {
     apejs.cookies = request.getCookies();
 
 }
+apejs.cache = 'foo';
 
 apejs.urls = {
     "/": {
