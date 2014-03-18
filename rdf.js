@@ -12,7 +12,8 @@ importPackage(org.obolibrary.oboformat.parser);
 importPackage(org.semanticweb.owlapi.model);
 importPackage(org.semanticweb.owlapi.io);
 
-var rdfPath = getServletConfig().getServletContext().getInitParameter('rdf-path');
+var servletContext = getServletConfig().getServletContext();
+var rdfPath = servletContext.getInitParameter('rdf-path');
 exports = {
     baseUri: 'http://www.cropontology.org/rdf/',
     covUri: 'http://www.cropontology.org/vocab/',
@@ -109,17 +110,26 @@ exports = {
     },
     createModelFrom: function(filePath) {
         var filePath = rdfPath + filePath;
-
-        /* XXX cache
-        var modelCache = apejs.session.getAttribute(filePath);
-        if(modelCache) {
-            System.out.println('from cache');
-            return modelCache;
-        }
-        */
-
         var file = new File(filePath);
+
         if(file.isDirectory()) { 
+            // get size of this folder
+            var currSize = FileUtils.sizeOfDirectory(file);
+            var storedSize = servletContext.getAttribute(filePath + 'size');
+
+            if(storedSize && (currSize == storedSize)) {
+                // load model from cache
+                var modelCache = servletContext.getAttribute(filePath);
+                if(modelCache) {
+                    System.out.println('from cache');
+                    return modelCache;
+                }
+            } else {
+                // the storedSize is different from the current
+                // reset it!
+                servletContext.setAttribute(filePath + 'size', currSize);
+            }
+
             // get all files (and subfiles) within this dir
             var files = rdf.getAllFiles(file);
 
@@ -145,10 +155,10 @@ exports = {
                     rdf.readNonRDFInto(model, f);
                 }
             }
-            /* XXX cache
+
             System.out.println('from file');
-            apejs.session.setAttribute(filePath, model);
-            */
+            servletContext.setAttribute(filePath, model);
+
             return model;
         } else {
             var inputStream = new FileInputStream(file);
