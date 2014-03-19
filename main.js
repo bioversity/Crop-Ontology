@@ -1675,7 +1675,8 @@ apejs.urls = {
                 }
             }
 
-            var termId = matches[1].split("/")[0];
+            //var termId = matches[1].split("/")[0];
+            var termId = matches[1];
             // start the array with the current term
             var termKey = googlestore.createKey("term", termId),
                 termEntity = googlestore.get(termKey);
