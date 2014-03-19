@@ -27,7 +27,7 @@ var search = require('./search.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.8";
+var VERSION = "0.8.10";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -893,6 +893,7 @@ apejs.urls = {
             var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
             response.setHeader("Cache-Control", "max-age=315360000");
             response.setContentType(blobInfo.getContentType());
+            response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename() );
 
             blobstore.blobstoreService.serve(blobKey, response);
             /*

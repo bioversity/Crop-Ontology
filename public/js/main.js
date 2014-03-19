@@ -1510,6 +1510,12 @@ function LoadOntology(ontoId) {
         }
         */
         if(oboBlobKey && oboBlobKey != 'null') {
+            try {
+                oboBlobKey = JSON.parse(oboBlobKey);
+                for(var i in oboBlobKey) {
+                    oboBlobKey = oboBlobKey[i];
+                }
+            } catch(e) {}
             $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
         }
 
