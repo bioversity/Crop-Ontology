@@ -502,7 +502,7 @@ apejs.urls = {
             }
         }
     },
-    "/get-children/([^/]*)": {
+    "/get-children/(.*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
