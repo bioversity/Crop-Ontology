@@ -1,3 +1,15 @@
+function encodeID(id) {
+    var firstPart = false;
+    var ids = id.split(':');
+    if(ids.length > 1) { // there's a :
+        var leftPart = ids[0];
+        var rightPart = id.replace(leftPart + ':', '');
+
+        return leftPart + ':' + encodeURIComponent(rightPart);
+    } else {
+        return encodeURIComponent(id);
+    }
+}
 exports = rdf = function() {
     this.co = 'http://www.cropontology.org/';
     this.uri = this.co + 'rdf/';
@@ -24,7 +36,7 @@ rdf.prototype.buildTriple = function(term) {
     }
     
     // let's escape the ID
-    term.id = encodeURIComponent(term.id);
+    term.id = encodeID(term.id);
 
     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
     
@@ -60,10 +72,10 @@ rdf.prototype.buildTriple = function(term) {
     if(term.parent != 'null') {
         if(typeof term.parent != 'string') { // multiple broader
             for(var i in term.parent) {
-                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + encodeURIComponent(term.parent[i]) + '> .\n';
+                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + encodeID(term.parent[i]) + '> .\n';
             }
         } else { // just a single broader
-            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + encodeURIComponent(term.parent) + '> .\n';
+            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + encodeID(term.parent) + '> .\n';
         }
     }
 
