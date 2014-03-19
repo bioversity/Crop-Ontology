@@ -16,6 +16,7 @@ var languages = {
   },
   getIso: {
     'english':'EN', 
+    'undefined':'EN', 
     'french':  'FR', 
     'spanish': 'ES',
     'chinese': 'CN',
