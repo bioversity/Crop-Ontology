@@ -691,7 +691,8 @@ apejs.urls = {
             response.setCharacterEncoding("UTF-8");
 
             var segments = matches[1].split('/');
-            var term_id = segments[0];
+            //var term_id = segments[0];
+            var term_id = matches[1];
             if(!term_id) return response.getWriter().println("No term_id");
 
             var method = segments[1],
