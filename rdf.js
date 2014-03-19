@@ -2,10 +2,11 @@ function encodeID(id) {
     var firstPart = false;
     var ids = id.split(':');
     if(ids.length > 1) { // there's a :
-        var leftPart = ids[0];
-        var rightPart = id.replace(leftPart + ':', '');
-
-        return leftPart + ':' + encodeURIComponent(rightPart);
+        var res = [];
+        for(var i=0; i<ids.length; i++) {
+            res.push(encodeURIComponent(ids[i]));
+        }
+        return res.join(':');
     } else {
         return encodeURIComponent(id);
     }
