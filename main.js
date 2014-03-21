@@ -2470,22 +2470,33 @@ apejs.urls = {
     },
     "/rebuild-search-index": {
         get: function(req, res) {
-            var ontology_id = req.getParameter('ontology_id');
-            taskqueue.createTask("/rebuild-search-index-task", ontology_id);
+            // start at offset 0
+            taskqueue.createTask("/rebuild-search-index-task", 0);
         }
     },
     "/rebuild-search-index-task": {
         post: function(req, res) {
             var s = new search();
             // default is jsonTerm whatever!
-            var ontology_id = req.getParameter('jsonTerm');
+            var offset = req.getParameter('jsonTerm');
+            offset = parseInt(offset, 10);
             // get all terms :/
+            var chunkSize = 100;
+            var length = 0;
             select('term')
-                .find({ ontology_id: ontology_id })
+                .find() // do it in chunks
+                .limit(chunkSize)
+                .offset(offset)
                 .each(function() {
                     // add document to search index
                     s.add(this);
+                    length++;
                 });
+
+            if(length > 0) {
+                // recursively call this task with different offset
+                taskqueue.createTask("/rebuild-search-index-task", offset + chunkSize);
+            }
         }
     },
     "/search": {
