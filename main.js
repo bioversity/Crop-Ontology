@@ -11,7 +11,7 @@ var auth = require('./auth.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.8";
+var VERSION = "0.8.9";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -550,7 +550,9 @@ apejs.urls = {
                                             OPTIONAL { ?s1 ?p1 ?id .}\
                                             OPTIONAL { ?id rdfs:label ?name }\
                                             OPTIONAL { ?id dc:title ?name }\
+                                            OPTIONAL { ?id a ?type }\
                                             FILTER(!isBlank(?id))\
+                                            FILTER(?name != "")\
                                           } GROUP BY ?id ?name', model);
                                           
             results = results.map(function(obj) {
@@ -2167,7 +2169,7 @@ apejs.urls = {
             ontologyId = ontologyId.toUpperCase();
 
             // check that we own this ontologyId
-            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontology cov:ontology:'+ontologyId+' .  }');
+            var arr = rdf.query('users.ttl', 'select * where { ?user cov:ontology co:'+ontologyId+' .  }');
             var ontoError = true;
             if(!arr.length) { // nobody owns it
                 ontoError = false;
@@ -2175,7 +2177,7 @@ apejs.urls = {
                 if(isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || filename == '')
                     return error(res, "Something is missing. Did you fill out all the fields?");
                     
-                rdf.update('users.ttl', 'INSERT DATA { cov:ontology:'+ontologyId+' a owl:Ontology; rdfs:label '+JSON.stringify(ontologyName)+'; rdfs:comment '+JSON.stringify(ontologySummary)+'; cov:category '+JSON.stringify(category)+'; cov:ontologyId '+JSON.stringify(ontologyId)+' . <'+currUser.s+'> cov:ontology cov:ontology:'+ontologyId+' }');
+                rdf.update('users.ttl', 'INSERT DATA { co:'+ontologyId+' a owl:Ontology; rdfs:label '+JSON.stringify(ontologyName)+'; rdfs:comment '+JSON.stringify(ontologySummary)+'; cov:category '+JSON.stringify(category)+'; cov:ontologyId '+JSON.stringify(ontologyId)+' . <'+currUser.s+'> cov:ontology co:'+ontologyId+' }');
             } else {
                 // check we own it
                 if(arr[0].user.equals(currUser.s)) {

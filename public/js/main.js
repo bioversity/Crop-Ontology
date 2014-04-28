@@ -429,7 +429,7 @@ function show_attributes(id, name, attributes) {
         var t = translate(currUser, attributes[i]);
         var lang = currUser.language || DEFAULT_LANGUAGE;
         if(t.lang !== lang) return;
-        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
+        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(attributes[i])+'</span><input type="hidden" value="" class="language" /></div>';
     }, hide);
 
     if(count == 0)

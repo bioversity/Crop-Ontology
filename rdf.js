@@ -121,14 +121,19 @@ exports = {
                 // load model from cache
                 var modelCache = servletContext.getAttribute(filePath);
                 if(modelCache) {
+                    /* XXX comment this if you don't wanna use cache
                     System.out.println('from cache');
                     return modelCache;
+                    */
                 }
             } else {
                 // the storedSize is different from the current
                 // reset it!
                 servletContext.setAttribute(filePath + 'size', currSize);
             }
+
+            // get ontology Id from folder name
+            var ontologyId = file.getName();
 
             // get all files (and subfiles) within this dir
             var files = rdf.getAllFiles(file);
@@ -152,9 +157,12 @@ exports = {
                 } else {
                     // not rdf, figure out which file it is
                     // figure out format using extension
-                    rdf.readNonRDFInto(model, f);
+                    rdf.readNonRDFInto(model, f, ontologyId);
                 }
             }
+
+            // read also users.ttl into model to get ontology information
+            model.read(new FileInputStream(rdfPath + 'users.ttl'), this.baseUri, RDFLanguages.filenameToLang('users.ttl').getLabel());
 
             System.out.println('from file');
             servletContext.setAttribute(filePath, model);
@@ -167,7 +175,7 @@ exports = {
             return model;
         }
     },
-    readNonRDFInto: function(model, file) {
+    readNonRDFInto: function(model, file, ontologyId) {
         var ext = FilenameUtils.getExtension(file.getName()).toLowerCase();
         var inputStream = new FileInputStream(file);
 
@@ -306,12 +314,14 @@ exports = {
                     }
                 }
 
-                // add language in context
-                jsonld['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
-
-
                 jsonld['@graph'].push(person);
                 jsonld['@graph'].push(institution);
+
+                // make traitClass subclass of this ontology
+                traitClass['rdfs:subClassOf'] = { 
+                    '@id': 'http://www.cropontology.org/rdf/' + ontologyId
+                }
+
 
                 jsonld['@graph'].push(traitClass);
                 jsonld['@graph'].push(trait);

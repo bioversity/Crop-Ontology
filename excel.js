@@ -97,6 +97,9 @@ var excel = {
 
         obj['foaf:name'] = row['Name of submitting scientist'.toLowerCase()];
 
+        obj['@context'] = {};
+        obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+
         return obj;
     },
     getInstitution: function(row, person) {
@@ -106,6 +109,9 @@ var excel = {
 
         obj['foaf:name'] = row['Institution'.toLowerCase()];
         obj['foaf:member'] = { '@id' : person['@id'] };
+
+        obj['@context'] = {};
+        obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
 
         return obj;
     },
@@ -121,6 +127,9 @@ var excel = {
             'skosxl:literalForm': row['Trait Class'.toLowerCase()]
         }
         */
+        obj['@context'] = {};
+        obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+
         return obj;
         
     },
@@ -142,27 +151,19 @@ var excel = {
 
         obj['dwc:vernacularName'] = row['crop'];
 
-        obj['skosxl:prefLabel'] = {
-            '@type': 'skosxl:Label',
-            'skosxl:literalForm': row['Name of Trait'.toLowerCase()],
-            'cov:acronym': {
-                '@type': 'skosxl:Label',
-                'skosxl:literalForm': row['Abbreviated name'.toLowerCase()]
-            }
-
-        };
+        var acronym = row['Abbreviated name'.toLowerCase()];
+        obj['skos:altLabel'] = [];
+        if(acronym) {
+            obj['skos:altLabel'].push(acronym);
+        }
 
         var synonyms = row['Synonyms (separate by commas)'.toLowerCase()].split(',');
         synonyms = synonyms.map(function(el) {
             return el.trim();
         });
         if(synonyms.length && synonyms[0] != '') {
-            obj['skosxl:altLabel'] = []
             for(var i=0; i<synonyms.length; i++) {
-                obj['skosxl:altLabel'].push({
-                    '@type': 'skosxl:Label',
-                    'skosxl:literalForm': synonyms[i],
-                });
+                obj['skos:altLabel'].push(synonyms[i]);
             }
         }
 
@@ -171,6 +172,9 @@ var excel = {
 
         obj['rdfs:subClassOf'] = { '@id': traitClass['@id'] };
         obj['skos:broaderTransitive'] = { '@id': traitClass['@id'] };
+
+        obj['@context'] = {};
+        obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
 
 
         return obj;
@@ -194,6 +198,9 @@ var excel = {
 
         obj['dct:source'] = row['Bibliographic Reference'.toLowerCase()];
             
+        obj['@context'] = {};
+        obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+
         return obj;
     },
     getScale: function(row, method) {
@@ -227,11 +234,10 @@ var excel = {
         if(!scaleName) return obj;
 
         obj['rdfs:label'] = scaleName;
-        obj['skosxl:prefLabel'] = {
-            '@type': 'skosxl:Label',
-            'skosxl:literalForm': scaleName
-        };
 
+
+        obj['@context'] = {};
+        obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
 
         return obj;
     },
@@ -254,21 +260,19 @@ var excel = {
             if(split.length < 2) continue;
 
             obj['@id'] = scale['@id'] + '/' + split[0];
-            obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
+            obj['@type'] = [ 'skos:Concept', 'owl:Class' , 'cov:CategoryValue' ];
 
             obj['rdfs:subClassOf'] = { '@id': scale['@id'] };
             obj['skos:broaderTransitive'] = { '@id': scale['@id'] };
 
             obj['rdfs:label'] = split[1];
-            obj['skosxl:prefLabel'] = {
-                '@type': 'skosxl:Label',
-                'skosxl:literalForm': split[1]
-            }
+            obj['skos:prefLabel'] = split[1];
 
-            obj['skosxl:altLabel'] = {
-                '@type': 'skosxl:Label',
-                'skosxl:literalForm': split[0]
-            }
+            obj['skos:altLabel'] = split[0];
+
+            obj['@context'] = {};
+            obj['@context']['@language'] = row['Language of submission (only in ISO 2 letter codes)'.toLowerCase()].toLowerCase();
+
 
             arr.push(obj);
 
