@@ -2504,39 +2504,32 @@ apejs.urls = {
             var ontologyId = request.getParameter("ontology_id");
             if(isblank(ontologyId)) return error(response, "Invalid parameter");
 
-            response.setContentType("application/json");
+            response.setContentType("text/csv");
             var model = rdf.createModelFrom(ontologyId);
             var results = rdf.queryModel('\
-SELECT ?id ?date ?method ?scale ?ibfieldbook ?catMeaning ?catValue ?creator ?orgName \
-(group_concat(distinct ?synonym ; separator = ",") AS ?s) \
-(group_concat(distinct ?abrev ; separator = ",") AS ?a) \
-WHERE {\
-   ?id rdf:type cov:Trait .\
-   ?id dc:date ?date.\
-   ?id cov:ibfieldbook ?ibfieldbook.\
-   ?id dc:creator ?creatorId.\
-   ?creatorId foaf:name ?creator.\
-   ?org foaf:member ?creatorId.\
-   ?org foaf:name ?orgName.\
-   ?id skosxl:altLabel ?altlabel .\
-   ?altlabel skosxl:literalForm ?synonym .\
-   ?id skosxl:prefLabel ?prefLabel .\
-   ?prefLabel skosxl:literalForm ?traitName .\
-   ?prefLabel cov:acronym ?acronymLabel.\
-   ?acronymLabel skosxl:literalForm ?abrev.\
-   ?method cov:methodOf ?id . \
-   ?scale cov:scaleOf ?method .\
-\
-   ?categories rdfs:subClassOf ?scale .\
-   ?categories skosxl:prefLabel ?prefLabelC .\
-   ?prefLabelC skosxl:literalForm ?catMeaning .\
-   ?categories skosxl:altLabel ?altlabelC .\
-   ?altlabelC skosxl:literalForm ?catValue .\
-} GROUP BY ?id ?date ?method ?scale ?catMeaning ?catValue ?creator ?ibfieldbook ?orgName \
-order by ?id \
+SELECT ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym \
+(group_concat(distinct ?altLabel ; separator = ", ") AS ?altLabels) \
+WHERE { \
+    ?id a cov:Trait; \
+        rdfs:label ?label; \
+        rdfs:comment ?comment; \
+        cov:usedFor ?usedFor; \
+        skos:acronym ?acronym; \
+        skos:altLabel ?altLabel; \
+        cov:ibfieldbook ?ibfieldbook; \
+        dc:creator ?creatorUri; \
+        dwc:vernacularName ?vernacularName; \
+        dc:date ?date \
+        . \
+    ?creatorUri foaf:name ?creator .\
+    ?org foaf:member ?creatorUri;\
+        foaf:name ?orgName .\
+} \
+GROUP BY ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym \
+ORDER BY DESC(?ibfieldbook) \
             ', model);
 
-            var obj = {"ibfieldbook":"ibfieldbook","Name of submitting scientist":"creator","Institution":"orgName","Language of submission (only in ISO 2 letter codes)":true,"Date of submission":"date","Crop":true,"Name of Trait":true,"Abbreviated name ":true,"Synonyms (separate by commas)":true,"Trait ID for modification, Blank for New":true,"Description of Trait":true,"How is this trait routinely used?":true,"Trait Class":true,"Method ID for modification, Blank for New":true,"Name of method":true,"Describe how measured (method)":true,"Growth stages":true,"Bibliographic Reference":true,"Comments":true,"Scale ID for modification, Blank for New":true,"Type of Measure (Continuous, Discrete or Categorical)":true,"For Continuous: units of measurement":true,"For Continuous: reporting units (if different from measurement)":true,"For Continuous: minimum":true,"For Continuous: maximum":true,"For Discrete: Name of scale or units of measurement":true,"For Categorical: Name of rating scale":true};
+            var obj = {"ibfieldbook":"ibfieldbook","Name of submitting scientist":"creator","Institution":"orgName","Language of submission (only in ISO 2 letter codes)":"lang","Date of submission":"date","Crop":"vernacularName","Name of Trait":"label","Abbreviated name":"acronym","Synonyms (separate by commas)":"altLabels","Trait ID for modification, Blank for New":"id","Description of Trait":"comment","How is this trait routinely used?":"usedFor","Trait Class":true,"Method ID for modification, Blank for New":true,"Name of method":true,"Describe how measured (method)":true,"Growth stages":true,"Bibliographic Reference":true,"Comments":true,"Scale ID for modification, Blank for New":true,"Type of Measure (Continuous, Discrete or Categorical)":true,"For Continuous: units of measurement":true,"For Continuous: reporting units (if different from measurement)":true,"For Continuous: minimum":true,"For Continuous: maximum":true,"For Discrete: Name of scale or units of measurement":true,"For Categorical: Name of rating scale":true};
 
             var header = [];
             for(var i in obj) {
@@ -2550,6 +2543,13 @@ order by ?id \
                 var content = [];
                 for(var x in obj) {
                     var value = obj[x];
+                    if(res[value]) {
+                        if(res[value].isLiteral()) {
+                            res[value] = res[value].asLiteral().getString();
+                        } else {
+                            res[value] = res[value].toString();
+                        }
+                    }
                     content.push('"' + (res[value] || '') + '"');
                 }
                 print(response).text(content.join(','));

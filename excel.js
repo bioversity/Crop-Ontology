@@ -152,15 +152,16 @@ var excel = {
         obj['dwc:vernacularName'] = row['crop'];
 
         var acronym = row['Abbreviated name'.toLowerCase()];
-        obj['skos:altLabel'] = [];
+        obj['skos:acronym'] = [];
         if(acronym) {
-            obj['skos:altLabel'].push(acronym);
+            obj['skos:acronym'].push(acronym);
         }
 
         var synonyms = row['Synonyms (separate by commas)'.toLowerCase()].split(',');
         synonyms = synonyms.map(function(el) {
             return el.trim();
         });
+        obj['skos:altLabel'] = [];
         if(synonyms.length && synonyms[0] != '') {
             for(var i=0; i<synonyms.length; i++) {
                 obj['skos:altLabel'].push(synonyms[i]);
