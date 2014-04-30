@@ -197,6 +197,7 @@ var excel = {
         obj['skos:definition'] = row['Describe how measured (method)'.toLowerCase()];
         obj['rdfs:comment'] = row['Describe how measured (method)'.toLowerCase()];
 
+        obj['cov:growthStages'] = row['Growth stages'.toLowerCase()];
         obj['dct:source'] = row['Bibliographic Reference'.toLowerCase()];
             
         obj['@context'] = {};

@@ -2504,32 +2504,39 @@ apejs.urls = {
             var ontologyId = request.getParameter("ontology_id");
             if(isblank(ontologyId)) return error(response, "Invalid parameter");
 
-            response.setContentType("text/csv");
+            response.setContentType("text/plain");
+            var obj = {"ibfieldbook":"ibfieldbook","Name of submitting scientist":"creator","Institution":"orgName","Language of submission (only in ISO 2 letter codes)":"lang","Date of submission":"date","Crop":"vernacularName","Name of Trait":"label","Abbreviated name":"acronym","Synonyms (separate by commas)":"altLabels","Trait ID for modification, Blank for New":"id","Description of Trait":"comment","How is this trait routinely used?":"usedFor","Trait Class":"traitClass","Method ID for modification, Blank for New":"methodId","Name of method":"methodLabel","Describe how measured (method)":"methodDescription","Growth stages":"growthStages","Bibliographic Reference":"biblioRef","Comments":true,"Scale ID for modification, Blank for New":"scaleId","Type of Measure (Continuous, Discrete or Categorical)":"true","For Continuous: units of measurement":true,"For Continuous: reporting units (if different from measurement)":true,"For Continuous: minimum":true,"For Continuous: maximum":true,"For Discrete: Name of scale or units of measurement":true,"For Categorical: Name of rating scale":true};
             var model = rdf.createModelFrom(ontologyId);
             var results = rdf.queryModel('\
-SELECT ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym \
+SELECT ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym ?traitClass ?methodId ?methodLabel ?methodDescription ?growthStages ?biblioRef \
 (group_concat(distinct ?altLabel ; separator = ", ") AS ?altLabels) \
 WHERE { \
     ?id a cov:Trait; \
         rdfs:label ?label; \
         rdfs:comment ?comment; \
         cov:usedFor ?usedFor; \
-        skos:acronym ?acronym; \
-        skos:altLabel ?altLabel; \
         cov:ibfieldbook ?ibfieldbook; \
         dc:creator ?creatorUri; \
         dwc:vernacularName ?vernacularName; \
-        dc:date ?date \
+        dc:date ?date; \
+        rdfs:subClassOf ?traitClassUri \
         . \
+    OPTIONAL { ?id skos:acronym ?acronym . } \
+    OPTIONAL { ?id skos:altLabel ?altLabel . } \
+    ?traitClassUri rdfs:label ?traitClass . \
     ?creatorUri foaf:name ?creator .\
     ?org foaf:member ?creatorUri;\
         foaf:name ?orgName .\
+    ?methodId cov:methodOf ?id; \
+        rdfs:label ?methodLabel; \
+        rdfs:comment ?methodDescription; \
+        cov:growthStages ?growthStages; \
+        dct:source ?biblioRef . \
 } \
-GROUP BY ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym \
+GROUP BY ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym ?traitClass ?methodId ?methodLabel ?methodDescription ?growthStages ?biblioRef \
 ORDER BY DESC(?ibfieldbook) \
             ', model);
 
-            var obj = {"ibfieldbook":"ibfieldbook","Name of submitting scientist":"creator","Institution":"orgName","Language of submission (only in ISO 2 letter codes)":"lang","Date of submission":"date","Crop":"vernacularName","Name of Trait":"label","Abbreviated name":"acronym","Synonyms (separate by commas)":"altLabels","Trait ID for modification, Blank for New":"id","Description of Trait":"comment","How is this trait routinely used?":"usedFor","Trait Class":true,"Method ID for modification, Blank for New":true,"Name of method":true,"Describe how measured (method)":true,"Growth stages":true,"Bibliographic Reference":true,"Comments":true,"Scale ID for modification, Blank for New":true,"Type of Measure (Continuous, Discrete or Categorical)":true,"For Continuous: units of measurement":true,"For Continuous: reporting units (if different from measurement)":true,"For Continuous: minimum":true,"For Continuous: maximum":true,"For Discrete: Name of scale or units of measurement":true,"For Categorical: Name of rating scale":true};
 
             var header = [];
             for(var i in obj) {
