@@ -152,9 +152,9 @@ var excel = {
         obj['dwc:vernacularName'] = row['crop'];
 
         var acronym = row['Abbreviated name'.toLowerCase()];
-        obj['skos:acronym'] = [];
+        obj['cov:acronym'] = [];
         if(acronym) {
-            obj['skos:acronym'].push(acronym);
+            obj['cov:acronym'].push(acronym);
         }
 
         var synonyms = row['Synonyms (separate by commas)'.toLowerCase()].split(',');
@@ -195,7 +195,7 @@ var excel = {
         }
 
         obj['skos:definition'] = row['Describe how measured (method)'.toLowerCase()];
-        obj['rdfs:comment'] = row['Describe how measured (method)'.toLowerCase()];
+        obj['rdfs:comment'] = row['Comments'.toLowerCase()];
 
         obj['cov:growthStages'] = row['Growth stages'.toLowerCase()];
         obj['dct:source'] = row['Bibliographic Reference'.toLowerCase()];

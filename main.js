@@ -2505,35 +2505,101 @@ apejs.urls = {
             if(isblank(ontologyId)) return error(response, "Invalid parameter");
 
             response.setContentType("text/plain");
-            var obj = {"ibfieldbook":"ibfieldbook","Name of submitting scientist":"creator","Institution":"orgName","Language of submission (only in ISO 2 letter codes)":"lang","Date of submission":"date","Crop":"vernacularName","Name of Trait":"label","Abbreviated name":"acronym","Synonyms (separate by commas)":"altLabels","Trait ID for modification, Blank for New":"id","Description of Trait":"comment","How is this trait routinely used?":"usedFor","Trait Class":"traitClass","Method ID for modification, Blank for New":"methodId","Name of method":"methodLabel","Describe how measured (method)":"methodDescription","Growth stages":"growthStages","Bibliographic Reference":"biblioRef","Comments":true,"Scale ID for modification, Blank for New":"scaleId","Type of Measure (Continuous, Discrete or Categorical)":"true","For Continuous: units of measurement":true,"For Continuous: reporting units (if different from measurement)":true,"For Continuous: minimum":true,"For Continuous: maximum":true,"For Discrete: Name of scale or units of measurement":true,"For Categorical: Name of rating scale":true};
+            response.setContentType("application/csv");
+            response.setHeader('Content-Disposition', 'attachment; filename='+ontologyId+'.csv');
+            var obj = {
+            "ibfieldbook":"ibfieldbook",
+            "Name of submitting scientist":"creator",
+            "Institution":"orgName",
+            "Language of submission (only in ISO 2 letter codes)":"lang",
+            "Date of submission":"date",
+            "Crop":"vernacularName",
+            "Name of Trait":"label",
+            "Abbreviated name":"acronym",
+            "Synonyms (separate by commas)":"altLabels",
+            "Trait ID for modification, Blank for New":"traitId",
+            "Description of Trait":"comment",
+            "How is this trait routinely used?":"usedFor",
+            "Trait Class":"traitClass",
+            "Method ID for modification, Blank for New":"methodLocalId",
+            "Name of method":"methodLabel",
+            "Describe how measured (method)":"methodDescription",
+            "Growth stages":"growthStages",
+            "Bibliographic Reference":"biblioRef",
+            "Comments":"methodComment",
+            "Scale ID for modification, Blank for New":"scaleLocalId",
+            "Type of Measure (Continuous, Discrete or Categorical)":"scaleLocalType",
+            "For Continuous: units of measurement":"continuousName",
+            "For Continuous: reporting units (if different from measurement)":true,
+            "For Continuous: minimum":"minValue",
+            "For Continuous: maximum":"maxValue",
+            "For Discrete: Name of scale or units of measurement":"discreteName",
+            "For Categorical: Name of rating scale":"categoricalName",
+            "For Categorical: value = meaning":"c"
+            };
             var model = rdf.createModelFrom(ontologyId);
             var results = rdf.queryModel('\
-SELECT ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym ?traitClass ?methodId ?methodLabel ?methodDescription ?growthStages ?biblioRef \
+SELECT ?id ?traitId ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym ?traitClass ?methodId ?methodLabel ?methodDescription ?growthStages ?biblioRef ?methodComment ?scaleId ?methodLocalId ?scaleLocalId ?scaleLocalType ?continuousName ?discreteName ?categoricalName ?minValue ?maxValue \
 (group_concat(distinct ?altLabel ; separator = ", ") AS ?altLabels) \
+(group_concat(CONCAT( ?catValue , "=",  ?catMeaning ) ; separator = "|") AS ?c)\
 WHERE { \
     ?id a cov:Trait; \
         rdfs:label ?label; \
         rdfs:comment ?comment; \
-        cov:usedFor ?usedFor; \
         cov:ibfieldbook ?ibfieldbook; \
         dc:creator ?creatorUri; \
         dwc:vernacularName ?vernacularName; \
         dc:date ?date; \
         rdfs:subClassOf ?traitClassUri \
         . \
+    OPTIONAL { ?id cov:usedFor ?usedFor . } \
     OPTIONAL { ?id skos:acronym ?acronym . } \
     OPTIONAL { ?id skos:altLabel ?altLabel . } \
     ?traitClassUri rdfs:label ?traitClass . \
-    ?creatorUri foaf:name ?creator .\
-    ?org foaf:member ?creatorUri;\
-        foaf:name ?orgName .\
-    ?methodId cov:methodOf ?id; \
-        rdfs:label ?methodLabel; \
-        rdfs:comment ?methodDescription; \
-        cov:growthStages ?growthStages; \
-        dct:source ?biblioRef . \
+    \
+    OPTIONAL { ?creatorUri foaf:name ?creator .} \
+    OPTIONAL { ?org foaf:member ?creatorUri. } \
+    OPTIONAL { ?org foaf:name ?orgName . } \
+    \
+    OPTIONAL { ?methodId cov:methodOf ?id . } \
+    OPTIONAL { ?methodId rdfs:label ?methodLabel . } \
+    OPTIONAL { ?methodId skos:definition ?methodDescription. } \
+    OPTIONAL { ?methodId rdfs:comment ?methodComment. } \
+    OPTIONAL { ?methodId cov:growthStages ?growthStages.} \
+    OPTIONAL { ?methodId dct:source ?biblioRef .} \
+\
+    ?scaleId cov:scaleOf ?methodId . \
+    ?scaleId a ?scaleType . \
+    ?scaleId rdfs:label ?scaleName .\
+    OPTIONAL { ?scaleId cov:minValue ?minValue . } \
+    OPTIONAL { ?scaleId cov:maxValue ?maxValue . } \
+    \
+    OPTIONAL { ?categorical rdfs:subClassOf ?scaleId . } \
+    OPTIONAL { ?categorical skos:altLabel ?catValue . } \
+    OPTIONAL { ?categorical skos:prefLabel ?catMeaning . } \
+    \
+    BIND( \
+        IF(CONTAINS(STR(?scaleType), "Categorical"), \
+            "Categorical", \
+            IF(CONTAINS(STR(?scaleType), "Continuous"), \
+                "Continuous", \
+                IF(CONTAINS(STR(?scaleType), "Discrete"), \
+                    "Discrete", \
+                    false) \
+            ) \
+        ) \
+        AS ?scaleLocalType \
+    ) \
+    BIND(IF(?scaleLocalType = "Continuous", ?scaleName, "") AS ?continuousName) \
+    BIND(IF(?scaleLocalType = "Discrete", ?scaleName, "") AS ?discreteName) \
+    BIND(IF(?scaleLocalType = "Categorical", ?scaleName, "") AS ?categoricalName) \
+    BIND(REPLACE(STR(?id), "http://www.cropontology.org/rdf/", "", "i") AS ?traitId) \
+    BIND(REPLACE(STR(?methodId), "http://www.cropontology.org/rdf/", "", "i") AS ?methodLocalId) \
+    BIND(REPLACE(STR(?scaleId), "http://www.cropontology.org/rdf/", "", "i") AS ?scaleLocalId) \
+    \
+    FILTER(?scaleLocalType != false) \
 } \
-GROUP BY ?id ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym ?traitClass ?methodId ?methodLabel ?methodDescription ?growthStages ?biblioRef \
+GROUP BY ?id ?traitId ?label ?comment ?usedFor ?ibfieldbook ?vernacularName ?date ?creator ?orgName ?acronym ?traitClass ?methodId ?methodLabel ?methodDescription ?growthStages ?biblioRef ?methodComment ?scaleId ?methodLocalId ?scaleLocalId ?scaleLocalType ?continuousName ?discreteName ?categoricalName ?minValue ?maxValue \
 ORDER BY DESC(?ibfieldbook) \
             ', model);
 

@@ -121,7 +121,8 @@ exports = {
                 // load model from cache
                 var modelCache = servletContext.getAttribute(filePath);
                 if(modelCache) {
-                    /* XXX comment this if you don't wanna use cache
+                    // XXX comment this if you don't wanna use cache
+                    /*
                     System.out.println('from cache');
                     return modelCache;
                     */
@@ -205,18 +206,9 @@ exports = {
                                     rdfs:label ?label;\
                                     rdfs:subClassOf ?subClassOfUri;\
                                     ?relPropUri ?relUri;\
-                                    skosxl:prefLabel [\
-                                        a skosxl:Label;\
-                                        skosxl:literalForm ?label\
-                                    ];\
-                                    skosxl:altLabel [\
-                                        a skosxl:Label;\
-                                        skosxl:literalForm ?synonym\
-                                    ];\
-                                    skosxl:altLabel [\
-                                        a skosxl:Label;\
-                                        skosxl:literalForm ?relatedSyonym\
-                                    ];\
+                                    skos:prefLabel ?label;\
+                                    skos:altLabel ?synonym;\
+                                    skos:altLabel ?relatedSyonym; \
                                     skos:definition ?skosDefinition;\
                                     rdfs:comment ?skosDefinition;\
                                     skos:broaderTransitive ?subClassOfUri;\
