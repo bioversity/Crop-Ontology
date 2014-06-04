@@ -286,8 +286,6 @@ exports = {
 
             excel.parseTemplate(inputStream, function(row) {
                 // update @context
-                
-
                 // these are json-ld objects
                 var person = excel.getPerson(row);
                 var institution = excel.getInstitution(row, person);

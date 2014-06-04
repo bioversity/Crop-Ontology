@@ -955,6 +955,20 @@ apejs.urls = {
 
         }
     },
+    "/obo/([^/]*)": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8");
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType('text/plain');
+
+            var ontologyId = matches[1];
+            if(!ontologyId) return response.getWriter().println("No ontology id");
+
+            // call www.cropontology.org/rdf/{ontologyId} to get the rdf
+            apejs.urls['/rdf/([^/]*)'].get(request, response, matches)
+
+        },
+    },
     "/rdf/([^/]*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8");
@@ -964,9 +978,33 @@ apejs.urls = {
             var ontologyId = matches[1];
             if(!ontologyId) return response.getWriter().println("No ontology id");
 
+            var obo = request.getParameter('obo');
+
             try {
                 var model = rdf.createModelFrom(ontologyId);
-                model.write(response.getOutputStream(), 'TURTLE', rdf.baseUri);
+
+                if(obo) {
+                    var queryString = render('queries/obo-construct.sparql');
+                    queryString = rdf.buildSparqlPrefixes() + queryString;
+                    var query = QueryFactory.create(queryString);
+                    // Execute the query and obtain results
+                    var qe = QueryExecutionFactory.create(query, model);
+
+                    model = qe.execConstruct();
+                }
+
+                // read prefixes into model
+                /*
+                var str = '';
+                for(var i in rdf.prefixes) {
+                    str += '@prefix '+i+': <'+rdf.prefixes[i]+'> .\n';
+                }
+                var javaStr = new java.lang.String(str);
+                var stream = new ByteArrayInputStream(javaStr.getBytes("UTF-8"));
+                model.read(stream, null, 'TURTLE');
+                */
+
+                model.write(response.getOutputStream(), 'TURTLE', null);
             } catch(e) {
                 if(e.javaException instanceof FileNotFoundException) {
                     // read the whole fucking thing (ALL FILES)

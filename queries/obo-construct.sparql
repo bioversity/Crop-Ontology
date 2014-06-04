@@ -1,0 +1,62 @@
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+CONSTRUCT {
+?s a owl:Class;
+    rdfs:label ?label;
+    obo:IAO_0000115 ?skosDefinition.
+?s rdfs:subClassOf ?subClassOf .
+?method cov:methodOf ?s .
+?method obo:IAO_0000115 ?methDef.
+?method rdfs:label ?methDef.
+?scale cov:scaleOf ?method .
+?scale rdfs:label ?scaleName .
+
+?s oboInOwl:hasExactSynonym ?synonym .
+?s oboInOwl:hasRelatedSynonym ?relatedSyonym .
+}
+WHERE {
+?uri a skos:Concept, owl:Class;
+    rdfs:label ?label;
+    rdfs:subClassOf ?subClassOfUri .
+
+OPTIONAL { ?uri skos:altLabel ?synonym .}
+OPTIONAL { ?uri skos:altLabel ?relatedSyonym .}
+OPTIONAL { ?uri skos:definition ?skosDefinition .}
+
+
+BIND ( iri(
+    replace(
+        replace(str(?uri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        "http://www.cropontology.org/rdf/",
+        "http://purl.obolibrary.org/obo/"
+    )
+) AS ?s )
+BIND ( iri(
+    replace(
+        replace(str(?subClassOfUri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        "http://www.cropontology.org/rdf/",
+        "http://purl.obolibrary.org/obo/"
+    )
+) AS ?subClassOf )
+BIND ( iri(
+    replace(
+        str(?relPropUri),
+        "http://www.cropontology.org/rdf/",
+        "http://purl.obolibrary.org/obo/TEMP#"
+    )
+) AS ?relProp )
+BIND ( str(
+    replace(
+        replace(str(?methUri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        "http://www.cropontology.org/rdf/",
+        "http://purl.obolibrary.org/obo/"
+    )
+) AS ?meth )
+BIND ( str(
+    replace(
+        replace(str(?scaleUri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        "http://www.cropontology.org/rdf/",
+        "http://purl.obolibrary.org/obo/"
+    )
+) AS ?scale )
+}
