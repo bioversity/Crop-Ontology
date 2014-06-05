@@ -973,7 +973,7 @@ apejs.urls = {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8");
             response.setCharacterEncoding("UTF-8");
-            response.setContentType('text/plain');
+            response.setContentType('text/turtle');
 
             var ontologyId = matches[1];
             if(!ontologyId) return response.getWriter().println("No ontology id");
@@ -984,25 +984,8 @@ apejs.urls = {
                 var model = rdf.createModelFrom(ontologyId);
 
                 if(obo) {
-                    var queryString = render('queries/obo-construct.sparql');
-                    queryString = rdf.buildSparqlPrefixes() + queryString;
-                    var query = QueryFactory.create(queryString);
-                    // Execute the query and obtain results
-                    var qe = QueryExecutionFactory.create(query, model);
-
-                    model = qe.execConstruct();
+                    return rdf.owl2obo(model, response, ontologyId);
                 }
-
-                // read prefixes into model
-                /*
-                var str = '';
-                for(var i in rdf.prefixes) {
-                    str += '@prefix '+i+': <'+rdf.prefixes[i]+'> .\n';
-                }
-                var javaStr = new java.lang.String(str);
-                var stream = new ByteArrayInputStream(javaStr.getBytes("UTF-8"));
-                model.read(stream, null, 'TURTLE');
-                */
 
                 model.write(response.getOutputStream(), 'TURTLE', null);
             } catch(e) {

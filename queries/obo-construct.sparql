@@ -1,27 +1,21 @@
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
 CONSTRUCT {
-?s a owl:Class;
-    rdfs:label ?label;
-    obo:IAO_0000115 ?skosDefinition.
-?s rdfs:subClassOf ?subClassOf .
-?method cov:methodOf ?s .
-?method obo:IAO_0000115 ?methDef.
-?method rdfs:label ?methDef.
-?scale cov:scaleOf ?method .
-?scale rdfs:label ?scaleName .
+?uri2 a owl:Class;
+    rdfs:subClassOf ?subClassOf2 .
 
-?s oboInOwl:hasExactSynonym ?synonym .
-?s oboInOwl:hasRelatedSynonym ?relatedSyonym .
+?method2 rdfs:subClassOf ?uri2 .
+
+
 }
 WHERE {
-?uri a skos:Concept, owl:Class;
-    rdfs:label ?label;
-    rdfs:subClassOf ?subClassOfUri .
 
-OPTIONAL { ?uri skos:altLabel ?synonym .}
-OPTIONAL { ?uri skos:altLabel ?relatedSyonym .}
-OPTIONAL { ?uri skos:definition ?skosDefinition .}
+{ ?uri a owl:Class . }
+UNION
+{ ?uri a owl:Ontology . }
+
+OPTIONAL { ?uri rdfs:subClassOf ?subClassOf . }
+?method cov:methodOf ?uri .
 
 
 BIND ( iri(
@@ -30,33 +24,26 @@ BIND ( iri(
         "http://www.cropontology.org/rdf/",
         "http://purl.obolibrary.org/obo/"
     )
-) AS ?s )
+) AS ?uri2 )
 BIND ( iri(
     replace(
-        replace(str(?subClassOfUri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        replace(str(?subClassOf), "(.*\\:.*?)\\:(.*)", "$1_$2"),
         "http://www.cropontology.org/rdf/",
         "http://purl.obolibrary.org/obo/"
     )
-) AS ?subClassOf )
-BIND ( iri(
-    replace(
-        str(?relPropUri),
-        "http://www.cropontology.org/rdf/",
-        "http://purl.obolibrary.org/obo/TEMP#"
-    )
-) AS ?relProp )
+) AS ?subClassOf2 )
 BIND ( str(
     replace(
-        replace(str(?methUri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        replace(str(?method), "(.*\\:.*?)\\:(.*)", "$1_$2"),
         "http://www.cropontology.org/rdf/",
         "http://purl.obolibrary.org/obo/"
     )
-) AS ?meth )
+) AS ?method2 )
 BIND ( str(
     replace(
-        replace(str(?scaleUri), "(.*\\:.*?)\\:(.*)", "$1_$2"),
+        replace(str(?scale), "(.*\\:.*?)\\:(.*)", "$1_$2"),
         "http://www.cropontology.org/rdf/",
         "http://purl.obolibrary.org/obo/"
     )
-) AS ?scale )
+) AS ?scale2 )
 }

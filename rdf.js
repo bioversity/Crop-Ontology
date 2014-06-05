@@ -9,6 +9,8 @@ importPackage(org.apache.jena.riot.out);
 importPackage(org.obolibrary.obo2owl);
 importPackage(org.obolibrary.oboformat.model);
 importPackage(org.obolibrary.oboformat.parser);
+importPackage(org.obolibrary.oboformat.writer);
+importPackage(org.semanticweb.owlapi.apibinding);
 importPackage(org.semanticweb.owlapi.model);
 importPackage(org.semanticweb.owlapi.io);
 
@@ -381,14 +383,53 @@ exports = {
         model.write(fileOut, 'TURTLE', this.baseUri);
         model.close();
     },
+    owl2obo: function(model, response, ontologyId) {
+        var queryString = render('queries/obo-construct.sparql');
+        queryString = rdf.buildSparqlPrefixes() + queryString;
+        var query = QueryFactory.create(queryString);
+        // Execute the query and obtain results
+        var qe = QueryExecutionFactory.create(query, model);
+
+        model = qe.execConstruct();
+
+        // needed for the Owl2Obo converter
+        var s = model.createStatement(model.createResource("http://purl.obolibrary.org/obo/TEMP"), model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "type"), model.createResource("http://www.w3.org/2002/07/owl#Ontology"));
+        model.add(s);
+
+        // uncomment this line to show RDF
+        return model.write(response.getOutputStream(), 'TURTLE', 'TURTLE');
+
+        var sw = new StringWriter();
+
+        model.write(sw, "TURTLE");
+
+        var stream = new ByteArrayInputStream(sw.toString().getBytes("UTF-8"));
+
+        var onto = new Owl2Obo();
+        var manager = OWLManager.createOWLOntologyManager();
+        var ontology = manager.loadOntologyFromOntologyDocument(stream);
+    
+        var doc = onto.convert(ontology);
+        
+        var out = response.getOutputStream();
+        var ow = new OutputStreamWriter(out);
+        var bw = new BufferedWriter(ow);
+
+        var output = new OBOFormatWriter();
+        response.setContentType("text/plain");
+        response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
+        output.write(doc, bw);
+
+    },
     convertToSlug: function(Text)
     {
         return Text
             .replace(/^\s+|\s+$/g, '') // trim
             .toLowerCase()
+            .replace(/-+/g, '') // remove invalid chars
             .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-            .replace(/\s+/g, '-') // collapse whitespace and replace by -
-            .replace(/-+/g, '-') // collapse dashes
+            .replace(/\s+/g, '') // collapse whitespace and replace by -
+            .replace(/_+/g, '_') // collapse dashes
             ;
     }
     /*
