@@ -117,7 +117,7 @@ var excel = {
     },
     getTraitClass: function(row) {
         var obj = {};
-        obj['@id'] = rdf.baseUri + 'CO_' +rdf.convertToSlug(row['Trait Class'.toLowerCase()]);
+        obj['@id'] = rdf.baseUri + rdf.convertToSlug(row['Trait Class'.toLowerCase()]);
         obj['@type'] = [ 'skos:Concept', 'owl:Class' ];
 
         obj['rdfs:label'] = row['Trait Class'.toLowerCase()];

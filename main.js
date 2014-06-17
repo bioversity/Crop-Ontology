@@ -2806,9 +2806,27 @@ ORDER BY DESC(?ibfieldbook) \
             res.setCharacterEncoding("UTF-8");
 
             var ontologyId = req.getParameter("ontologyId");
-            var html = req.getParameter("html");
+
+            var model = rdf.createModelFrom(ontologyId);
+            var results = rdf.queryModel('SELECT ?id ?name\
+                                          WHERE {\
+                                            ?id cov:ibfieldbook ?ibfieldbook. \
+                                            ?id rdfs:label ?name.\
+                                            FILTER (STR(?ibfieldbook) = "default")\
+                                          }', model);
+            results = results.map(function(obj) {
+                var o = {};
+                for(var i in obj) {
+                    o[i] = ''+obj[i].toString();
+                }
+                o.has_children = true;
+                return o;
+            });
+            return print(res).json(results);
 
             var obj = {};
+
+
 
             var terms = googlestore.query("term")
                             .sort("ibfieldbook")

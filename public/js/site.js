@@ -34,6 +34,24 @@ function ibfieldbook() {
 }
 reloadIbfieldbook = function($ul) {
     $ul.html('');
+    $.getJSON("/get-ontology-roots/"+ontologyid, function(roots) {
+        var $rootLi = $ul;
+        $rootLi.append("<span class='relationship' title='ibfieldbook'>ibfieldbook</span>");
+        for(var i=0, len=roots.length; i<len; i++) {
+            var last = false;
+            if(i == (roots.length-1))
+                last = true;
+
+            // roots always have children :)
+            roots[i].has_children = false;
+
+            var li = make_li(roots[i], last);
+            $rootLi.append(li);
+            load_branch($rootLi, "/ibfieldbook?ontologyId="+ontologyid);
+        }
+
+    });
+    /*
     load_branch($ul, "/get-ontology-roots/"+ontologyid, function(li) {
         var $rootLi = $ul.find('li:first');
         $rootLi.append("<span class='relationship' title='ibfieldbook'>ibfieldbook</span>");
@@ -41,6 +59,7 @@ reloadIbfieldbook = function($ul) {
         li.append(parent);
         load_branch(parent, "/ibfieldbook?ontologyId="+ontologyid);
     });
+    */
 }
 
 $(function() {

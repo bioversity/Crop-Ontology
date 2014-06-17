@@ -124,10 +124,8 @@ exports = {
                 var modelCache = servletContext.getAttribute(filePath);
                 if(modelCache) {
                     // XXX comment this if you don't wanna use cache
-                    /*
                     System.out.println('from cache');
                     return modelCache;
-                    */
                 }
             } else {
                 // the storedSize is different from the current
@@ -165,7 +163,16 @@ exports = {
             }
 
             // read also users.ttl into model to get ontology information
-            model.read(new FileInputStream(rdfPath + 'users.ttl'), this.baseUri, RDFLanguages.filenameToLang('users.ttl').getLabel());
+            var usersModel = rdf.createModelFrom('users.ttl');
+            var queryString = 'CONSTRUCT { ?onto ?p ?o} WHERE { ?onto cov:ontologyId "'+ontologyId+'". ?onto ?p ?o . }';
+            queryString = rdf.buildSparqlPrefixes() + queryString;
+            var query = QueryFactory.create(queryString);
+            // Execute the query and obtain results
+            var qe = QueryExecutionFactory.create(query, usersModel);
+            usersModel = qe.execConstruct();
+
+            // add these statements to the overall model
+            model.add(usersModel);
 
             System.out.println('from file');
             servletContext.setAttribute(filePath, model);
@@ -384,41 +391,58 @@ exports = {
         model.close();
     },
     owl2obo: function(model, response, ontologyId) {
+        response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
+
         var queryString = render('queries/obo-construct.sparql');
-        queryString = rdf.buildSparqlPrefixes() + queryString;
-        var query = QueryFactory.create(queryString);
-        // Execute the query and obtain results
-        var qe = QueryExecutionFactory.create(query, model);
+        var results = rdf.queryModel(queryString, model);
+        print(response).text('format-version: 1.2');
+        print(response).text('ontology: TEMP');
+        print(response).text('');
+        for(var i=0; i<results.length; i++) {
+            var obj = results[i];
+            // order
+            var order = ['uri', 'label', 'skosDefinition', 'subClassOf', 'methodOf', 'scaleOf'];
+            print(response).text('[Term]');
+            for(var x in order) {
+                var key = order[x];
+                if(!obj[key]) continue;
+                var value = obj[key].toString();
+                if(key == 'uri') {
+                    key = 'id';
+                    //value = value.replace('http://www.cropontology.org/rdf/', '');
+                }
+                if(key == 'subClassOf') {
+                    key = 'is_a';
+                    //value = value.replace('http://www.cropontology.org/rdf/', '');
+                }
+                if(key == 'methodOf') {
+                    key = 'relationship'; 
+                    value = 'method_of ' + value;
+                }
+                if(key == 'scaleOf') {
+                    key = 'relationship'; 
+                    value = 'scale_of ' + value;
+                }
+                if(key == 'label') key = 'name';
+                if(key == 'skosDefinition') {
+                    key = 'def';
+                    value = '"' + value + '" []';
+                }
+                print(response).text(key + ': ' + value);
+            }
+            print(response).text('');
+        }
+        print(response).text('[Typedef]')
+        print(response).text('id: method_of')
+        print(response).text('is_transitive: true');
+        print(response).text('')
+        print(response).text('[Typedef]')
+        print(response).text('id: scale_of')
+        print(response).text('is_transitive: true');
 
-        model = qe.execConstruct();
-
-        // needed for the Owl2Obo converter
-        var s = model.createStatement(model.createResource("http://purl.obolibrary.org/obo/TEMP"), model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "type"), model.createResource("http://www.w3.org/2002/07/owl#Ontology"));
-        model.add(s);
 
         // uncomment this line to show RDF
-        return model.write(response.getOutputStream(), 'TURTLE', 'TURTLE');
-
-        var sw = new StringWriter();
-
-        model.write(sw, "TURTLE");
-
-        var stream = new ByteArrayInputStream(sw.toString().getBytes("UTF-8"));
-
-        var onto = new Owl2Obo();
-        var manager = OWLManager.createOWLOntologyManager();
-        var ontology = manager.loadOntologyFromOntologyDocument(stream);
-    
-        var doc = onto.convert(ontology);
-        
-        var out = response.getOutputStream();
-        var ow = new OutputStreamWriter(out);
-        var bw = new BufferedWriter(ow);
-
-        var output = new OBOFormatWriter();
-        response.setContentType("text/plain");
-        response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
-        output.write(doc, bw);
+        //return model.write(response.getOutputStream(), 'TURTLE', null);
 
     },
     convertToSlug: function(Text)

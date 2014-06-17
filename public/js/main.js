@@ -577,7 +577,7 @@ load_term = function(li) {
  *
  * @returns a jquery dom element
  */
-function make_li(obj, last) {
+make_li = function(obj, last) {
  
     // generic attributes
     var id = obj.id;
