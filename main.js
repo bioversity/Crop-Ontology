@@ -55,6 +55,10 @@ var print = function(response) {
         },
         text: function(text) {
             if(response == null) return;
+            response.getWriter().println(text);
+        },
+        textPlain: function(text) {
+            if(response == null) return;
             response.setContentType("text/plain");
             response.getWriter().println(text);
         },
@@ -69,6 +73,25 @@ var print = function(response) {
         }
     };
 };
+
+function translate(jsonStr, isoLang) {
+    var isoLang = isoLang;
+    if(!isoLang) isoLang = 'EN';
+    try {
+        var obj = JSON.parse(jsonStr);
+        var lang = languages.iso[isoLang];
+        if(obj[lang]) {
+            return obj[lang];
+        } else {
+            return jsonStr;
+        } 
+    } catch(e) {
+        return jsonStr;
+    }
+
+    return jsonStr;
+
+}
 
 var error = function(response, msg) {
     response.sendError(response.SC_BAD_REQUEST, msg);
@@ -849,6 +872,52 @@ apejs.urls = {
             googlestore.put(termEntity);
 
         }
+    },
+    "/obo/([^/]*)": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8");
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType('text/plain');
+
+            var ontologyId = matches[1];
+            if(!ontologyId) return response.getWriter().println("No ontology id");
+
+            var isoLang = request.getParameter('isoLang');
+
+            //response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
+
+            print(response).textPlain('format-version: 1.2');
+            print(response).textPlain('ontology: TEMP');
+            print(response).textPlain('');
+
+            select('term')
+                .find({ 
+                    ontology_id: ontologyId
+                })
+                .sort('id', 'DESC')
+                .each(function() {
+                    var order = ['id', 'name', 'parent', 'subClassOf', 'methodOf', 'scaleOf'];
+                    print(response).textPlain('[Term]');
+
+                    print(response).textPlain('id: ' + this.id);
+                    print(response).textPlain('name: ' + translate(this.name, isoLang));
+                    if(this['Description of Trait']) {
+                        print(response).textPlain('def: ' + translate(this['Description of Trait'], isoLang));
+                    }
+                    if(this['Describe how measured (method)']) {
+                        print(response).textPlain('def: ' + translate(this['Describe how measured (method)'], isoLang));
+                    }
+
+                    if(this.relationship) {
+                        print(response).textPlain('relationship: ' + this.relationship + ' ' + this.parent);
+                    } else if(this.parent && this.parent != "null") {
+                        print(response).textPlain('relationship: is_a ' + this.parent);
+                    }
+
+                    print(response).text('');
+                });
+
+        },
     },
     "/rdf/([^/]*)": {
         get: function(request, response, matches) {
