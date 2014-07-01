@@ -55,6 +55,7 @@ var print = function(response) {
         },
         text: function(text) {
             if(response == null) return;
+            response.setContentType("text/plain");
             response.getWriter().println(text);
         },
         html: function(html) {
@@ -2006,7 +2007,7 @@ apejs.urls = {
         }
     },
     "/report": {
-        post: function(request, response) {
+        get: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
@@ -2164,9 +2165,40 @@ apejs.urls = {
                     }
                 }
             }
-            print(response).json(traits); 
+function JSON2CSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+    var str = '';
+    var line = '';
+
+    var head = array[0];
+    for (var index in array[0]) {
+        var value = index + "";
+        line += '"' + value.replace(/"/g, '""') + '",';
+    }
+
+    line = line.slice(0, -1);
+    str += line + '\r\n';
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+
+        for (var index in array[i]) {
+            var value = array[i][index] + "";
+            line += '"' + value.replace(/"/g, '""') + '",';
+        }
+
+        line = line.slice(0, -1);
+        str += line + '\r\n';
+    }
+    return str;
+    
+}
+            response.setContentType("application/csv");
+            response.setHeader('Content-Disposition', 'attachment; filename='+ontoId+'.csv');
+            print(response).text(JSON2CSV(traits));
         },
-        get: function(request, response) {
+        post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
