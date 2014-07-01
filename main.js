@@ -884,7 +884,7 @@ apejs.urls = {
 
             var isoLang = request.getParameter('isoLang');
 
-            //response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
+            response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
 
             print(response).textPlain('format-version: 1.2');
             print(response).textPlain('ontology: TEMP');
