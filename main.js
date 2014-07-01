@@ -27,7 +27,7 @@ var search = require('./search.js');
 // commonjs modules
 var Mustache = require("./common/mustache.js");
 
-var VERSION = "0.8.12";
+var VERSION = "0.8.20";
 var URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
@@ -899,23 +899,31 @@ apejs.urls = {
                     var order = ['id', 'name', 'parent', 'subClassOf', 'methodOf', 'scaleOf'];
                     print(response).textPlain('[Term]');
 
-                    print(response).textPlain('id: ' + this.id);
+                    var r = new rdf();
+                    print(response).textPlain('id: ' + r.encodeID(this.id));
                     print(response).textPlain('name: ' + translate(this.name, isoLang));
                     if(this['Description of Trait']) {
-                        print(response).textPlain('def: ' + translate(this['Description of Trait'], isoLang));
+                        print(response).textPlain('def: "' + translate(this['Description of Trait'], isoLang) + '" []');
                     }
                     if(this['Describe how measured (method)']) {
-                        print(response).textPlain('def: ' + translate(this['Describe how measured (method)'], isoLang));
+                        print(response).textPlain('def: "' + translate(this['Describe how measured (method)'], isoLang) + '" []');
                     }
 
                     if(this.relationship) {
-                        print(response).textPlain('relationship: ' + this.relationship + ' ' + this.parent);
+                        print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
                     } else if(this.parent && this.parent != "null") {
-                        print(response).textPlain('relationship: is_a ' + this.parent);
+                        print(response).textPlain('relationship: is_a ' + r.encodeID(this.parent));
                     }
 
                     print(response).text('');
                 });
+            print(response).text('[Typedef]')
+            print(response).text('id: method_of')
+            print(response).text('is_transitive: true');
+            print(response).text('')
+            print(response).text('[Typedef]')
+            print(response).text('id: scale_of')
+            print(response).text('is_transitive: true');
 
         },
     },
