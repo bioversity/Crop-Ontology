@@ -1689,7 +1689,8 @@ var Editable = (function(){
             ontology_id: ontologyid,
             ontology_name: $editbox.find("[name=ontology_name]").val(),
             ontology_summary: $editbox.find("[name=ontology_summary]").val(),
-            category: $editbox.find("[name=category]").val()
+            category: $editbox.find("[name=category]").val(),
+            userKey: $editbox.find("select.users").val()
 
         }, function(data) {
             // now create the terms
@@ -1750,6 +1751,18 @@ var Editable = (function(){
     function showUi(ontology) {
         var $editbutton = $(".edit-button");
         $editbutton.show();
+
+        var $users = $('.edit_box select.users');
+        if(!$users.val()) { // first time get all users from ajax
+            $.getJSON('/users', function(users) {
+                for(var i in users) {
+                    var user = users[i];
+                    $users.append('<option value="'+user.key+'">'+user.username+'</option>');
+                }
+                $users.val(ontology.userKey);
+
+            });
+        }
 
 
         $editbutton.click(function(e) {

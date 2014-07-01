@@ -100,6 +100,8 @@ var usermodel = {
         // also we want the id
         ret["userid"] = ""+u.getKey().getId();
 
+        ret["key"] = ""+KeyFactory.keyToString(u.getKey());
+
         return ret;
 
     }

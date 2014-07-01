@@ -1350,7 +1350,8 @@ apejs.urls = {
                 // now edit it
                 var ontologyName = request.getParameter("ontology_name"),
                     ontologySummary = request.getParameter("ontology_summary"),
-                    category = request.getParameter("category");
+                    category = request.getParameter("category"),
+                    userKey = request.getParameter('userKey');
 
                 if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "" || !category || category == "")
                     return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
@@ -1358,7 +1359,8 @@ apejs.urls = {
                 googlestore.set(ontoEntity, {
                     ontology_name: ontologyName,
                     ontology_summary: ontologySummary,
-                    category: category
+                    category: category,
+                    user_key: KeyFactory.stringToKey(userKey),
                 });
                 googlestore.put(ontoEntity);
                 memcache.clearAll();
@@ -1686,7 +1688,8 @@ apejs.urls = {
                     ontology_id: ""+onto.getProperty("ontology_id"),
                     ontology_name: ""+onto.getProperty("ontology_name"),
                     ontology_summary: ""+onto.getProperty("ontology_summary"),
-                    category: ""+category
+                    category: ""+category,
+                    userKey: ''+KeyFactory.keyToString(onto.getProperty('user_key'))
                 });
             });
 
@@ -2111,7 +2114,11 @@ apejs.urls = {
                     if(j[language]) {
                         value = j[language];
                     } else {
-                        return false;
+                        // could be "undefined"
+                        if(j['undefined'])
+                            return j['undefined'];
+                        else
+                            return false;
                     } 
                 } catch(e) {
                     if(language != languages.default) {
