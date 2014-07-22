@@ -32,9 +32,6 @@ rdf.prototype.convertId = function(id) {
     return id;
 }
 rdf.prototype.buildTriple = function(term) {
-    if(term.relationship == 'scale_of' || term.relationship == 'method_of') {
-        return;
-    }
     
     // let's escape the ID
     term.id = this.encodeID(term.id);
@@ -78,6 +75,37 @@ rdf.prototype.buildTriple = function(term) {
         } else { // just a single broader
             this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + this.encodeID(term.parent) + '> .\n';
         }
+    }
+
+    // if categorical create new nodes
+    if(term.relationship == 'scale_of') {
+        var type = this.findLangs(term['Type of Measure (Continuous, Discrete or Categorical)']);
+        if(type.english && type.english == 'Categorical') { // it's categorical
+
+            for(var i in term) {
+                if(i.indexOf('For Categorical') == 0) { // starts with
+                    var categoryId = i.match(/\d+/g);
+                    if(!categoryId) continue;
+                    if(categoryId.length) {
+                        categoryId = categoryId[0];
+                    }
+                    this.turtle += '<' + this.uri + term.id + '/' + categoryId +'> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
+
+                    // do name
+                    var names = this.findLangs(term[i]);
+                    for(var x in names) {
+                        var jsonName = JSON.stringify(names[x]);
+                        if(jsonName != undefined) {
+                            this.turtle += '<' + this.uri + term.id + '/' + categoryId +'> <http://www.w3.org/2000/01/rdf-schema#label> ' + jsonName + '@' + languages.getIso[x].toLowerCase() + ' .\n';
+                        }
+                    }
+                }
+
+            }
+
+
+        }
+
     }
 
     return this.turtle;

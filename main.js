@@ -927,6 +927,11 @@ apejs.urls = {
 
         },
     },
+    "/rdf/([^/]*)/(.*)": {
+        get: function(request, response, matches) {
+            response.sendRedirect('/rdf/' + matches[1]);
+        }
+    },
     "/rdf/([^/]*)": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8");
