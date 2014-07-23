@@ -603,7 +603,7 @@ function make_li(obj, last) {
     if(currUser.language && currUser.language !== nameTrans.lang) {
         li.hide();
     }
-    var link = $('<a title="'+summary+'" class="minibutton btn-watch"><span>'+nameTrans.translation+'</span></a>');
+    var link = $('<a title="'+nameTrans.translation+'" class="minibutton btn-watch"><span>'+nameTrans.translation+'</span></a>');
  
     link.click(function(e) {
         load_term(li);
