@@ -538,6 +538,7 @@ apejs.urls = {
 
             try {
                 var children = googlestore.query("term")
+                                .sort("name")
                                 .filter("parent", "=", parentId)
                                 .fetch();
                 var ret = [];
