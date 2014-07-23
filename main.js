@@ -2445,7 +2445,7 @@ function JSON2CSV(objArray) {
 
             var terms = googlestore.query("term")
                             .sort("ibfieldbook")
-                  //          .sort("name")
+                            .sort("name")
                             .filter("ibfieldbook", "!=", null)
                             .fetch();
             terms.forEach(function(term) {
