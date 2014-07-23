@@ -376,10 +376,18 @@ runInOrder = function(first, last, obj, cb, hideObj) {
 
 
     // now do the rest, omitting the keys we already did
+
+    // order alphabetically
+    var tempArr = [];
     for(var i in obj) {
-        if(hideObj[i]) continue;
-        if(keys[i]) continue; // already did this key
-        cb(i);
+        tempArr.push(i);
+    }
+    tempArr.sort(); // sort
+    for(var i=0; i<tempArr.length; i++) {
+        var k = tempArr[i];
+        if(hideObj[k]) continue;
+        if(keys[k]) continue; // already did this key
+        cb(k);
     }
 
     for(var i in last) {
@@ -393,7 +401,7 @@ runInOrder = function(first, last, obj, cb, hideObj) {
 function show_attributes(id, name, attributes) {
     var str = "", count = 0;
     // identifier is first
-    str += '<div class="attribute"><label for="">Identifier</label><span class="value">'+id+'</span></div>';
+    str += '<div class="attribute"><label for="">Identifier</label><span class="value"><a target="_blank" href="http://www.cropontology.org/rdf/'+id+'">'+id+'</a></span></div>';
 
     // let's not show these attributes - even though they're returned from the API
     var hide = {
