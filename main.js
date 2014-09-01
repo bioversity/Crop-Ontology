@@ -1841,6 +1841,7 @@ apejs.urls = {
                     // maybe we can cache this... let's see how it performs
                     var terms = googlestore.query("term") 
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
+                                  .filter("Crop", "!=", null)
                                   .fetch();
                     // get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
                     var oboTerms = googlestore.query("term")

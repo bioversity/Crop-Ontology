@@ -5,4 +5,8 @@
         <property name="parent" direction="asc"/>
         <property name="name" direction="asc"/>
     </datastore-index>
+    <datastore-index kind="term" ancestor="false" source="manual">
+        <property name="ontology_id" direction="asc"/>
+        <property name="Crop" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>

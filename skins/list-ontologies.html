@@ -32,7 +32,7 @@ function addRow(obj, par) {
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName)
                 .text(obj.ontology_name);
 
-    $row.find("h3 small").text(obj.tot + " terms");
+    $row.find("h3 small").text((obj.oboTerms || obj.tot) + " terms");
 
     $row.find(".comments_rss")
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");
