@@ -43,7 +43,7 @@ var print = function(response) {
         // of the callback, so we can run JSONP if it exists
         json: function(j, callback) {
             if(response == null) return;
-            var jsonString = JSON.stringify(j);
+            var jsonString = JSON.stringify(j, null, 2);
 
             if(!isblank(callback)) { // JSONP
               jsonString = "" + callback + "(" + jsonString + ");";  
@@ -549,7 +549,8 @@ apejs.urls = {
                             .filter("parent","=", term.getProperty("id"))
                             .fetch(1);
 
-                    var name = term.getProperty("name");
+                    var name = term.getProperty("For Continuous: units of measurement") || term.getProperty("For Discrete: Name of scale or units of measurement") ||
+                                    term.getProperty("For Categorical: Name of rating scale") || term.getProperty("name");
 
                     var relationship = defaultRelationship(term.getProperty("relationship"));
 
@@ -2699,6 +2700,100 @@ function JSON2CSV(objArray) {
                 arr.push(j);
             }
             print(res).json(arr);
+        }
+    },
+    "/default-list": {
+        get: function(request, response) {
+
+            var ontologyId = request.getParameter("ontologyId");
+            var terms = googlestore.query("term")
+                            //.sort("ibfieldbook")
+                            //.sort("name")
+                            .filter("ontology_id", "=", ontologyId)
+                            //.filter("ibfieldbook", "!=", null)
+                            .fetch();
+
+            var traits = {};
+            terms.forEach(function(term){
+                var ibfieldbook = term.getProperty("ibfieldbook");
+                if(ibfieldbook == null){
+                    return;
+                }
+                var name = get("name", term);
+
+
+                traits["" + term.getProperty("id")] = {
+                    name : name
+                }
+            });
+
+            var methods = {};
+
+            terms.forEach(function(term){
+                var parent = term.getProperty("parent");
+                if(!parent) return;
+                if(parent.getClass().isArray()){
+                    for(var i = 0; i<parent.length;i++){
+                        var p = parent[i];
+                        if(traits[p]){
+                            //this is a method
+                            if(!traits[p]["method"]) traits[p]["method"] = {};
+
+                            traits[p]["method"]["" + term.getProperty("id")] = { name : get("name", term) }
+
+                            methods["" + term.getProperty("id")] = traits[p]["method"]["" + term.getProperty("id")];
+
+                        }
+                    }
+                } else {
+                    if(traits[parent]){
+                        //this is a method
+                        if(!traits[parent]["method"]) traits[parent]["method"] = {};
+
+                        traits[parent]["method"]["" + term.getProperty("id")] = { name : get("name", term) }
+                        
+                        methods["" + term.getProperty("id")] = traits[parent]["method"]["" + term.getProperty("id")];
+                    }
+                }
+
+            }); 
+
+            // scales
+            terms.forEach(function(term){
+                var parent = term.getProperty("parent");
+                if(!parent) return;
+                if(parent.getClass().isArray()){
+                    for(var i = 0; i<parent.length;i++){
+                        var p = parent[i];
+                        if(methods[p]){
+                            //this is a scale
+                            if(!methods[p]["scale"]) methods[p]["scale"] = {};
+
+                            methods[p]["scale"]["" + term.getProperty("id")] = { name : get("name", term) }
+                        }
+                    }
+                } else {
+                    if(methods[parent]){
+                        //this is a scale
+                        if(!methods[parent]["scale"]) methods[parent]["scale"] = {};
+
+                        methods[parent]["scale"]["" + term.getProperty("id")] = { name : get("name", term) }
+                    }
+                }
+
+            }); 
+
+            function get(property, term) {
+                var val = "" + term.getProperty(property);
+
+                try {
+                    val = JSON.parse(val);
+                }catch(e){
+
+                }
+                return val;
+            }
+            print(response).json(traits);
         }
     }
 };
