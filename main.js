@@ -2602,7 +2602,7 @@ function JSON2CSV(objArray) {
                     try {
                         s.add(this);
                     }catch(e){
-                        
+
                     }
                     
                 });
@@ -2755,7 +2755,11 @@ function JSON2CSV(objArray) {
                             //this is a scale
                             if(!methods[p]["scale"]) methods[p]["scale"] = {};
 
-                            methods[p]["scale"]["" + term.getProperty("id")] = { name : get("name", term) }
+                            var obj = { name : get("name", term) };
+                            addCategory(term, obj);
+
+                            methods[p]["scale"]["" + term.getProperty("id")] = obj;
+
                         }
                     }
                 } else {
@@ -2763,7 +2767,13 @@ function JSON2CSV(objArray) {
                         //this is a scale
                         if(!methods[parent]["scale"]) methods[parent]["scale"] = {};
 
-                        methods[parent]["scale"]["" + term.getProperty("id")] = { name : get("name", term) }
+                        var obj = { name : get("name", term) };
+                        addCategory(term, obj);
+
+                        methods[parent]["scale"]["" + term.getProperty("id")] = obj;
+
+                        
+
                     }
                 }
 
@@ -2778,6 +2788,44 @@ function JSON2CSV(objArray) {
 
                 }
                 return val;
+            }
+            function findLangs(value) {
+                try {
+                    var obj = JSON.parse(value);
+                } catch(e) {
+                    return { "english": value };
+                }
+                return obj;
+            }
+            function addCategory(term, obj){
+                term = select.fn.toJS(term);
+                var type = findLangs(term['Type of Measure (Continuous, Discrete or Categorical)']);
+                if(type.english && type.english == 'Categorical') { // it's categorical
+
+                    for(var i in term) {
+                        if(i.indexOf('For Categorical') == 0) { // starts with
+                            var categoryId = i.match(/\d+/g);
+                            if(!categoryId) continue;
+                            if(categoryId.length) {
+                                categoryId = categoryId[0];
+                            }
+
+                            obj[term.id + '/' + categoryId] = {};
+
+                            // do name
+                            var names = findLangs(term[i]);
+                            for(var x in names) {
+                                //var jsonName = JSON.stringify(names[x]);
+                                //if(jsonName != undefined) {
+                                    obj[term.id + '/' + categoryId].name = names[x];
+                                //}
+                            }
+                        }
+
+                    }
+
+
+                }
             }
             print(response).json(traits);
         }
