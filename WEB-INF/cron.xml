@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+  <cron>
+    <url>/rebuild-search-index</url>
+    <description>Rebuilds search index</description>
+    <schedule>every monday 09:00</schedule>
+    <timezone>Europe/Rome</timezone>
+  </cron>
+</cronentries>

@@ -1,6 +1,6 @@
 exports = s = function() {
     this.index = com.google.appengine.api.search.SearchServiceFactory.getSearchService()
-                        .getIndex(com.google.appengine.api.search.IndexSpec.newBuilder().setName("shared_index"));
+                        .getIndex(com.google.appengine.api.search.IndexSpec.newBuilder().setName("terms_index"));
 
 };
 s.prototype.add = function(doc) {

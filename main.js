@@ -2594,33 +2594,19 @@ function JSON2CSV(objArray) {
     },
     "/rebuild-search-index": {
         get: function(req, res) {
-            // start at offset 0
-            taskqueue.createTask("/rebuild-search-index-task", 0);
-        }
-    },
-    "/rebuild-search-index-task": {
-        post: function(req, res) {
             var s = new search();
-            // default is jsonTerm whatever!
-            var offset = req.getParameter('jsonTerm');
-            offset = parseInt(offset, 10);
-            // get all terms :/
-            var chunkSize = 100;
-            var length = 0;
             select('term')
                 .find() // do it in chunks
-                .limit(chunkSize)
-                .offset(offset)
                 .each(function() {
                     // add document to search index
-                    s.add(this);
-                    length++;
+                    try {
+                        s.add(this);
+                    }catch(e){
+                        
+                    }
+                    
                 });
 
-            if(length > 0) {
-                // recursively call this task with different offset
-                taskqueue.createTask("/rebuild-search-index-task", offset + chunkSize);
-            }
         }
     },
     "/search": {
