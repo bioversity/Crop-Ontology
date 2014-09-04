@@ -23,6 +23,7 @@ var excel = require("./excel.js");
 var languages = require("./languages.js");
 var template = require('./template.js');
 var search = require('./search.js');
+var traitsUtil = require('./traits.js');
 
 // commonjs modules
 var Mustache = require("./common/mustache.js");
@@ -2690,144 +2691,43 @@ function JSON2CSV(objArray) {
     },
     "/default-list": {
         get: function(request, response) {
-
             var ontologyId = request.getParameter("ontologyId");
-            var terms = googlestore.query("term")
-                            //.sort("ibfieldbook")
-                            //.sort("name")
-                            .filter("ontology_id", "=", ontologyId)
-                            //.filter("ibfieldbook", "!=", null)
-                            .fetch();
 
-            var traits = {};
-            terms.forEach(function(term){
-                var ibfieldbook = term.getProperty("ibfieldbook");
-                if(ibfieldbook == null){
-                    return;
-                }
-                var name = get("name", term);
-
-
-                traits["" + term.getProperty("id")] = {
-                    name : name
-                }
-            });
-
-            var methods = {};
-
-            terms.forEach(function(term){
-                var parent = term.getProperty("parent");
-                if(!parent) return;
-                if(parent.getClass().isArray()){
-                    for(var i = 0; i<parent.length;i++){
-                        var p = parent[i];
-                        if(traits[p]){
-                            //this is a method
-                            if(!traits[p]["method"]) traits[p]["method"] = {};
-
-                            traits[p]["method"]["" + term.getProperty("id")] = { name : get("name", term) }
-
-                            methods["" + term.getProperty("id")] = traits[p]["method"]["" + term.getProperty("id")];
-
-                        }
-                    }
-                } else {
-                    if(traits[parent]){
-                        //this is a method
-                        if(!traits[parent]["method"]) traits[parent]["method"] = {};
-
-                        traits[parent]["method"]["" + term.getProperty("id")] = { name : get("name", term) }
-                        
-                        methods["" + term.getProperty("id")] = traits[parent]["method"]["" + term.getProperty("id")];
-                    }
-                }
-
-            }); 
-
-            // scales
-            terms.forEach(function(term){
-                var parent = term.getProperty("parent");
-                if(!parent) return;
-                if(parent.getClass().isArray()){
-                    for(var i = 0; i<parent.length;i++){
-                        var p = parent[i];
-                        if(methods[p]){
-                            //this is a scale
-                            if(!methods[p]["scale"]) methods[p]["scale"] = {};
-
-                            var obj = { name : get("name", term) };
-                            addCategory(term, obj);
-
-                            methods[p]["scale"]["" + term.getProperty("id")] = obj;
-
-                        }
-                    }
-                } else {
-                    if(methods[parent]){
-                        //this is a scale
-                        if(!methods[parent]["scale"]) methods[parent]["scale"] = {};
-
-                        var obj = { name : get("name", term) };
-                        addCategory(term, obj);
-
-                        methods[parent]["scale"]["" + term.getProperty("id")] = obj;
-
-                        
-
-                    }
-                }
-
-            }); 
-
-            function get(property, term) {
-                var val = "" + term.getProperty(property);
-
-                try {
-                    val = JSON.parse(val);
-                }catch(e){
-
-                }
-                return val;
-            }
-            function findLangs(value) {
-                try {
-                    var obj = JSON.parse(value);
-                } catch(e) {
-                    return { "english": value };
-                }
-                return obj;
-            }
-            function addCategory(term, obj){
-                term = select.fn.toJS(term);
-                var type = findLangs(term['Type of Measure (Continuous, Discrete or Categorical)']);
-                if(type.english && type.english == 'Categorical') { // it's categorical
-
-                    for(var i in term) {
-                        if(i.indexOf('For Categorical') == 0) { // starts with
-                            var categoryId = i.match(/\d+/g);
-                            if(!categoryId) continue;
-                            if(categoryId.length) {
-                                categoryId = categoryId[0];
-                            }
-
-                            obj[term.id + '/' + categoryId] = {};
-
-                            // do name
-                            var names = findLangs(term[i]);
-                            for(var x in names) {
-                                //var jsonName = JSON.stringify(names[x]);
-                                //if(jsonName != undefined) {
-                                    obj[term.id + '/' + categoryId].name = names[x];
-                                //}
-                            }
-                        }
-
-                    }
-
-
-                }
-            }
-            print(response).json(traits);
+            var t = traitsUtil.getDefaultList(ontologyId);
+            print(response).json(t);
         }
-    }
+    },
+    "/get-term": {
+        get: function(request, response) {
+            var termId = request.getParameter("id");
+            var ontologyId = termId.split(":")[0];
+
+            var t = traitsUtil.getDefaultList(ontologyId);
+
+
+            for(var i in t) {
+                if(i == termId) {
+                    return print(response).json(t[i]);
+                }
+                for(var x in t[i].method) {
+                    if(x == termId) {
+                        return print(response).json(t[i]);
+                    }
+                    for(var y in t[i].method[x].scale) {
+                        if(y == termId) {
+                            return print(response).json(t[i]);
+                        }
+                        for(var z in t[i].method[x].scale[y]) {
+                            if(z == termId) {
+                                return print(response).json(t[i]);
+                            }
+                        }
+                    }
+                }
+            }
+            print(response).json(t);
+
+
+        }
+    },
 };
