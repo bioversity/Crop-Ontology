@@ -379,16 +379,18 @@ apejs.urls = {
     "/get-ontology/([^/]*)": {
         get: function(request, response, matches) {
             var ontoId = matches[1];
-            try {
-                // get this ontology data from it's id
-                var ontoKey = googlestore.createKey("ontology", ontoId),
-                    ontoEntity = googlestore.get(ontoKey);
-                var jsonBlobKey = ontoEntity.getProperty("jsonBlobKey");
-                // just use serve() to get the jsonString from the blobstore
-                blobstore.blobstoreService.serve(jsonBlobKey, response);
-            } catch (e) {
-                response.sendError(response.SC_BAD_REQUEST, e);
-            }
+            // try {
+            //     // get this ontology data from it's id
+            //     var ontoKey = googlestore.createKey("ontology", ontoId),
+            //         ontoEntity = googlestore.get(ontoKey);
+            //     var jsonBlobKey = ontoEntity.getProperty("jsonBlobKey");
+            //     // just use serve() to get the jsonString from the blobstore
+            //     blobstore.blobstoreService.serve(jsonBlobKey, response);
+            // } catch (e) {
+            //     response.sendError(response.SC_BAD_REQUEST, e);
+            // }
+            var t = traitsUtil.getList(ontoId);
+            print(response).json(t);
         }
     },
     "/get-ontology-roots/([^/]*)": {
