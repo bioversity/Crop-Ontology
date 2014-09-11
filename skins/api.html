@@ -196,9 +196,18 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
 
 <h2>Retrieve IB Fieldbook Default List</h2>
 <ul>
-    <li><strong>URL:</strong> <code>{{URL}}/ibfieldbook</code></li>
+    <li><strong>URL:</strong> <code>{{URL}}/default-list/?ontologyId={ontologyId}</code></li>
     <li><strong>Method:</strong> <code>GET</code></li>
-    <li><strong>Returns:</strong> An object - each key being the ontology name and the value being the array of ids</li>
+    <li><strong>Returns:</strong> JSON of the default list of traits, methods and scales of a ontology ID</li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_334"></span></li>
+</ul>
+
+<h2>Retrieve Term Information</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-term/?id={termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Object representing a term information. Can be used to update the information of a given term when it is updated</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
 </ul>
 
 </div><!-- /api_left -->
