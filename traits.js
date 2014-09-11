@@ -316,7 +316,7 @@ exports = {
                     //     return;
                     // }
                     var name = get("name", term);
-                    var def = term.getProperty("Description of Trait").replace(/"/g, '""');
+                    var def = get("Description of Trait", term);
                     var fb = get("ibfieldbook", term);
                     var creator = get("Name of submitting scientist",term);
                     var inst = get("Institution",term);
@@ -445,13 +445,18 @@ exports = {
 
             function get(property, term) {
                 try {
-                    var val = "" + term.getProperty(property);
-                    val = JSON.parse(val);
+                  var val = term.getProperty(property);
+                  if(val instanceof Text) val = val.getValue();
+                  val = ""+val;
+                  val = JSON.parse(val);
+                  
+                    
                 }catch(e){
 
                 }
                 return val;
             }
+
             function findLangs(value) {
                 try {
 
