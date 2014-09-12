@@ -386,13 +386,21 @@ exports = {
                      var abbr = get("Abbreviated name");
                      var syn = get("Synonyms", term);
                      var created_at = get("created_at", term);
+                     var isa = get("is_a", term);
+
+                     try{
+                        isa= isa.split(" ")[0];
+                     }catch(e){
+
+                     }
                      //var creator = get("Name of submitting scientist",term);
 
                      traits["" + term.getProperty("id")] = { 
                         name : name,
                         definition : def, 
                         synonym : syn, 
-                        abbreviation : abbr, 
+                        abbreviation : abbr,
+                        is_a : isa,
                         //creator : creator, 
                         creation_date : created_at, 
                      };
@@ -549,6 +557,7 @@ exports = {
                     var abbr = get("Abbreviated name", term);
                     var syn = get("Synonyms (separate by commas)", term);
                     var created_at = get("created_at", term);
+                    var isa = get("Trait Class", term);
                     //var syn = "" + term.getClass();
 
                     traits["" + term.getProperty("id")] = {
@@ -556,6 +565,7 @@ exports = {
                         definition : def,
                         synonym : syn, 
                         abbreviation : abbr, 
+                        is_a : isa,
                         creator : creator, 
                         institution : inst, 
                         creation_date : created_at, 
