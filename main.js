@@ -2185,6 +2185,18 @@ apejs.urls = {
                         obj[i] = t;
                     }
                 }
+
+                delete obj.ontology_id;
+                delete obj.excel_blob_key;
+                delete obj.parent;
+                delete obj.ontology_name;
+                delete obj.relationship;
+                delete obj.name;
+                delete obj.created_at;
+                delete obj.language;
+
+                for(var k in obj)
+                    if(obj[k] == 'false') obj[k]='';
             }
 
             var traits = [];
