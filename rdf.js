@@ -90,6 +90,7 @@ rdf.prototype.buildTriple = function(term) {
                         categoryId = categoryId[0];
                     }
                     this.turtle += '<' + this.uri + term.id + '/' + categoryId +'> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .\n';
+                    this.turtle += '<' + this.uri + term.id + '/' + categoryId +'> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + term.id + '> .\n';
 
                     // do name
                     var names = this.findLangs(term[i]);
