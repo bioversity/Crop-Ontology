@@ -915,7 +915,38 @@ apejs.urls = {
                     }
 
                     if(this.relationship) {
-                        print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
+                        if(this.relationship == 'scale_of'){
+                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
+                        
+                            var type = translate(this['Type of Measure (Continuous, Discrete or Categorical)'], isoLang);
+                            if( type == 'Categorical') { // it's categorical
+                                
+                                for(var i in this) {
+                                    if(i.indexOf('For Categorical') == 0) { // starts with
+                                        var categoryId = i.match(/\d+/g);
+                                        if(!categoryId) continue;
+                                        if(categoryId.length) {
+                                            categoryId = categoryId[0];
+                                        }
+
+                                        var category = translate(this[i], isoLang);
+                                        var nameId = category.split("=")[1];
+                                        var synId = category.split("=")[0];
+
+                                        print(response).text('');
+                                        print(response).textPlain('[Term]');
+                                        print(response).textPlain('id: ' + r.encodeID(this.id) + '/' + categoryId);
+                                        print(response).textPlain('name: ' + nameId);
+                                        print(response).textPlain('synonym: ' + synId + ' EXACT []');
+                                        print(response).textPlain('relationship: is_a ' + r.encodeID(this.id));
+                                        print(response).text('');
+                                    }
+
+                                }
+                            }
+                        }else{
+                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
+                        }
                     } else if(this.parent && this.parent != "null") {
                         print(response).textPlain('relationship: is_a ' + r.encodeID(this.parent));
                     }
@@ -924,10 +955,12 @@ apejs.urls = {
                 });
             print(response).text('[Typedef]')
             print(response).text('id: method_of')
+            print(response).text('name: method_of')
             print(response).text('is_transitive: true');
             print(response).text('')
             print(response).text('[Typedef]')
             print(response).text('id: scale_of')
+            print(response).text('name: scale_of')
             print(response).text('is_transitive: true');
 
         },
@@ -2127,6 +2160,114 @@ apejs.urls = {
                     parents[''+defaultParent(this.parent)] = true;
                 });
 
+            var traits = [];
+
+            if(terms[Object.keys(terms)[0]].obo_blob_key){   ///OBO file
+                traits = traitsUtil.getOBO(ontoId);
+            }else{
+                
+                for(var id in terms) {
+                    var term = terms[id];
+                    var relationship = term.relationship;
+                    if(typeof relationship == 'object') {
+                        relationship = ''+relationship[0];
+                    }
+                    if(relationship)
+                        relationship = ''+relationship.split(' ')[0];
+
+                    if(relationship == 'scale_of') {
+                        var obj = {};
+                        var scale = term;
+                        scale.parent = ''+defaultParent(scale.parent);
+                        var method = terms[scale.parent];
+                        if(!method) continue;
+                        method.parent = ''+defaultParent(method.parent);
+                        var trait = terms[method.parent];
+
+                        addTo(obj, trait, 'trait');
+                        addTo(obj, method, 'method');
+                        addTo(obj, scale, 'scale');
+
+                        traits.push(obj);
+                    } else if(relationship == 'method_of' && !parents[id]) { // this method isn't parent of anything
+                        var obj = {};
+                        var scale = {};
+                        var method = term;
+                        method.parent = ''+defaultParent(method.parent);
+                        var trait = terms[method.parent];
+
+                        addTo(obj, method, 'method');
+
+                        traits.push(obj);
+                    } else if(!parents[id]) { // this should be trait, isn't parent of anything - or it could also be OBO last child
+                        var obj = {};
+                        var scale = {};
+                        var method = {};
+                        var trait = term;
+
+                        //addTo(obj, trait, 'trait');
+
+                        traits.push(term);
+                    }
+                }
+
+                if(!traits.length) { // probably no methods nor scales, just get the last child
+                    function hasChildren(termId) {
+                        for(var i in terms) {
+                            var term = terms[i];
+                            term.parent = ''+defaultParent(term.parent);
+                            if(term.parent == termId)
+                                return false;
+                        }
+                        return true;
+                    }
+                    for(var id in terms) {
+                        var term = terms[id];
+
+                        if(hasChildren(term.id)) {
+                            var empty = true;
+                            var obj = {};
+                            addTo(obj, term, 'obo');
+                            // check that obj is full before adding
+                            for(var x in obj) {
+                                empty = false;
+                                break;
+                            }
+                            if(!empty) {
+                                traits.push(obj);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            function JSON2CSV(objArray) {
+                var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+                var str = '';
+                var line = '';
+                var head = array[0];
+                for (var index in array[0]) {
+                    var value = index + "";
+                    line += '"' + value.replace(/"/g, '""') + '",';
+                }
+
+                line = line.slice(0, -1);
+                str += line + '\r\n';
+
+                for (var i = 0; i < array.length; i++) {
+                    var line = '';
+                    for (var index in array[i]) {
+                        var value = array[i][index] + "";
+                        line += '"' + value.replace(/"/g, '""') + '",';
+                    }
+
+                    line = line.slice(0, -1);
+                    str += line + '\r\n';
+                }
+                return str;
+                
+            }
             function translate(value, language) {
                 try {
                     var j = JSON.parse(value);
@@ -2186,6 +2327,7 @@ apejs.urls = {
                     }
                 }
 
+                // let's skip certain keys
                 delete obj.ontology_id;
                 delete obj.excel_blob_key;
                 delete obj.parent;
@@ -2199,111 +2341,10 @@ apejs.urls = {
                     if(obj[k] == 'false') obj[k]='';
             }
 
-            var traits = [];
-            for(var id in terms) {
-                var term = terms[id];
-                var relationship = term.relationship;
-                if(typeof relationship == 'object') {
-                    relationship = ''+relationship[0];
-                }
-                if(relationship)
-                    relationship = ''+relationship.split(' ')[0];
-
-                if(relationship == 'scale_of') {
-                    var obj = {};
-                    var scale = term;
-                    scale.parent = ''+defaultParent(scale.parent);
-                    var method = terms[scale.parent];
-                    if(!method) continue;
-                    method.parent = ''+defaultParent(method.parent);
-                    var trait = terms[method.parent];
-
-                    addTo(obj, trait, 'trait');
-                    addTo(obj, method, 'method');
-                    addTo(obj, scale, 'scale');
-
-                    traits.push(obj);
-                } else if(relationship == 'method_of' && !parents[id]) { // this method isn't parent of anything
-                    var obj = {};
-                    var scale = {};
-                    var method = term;
-                    method.parent = ''+defaultParent(method.parent);
-                    var trait = terms[method.parent];
-
-                    addTo(obj, method, 'method');
-
-                    traits.push(obj);
-                } else if(!parents[id]) { // this should be trait, isn't parent of anything - or it could also be OBO last child
-                    var obj = {};
-                    var scale = {};
-                    var method = {};
-                    var trait = term;
-
-                    //addTo(obj, trait, 'trait');
-
-                    traits.push(term);
-                }
-            }
-            if(!traits.length) { // probably no methods nor scales, just get the last child
-                function hasChildren(termId) {
-                    for(var i in terms) {
-                        var term = terms[i];
-                        term.parent = ''+defaultParent(term.parent);
-                        if(term.parent == termId)
-                            return false;
-                    }
-                    return true;
-                }
-                for(var id in terms) {
-                    var term = terms[id];
-
-                    if(hasChildren(term.id)) {
-                        var empty = true;
-                        var obj = {};
-                        addTo(obj, term, 'obo');
-                        // check that obj is full before adding
-                        for(var x in obj) {
-                            empty = false;
-                            break;
-                        }
-                        if(!empty) {
-                            traits.push(obj);
-                        }
-                    }
-                }
-            }
-function JSON2CSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-
-    var str = '';
-    var line = '';
-
-    var head = array[0];
-    for (var index in array[0]) {
-        var value = index + "";
-        line += '"' + value.replace(/"/g, '""') + '",';
-    }
-
-    line = line.slice(0, -1);
-    str += line + '\r\n';
-
-    for (var i = 0; i < array.length; i++) {
-        var line = '';
-
-        for (var index in array[i]) {
-            var value = array[i][index] + "";
-            line += '"' + value.replace(/"/g, '""') + '",';
-        }
-
-        line = line.slice(0, -1);
-        str += line + '\r\n';
-    }
-    return str;
-    
-}
             response.setContentType("application/csv");
             response.setHeader('Content-Disposition', 'attachment; filename='+ontoId+'.csv');
             print(response).text(JSON2CSV(traits));
+            //print(response).json(JSON2CSV(traits));
         },
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
