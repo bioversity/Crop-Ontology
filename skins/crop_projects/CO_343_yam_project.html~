@@ -1,0 +1,31 @@
+<div id='crop_onto_curation'>
+	<img class='crop_pict' src='http://www.iita.org/image/image_gallery?uuid=043dbf99-6d96-4c11-a9ff-b27c821ac1ba&groupId=25357&t=1271154309421'/>
+	<div id='tab_crop_curation'>
+		<h1>Yam Ontology</h1>
+			<table>
+				<tr>
+					<th>Ontology curators</th>
+					<th>Scientists</th>
+					<th>Crop Lead Center</th>
+					<th>Partners</th>
+					<th>CGIAR research program</th>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td>
+						<ul>
+							<li>Antonio Jose Lopes Montez, breeder, IITA</li>
+						</ul>
+					<td>
+						<a href='http://www.iita.org/'><img src='/images/IITA.jpg'/></a>
+					</td>
+					<td>
+					</td>
+					<td>
+<a href='http://www.cgiar.org/our-research/cgiar-research-programs/cgiar-research-program-on-roots-tubers-and-bananas/'><img src='/images/CRP_RTB.jpg' /></a>					</td>
+
+				</tr>
+			</table>
+	</div>
+</div>

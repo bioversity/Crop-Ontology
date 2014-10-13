@@ -157,7 +157,7 @@ function pad(number, length) {
 apejs.urls = {
     "/": {
         get: function(request, response) {
-            var html = renderIndex("skins/list-ontologies.html");
+            var html = renderIndex("skins/list-ontologies.html", {isHome: true});
             print(response).text(html);
 
             var token = request.getParameter("token"); 
@@ -355,12 +355,25 @@ apejs.urls = {
                 return;
             }
             var assoc = {
-              "CO_334": "<img src='https://integratedbreeding.net/sites/default/files/uploads/ciat.jpg' /><img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>",
-              "CO_338": "<img src='https://integratedbreeding.net/sites/default/files/uploads/icrisat_logo.jpg' /><img src='https://integratedbreeding.net/sites/default/files/uploads/icarda.jpg' />",
-              "CO_322": "<img src='https://integratedbreeding.net/sites/default/files/uploads/cimmyt-logo.png' />",
-              "CO_320": "<img src='https://integratedbreeding.net/sites/default/files/uploads/irri.png'/><img src='https://integratedbreeding.net/sites/default/files/uploads/africa_rice.png' />",
-              "CO_324": "<img src='https://integratedbreeding.net/sites/default/files/uploads/icrisat_logo.jpg' />",
-              "CO_321": "<img src='https://integratedbreeding.net/sites/default/files/uploads/cimmyt-logo.png' />"
+              "CO_334": render('skins/crop_projects/CO_334_cassava_project.html'),	//cassava
+              "CO_338": render('skins/crop_projects/CO_338_chickpea_project.html'), //chickpea
+              "CO_322": render('skins/crop_projects/CO_322_maize_project.html'), //maize
+              "CO_320": render('skins/crop_projects/CO_320_rice_project.html'), //rice
+              "CO_324": render('skins/crop_projects/CO_324_sorghum_project.html'), //sorghum
+              "CO_323": render('skins/crop_projects/CO_323_barley_project.html'), //barley
+	      "CO_325": render('skins/crop_projects/CO_325_banana_project.html'), //banana
+	      "POLAPGEN_BARLEY": render('skins/crop_projects/POLAPGEN_BARLEY_barley_project.html'), //barley polapgen
+	      "CO_335": render('skins/crop_projects/CO_335_common_bean_project.html'), //common bean
+	      "CO_340": render('skins/crop_projects/CO_340_cowpea_project.html'), //cowpea
+	      "CO_337": render('skins/crop_projects/CO_337_groundnut_project.html'), //groundnut
+	      "CO_339": render('skins/crop_projects/CO_339_lentil_project.html'), //lentil
+	      "CO_327": render('skins/crop_projects/CO_327_pearl_millet_project.html'),
+	      "CO_341": render('skins/crop_projects/CO_341_pigeon_pea_project.html'),
+	      "CO_330": render('skins/crop_projects/CO_330_potato_project.html'),
+	      "CO_331": render('skins/crop_projects/CO_331_sweet_potato_project.html'),
+	      "CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
+	      "CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
+              "CO_321": render('skins/crop_projects/CO_321_wheat_project.html') //wheat
             };
             var cropLogos = "<img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>";
 

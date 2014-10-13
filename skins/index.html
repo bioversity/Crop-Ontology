@@ -69,7 +69,7 @@ $(function() {
     <div id="main" class=""> 
         <div class="header_top">
             <div class="gcp_logo">
-                <span class="crop-logos" style="display: none">{{{CROP_LOGOS}}}</span>
+                <a href= "http://ccafs.cgiar.org/"><img src="/images/CRP_CCAFS_3.jpg" /></a>
                 <a href="http://www.generationcp.org/"><img src="/images/gcp-logo.png?{{>VERSION}}" /></a>
             </div>
             <div class="header_logo">
@@ -77,7 +77,7 @@ $(function() {
             </div>
         </div>
         <div id="header_outer">
-            <div id="header" style="height: 100px;"> 
+            <div id="header" style="height: 50px;"> 
      
                 <div class="api">
                     <a class="button" href="/">Home</a>
@@ -85,26 +85,38 @@ $(function() {
                 <div class="aboutbtn">
                     <a class="button" href="/about">About</a>
                 </div>
-                <div class="usersbtn">
+                <div class="api">
+                    <a class="button" href="/api">API</a>
+                </div>
+		<div class="usersbtn">
                     <a class="button" href="/users">Users</a>
                 </div>
                 <div class="feedbackbtn">
                     <a class="button" href="/feedback">Feedback</a>
                 </div>
-                
+<!--                
                 <div class="header_images"> 
                     <img src="/images/2_test.png?1" />
                     <img src="/images/1_test.png?1" />
                     <img src="/images/wheat.jpg?01" />
                     <img src="/images/rice.png?01" />
                 </div> 
+-->
             </div> 
         </div>
-        <div id="survey">
+        <div id="survey" style="display: none;">
             <img src="/images/lightbulb.png" style="float: left" /> 
             <div class="help_content" style="margin-left: 20px;">Loading...</div>
         </div>
-        <div class="site"> 
+<!-- to display the box "survey" only on the home page-->
+<script>
+var isHome= "{{isHome}}";
+if(isHome) {
+	document.getElementById('survey').style.display = 'block'; 
+	}
+</script>
+	<div class="crop-logos" >{{{CROP_LOGOS}}}</div> 
+        <div class="site" style="margin:10px auto"> 
 <div class="pagehead"> 
     <div class="head_left">
         <input id="search" type="text" name="q" placeholder="Search" tabindex="0" /><!--<button id="dosearch" class="minibutton">Search</button>-->
@@ -116,11 +128,15 @@ $(function() {
           <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
           <a href="#" id="dologout" class="feed" style="background: none; display: none;">Logout</a>
 
-          <a href="/annotation-tool" class="feed" style="background: none; padding-right: 20px;">Annotation Tool</a>
-          <a href="/agtrials" class="feed" style="background: none; padding-right: 20px;">Agtrials</a>
-          <a href="/help" class="feed" style="background: none; padding-right: 20px;">Help</a>
-          <a href="/api" class="feed" style="background: none; padding-right: 20px;">API</a>
-          <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add New Terms</a>
+<!--          <a href="/annotation-tool" class="feed" style="background: none; padding-right: 20px;">Annotation Tool</a>-->
+          <a href="/annotation-tool" class="feed" style="background: none;">Annotation Tool</a>
+<!--          <a href="/agtrials" class="feed" style="background: none; padding-right: 20px;">Agtrials</a>-->
+          <a href="/agtrials" class="feed" style="background: none;">Agtrials</a>
+<!--          <a href="/help" class="feed" style="background: none; padding-right: 20px;">Help</a>-->
+          <a href="/help" class="feed" style="background: none;">Help</a>
+<!--          <a href="/api" class="feed" style="background: none; padding-right: 20px;">API</a>-->
+<!--          <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add New Terms</a>-->
+          <a href="/add-ontology" class="feed" style="background: none;">Add New Terms</a>
     </div> 
 </div> 
  

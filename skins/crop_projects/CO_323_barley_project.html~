@@ -1,0 +1,27 @@
+<div id='crop_onto_curation'>
+
+	<img class='crop_pict' src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Barley_in_Slovenia.jpg/165px-Barley_in_Slovenia.jpg'/>
+	<div id='tab_crop_curation'>
+		<h1>Barley ontology</h1>
+			<table>
+				<tr>
+					<th>Ontology curators</th>
+					<th>Scientists</th>
+					<th>Partners</th>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>Ramesh Verna, ICARDA</li>
+							<li>Fawzy Nawar, ICARDA</li>
+						</ul>
+					</td>
+					<td></td>
+					<td>
+						<a href='http://icarda.org/'><img src='/images/ICARDA_LD.jpg' /></a>
+					</td>
+				</tr>
+			</table>
+	</div>
+</div>
+

@@ -351,10 +351,10 @@ float: left;
 }
 .pagehead .head_right a{
     float: right;
-    padding-left: 24px;
-    height: 14px;
-    line-height: 14px;
-    font-size: 12px;
+    padding-left: 30px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 16px;
     font-weight: bold;
     display: block;
 }
@@ -377,7 +377,7 @@ a.button {
     font-weight: bold;
     text-align: center;
     margin-right: 16px;
-    height: 27px;
+    height: 26px;
     line-height: 27px;
     min-width: 54px;
     outline: 0;
@@ -399,6 +399,12 @@ background-image: linear-gradient(top,#7fbf4d,#63a62f);
 }
 
 .api, .aboutbtn, .usersbtn, .feedbackbtn {
+    width: 120px;
+    display: inline-block;
+    margin: 11px 0px 0 53px;
+}
+/* style to use when .header_images is displaid
+.api, .aboutbtn, .usersbtn, .feedbackbtn {
     width: 100px;
     float: left;
     position: absolute;
@@ -415,6 +421,8 @@ background-image: linear-gradient(top,#7fbf4d,#63a62f);
     left: 370px;
     width: 120px;
 }
+*/
+
 .api a, .aboutbtn a, .usersbtn a , .feedbackbtn a{
     font-size: 15px;
 }
@@ -690,4 +698,71 @@ a.template {
 }
 a.obo {
     background: #4183C4;
+}
+
+#crop_onto_curation
+{
+    padding: 5px 8px;
+    background-color: #FFFBE8;
+    border: 1px solid #FFF1A9;
+    text-align: left;
+    width: 904px;
+    margin: auto;
+    margin-top: .6em;
+    margin-bottom: .6em;
+    font-size: 12px;
+}
+
+#crop_onto_curation #tab_crop_curation 
+{
+    display: inline-block;
+    vertical-align: top;
+    width:80%;
+    margin-left:1%;
+
+}
+
+#crop_onto_curation .crop_pict
+{
+    max-height: 133px;
+    display: inline-block;
+    max-width: 17%;
+}
+
+#crop_onto_curation table 
+{
+    margin-left: 1%;
+    width: 99%;
+}
+
+#crop_onto_curation td, th
+{
+    vertical-align: top;
+    padding-left:10px;
+}
+
+
+/*#crop_onto_curation ul 
+{
+    margin-left:15px;
+}*/
+
+#crop_onto_curation table img
+{
+    max-height: 50px;
+    max-width:100px;
+    vertical-align:top;
+    margin: 3px;
+}
+
+#crop_onto_curation a
+{
+text-decoration: none;
+color: black;
+}
+
+#crop_onto_curation a:hover
+{
+text-decoration: underline;
+/*font-style: italic;*/
 }

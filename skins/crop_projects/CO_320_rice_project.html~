@@ -1,0 +1,31 @@
+<div id='crop_onto_curation'>
+	<img class='crop_pict' src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/White%2C_Brown%2C_Red_%26_Wild_rice.jpg/320px-White%2C_Brown%2C_Red_%26_Wild_rice.jpg'/>
+	<div id='tab_crop_curation'>
+		<h1><a href='https://www.integratedbreeding.net/139/communities/genomics-crop-info/crop-information/rice'>Rice</a> Ontology</h1>
+			<table>
+				<tr>
+					<th>Ontology curators</th>
+					<th>Scientists</th>
+					<th>Partners</th>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>Nikki Frances Borja, IRRI</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>Mauleon Ramil, scientist, IRRI</li>
+							<li>William Eusebio, Sr. Specialist - Database Administration, IRRI</li>
+							<li>Ruaraidh Sackville Hamilton, Head of the Genetic Resource Unit, IRRI</li>
+						</ul>
+					<td>
+						<a href='http://irri.org/'><img src='/images/IRRI_LD.jpg' /></a>
+						<a href='http://africarice.org/'><img src='http://www.cabi.org/ashc/uploads/file/ASHC/Africa_rice_centre.jpg' /></a>
+					</td>
+				</tr>
+			</table>
+	</div>
+</div>
+

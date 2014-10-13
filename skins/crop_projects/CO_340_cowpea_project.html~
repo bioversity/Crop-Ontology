@@ -1,0 +1,37 @@
+<div id='crop_onto_curation'>
+
+	<img class='crop_pict' src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/BlackEyedPeas.JPG/320px-BlackEyedPeas.JPG'/>
+	<div id='tab_crop_curation'>
+		<h1><a href='https://www.integratedbreeding.net/136/communities/genomics-crop-info/crop-information/cowpeas'>Cowpea</a> Ontology</h1>
+			<table>
+				<tr>
+					<th>Ontology curators</th>
+					<th>Scientists</th>
+					<th>Partners</th>
+				</tr>
+				<tr>
+					<td>
+						<ul>
+							<li>Sam Ofodile, central curator, IITA</li>
+							<li>Tunde Agbaje, local curator, IITA</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li>Ousmane Boukar, breeder, IITA</li>
+							<li>Jeff D. Ehlers, breeder, University of California Riverside</li>
+						</ul>
+					</td>
+					<td>
+						<a href='http://www.iita.org/'><img src='/images/IITA.jpg'/></a>
+					</td>
+					<td>
+						<a href='http://plantbiology.ucr.edu/'><img src='/images/uni_california_riverside.png'/></a>
+					</td>
+					<td>
+<a href='http://www.cgiar.org/our-research/cgiar-research-programs/cgiar-research-program-on-grain-legumes/'><img src='/images/CRP_legumes.jpg' /></a>
+					</td>
+				</tr>
+			</table>
+	</div>
+</div>
