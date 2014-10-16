@@ -20,9 +20,13 @@
 }
 
 .header_top {
-    height: 50px;
+/*    height: 50px;*/
     width: 920px;
-    margin: auto;
+    margin: 10px auto;
+}
+
+.header_title{
+   display: inline-block;
 }
 
 .header_logo{
@@ -34,10 +38,9 @@
 }
 .gcp_logo {
     float: right;
-    height: 50px;
 }
 .gcp_logo img {
-    height: 50px;
+    width: 200px;
 }
 .header_images img{
     float: right;
@@ -351,12 +354,18 @@ float: left;
 }
 .pagehead .head_right a{
     float: right;
-    padding-left: 30px;
+    padding-left: 28px;
     height: 20px;
     line-height: 20px;
     font-size: 16px;
     font-weight: bold;
     display: block;
+    color:#D14836;
+}
+.header_button{
+    color:#4183C4;
+    margin-right: 20px;
+    font-weight: bold;
 }
 a.button {
     margin: 0;
@@ -703,8 +712,8 @@ a.obo {
 #crop_onto_curation
 {
     padding: 5px 8px;
-    background-color: #FFFBE8;
-    border: 1px solid #FFF1A9;
+    background-color: #F6F6F6;
+    border: 1px solid #DDD;
     text-align: left;
     width: 904px;
     margin: auto;
