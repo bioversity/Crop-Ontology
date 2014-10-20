@@ -678,8 +678,10 @@ a.comments_rss {
 
 #survey {
     padding: 5px 8px;
-    background-color: #FFFBE8;
-    border: 1px solid #FFF1A9;
+    background-color: #F6F6F6;
+    border: 1px solid #DDD;
+/*    background-color: #FFFBE8;
+    border: 1px solid #FFF1A9; */
     text-align: left;
     width: 904px;
     margin: auto;
