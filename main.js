@@ -373,7 +373,8 @@ apejs.urls = {
 	      "CO_331": render('skins/crop_projects/CO_331_sweet_potato_project.html'),
 	      "CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
 	      "CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
-              "CO_321": render('skins/crop_projects/CO_321_wheat_project.html') //wheat
+              "CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
+              "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') //cacao
             };
             var cropLogos = "<img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>";
 
