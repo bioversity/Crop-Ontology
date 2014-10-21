@@ -27,6 +27,7 @@
 
 .header_title{
    display: inline-block;
+   height:65px;
 }
 
 .header_logo{
@@ -40,7 +41,7 @@
     float: right;
 }
 .gcp_logo img {
-    width: 200px;
+    height: 65px;
 }
 .header_images img{
     float: right;
@@ -337,6 +338,20 @@ border-bottom-right-radius: 10px;
     font-size: 12px;
     text-align: center;
 }
+
+.footer_logos{
+    width: 920px;
+    margin: 10px auto;
+}
+
+.footer_logos img{
+   height:65px;
+}
+
+.footer_logos a{
+   float: right;
+}
+
 .pagehead {
 
 height: 38px;
