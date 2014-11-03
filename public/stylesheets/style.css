@@ -113,7 +113,7 @@ button {
 .cont {
 padding: 20px; background-color: white;
 width: 360px;
-height: 400px;
+height: 600px;
 overflow-x: auto;
 overflow-y: auto;
  
@@ -372,7 +372,7 @@ float: left;
     padding-left: 28px;
     height: 20px;
     line-height: 20px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     display: block;
     color:#D14836;
@@ -745,7 +745,7 @@ a.obo {
     vertical-align: top;
     width:80%;
     margin-left:1%;
-
+    font-size:10px;
 }
 
 #crop_onto_curation .crop_pict
