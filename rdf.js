@@ -82,11 +82,16 @@ rdf.prototype.buildTriple = function(term) {
         var syn = {};
     }
     for(var i in syn) {
-        var jsonSyn = JSON.stringify(syn[i]);
-        if(jsonSyn != undefined) {
-            jsonSyn=jsonSyn.replace(/\[\"\\\"/g, '"');jsonSyn=jsonSyn.replace(/\\\"/g, "");jsonSyn=jsonSyn.replace(/\",\"/g, " ");jsonSyn=jsonSyn.replace(/\"\]/g, '"');
-            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#altLabel> ' + jsonSyn + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+        try{
+            var jsonSyn = JSON.stringify(syn[i]);
+            if(jsonSyn != undefined) {
+                  jsonSyn=jsonSyn.replace(/\[\"\\\"/g, '"');jsonSyn=jsonSyn.replace(/\\\"/g, "");jsonSyn=jsonSyn.replace(/\",\"/g, " ");jsonSyn=jsonSyn.replace(/\"\]/g, '"');
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#altLabel> ' + jsonSyn + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+            }
+        }catch(e){
+
         }
+        
     }
 
     //do abbreviated name
@@ -96,10 +101,15 @@ rdf.prototype.buildTriple = function(term) {
         var abbrev = {};
     }
     for(var i in abbrev) {
-        var jsonAbbrev = JSON.stringify(abbrev[i]);
-        if(jsonAbbrev != undefined) {
-            this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'acronym' +'> ' + jsonAbbrev + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+        try{
+             var jsonAbbrev = JSON.stringify(abbrev[i]);
+            if(jsonAbbrev != undefined) {
+                this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'acronym' +'> ' + jsonAbbrev + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+            }
+        }catch(e){
+            
         }
+       
     }
 
 
