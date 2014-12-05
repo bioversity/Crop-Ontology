@@ -792,3 +792,8 @@ color: black;
 text-decoration: underline;
 /*font-style: italic;*/
 }
+
+.profile_header h3 
+{
+margin: 0.5em 0px 0.5em;
+}

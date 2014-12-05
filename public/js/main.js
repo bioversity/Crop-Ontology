@@ -184,6 +184,43 @@ Login = function(func) {
 
                 UserWidget.show(data.userid);
 
+				editProfile(); // fetches and displays user info
+
+				$( ".profile_header #edit_button" ).click( function() {
+					if ($( ".profile_header #edit_button" ).attr("value") == "Edit"){
+						// goes to editable mode
+						$( ".profile_header .editable span" ).hide();	
+						$( ".profile_header .editable input" ).show();	
+						$( ".profile_header #edit_button" ).attr("value", "Send");
+				
+						// presets input value
+						$( ".editable" ).each(function() {
+							var divId = "#" + $( this ).attr( "id" ); // gets div id
+							var textValue = $( divId + " span").text(); // gets the text of the child span of the specific div
+							$(".profile_header " + divId + " input" ).attr( "value", textValue ) ;//sets input value to span text
+						});
+				
+				
+					}else{ 
+						// sends edits and reloads information
+						var edits = {
+							name: $( ".profile_header #name input" ).attr( "value" ), 
+							surname: $( ".profile_header #surname input" ).attr( "value" ),
+							institution: $( ".profile_header #institution input" ).attr( "value" ) 
+						} 
+						editProfile(edits);
+						
+						// back to non-edit mode
+						$( ".profile_header .editable span" ).show();	
+						$( ".profile_header .editable input" ).hide();	
+						$( ".profile_header #edit_button" ).attr("value", "Edit")
+					}
+
+    			    e.preventDefault();
+    			    e.stopPropagation();
+				});
+
+
 
                 e.stopPropagation();
                 e.preventDefault();
@@ -205,6 +242,22 @@ Login = function(func) {
     }, "json");
 }
  
+/*
+ *	Displays user info to user
+ *	if parameters are sent, then changes user info
+ */
+function editProfile(input){
+
+	$.post("/edit_profile", input, function(output){
+		var arrayVar = ["username", "email", "name", "surname", "institution"];
+		for ( var i = 0 ; i < arrayVar.length; i++ ){
+	//		if ( output[arrayVar[i]] != "" ){ 
+				$( "#" + arrayVar[i] + " span" ).text(output[arrayVar[i]]);
+	//		}
+		}
+	});
+}
+
 /*
  * takes care of assigning proper
  * click events for expanding this li

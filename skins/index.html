@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/jquery.treeview.css?{{>VERSION}}" />
 <link href="/stylesheets/style.css?{{>VERSION}}" media="screen" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="/js/jquery.min.1.5.2.js"></script>
+<!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
 
 <!-- autocomplete -->
 <script type='text/javascript' src='/js/jquery.autocomplete.js?{{>VERSION}}'></script>
@@ -270,14 +271,48 @@ if(isHome) {
                   </div> 
                 </form>  
             </div><!-- /login -->
+
             <div class="user">
                 <div class="profile_header">
                     <h2>
                         <a href="#"><img class="grav" src=""></a>
-                        <span class="name"></span>
-                        <div class="profile" style="display: none"><a href="#" id="edit_profile">Edit Profile</a></div>
+                        <!--<span class="name"></span>
+                        <div class="profile" style="display: none"><a href="#" id="edit_profile">Edit Profile</a></div>-->
+						<div id="username" style="display: inline-block">
+							<span></span>
+						</div>
                     </h2>
-                    <ul class="ontos">
+
+                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
+
+					<h3>First Name</h3>
+					<div class="editable" id="name">
+						<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+						<span></span>
+					</div>
+					
+					<h3>Surname</h3>
+					<div class="editable" id="surname">
+						<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+						<span></span>
+					</div>
+					
+					<h3>Host institution</h3>
+					<div class="editable" id="institution">
+						<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+						<span></span>
+					</div>
+					
+					<h3>Email</h3>
+					<div id="email">
+						<span></span>
+					</div>
+					
+                    <label class="submit_btn"> 
+						<input type="submit" value="Edit" id="edit_button"/></h2>
+                    </label> 
+
+                    <!--<ul class="ontos">
                         <li style="display: none;">
                             <div class="onto_id">
                                 <a href="#" class="box">CO_222</a>
@@ -290,7 +325,7 @@ if(isHome) {
                             <div class="clear"></div>
                         </li>
                         <div class="result"></div>
-                    </ul>
+                    </ul>-->
                 </div>
 
             </div><!-- /user -->

@@ -104,6 +104,45 @@ var usermodel = {
 
         return ret;
 
-    }
+    },
+    /**
+     * modified from "out"
+     * outputs users' properties for editing by the user
+     */
+    outEdit: function(u) {
+        var props = [
+            "name", 
+            "surname", 
+            "username", 
+            "institution", 
+            "created", 
+            "email"
+        ];
+
+        var ret = {};
+
+//        // do gravatar
+//        ret["gravatar"] = ""+usermodel.md5(u.getProperty("email").trim().toLowerCase());
+
+        for(var i=0; i<props.length; i++) {
+            var value = u.getProperty(props[i]);
+
+            if(value instanceof Text)
+                value = value.getValue();
+
+            if(value == null) value = "";
+
+            ret[props[i]] = ""+value;
+        }
+
+//        // hide email
+//        ret["email"] = usermodel.hideEmail(ret["email"]);
+
+        // also we want the id
+        ret["userid"] = ""+u.getKey().getId();
+	
+	return ret;
+	}
+
 };
 exports = usermodel;

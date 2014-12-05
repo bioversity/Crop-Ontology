@@ -1915,6 +1915,34 @@ apejs.urls = {
             print(response).json(categories, request.getParameter("callback"));
         }
     },
+    "/edit_profile": {
+        post: function(request, response) {
+			//currUser : user from DB (google format)
+            var currUser = auth.getUser(request);            
+			if(!currUser){
+                return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+	    	} else {
+				//user : user from DB (json)
+				var user = usermodel.outEdit(currUser);
+			 	// userEdit : user sent from edit profile (json)
+				var userEdit = {
+					name: request.getParameter("name"),
+					surname: request.getParameter("surname"),
+					institution: request.getParameter("institution")
+				}
+				for (var i in userEdit) {
+					if (userEdit[i] != null && userEdit[i] != user[i]){
+						// let's edit the profile
+           				currUser.setProperty(i, userEdit[i]);
+		            	googlestore.put(currUser);
+						// let's refresh
+						var user = usermodel.outEdit(currUser);
+					}
+				}
+				print(response).json(user);		
+	    	}
+		}
+    },
     "/users": {
         get: function(request, response) {
             try {
