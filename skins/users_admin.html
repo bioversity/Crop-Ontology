@@ -1,0 +1,37 @@
+<div class="list-ontologies">
+	<h2 class="featured-heading">List of users</h2>
+
+        <img class="loader" src="/images/metabox_loader.gif">
+
+        <table id="table_users" style="text-align: center;">
+		<tr>
+			<th>Created at</th>
+			<th>Name</th>
+			<th>Surname</th>
+			<th>Username</th>
+			<th>Host institution</th>
+			<th>Email</th>
+			<th>Active (status)</th>
+			<th>Enable/disable activity</th>
+			<th>admin</th>
+		</tr>
+		<tr style="display: none;" id="row_user">
+			<td class="created">created</td>
+			<td class="name"></td>
+			<td class="surname"></td>
+			<td class="username">name</td>
+			<td class="institution"></td>
+			<td class="email">email</td>
+			<td class="active_dev">active or not</td>
+			<td>
+				<input type="submit" value="Disable" class="activate_switch" />
+			</td>
+			<td class="admin">admin</td>
+			<td class="delete">delete user</td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript" >
+adminTable();
+</script>
+

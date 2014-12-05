@@ -1943,6 +1943,70 @@ apejs.urls = {
 	    	}
 		}
     },
+    "/users_admin": {
+        get: function(request, response) {
+	// only admin can access this page
+            var currUser = auth.getUser(request);
+            if(!currUser){
+                return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+			}else if (currUser.getProperty("admin") == false){
+			    return response.sendError(response.SC_BAD_REQUEST, "not admin");
+			} else {
+	            var html = renderIndex("skins/users_admin.html");
+        	    print(response).text(html);
+			}
+        },
+        post: function(request, response) {
+            try {
+                var users = googlestore.query("user")
+                            .fetch();
+                    
+                var ret = [];
+
+                users.forEach(function(userEntity) {
+                    ret.push(usermodel.outadmin(userEntity));
+                });
+            	print(response).json({
+                	"users": ret
+				});		
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        }
+    },
+    "/activate_user": {
+		post: function(request, response){
+			// only admin can activate users
+    	    var currUser = auth.getUser(request);
+    	    if(!currUser){
+		        return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+			}else if (currUser.getProperty("admin") == false){
+				return response.sendError(response.SC_BAD_REQUEST, "not admin");
+			} else {
+    	   	var userid = request.getParameter("userId");
+    	   	var key = googlestore.createKey("user", parseInt(userid, 10));
+    	   	var user = googlestore.get(key);
+
+    	   	var activate = "" + request.getParameter("doActivate");
+			if ( activate == "true" ) {
+	    	 	user.setProperty("active", true);
+				googlestore.put(user);
+			} else {
+	    	 	user.setProperty("active", false);
+				googlestore.put(user);
+			}
+
+			// refreshes the users' properties
+			var userAfter = usermodel.outadmin(user);
+
+			// passes new active status to client to change to update the table
+		    print(response).json({
+				activeStatus: userAfter.active
+			});
+
+			}
+		}
+    },
     "/users": {
         get: function(request, response) {
             try {

@@ -1407,6 +1407,34 @@ var events = function(){
       e.preventDefault();
     });
 
+	$( ".activate_switch" ).live("click", function() {
+		// shows loader
+	 	$(".loader").css("display","block");
+		// gets userid
+		var userid = $( this ).parent().parent().attr( "id" );
+
+		if ( $( this ).attr( "value" ) == "Disable"){
+			// sets variable that tells the servor to deactivate user
+			var activate = "false";
+			// switches the button value to Enable
+			$( this ).attr( "value", "Enable" );
+		} else if ( $( this ).attr( "value" ) == "Enable"){
+			// sets variable that tells the servor to activate user
+			var activate = "true";
+			// switches the button value to Disable
+			$( this ).attr( "value", "Disable" );
+		}
+	 	// sends user id and the action (activate ou deactivate) to the server
+		$.post("/activate_user/", { 
+				userId: userid, 
+				doActivate: activate
+			}, function(data){
+		 		$( "#" + userid + " .active_dev" ).text(data.activeStatus);
+				// hide loader
+		 		$(".loader").css("display","none");
+		});
+	});
+
 };
 
 var Modal = (function() {
@@ -2090,3 +2118,42 @@ function fileupload_done(error) {
     bind_attributes_events();
 }
 
+/*
+ * creates a table with all the users for the page users_admin
+ */
+function adminTable() {
+    // get list of users
+    $.post("/users_admin", function(data) {
+
+        var users = data.users;
+
+        $.each(users, function() {
+            var clone = $("#row_user").clone(); //creates a clone of the <tr> "row_user"
+
+            clone.attr("id", this.userid); // row id gets the user id
+
+            clone.find(".name").text(this.name); 
+            clone.find(".surname").text(this.surname); 
+            clone.find(".institution").text(this.institution); 
+            clone.find(".username").text(this.username); // finds the username cell and adds the value of the username property of the users object
+            clone.find(".email").text(this.email);
+            clone.find(".created").text(this.created); 
+            clone.find(".admin").text(this.admin); 
+
+			// active status
+            clone.find(".active_dev").text(this.active);// change text in column "active (status)"
+	   	 	if (this.active !== "true") {
+	   	 		clone.find(".activate_switch").attr("value", "Enable");
+	   	 	}
+
+	   	 	// adds row to table
+       	 	$("#table_users").append(clone); 
+
+       	 	clone.show(); // turns off "display:none;" of "row_user"
+       	 }); //end user forEach
+
+       	 $(".loader").hide();
+
+    }, "json");
+
+}
