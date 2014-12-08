@@ -1959,6 +1959,7 @@ apejs.urls = {
         post: function(request, response) {
             try {
                 var users = googlestore.query("user")
+                            .sort("username", "ASC")
                             .fetch();
                     
                 var ret = [];
@@ -2007,6 +2008,39 @@ apejs.urls = {
 			}
 		}
     },
+	"/delete_user": {
+		post: function(request, response){
+			// only admin can activate users
+    	    var currUser = auth.getUser(request);
+    	    if(!currUser){
+		        return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+			}else if (currUser.getProperty("admin") == false){
+				return response.sendError(response.SC_BAD_REQUEST, "not admin");
+			} else {
+    	   		var userid = request.getParameter("userId");
+    	   		var key = googlestore.createKey("user", parseInt(userid, 10));
+    	   		var user = googlestore.get(key);
+				var userConfirm = usermodel.outadmin(user);
+				
+				// To prevent from accidently deleting a user, users that are active cannot be deleted
+				if (userConfirm.active == "true" ){
+		    		print(response).json({
+						doDelete: "false",
+						username: userConfirm.username
+					});
+				} else {
+					// deletes the user
+	           		googlestore.del(key);
+
+					// sends back info bout the deleted user
+			    	print(response).json({
+						userid: userConfirm.userid,
+						username: userConfirm.username
+					});
+				}
+			}
+		}	
+	},
     "/users": {
         get: function(request, response) {
             try {

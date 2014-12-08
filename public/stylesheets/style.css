@@ -797,3 +797,14 @@ text-decoration: underline;
 {
 margin: 0.5em 0px 0.5em;
 }
+
+#table_users
+{
+border-collapse: collapse;
+}
+
+#table_users td
+{
+text-align: left;
+border-top: 1px solid #DDD;
+}

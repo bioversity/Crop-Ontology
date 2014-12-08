@@ -1434,7 +1434,32 @@ var events = function(){
 		 		$(".loader").css("display","none");
 		});
 	});
+	
+	$( ".del_user" ).live( "click", function() {
+		// shows loader
+	 	$(".loader").css("display","block");
 
+		// gets user details 
+		var userid = $( this ).parent().parent().attr( "id" );
+		var userEmail = $( this ).parent().siblings( ".email" ).text();
+		var username = $( this ).parent().siblings( ".username" ).text();
+		
+		if ( confirm("Are you sure you wan to delete this user :\n\n"+ username + "  ( " + userEmail + " ) \n ?") ) {
+			
+			//post delete
+	 		$.post("/delete_user/", {userId: userid}, function(data){
+				if (data.doDelete == "false"){
+					alert(data.username + " has not been deleted");
+				} else {
+					alert(data.username + " has been deleted");
+			       	$( "#" + data.userid ).css("display","none");
+				}
+			});
+
+		}
+		// hide loader
+      	$(".loader").css("display","none");
+	});
 };
 
 var Modal = (function() {
