@@ -1226,6 +1226,9 @@ apejs.urls = {
                 username: request.getParameter("username"),
                 email: request.getParameter("email"),
                 password: request.getParameter("password"),
+                name: request.getParameter("name"),
+                sirname: request.getParameter("sirname"),
+                institution: request.getParameter("institution"),
                 language: request.getParameter("language")
             }, o = {}, error = false;
 
@@ -1927,7 +1930,7 @@ apejs.urls = {
 			 	// userEdit : user sent from edit profile (json)
 				var userEdit = {
 					name: request.getParameter("name"),
-					surname: request.getParameter("surname"),
+					sirname: request.getParameter("sirname"),
 					institution: request.getParameter("institution")
 				}
 				for (var i in userEdit) {

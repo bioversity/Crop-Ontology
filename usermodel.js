@@ -112,7 +112,7 @@ var usermodel = {
     outEdit: function(u) {
         var props = [
             "name", 
-            "surname", 
+            "sirname", 
             "username", 
             "institution", 
             "created", 
@@ -150,7 +150,7 @@ var usermodel = {
     outadmin: function(u) {
         var props = [
             "name", 
-            "surname", 
+            "sirname", 
             "username", 
             "institution", 
             "created", 

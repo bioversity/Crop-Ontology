@@ -205,7 +205,7 @@ Login = function(func) {
 						// sends edits and reloads information
 						var edits = {
 							name: $( ".profile_header #name input" ).attr( "value" ), 
-							surname: $( ".profile_header #surname input" ).attr( "value" ),
+							sirname: $( ".profile_header #sirname input" ).attr( "value" ),
 							institution: $( ".profile_header #institution input" ).attr( "value" ) 
 						} 
 						editProfile(edits);
@@ -249,7 +249,7 @@ Login = function(func) {
 function editProfile(input){
 
 	$.post("/edit_profile", input, function(output){
-		var arrayVar = ["username", "email", "name", "surname", "institution"];
+		var arrayVar = ["username", "email", "name", "sirname", "institution"];
 		for ( var i = 0 ; i < arrayVar.length; i++ ){
 	//		if ( output[arrayVar[i]] != "" ){ 
 				$( "#" + arrayVar[i] + " span" ).text(output[arrayVar[i]]);
@@ -1145,6 +1145,9 @@ var events = function(){
             "username":$("#register_form input[name=username]").val(),
             "email":$("#register_form input[name=email]").val(),
             "password":$("#register_form input[name=password]").val(),
+            "name":$("#register_form input[name=first_name]").val(),
+            "sirname":$("#register_form input[name=sirname]").val(),
+            "institution":$("#register_form input[name=institution]").val(),
             "language":$("#register_form [name=language]").val()
           },
           success: function(data){
@@ -2158,7 +2161,7 @@ function adminTable() {
             clone.attr("id", this.userid); // row id gets the user id
 
             clone.find(".name").text(this.name); 
-            clone.find(".surname").text(this.surname); 
+            clone.find(".sirname").text(this.sirname); 
             clone.find(".institution").text(this.institution); 
             clone.find(".username").text(this.username); // finds the username cell and adds the value of the username property of the users object
             clone.find(".email").text(this.email);
