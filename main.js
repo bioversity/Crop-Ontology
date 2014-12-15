@@ -555,7 +555,7 @@ apejs.urls = {
 
             try {
                 var children = googlestore.query("term")
-                                .sort("name")
+                                //.sort("name")
                                 .filter("parent", "=", parentId)
                                 .fetch();
                 var ret = [];
@@ -609,6 +609,14 @@ apejs.urls = {
                     });
                 });
 
+                /// sort results by name
+                ret.sort(function (a,b) {
+                  if (a.name < b.name)
+                     return -1;
+                  if (a.name > b.name)
+                    return 1;
+                  return 0;
+                });
                 print(response).json(ret, request.getParameter("callback"));
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
