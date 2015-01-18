@@ -319,7 +319,12 @@ exports = {
                 }catch(e){
 
                 }
+                if(val && val['undefined']) {
+                    val['english'] = val['undefined'];
+                    delete val['undefined'];
+                }
                 return val;
+
             }
 
             function findLangs(value) {
@@ -689,6 +694,10 @@ exports = {
                 }catch(e){
 
                 }
+                if(val && val['undefined']) {
+                    val['english'] = val['undefined'];
+                    delete val['undefined'];
+                }
                 return val;
             }
 
@@ -1021,7 +1030,12 @@ exports = {
                 }catch(e){
 
                 }
-                return translate(val, 'english');
+                val = translate(val, 'english');
+                if(val && val['undefined']) {
+                    val['english'] = val['undefined'];
+                    delete val['undefined'];
+                }
+                return val;
             }
 
             function findLangs(value) {
