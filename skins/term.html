@@ -74,6 +74,9 @@ function show_attributes(attributes) {
     runInOrder(first, last, attributes, function(i) {
         var currUser = {};
         currUser.language = "{{language}}";
+        if(currUser.language == 'undefined')
+            currUser.language = 'english';
+
         var t = translate(currUser, attributes[i]);
         var lang = currUser.language || DEFAULT_LANGUAGE;
         if(t.lang !== lang) return;
