@@ -376,7 +376,6 @@ apejs.urls = {
               "CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
               "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') //cacao
             };
-            var cropLogos = "<img src='https://integratedbreeding.net/sites/default/files/uploads/iita.jpg'/>";
 
             var cropLogos = assoc[matches[1]] || "";
 
