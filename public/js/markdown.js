@@ -15,6 +15,7 @@ function markdown(str) {
     var str = ""+str;
     str = str.replace(new RegExp("(\n)\\1+","g"), "<br /><br />").replace(new RegExp("\n", "g"),"<br />");
     str = str.replace(/\\n/g, "<br />");
+    str = str.replace("Gramene ", "");
     str = replaceURLWithHTMLLinks(str);
 
     // do obo links
