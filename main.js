@@ -958,7 +958,7 @@ apejs.urls = {
                                         print(response).textPlain('[Term]');
                                         print(response).textPlain('id: ' + r.encodeID(this.id) + '/' + categoryId);
                                         print(response).textPlain('name: ' + nameId);
-                                        print(response).textPlain('synonym: ' + synId + ' EXACT []');
+                                        print(response).textPlain('synonym: "' + synId + '" EXACT []');
                                         print(response).textPlain('relationship: is_a ' + r.encodeID(this.id));
                                         print(response).text('');
                                     }
