@@ -17,6 +17,9 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
     this.parseTemplate()
 }
 t.prototype.createRoot = function() {
+    //check language for template 5
+   // if(!this.terms[0][langKey]) langKey = "Language";
+
     taskqueue.createTask("/create-term", JSON.stringify({
         id: this.rootId,
         ontology_name: ""+this.ontologyName,
@@ -27,8 +30,13 @@ t.prototype.createRoot = function() {
     }));
 }
 t.prototype.createTraitClass = function(term) {
-    var parent = this.ontologyId + ":" + term["Trait Class"];
-    if(term[mod]) { 
+    if(term["Trait Class"]){
+        var parent = this.ontologyId + ":" + term["Trait Class"];
+    } else{
+        var parent = this.ontologyId + ":" + term["Trait class"];
+    }
+    
+    if(term[mod] || term["Trait ID"]) { 
         // if this trait exists in db, 
         // use its parentId as current parent instead of 'Trait Class'
         try {
@@ -41,12 +49,16 @@ t.prototype.createTraitClass = function(term) {
         }
     }
 
+    //if(!term[langKey]) langKey = "Language";
+//    if(!term["Trait Class"]) term["Trait Class"]=term["Trait class"];
+
+
     // creates or modifies a Trait Class based on its id
     taskqueue.createTask("/create-term", JSON.stringify({
         id: parent,
         ontology_name: ""+this.ontologyName,
         ontology_id: ""+this.ontologyId,
-        name: term["Trait Class"],
+        name: term["Trait Class"] || term["Trait class"],
         language: term[langKey],
         parent: this.rootId
     }));
@@ -57,13 +69,14 @@ t.prototype.getTrait = function(row) {
     for(var i in row) {
         obj[i] = row[i]; 
         if(obj[i] == "") delete obj[i];
-        if(i == 'Trait Class') break;
+        if(i == 'Trait Xref') break;
     }
     // this is because it may be at the end of the template as well
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
+    if(row['Variable status']) obj['ibfieldbook'] = row['Variable status'];
     // always need a reference to its language
-    obj['language'] = row[langKey]
-    obj.name = obj["Name of Trait"];
+    obj['language'] = row[langKey] || row["Language"];
+    obj.name = obj["Name of Trait"] || obj["Trait"];
     if(!obj.name) {
         obj.name = 'No trait name found'
     }
@@ -80,14 +93,14 @@ t.prototype.getMethod = function(row) {
             obj[i] = row[i]; 
             if(obj[i] == "") delete obj[i];
         }
-        if(i == 'Comments') break;
-        if(i == 'Trait Class') startCopy = true;
+        if(i == 'Method reference') break;
+        if(i == 'Trait Class' || i == 'Trait Xref') startCopy = true;
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey]
+    obj['language'] = row[langKey] || row['Language'];
 
-    obj.name = obj["Name of method"] || obj["Describe how measured (method)"];
+    obj.name = obj["Name of method"] || obj["Method"];
     if(!obj.name) { 
         obj.name = 'No method name found';
     }
@@ -104,13 +117,13 @@ t.prototype.getScale = function(row) {
             obj[i] = row[i]; 
             if(obj[i] == "") delete obj[i];
         }
-        if(i == 'Comments') startCopy = true;
+        if(i == 'Comments' || i== 'Method reference') startCopy = true;
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey]
+    obj['language'] = row[langKey] || row["Language"];
 
-    obj.name = obj["Type of Measure (Continuous, Discrete or Categorical)"];
+    obj.name = obj["Scale name"];
     if(!obj.name) { // look in the 22nd column
         obj.name = 'No scale name found';
     }
@@ -121,8 +134,8 @@ t.prototype.getScale = function(row) {
 }
 t.prototype.parseTemplate = function() {
     var that = this
-    // start at row with index 6
-    excel.parseTemplate(6, this.blobKey, function(term) {
+    // start at row with index 6. TEMPLATE 5 starts at row with index 0
+    excel.parseTemplate(0, this.blobKey, function(term) {
         that.parseTerm(term)
     });
     // now that we parsed, and have all the terms nice and clean
@@ -150,9 +163,21 @@ t.prototype.parseTerm = function(term) {
     method.scale = scale;
 
     // fill in the editable ids so later we can figure out the one we can use
-    if(term[mod]) this.editedIds.push(term[mod]);
-    if(term[methodMod]) this.editedIds.push(term[methodMod]);
-    if(term[scaleMod]) this.editedIds.push(term[scaleMod]);
+   if (term["Trait ID"]){
+        this.editedIds.push(term[mod]);
+    } else if(term[mod]) {
+        this.editedIds.push(term[mod]);
+    }  
+    if (term["Method ID"]) {
+        this.editedIds.push(term["Method ID"]);
+    } else if(term[methodMod]) {
+        this.editedIds.push(term[methodMod]);
+    }  
+    if(term["Scale id"]){
+        this.editedIds.push(term["Scale id"]);
+    } if(term[scaleMod]) {
+        this.editedIds.push(term[scaleMod]);
+    }  
 
     delete term[""]; // WTF DUDE OMG
 
@@ -177,7 +202,7 @@ t.prototype.findFreeId = function() {
 // let's process this.terms
 t.prototype.processTerms = function() {
     // find freeId
-    var freeId = this.findFreeId()
+    //var freeId = this.findFreeId()
     
     // MAIN LOOP
     for(var i in this.terms) {
@@ -185,6 +210,8 @@ t.prototype.processTerms = function() {
         var trait = this.terms[i];
         if(trait[mod]) {
             trait.id = trait[mod];
+        } else if (trait["Trait ID"]){
+            trait.id = trait["Trait ID"];
         } else {
             trait.id = this.ontologyId + ':' + pad(freeId++, 7);
         }
@@ -198,6 +225,8 @@ t.prototype.processTerms = function() {
         if(method) {
             if(method[methodMod]) {
                 method.id = method[methodMod];
+            } else if (method["Method ID"]) {
+                method.id = method["Method ID"];
             } else {
                 method.id = this.ontologyId + ':' + pad(freeId++, 7);
             }
@@ -209,6 +238,8 @@ t.prototype.processTerms = function() {
         if(scale) {
             if(scale[scaleMod]) {
                 scale.id = scale[scaleMod];
+            } else if (scale["Scale ID"]){
+                scale.id = scale["Scale ID"];
             } else {
                 scale.id = this.ontologyId + ':' + pad(freeId++, 7);
             }
