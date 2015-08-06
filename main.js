@@ -763,6 +763,11 @@ apejs.urls = {
             delete attrObj.relationship;
             delete attrObj.obo_blob_key;
             delete attrObj.excel_blob_key;
+            delete attrObj.Trait;
+            delete attrObj["Curation LV 16/07/15"];
+            delete attrObj["Trait ID"];
+            delete attrObj["Method ID"];
+            delete attrObj["Scale ID"];
 
             function newAttrs(keys, obj) {
                 var newAttrObj = {};
@@ -783,16 +788,18 @@ apejs.urls = {
                 attrObj = newAttrs(scaleAttrs, attrObj);
             }
             var order = {
+                "name":true,
+                "def":true,
+                "Description of Trait":true,
+                "Trait description":true,
+                "synonym":true,
+                "comment":true,
+                "is_a":true,
+                "Trait class":true,
                 "creation_date":true,
                 "created_at": true,
                 "ontology_id":true,
                 "ontology_name":true,
-                "name":true,
-                "synonym":true,
-                "def":true,
-                "Description of Trait":true,
-                "comment":true,
-                "is_a":true
             };
 
             // do the first ones in order
