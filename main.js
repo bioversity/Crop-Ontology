@@ -2051,6 +2051,8 @@ apejs.urls = {
 			}
 		}	
 	},
+// deactivated /users because there is no view for it (LV 03/09/15)
+/*
     "/users": {
         get: function(request, response) {
             try {
@@ -2069,6 +2071,7 @@ apejs.urls = {
             }
         }
     },
+*/
     "/users/([a-zA-Z0-9_]+)": {
         get: function(request, response, matches) {
             var userid = matches[1];
