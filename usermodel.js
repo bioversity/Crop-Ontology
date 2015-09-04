@@ -68,12 +68,15 @@ var usermodel = {
 
     /**
      * takse care of outputting the user entity as a JS object
-     * and making sure password and other fields are not show
+     * and making sure password and other fields are not shown
      */
     out: function(u) {
         var props = [
+            "name", 
+			"created",
+            "sirname", 
             "username", 
-            "created", 
+            "institution", 
             "email"
         ];
 
@@ -95,7 +98,7 @@ var usermodel = {
         }
 
         // hide email
-        ret["email"] = usermodel.hideEmail(ret["email"]);
+        ret["emailHidden"] = usermodel.hideEmail(ret["email"]);
 
         // also we want the id
         ret["userid"] = ""+u.getKey().getId();

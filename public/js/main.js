@@ -182,45 +182,7 @@ Login = function(func) {
             jprofile.show().html(data.username);
             jprofile.click(function(e) {
 
-                UserWidget.show(data.userid);
-
-				editProfile(); // fetches and displays user info
-
-				$( ".profile_header #edit_button" ).click( function() {
-					if ($( ".profile_header #edit_button" ).attr("value") == "Edit"){
-						// goes to editable mode
-						$( ".profile_header .editable span" ).hide();	
-						$( ".profile_header .editable input" ).show();	
-						$( ".profile_header #edit_button" ).attr("value", "Send");
-				
-						// presets input value
-						$( ".editable" ).each(function() {
-							var divId = "#" + $( this ).attr( "id" ); // gets div id
-							var textValue = $( divId + " span").text(); // gets the text of the child span of the specific div
-							$(".profile_header " + divId + " input" ).attr( "value", textValue ) ;//sets input value to span text
-						});
-				
-				
-					}else{ 
-						// sends edits and reloads information
-						var edits = {
-							name: $( ".profile_header #name input" ).attr( "value" ), 
-							sirname: $( ".profile_header #sirname input" ).attr( "value" ),
-							institution: $( ".profile_header #institution input" ).attr( "value" ) 
-						} 
-						editProfile(edits);
-						
-						// back to non-edit mode
-						$( ".profile_header .editable span" ).show();	
-						$( ".profile_header .editable input" ).hide();	
-						$( ".profile_header #edit_button" ).attr("value", "Edit")
-					}
-
-    			    e.preventDefault();
-    			    e.stopPropagation();
-				});
-
-
+                UserWidget.edit(data.userid);
 
                 e.stopPropagation();
                 e.preventDefault();
@@ -241,7 +203,7 @@ Login = function(func) {
             
     }, "json");
 }
- 
+
 /*
  *	Displays user info to user
  *	if parameters are sent, then changes user info
@@ -2006,12 +1968,14 @@ UserWidget = (function() {
             else
               this.curr.find(".profile").hide();
             */
-
-            $.getJSON("/users/"+userid, function(user){
+			$.getJSON("/users/"+userid, function(user){
                 // do replacement
                 var curr = that.curr;
                 curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
-                curr.find(".name").text(user.username);
+                curr.find(".user").text(user.username);
+                curr.find(".firstName").text(user.name);
+                curr.find(".lastName").text(user.sirname);
+                curr.find(".institution").text("("+user.institution+")");
                 curr.show();
                     
                 var cont = curr.find("ul li:first");
@@ -2041,6 +2005,54 @@ UserWidget = (function() {
 
             });
         
+        });
+    }
+    function edit(userid) {
+        Modal.show("edit_user_profile", function() {
+            var that = this;
+            this.load(true);
+			$.post("/edit_profile", "", function(user){
+                var curr = that.curr;
+                curr.find(".username").text(user.username);
+                curr.find("#name").text(user.name);
+                curr.find("#sirname").text(user.sirname);
+                curr.find("#institution").text(user.institution);
+                curr.find("#email").text(user.email);
+                curr.show();
+			});	
+
+/* Edit button not yet functionnal
+				$( ".profile_header #edit_button" ).click( function() {
+					if ($( ".profile_header #edit_button" ).attr("value") == "Edit"){
+						// goes to editable mode
+						$( ".profile_header .editable span" ).hide();	
+						$( ".profile_header .editable input" ).show();	
+						$( ".profile_header #edit_button" ).attr("value", "Send");
+				
+						// presets input value
+						$( ".editable" ).each(function() {
+							var divId = "#" + $( this ).attr( "id" ); // gets div id
+							var textValue = $( divId + " span").text(); // gets the text of the child span of the specific div
+							$(".profile_header " + divId + " input" ).attr( "value", textValue ) ;//sets input value to span text
+						});
+				
+				
+					}else{ 
+						// sends edits and reloads information
+						var edits = {
+							name: $( ".profile_header #name input" ).attr( "value" ), 
+							sirname: $( ".profile_header #sirname input" ).attr( "value" ),
+							institution: $( ".profile_header #institution input" ).attr( "value" ) 
+						} 
+						editProfile(edits);
+						
+						// back to non-edit mode
+						$( ".profile_header .editable span" ).show();	
+						$( ".profile_header .editable input" ).hide();	
+						$( ".profile_header #edit_button" ).attr("value", "Edit")
+					}
+        	});
+*/
         });
     }
     function showAll() {
@@ -2074,7 +2086,8 @@ UserWidget = (function() {
     }
     return {
         show: show,
-        showAll: showAll
+    	edit: edit,
+	    showAll: showAll
     };
 })();
  

@@ -289,12 +289,11 @@ if(isHome) {
                 </form>  
             </div><!-- /login -->
 
+<!-- user div before Dec 5 2014 
             <div class="user">
                 <div class="profile_header">
                     <h2>
                         <a href="#"><img class="grav" src=""></a>
-                        <!--<span class="name"></span>
-                        <div class="profile" style="display: none"><a href="#" id="edit_profile">Edit Profile</a></div>-->
 						<div id="username" style="display: inline-block">
 							<span></span>
 						</div>
@@ -329,24 +328,78 @@ if(isHome) {
 						<input type="submit" value="Edit" id="edit_button"/></h2>
                     </label> 
 
-                    <!--<ul class="ontos">
-                        <li style="display: none;">
-                            <div class="onto_id">
-                                <a href="#" class="box">CO_222</a>
-                            </div>
-                            <div class="desc">
-                                <span class="name">Cassava Trait</span>
-                                <br>
-                                <span class="summary">Cassava Trait</span>
-                            </div>
-                            <div class="clear"></div>
-                        </li>
-                        <div class="result"></div>
-                    </ul>-->
                 </div>
 
-            </div><!-- /user -->
-            <div class="users">
+            </div>
+-->
+	 			<div class="user">
+    	            <div class="profile_header">
+        	            <h2>
+            	            <a href="#"><img class="grav" src=""></a>
+                	        <span class="user"></span>
+							<div class="profile" style="display: inline-block; font-weight: normal; margin-left: 20px;">
+								<span class="firstName"></span>
+								<span class="lastName"></span>
+								<span class="institution" style="font-style:italic"></span>
+						
+<!-- <a href="#" id="edit_profile">Edit Profile</a> -->
+							</div>
+                    	</h2>
+                    	<ul class="ontos">
+                        	<li style="display: none;">
+                            	<div class="onto_id">
+                                	<a href="#" class="box">CO_222</a>
+                            	</div>
+                            	<div class="desc">
+                                	<span class="name">Cassava Trait</span>
+                                	<br>
+                                	<span class="summary">Cassava Trait</span>
+                            	</div>
+                            	<div class="clear"></div>
+                        	</li>
+                        	<div class="result"></div>
+                    	</ul>
+                	</div>
+            	</div><!-- /user -->
+
+		 		<div class="edit_user_profile">
+	    	    	<div class="profile_header">
+	        	    	<h2>
+	            	    	<a href="#"><img class="grav" src=""></a>
+	                	    <span class="username"></span>
+	                    </h2>
+					<h3>First Name</h3>
+					<div class="editable" id="name">
+						<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+						<span></span>
+					</div>
+					
+					<h3>Last name</h3>
+					<div class="editable" id="sirname">
+						<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+						<span></span>
+					</div>
+					
+					<h3>Host institution</h3>
+					<div class="editable" id="institution">
+						<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+						<span></span>
+					</div>
+					
+					<h3>Email</h3>
+					<div id="email">
+						<span></span>
+					</div>
+<!-- edit button not yet functionnal					
+                    <label class="submit_btn"> 
+						<input type="submit" value="Edit" id="edit_button"/></h2>
+                    </label> 
+-->
+
+	            	</div>
+	            </div><!-- edit_user_profile -->
+            
+			<div class="users">
                 <h1>Users</h1>
                 <h2 style="display: none">
                     <a href="#"><img class="grav" src=""></a>
@@ -355,6 +408,7 @@ if(isHome) {
                 <div class="result"></div>
 
             </div><!-- /users -->
+
             <div class="edit_profile login_form" style="display: none;">
 
               <form method="post" action="/edit-profile">
@@ -363,13 +417,14 @@ if(isHome) {
                     
                     <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
                     <div class="error_box" style="display: none;">Incorrect login or password.</div> 
-                    
+
+<!-- 
                     <label for="reg_lang"> 
                         What is your main language? 
                         <br> 
                         <span class="reg_lang"></span>
                     </label> 
-             
+-->             
                     <label class="submit_btn"> 
                         <input type="submit" value="Edit" tabindex="3"> 
                     </label> 
