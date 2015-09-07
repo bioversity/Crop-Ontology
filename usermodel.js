@@ -98,7 +98,7 @@ var usermodel = {
         }
 
         // hide email
-        ret["emailHidden"] = usermodel.hideEmail(ret["email"]);
+        ret["email"] = usermodel.hideEmail(ret["email"]);
 
         // also we want the id
         ret["userid"] = ""+u.getKey().getId();
@@ -124,8 +124,8 @@ var usermodel = {
 
         var ret = {};
 
-//        // do gravatar
-//        ret["gravatar"] = ""+usermodel.md5(u.getProperty("email").trim().toLowerCase());
+        // do gravatar
+        ret["gravatar"] = ""+usermodel.md5(u.getProperty("email").trim().toLowerCase());
 
         for(var i=0; i<props.length; i++) {
             var value = u.getProperty(props[i]);

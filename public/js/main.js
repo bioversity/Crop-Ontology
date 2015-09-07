@@ -2013,6 +2013,7 @@ UserWidget = (function() {
             this.load(true);
 			$.post("/edit_profile", "", function(user){
                 var curr = that.curr;
+                curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
                 curr.find(".username").text(user.username);
                 curr.find("#name").text(user.name);
                 curr.find("#sirname").text(user.sirname);
