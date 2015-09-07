@@ -1975,7 +1975,11 @@ UserWidget = (function() {
                 curr.find(".user").text(user.username);
                 curr.find(".firstName").text(user.name);
                 curr.find(".lastName").text(user.sirname);
-                curr.find(".institution").text("("+user.institution+")");
+				if(user.institution){
+	                curr.find(".institution").text("("+user.institution+")");
+				}else{
+	                curr.find(".institution").text("");
+				}
                 curr.show();
                     
                 var cont = curr.find("ul li:first");
