@@ -2015,51 +2015,50 @@ UserWidget = (function() {
         Modal.show("edit_user_profile", function() {
             var that = this;
             this.load(true);
+
+			// get and display user info
 			$.post("/edit_profile", "", function(user){
                 var curr = that.curr;
                 curr.find("img.grav").attr("src", "http://www.gravatar.com/avatar/"+user.gravatar+".jpg?s=58");
                 curr.find(".username").text(user.username);
-                curr.find("#name").text(user.name);
-                curr.find("#sirname").text(user.sirname);
-                curr.find("#institution").text(user.institution);
+                curr.find("#name span").text(user.name);
+                curr.find("#sirname span").text(user.sirname);
+                curr.find("#institution span").text(user.institution);
                 curr.find("#email").text(user.email);
                 curr.show();
 			});	
-
-/* Edit button not yet functionnal
-				$( ".profile_header #edit_button" ).click( function() {
-					if ($( ".profile_header #edit_button" ).attr("value") == "Edit"){
-						// goes to editable mode
-						$( ".profile_header .editable span" ).hide();	
-						$( ".profile_header .editable input" ).show();	
-						$( ".profile_header #edit_button" ).attr("value", "Send");
-				
-						// presets input value
-						$( ".editable" ).each(function() {
-							var divId = "#" + $( this ).attr( "id" ); // gets div id
-							var textValue = $( divId + " span").text(); // gets the text of the child span of the specific div
-							$(".profile_header " + divId + " input" ).attr( "value", textValue ) ;//sets input value to span text
-						});
-				
-				
-					}else{ 
-						// sends edits and reloads information
-						var edits = {
-							name: $( ".profile_header #name input" ).attr( "value" ), 
-							sirname: $( ".profile_header #sirname input" ).attr( "value" ),
-							institution: $( ".profile_header #institution input" ).attr( "value" ) 
-						} 
-						editProfile(edits);
-						
-						// back to non-edit mode
-						$( ".profile_header .editable span" ).show();	
-						$( ".profile_header .editable input" ).hide();	
-						$( ".profile_header #edit_button" ).attr("value", "Edit")
-					}
-        	});
-*/
-        });
-    }
+		
+			// change user info
+			that.curr.find("#edit_button input").click( function(){ 
+				if	(that.curr.find("#edit_button input").attr("value") == "Edit"){
+					// goes to editable mode
+					that.curr.find(".editable input").show();
+					that.curr.find(".editable span").hide();
+					// presets input value
+					that.curr.find(".editable").each(function() {
+						var divId = "#" + $( this ).attr( "id" ); // gets div id
+						var textValue = $( divId + " span").text(); // gets the text of the child span of the specific div
+						that.curr.find(".profile_header " + divId + " input" ).attr( "value", textValue ) ;//sets input value to span text
+					});
+					that.curr.find("#edit_button input").attr("value", "Send");
+				} else if (that.curr.find("#edit_button input").attr("value") == "Send"){
+					// get edits
+					var edits = {
+						name: that.curr.find("#name input" ).attr( "value" ), 
+						sirname: that.curr.find("#sirname input").attr( "value" ),
+						institution: that.curr.find("#institution input" ).attr( "value" ) 
+					} 
+					// send edits
+					editProfile(edits);
+					// back to non-edit mode
+					that.curr.find(".editable input").hide();
+					that.curr.find(".editable span").show();
+					that.curr.find("#edit_button input").attr("value", "Edit");
+				}
+			});
+	
+		});
+	}
     function showAll() {
         Modal.show("users", function() {
             var that = this;
