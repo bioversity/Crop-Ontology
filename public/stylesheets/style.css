@@ -572,7 +572,7 @@ div.modal {
     width: 600px;
 
     margin-left: -300px;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     z-index: 100;
