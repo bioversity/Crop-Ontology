@@ -207,6 +207,7 @@ if(isHome) {
               <form method="post" id="register_form" action="">      
                   <h1>Register</h1> 
                   <div class="formbody"> 
+					<p style="margin-bottom:10px;">To prevent from spamming, registration is restricted to the Crop Ontology community.</p>
                     
                     <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
                     <div class="error_box" style="display: none;">Incorrect login or password.</div> 
@@ -218,28 +219,28 @@ if(isHome) {
  
                     <label for="reg_email"> 
                         Email<br> 
-                        <input type="text" value="" tabindex="1" style="width: 21em;" name="email" id="reg_email" class="text"> 
+                        <input type="text" value="" tabindex="2" style="width: 21em;" name="email" id="reg_email" class="text"> 
                     </label> 
              
                     <label for="reg_password"> 
                         Password 
                         <br> 
-                        <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="reg_password" class="text"> 
+                        <input type="password" value="" tabindex="3" style="width: 21em;" name="password" id="reg_password" class="text"> 
                     </label> 
 
                     <label for="reg_name"> 
                         First name<br> 
-                        <input type="text" value="" tabindex="3" style="width: 21em;" name="first_name" id="reg_name" class="text"> 
+                        <input type="text" value="" tabindex="4" style="width: 21em;" name="first_name" id="reg_name" class="text"> 
                     </label> 
              
                     <label for="reg_sirname"> 
                         Last name<br> 
-                        <input type="text" value="" tabindex="4" style="width: 21em;" name="sirname" id="reg_sirname" class="text"> 
+                        <input type="text" value="" tabindex="5" style="width: 21em;" name="sirname" id="reg_sirname" class="text"> 
                     </label> 
              
                     <label for="reg_institution"> 
                         Host institution<br> 
-                        <input type="text" value="" tabindex="5" style="width: 21em;" name="institution" id="reg_institution" class="text"> 
+                        <input type="text" value="" tabindex="6" style="width: 21em;" name="institution" id="reg_institution" class="text"> 
                     </label> 
              
                     <!--
@@ -251,8 +252,11 @@ if(isHome) {
                     -->
              
                     <label class="submit_btn"> 
-                        <input type="submit" value="Register" tabindex="3" name="commit"> 
+                        <input type="submit" value="Register" tabindex="7" name="commit"> 
                     </label> 
+
+                    <div class="message_box" style="display: none;">MESSAGE</div> 
+
                   </div> 
                 </form>  
 

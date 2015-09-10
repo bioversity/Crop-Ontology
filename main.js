@@ -1205,15 +1205,17 @@ apejs.urls = {
             });
             //response.getWriter().println('{"username":"'+username+'"}');
         },
+		
+		// check that user has been activated
         post: function(request, response) {
             var username = request.getParameter("username"),
                 password = request.getParameter("password");
 
-            var l = auth.login(response, username, usermodel.sha1(password));
+            var error = auth.login(response, username, usermodel.sha1(password));
 
-            if(!l)
-                response.getWriter().println("Username or password is wrong!");
-
+            if(error) {
+                response.getWriter().println('{"error":"'+error+'"}');
+			}
         }
     },
     "/logout": {
@@ -1240,13 +1242,15 @@ apejs.urls = {
             }, o = {}, error = false;
 
             for(var i in user)
-                if(user[i] == "") error = "Complete the entire form!";
+                if(user[i] == "") error = "Please, complete the entire form";
 
-
+			// the user is not an admin, by default
             user.admin = false;
+			// the user is not activated (only admin can do that using /users_admin
+	    	user.active = false;
 
             if(usermodel.emailExists(user.email))
-                error = "This email already exists!";
+                error = "This email already exists";
 
             // check email format
             if(!usermodel.validateEmail(user.email))
@@ -1263,13 +1267,32 @@ apejs.urls = {
             } else {
                 // sha1 the password
                 user.password = usermodel.sha1(user.password);
-
+				
+				// store user in DB
                 var entity = googlestore.entity("user", user);
                 var userKey = googlestore.put(entity);
 
-                // ok just login
-                auth.login(response, user.username, user.password);
+				// get user id
+				var userDB = usermodel.out(entity);
+				var userid = userDB.userid;
+				
+				// does not log in the user until it has been activated by admin 
+//				auth.login(response, user.username, user.password);
 
+				// send email to admin / moderator for confirmation
+				var from = {
+        		    address: "admin@cropontology-curationtool.org",
+        		    personal: "Crop Ontology Curation Tool"
+        		};
+
+				var to = {
+        			address: "l.valette@cgiar.org",
+        		    personal: "L. Valette"
+        		};
+				email.send(from, to, "New registration on cropontology.org", "New user has register on " + URL + " on " + user.created  + "\n\n - Username: " + user.username  + "\n - First name: " + user.name + "\n - Last name: " + user.sirname + "\n - Host institution: " + user.institution + "\n - email: " + user.email + "\n \n Link to accept this request: " + URL + "/users_admin#" + userid); 
+
+                var message = "Thank you! <br/> You will be notified by email that your registration request has been approved by the website administrator. <br/><br/> For any enquiry, please contact admin(at)cropontology-curationtool(dot)org";
+                response.getWriter().println('{"message":"'+message+'"}');
             }
         }
     },
@@ -1999,9 +2022,28 @@ apejs.urls = {
     	   	var user = googlestore.get(key);
 
     	   	var activate = "" + request.getParameter("doActivate");
+    	   	var sendEmail = "" + request.getParameter("sendEmail");
 			if ( activate == "true" ) {
 	    	 	user.setProperty("active", true);
 				googlestore.put(user);
+					
+				// get user info
+				var userjson = usermodel.outadmin(user);
+
+				// Send email to tell user that he has been activated
+				if ( sendEmail == "true" ){
+					var from = {
+	                    address: "admin@cropontology-curationtool.org",
+	                    personal: "Crop Ontology Curation Tool"
+	                };
+					var to = {
+	                    address: "" + userjson.email,
+	                    personal: "" + userjson.name + " " + userjson.sirname
+	                };
+			
+					email.send(from, to, "Welcome to "+ URL , "Dear " + userjson.name + ",\n\nFollowing on from your registration on " + URL + " (" + userjson.created + "), we are happy to welcome you in the Crop Ontology community. Your profile has been approved and you can now log in.\n\nYour details are: \n - Username: " + userjson.username + "\n - First name: " + userjson.name + "\n - Last name: " + userjson.sirname + "\n - Host institution: " + userjson.institution +"\n\nBest Regards,\nThe "+ URL + " administrator"); 
+				}
+
 			} else {
 	    	 	user.setProperty("active", false);
 				googlestore.put(user);

@@ -808,3 +808,10 @@ border-collapse: collapse;
 text-align: left;
 border-top: 1px solid #DDD;
 }
+.message_box{
+background:#EAFFE8 none repeat scroll 0;
+border:1px solid #0A8407;
+padding:1em;
+font-weight:bold;
+}
+

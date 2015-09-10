@@ -59,10 +59,19 @@ var auth = (function(){
             .filter("username", "=", username)
             .filter("password", "=", hashedPassword)
             .fetch(1);
-
-        if(!res.length) { // user not found 
-            return false;
-        } else {
+        var resActive = googlestore.query("user")
+            .filter("username", "=", username)
+            .filter("password", "=", hashedPassword)
+            .filter("active", "=", true)
+            .fetch(1);
+		var error;	
+        if(!res.length) { // user not found or the password is incorrect
+			error = "name_OR_pwd";
+            return error;
+        } else if (!resActive.length) { // user and pwd OK but user not active
+			var error = "not_active";
+            return error;
+		} else { // user and pwd OK and user has been activated
             var userEntity = res[0],
                 token = tokenGenerator();
 
@@ -74,8 +83,6 @@ var auth = (function(){
             // 30 years :)
             cookie.setMaxAge(30 * 365 * 24 * 60 * 60);
             response.addCookie(cookie);
-
-            return true;
         }
 
     }
