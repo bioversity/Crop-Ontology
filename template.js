@@ -15,6 +15,7 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
     this.editedIds = []
 
     this.parseTemplate()
+
 }
 t.prototype.createRoot = function() {
     //check language for template 5
@@ -68,8 +69,8 @@ t.prototype.getTrait = function(row) {
     var obj = {};
     for(var i in row) {
         obj[i] = row[i]; 
-        if(obj[i] == "") delete obj[i];
-        if(i == 'Trait Xref') break;
+        if(obj[i] == "") delete obj[i]; 
+        if(i == 'Trait Xref' || i == 'Trait Class') break;
     }
     // this is because it may be at the end of the template as well
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
@@ -93,7 +94,7 @@ t.prototype.getMethod = function(row) {
             obj[i] = row[i]; 
             if(obj[i] == "") delete obj[i];
         }
-        if(i == 'Method reference') break;
+        if(i == 'Method reference' || i == 'Comments') break;
         if(i == 'Trait Class' || i == 'Trait Xref') startCopy = true;
     }
     delete obj['ibfieldbook'];
@@ -138,6 +139,12 @@ t.prototype.parseTemplate = function() {
     excel.parseTemplate(0, this.blobKey, function(term) {
         that.parseTerm(term)
     });
+    if(this.terms[0]['name'] == 'No trait name found'){
+        this.terms = []
+        excel.parseTemplate(6, this.blobKey, function(term) {
+                that.parseTerm(term)
+        });
+    }
     // now that we parsed, and have all the terms nice and clean
     // inside this.terms
     // let's actually store them in datastore
@@ -164,7 +171,7 @@ t.prototype.parseTerm = function(term) {
 
     // fill in the editable ids so later we can figure out the one we can use
    if (term["Trait ID"]){
-        this.editedIds.push(term[mod]);
+        this.editedIds.push(term["Trait ID"]);
     } else if(term[mod]) {
         this.editedIds.push(term[mod]);
     }  
@@ -174,7 +181,7 @@ t.prototype.parseTerm = function(term) {
         this.editedIds.push(term[methodMod]);
     }  
     if(term["Scale id"]){
-        this.editedIds.push(term["Scale id"]);
+        this.editedIds.push(term["Scale ID"]);
     } if(term[scaleMod]) {
         this.editedIds.push(term[scaleMod]);
     }  
@@ -202,7 +209,7 @@ t.prototype.findFreeId = function() {
 // let's process this.terms
 t.prototype.processTerms = function() {
     // find freeId
-    //var freeId = this.findFreeId()
+    var freeId = this.findFreeId()
     
     // MAIN LOOP
     for(var i in this.terms) {
