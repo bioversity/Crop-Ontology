@@ -1078,8 +1078,14 @@ var events = function(){
           },
           success: function(data){
             if(data && data.error) {
+				if ( data.error == "name_OR_pwd" ){ // username or password is not correct
+				var errorMessage = "Username or password is wrong";
+				} else if (data.error == "not_active"){
+				var errorMessage = "This profile has not been approved yet. <br /><br />Please, contact admin(at)cropontology-curationtool(dot)org for further inquiry."
+				}
+				
                 $(".error_box").show(); 
-                $(".error_box").html(data.error); 
+                $(".error_box").html(errorMessage); 
             } else {
                 Login(function(user) {
                     if(ontologyid !== "")
@@ -1113,16 +1119,19 @@ var events = function(){
             "language":$("#register_form [name=language]").val()
           },
           success: function(data){
-            if(data && data.error) {
-                $(".error_box").show(); 
-                $(".error_box").html(data.error); 
-            } else {
-                $(".error").hide();
-                $(".error_box").hide();
-                Modal.hide();
-                Login(function(){});
-            }
-            term_loader(false);
+	          if(data && data.error) {
+	  	        $(".error_box").show(); 
+	   	        $(".error_box").html(data.error); 
+			} else {
+				$(".error").hide();
+	            $(".error_box").hide();
+	            $(".submit_btn").hide();
+	            $(".message_box").show(); 
+	            $(".message_box").html(data.message); 
+//		        Modal.hide();
+//	            Login(function(){});
+			}
+	        term_loader(false);
           }
         });
  
@@ -1384,6 +1393,8 @@ var events = function(){
 			// switches the button value to Enable
 			$( this ).attr( "value", "Enable" );
 		} else if ( $( this ).attr( "value" ) == "Enable"){
+			// ask if an email should be sent to the user
+			var send = confirm("Send email to inform the user that he/she can now log in? \n\n(don't spam the user)")
 			// sets variable that tells the servor to activate user
 			var activate = "true";
 			// switches the button value to Disable
@@ -1392,7 +1403,8 @@ var events = function(){
 	 	// sends user id and the action (activate ou deactivate) to the server
 		$.post("/activate_user/", { 
 				userId: userid, 
-				doActivate: activate
+				doActivate: activate,
+				sendEmail: send
 			}, function(data){
 		 		$( "#" + userid + " .active_dev" ).text(data.activeStatus);
 				// hide loader
