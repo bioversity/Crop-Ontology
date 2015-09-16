@@ -18,8 +18,6 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
 
 }
 t.prototype.createRoot = function() {
-    //check language for template 5
-   // if(!this.terms[0][langKey]) langKey = "Language";
 
     taskqueue.createTask("/create-term", JSON.stringify({
         id: this.rootId,
@@ -50,10 +48,6 @@ t.prototype.createTraitClass = function(term) {
         }
     }
 
-    //if(!term[langKey]) langKey = "Language";
-//    if(!term["Trait Class"]) term["Trait Class"]=term["Trait class"];
-
-
     // creates or modifies a Trait Class based on its id
     taskqueue.createTask("/create-term", JSON.stringify({
         id: parent,
@@ -76,7 +70,7 @@ t.prototype.getTrait = function(row) {
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
     if(row['Variable status']) obj['ibfieldbook'] = row['Variable status'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language"];
+    obj['language'] = row[langKey] || row["Language of submission"];
     obj.name = obj["Name of Trait"] || obj["Trait"];
     if(!obj.name) {
         obj.name = 'No trait name found'
@@ -99,9 +93,10 @@ t.prototype.getMethod = function(row) {
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row['Language'];
+    obj['language'] = row[langKey] || row["Language of submission"];
 
     obj.name = obj["Name of method"] || obj["Method"];
+
     if(!obj.name) { 
         obj.name = 'No method name found';
     }
@@ -126,7 +121,7 @@ t.prototype.getScale = function(row) {
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language"];
+    obj['language'] = row[langKey] || row["Language of submission"];
 
     obj.name = obj["Scale name"];
     if(!obj.name) { // look in the 22nd column
@@ -150,7 +145,7 @@ t.prototype.getVariable = function(row) {
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language"];
+    obj['language'] = row[langKey] || row["Language of submission"];
 
     obj.name = obj["Variable name"];
     if(!obj.name) { // look in the 22nd column
@@ -313,7 +308,8 @@ t.prototype.processTerms = function() {
         }
 
         // add variable
-        if(variable) {
+        if(variable && variable.name.indexOf("No variable name found") < 0 ) {
+            //langKey = "Language of submission";
             taskqueue.createTask("/create-term", JSON.stringify(variable));
         }
 
