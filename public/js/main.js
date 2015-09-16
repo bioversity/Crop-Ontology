@@ -984,6 +984,7 @@ function buildGraph($cont, data) {
  * clicks, mouseovers etc etc..
  */
 var events = function(){
+
     // right navigation
     $("ul.sorts li").click(function(){
         var $this = $(this);
@@ -1674,7 +1675,64 @@ function LoadOntology(ontoId) {
             DEFAULT_LANGUAGE = $('select[name=language]').val()
         }
     });
+	// get variables
+	get_variables(ontoId+":ROOT");
 }
+function get_variables(id){
+    $.getJSON("/get-variables/"+id, function(variables) {
+		for ( i in variables ){
+			//	$( ".variables" ).show();
+			//	$( ".variables" ).text(variables[i].id);
+			var variableName = translate(currUser, variables[i].name).translation;
+
+			var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+			$( ".browser-content .cont .variables " ).append( varButton );
+			
+		}
+	// set function to get variable information		
+	$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);
+    });
+};
+var load_variable = (function(){
+    // first deselect everything
+    $(".minibutton").removeClass("selected");
+	// select variable
+    $(this).addClass("selected");
+	// highlights the branch (T,M,S)
+//XXX	    highlight(li);
+
+	term_loader(true);
+	
+	
+    var name = $(this).text();
+    var id = $(this).attr("title");
+
+// XXX GET PARENTS	    var parent = li.parent();
+    var attributes = {};
+    
+    $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
+        $.each(this_attrs, function(i) {
+            attributes[this_attrs[i].key] = this_attrs[i].value;
+        });
+
+        // let's show the attributes
+        show_attributes(id, name, attributes);
+        term_loader(false);
+    });
+	    // get comments
+    $.get("/get-comments", {termId: id}, function(data){
+        comments.load(data);
+    }, "json");
+
+// XXX manage parent() first
+//    // build graph
+//    var $graph = $("#graph");
+//    $.getJSON("/get-term-parents/"+id, function(data) {
+//      $graph.show();
+//      buildGraph($graph, data);
+//    });
+});
+	
 
 /**
  * Checks if this login user can edit this ontology

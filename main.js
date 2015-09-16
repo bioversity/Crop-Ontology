@@ -622,6 +622,43 @@ apejs.urls = {
             }
         }
     },
+    "/get-variables/(.*)": {
+        get: function(request, response, matches) {
+            request.setCharacterEncoding("utf-8")
+            response.setContentType("text/html; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+            var parentId = matches[1];
+            if(!parentId)
+                return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
+
+			var CO_Id = parentId.split(":")[0];
+            try {
+                var variables = googlestore.query("term")
+                                .filter("ontology_id", "=", CO_Id)
+                                .filter("relationship", "=", "variable_of")
+                                .fetch();
+                var ret = [];
+
+                variables.forEach(function(term) {
+//					// get method name
+//                    var methodName = term.getProperty("Describe how measured (method)");
+//					// get method id
+//                    var methodId = term.getProperty("id");
+//                    });
+                    
+
+                    ret.push({
+                        "id": ""+term.getProperty("id"),
+                        "name": ""+term.getProperty("Variable name")
+                    });
+                });
+                print(response).json(ret, request.getParameter("callback"));
+            } catch (e) {
+                response.sendError(response.SC_BAD_REQUEST, e);
+            }
+		}
+	},
     "/get-attributes/([^/]*)/jsonrdf": {
         get: function(request, response, matches) {
             request.setCharacterEncoding("utf-8")

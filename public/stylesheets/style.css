@@ -113,7 +113,7 @@ button {
 .cont {
 padding: 20px; background-color: white;
 width: 360px;
-height: 600px;
+height: 250px; /*XXX*/
 overflow-x: auto;
 overflow-y: auto;
  
@@ -807,4 +807,8 @@ border-collapse: collapse;
 {
 text-align: left;
 border-top: 1px solid #DDD;
+}
+.browser-content .cont .variables a.minibutton
+{
+margin: 2px;
 }
