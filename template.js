@@ -123,7 +123,8 @@ t.prototype.getScale = function(row) {
     // always need a reference to its language
     obj['language'] = row[langKey] || row["Language of submission"];
 
-    obj.name = obj["Scale name"];
+    obj.name = obj["Scale name"] || obj['For Continuous: units of measurement'] || obj['For Discrete: Name of scale or units of measurement']
+                         || obj['For Categorical: Name of rating scale'];
     if(!obj.name) { // look in the 22nd column
         obj.name = 'No scale name found';
     }
