@@ -632,26 +632,66 @@ apejs.urls = {
             if(!parentId)
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
 
-			var CO_Id = parentId.split(":")[0];
+			var cropId = parentId.split(":")[0];
+			var IdRight = parentId.split(":")[1];
+
             try {
-                var variables = googlestore.query("term")
-                                .filter("ontology_id", "=", CO_Id)
-                                .filter("relationship", "=", "variable_of")
-                                .fetch();
+
                 var ret = [];
 
-                variables.forEach(function(term) {
-//					// get method name
-//                    var methodName = term.getProperty("Describe how measured (method)");
-//					// get method id
-//                    var methodId = term.getProperty("id");
-//                    });
-                    
+				// case 1: we are on ROOT -> display all variables of the onto
+				if ( IdRight == "ROOT" ){
+	                var variables = googlestore.query("term")
+	                                .filter("ontology_id", "=", cropId)
+	                                .filter("relationship", "=", "variable_of")
+	                                .fetch();
+                	variables.forEach(function(term) {
+                	    ret.push({
+                	        "id": ""+term.getProperty("id"),
+                	        "name": ""+term.getProperty("Variable name")
+                	    });
+                	});
 
-                    ret.push({
-                        "id": ""+term.getProperty("id"),
-                        "name": ""+term.getProperty("Variable name")
-                    });
+				// case 2: a trait class has been loaded -> get the traits of the class and display all variables that are children of the traits
+				} else if ( /^[a-z A-Z]+$/.test(IdRight) ) {
+	                var traits = googlestore.query("term")
+	                                .filter("parent", "=", parentId)
+	                                .fetch();
+                	traits.forEach(function(trait) {
+						var variables = googlestore.query("term")
+                            		.filter("parent", "=", trait.getProperty("id"))
+	                                .filter("relationship", "=", "variable_of")
+	                                .fetch();
+
+						variables.forEach(function(variable){
+							ret.push({
+    		                   	"id": ""+variable.getProperty("id"),
+	        	                "name": ""+variable.getProperty("Variable name")
+							});
+						});
+					});
+
+				// case 3: a trait, a method or a scale i.e., a term with an digit ID has been loaded -> display all variables that are children of this term
+				} else if ( /^\d+$/.test(IdRight) ) {
+	                var variables = googlestore.query("term")
+	                                .filter("parent", "=", parentId)
+	                                .filter("relationship", "=", "variable_of")
+	                                .fetch();
+                	variables.forEach(function(term) {
+                	    ret.push({
+                	        "id": ""+term.getProperty("id"),
+                	        "name": ""+term.getProperty("Variable name")
+                	    });
+                	});
+				}
+
+                // sort results by name
+                ret.sort(function (a,b) {
+                  if (a.name < b.name)
+                     return -1;
+                  if (a.name > b.name)
+                    return 1;
+                  return 0;
                 });
                 print(response).json(ret, request.getParameter("callback"));
             } catch (e) {

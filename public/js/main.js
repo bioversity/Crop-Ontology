@@ -590,6 +590,8 @@ load_term = function(li) {
         comments.load(data);
     }, "json");
 
+	// get the variables of the loaded term
+	get_variables(id);
 
     // build graph
     var $graph = $("#graph");
@@ -1679,6 +1681,10 @@ function LoadOntology(ontoId) {
 	get_variables(ontoId+":ROOT");
 }
 function get_variables(id){
+
+	// first, remove all the variables that are displayed, if any
+	$( ".browser-content .cont .variables" ).text("");
+
     $.getJSON("/get-variables/"+id, function(variables) {
 		for ( i in variables ){
 			//	$( ".variables" ).show();
