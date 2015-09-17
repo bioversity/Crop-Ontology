@@ -83,7 +83,9 @@ function translate(jsonStr, isoLang) {
         var lang = languages.iso[isoLang];
         if(obj[lang]) {
             return obj[lang];
-        } else {
+        } else if (obj['undefined']){
+              return obj['undefined'];
+        }else {
             return jsonStr;
         } 
     } catch(e) {
@@ -1012,22 +1014,60 @@ apejs.urls = {
                     var r = new rdf();
                     print(response).textPlain('id: ' + r.encodeID(this.id));
                     print(response).textPlain('name: ' + translate(this.name, isoLang));
-                    if(this['Description of Trait']) {
+                    //definitions
+                    if(this['Description of Trait'] ) {
+                        if(this['Crop']){
+                            print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Trait');
+                        }
                         print(response).textPlain('def: "' + translate(this['Description of Trait'], isoLang) + '" []');
+                    }else if(this['Trait Description']){
+                        if(this['Crop']){
+                            print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Trait');
+                        }
+                        print(response).textPlain('def: "' + translate(this['Trait Description'], isoLang) + '" []');
                     }
-                    if(this['Describe how measured (method)']) {
+                    else if(this['Describe how measured (method)']) {
+                        if(this['Crop']){
+                            print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Method');
+                        }
                         print(response).textPlain('def: "' + translate(this['Describe how measured (method)'], isoLang) + '" []');
+                    }else if(this['Method description']){
+                        if(this['Crop']){
+                            print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Method');
+                        }
+                        print(response).textPlain('def: "' + translate(this['Method description'], isoLang) + '" []');
                     }
 
+                    ///synonyms
+                    if(this['Synonyms (separate by commas)']) {
+                        print(response).textPlain('synonym: "' + translate(this['Synonyms (separate by commas)'], isoLang) + '" EXACT []');
+                    } else if(this['Trait synonyms']) {
+                        print(response).textPlain('synonym: "' + translate(this['Trait synonyms'], isoLang) + '" EXACT []');
+                    } else if(this['Variable synonyms']) {
+                        print(response).textPlain('synonym: "' + translate(this['Variable synonyms'], isoLang) + '" EXACT []');
+                    } 
+
+                    //abbrev
+                    if(this['Abbreviated name']) {
+                        print(response).textPlain('synonym: "' + translate(this['Abbreviated name'], isoLang) + '" EXACT []');
+                    } else if(this['Trait abbreviation']) {
+                        print(response).textPlain('synonym: "' + translate(this['Trait abbreviation'], isoLang) + '" EXACT []');
+                    } if(this['Trait abbreviation synonym']) {
+                        print(response).textPlain('synonym: "' + translate(this['Trait abbreviation synonym'], isoLang) + '" EXACT []');
+                    } 
+                    ///scales
                     if(this.relationship) {
                         if(this.relationship == 'scale_of'){
+                            if(this['Crop']){
+                                print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Scale');
+                            }
                             print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
                         
-                            var type = translate(this['Type of Measure (Continuous, Discrete or Categorical)'], isoLang);
-                            if( type == 'Categorical') { // it's categorical
-                                
+                            var type = translate(this['Type of Measure (Continuous, Discrete or Categorical)'], isoLang)
+                                            || translate(this['Scale class'], isoLang);
+                            if( type == 'Categorical' || type == 'Ordinal' || type == 'Nominal') { // it's categorical                                
                                 for(var i in this) {
-                                    if(i.indexOf('For Categorical') == 0) { // starts with
+                                    if(i.indexOf('For Categorical') == 0 || i.indexOf('Category') == 0) { // starts with
                                         var categoryId = i.match(/\d+/g);
                                         if(!categoryId) continue;
                                         if(categoryId.length) {
@@ -1042,6 +1082,9 @@ apejs.urls = {
                                         print(response).textPlain('[Term]');
                                         print(response).textPlain('id: ' + r.encodeID(this.id) + '/' + categoryId);
                                         print(response).textPlain('name: ' + nameId);
+                                        if(this['Crop']){
+                                            print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Scale');
+                                        }
                                         print(response).textPlain('synonym: "' + synId + '" EXACT []');
                                         print(response).textPlain('relationship: is_a ' + r.encodeID(this.id));
                                         print(response).text('');
@@ -1049,6 +1092,14 @@ apejs.urls = {
 
                                 }
                             }
+                        }else if(this.relationship == 'variable_of'){
+                            if(this['Crop']){
+                                print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Scale');
+                            }
+                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[0]));
+                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[1]));
+                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[2]));
+
                         }else{
                             print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
                         }
@@ -1067,6 +1118,10 @@ apejs.urls = {
             print(response).text('id: scale_of')
             print(response).text('name: scale_of')
             print(response).text('is_transitive: true');
+            print(response).text('')
+            print(response).text('[Typedef]')
+            print(response).text('id: variable_of')
+            print(response).text('name: variable_of')
 
         },
     },
