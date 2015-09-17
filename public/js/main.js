@@ -1715,8 +1715,6 @@ var load_variable = (function(){
     $(".minibutton").removeClass("selected");
 	// select variable
     $(this).addClass("selected");
-	// highlights the branch (T,M,S)
-//XXX	    highlight(li);
 
 	term_loader(true);
 	
@@ -1741,13 +1739,13 @@ var load_variable = (function(){
         comments.load(data);
     }, "json");
 
-// XXX manage parent() first
-//    // build graph
-//    var $graph = $("#graph");
-//    $.getJSON("/get-term-parents/"+id, function(data) {
-//      $graph.show();
-//      buildGraph($graph, data);
-//    });
+// manage parent() first
+    // build graph
+    var $graph = $("#graph");
+    $.getJSON("/get-term-parents/"+id, function(data) {
+      $graph.show();
+      buildGraph($graph, data);
+    });
 });
 	
 
