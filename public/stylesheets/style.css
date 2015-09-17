@@ -113,7 +113,6 @@ button {
 .cont {
 padding: 20px; background-color: white;
 width: 360px;
-height: 250px; /*XXX*/
 overflow-x: auto;
 overflow-y: auto;
  

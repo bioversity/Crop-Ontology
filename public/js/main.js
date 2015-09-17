@@ -642,7 +642,10 @@ function make_li(obj, last) {
     var has_children = obj.has_children,
         relationship = obj.relationship,
         hitarea,
-        has_method = (!obj.has_children && obj.method && obj.method !== "null");
+        has_method = (!obj.has_children && obj.method && obj.method !== "null"),
+		is_scale = (relationship == "scale_of") ;
+	
+	// the scale has children but 
 
     var li = $("<li></li>");
     if(last)
@@ -651,12 +654,12 @@ function make_li(obj, last) {
     // add a hidden input to track the id of this node
     li.append('<input type="hidden" class="id" value="'+id+'" />');
  
-    if(has_children || has_method){
+    if( (has_children || has_method) && (!is_scale) ){
         li.addClass("expandable");
         hitarea = $('<div class="hitarea expandable-hitarea"></div>'); 
         li.append(hitarea);
     }
-    if(last && (has_children || has_method)) {
+    if(last && (!is_scale) && (has_children || has_method)) {
         li.addClass("lastExpandable");
         hitarea.addClass("lastExpandable-hitarea");
     }
@@ -847,13 +850,18 @@ load_branch = function(parent, url, cb) {
         
         for(var i=0,len=children.length; i<len; i++) {
             var child = children[i];
-            var last = false;
-            if(i == (children.length-1))
-                last = true;
+			// display child only if term is not a variable
+			if (child.relationship != "variable_of"){
+            	var last = false;
+	            if(i == (children.length-1) || 
+					( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+					){
+    	            last = true;
+				}
 
-            var li = make_li(child, last);
-            parent.append(li);
-            
+	            var li = make_li(child, last);
+    	        parent.append(li);
+        	}    
         }
          
         loader(parent, false);
@@ -1686,19 +1694,22 @@ function get_variables(id){
 	$( ".browser-content .cont .variables" ).text("");
 
     $.getJSON("/get-variables/"+id, function(variables) {
-		for ( i in variables ){
-			//	$( ".variables" ).show();
-			//	$( ".variables" ).text(variables[i].id);
-			var variableName = translate(currUser, variables[i].name).translation;
+		if ( variables.length > 0 ){
+			$( ".browser-variables" ).show();
+			for ( i in variables ){
+				$( ".browser-content .cont .variables" ).show();
+				var variableName = translate(currUser, variables[i].name).translation;
 
-			var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
-			$( ".browser-content .cont .variables " ).append( varButton );
-			
+				var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+				$( ".browser-content .cont .variables " ).append( varButton );
+				
+			}
 		}
 	// set function to get variable information		
 	$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);
     });
 };
+
 var load_variable = (function(){
     // first deselect everything
     $(".minibutton").removeClass("selected");
