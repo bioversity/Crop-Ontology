@@ -18,13 +18,12 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
 
 }
 t.prototype.createRoot = function() {
-
     taskqueue.createTask("/create-term", JSON.stringify({
         id: this.rootId,
         ontology_name: ""+this.ontologyName,
         ontology_id: ""+this.ontologyId,
         name: ""+this.ontologyName,
-        language: this.terms[0][langKey],
+        language: this.terms[0][langKey] || this.terms[0]["language"],
         parent: null
     }));
 }
@@ -54,7 +53,7 @@ t.prototype.createTraitClass = function(term) {
         ontology_name: ""+this.ontologyName,
         ontology_id: ""+this.ontologyId,
         name: term["Trait Class"] || term["Trait class"],
-        language: term[langKey],
+        language: term[langKey] || term["language"],
         parent: this.rootId
     }));
     return parent;
