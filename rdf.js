@@ -186,11 +186,14 @@ rdf.prototype.buildTriple = function(term) {
 
     // if categorical create new nodes
     if(term.relationship == 'scale_of') {
-        var type = this.findLangs(term['Type of Measure (Continuous, Discrete or Categorical)']);
-        if(type.english && type.english == 'Categorical') { // it's categorical
 
+        var type = this.findLangs(term['Type of Measure (Continuous, Discrete or Categorical)']);
+        if(type.english == undefined) {
+            type = this.findLangs(term['Scale class']);
+        }
+        if(type.english && (type.english == 'Categorical' || type.english == 'Ordinal' || type.english == 'Nominal')) { // it's categorical
             for(var i in term) {
-                if(i.indexOf('For Categorical') == 0) { // starts with
+                if(i.indexOf('For Categorical') == 0 || i.indexOf('Category') == 0 ) { // starts with
                     var categoryId = i.match(/\d+/g);
                     if(!categoryId) continue;
                     if(categoryId.length) {
