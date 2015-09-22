@@ -868,6 +868,89 @@ load_branch = function(parent, url, cb) {
         if(cb) cb(li);
     });
 }
+/*
+ * (function adapted from load_branch)
+ * It recursively loads the branches of the tree so that it shows a varible in a full tree
+ * @parentUl - the container of the branch, a jquery DOM element (<ul>); 
+ *           this gets populated with the elements (<li>)
+ * @url - the json array of objects to do an AJAX request to
+ * @parents - the object derived from the of /get-terms-parents/id that contains the items to expand
+ * @index - index to go through the object parents
+ */
+load_branch_rec = function(parentUl, url, parents, index) {
+
+    $.getJSON(url, function(children) {
+
+		// set parent style as expanded
+		var parentLi = parentUl.parent();
+        parentLi.removeClass("expandable");
+        parentLi.addClass("collapsable");
+        var hitarea = parentLi.find(".hitarea").first();
+        hitarea.removeClass("expandable-hitarea");
+        hitarea.addClass("collapsable-hitarea");
+        if(parentLi.hasClass("lastExpandable")) {
+        	parentLi.removeClass("lastExpandable");
+            parentLi.addClass("lastCollapsable");
+            hitarea.removeClass("lastExpandable-hitarea");
+            hitarea.addClass("lastCollapsable-hitarea");
+        }
+
+    	loader(parentUl, true);
+	    parentUl.show();
+
+		if(!parentUl.children().length) {
+	        for(var i=0,len=children.length; i<len; i++) {
+	            var child = children[i];
+				var childId = child["id"];
+				var LiExist = (parentUl.find("input[value='"+childId+"']").parent().length > 0) ;
+				if ( !LiExist ){
+					if (child.relationship != "variable_of"){	// display child only if term is not a variable
+	        	    	var last = false;
+		    	        if(i == (children.length-1) || 
+							( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+							){
+	    		            last = true;
+						}
+						// make the new list item
+		    	        var li = make_li(child, last);
+	    		        parentUl.append(li);
+	        		} 
+				}
+	        }
+		}
+        loader(parentUl, false);
+		var nextParentId = parents[ index + 1 ]["id"];
+		var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
+		nextParentLi.find(".minibutton").first().addClass("selected");
+		var nextParentUl = nextParentLi.find("ul") ;
+		if ( index < parents.length - 3 ) {
+			var nextUrl = "/get-children/"+nextParentId;
+			index++;
+			load_branch_rec(nextParentUl, nextUrl, parents, index, load_branch_rec);
+		}
+    });
+}
+
+/*
+ * loads a branch for one variable 
+ * i.e., the t, m, s triplet and the upper class (trait class)
+ *
+ */
+load_branch_variable = function(varId){
+
+	$("ul#root").find(".minibutton").removeClass("selected");
+	$("ul#root").find("a.minibutton").first().addClass("selected");
+	var parentUl = $( "ul#root ul" );
+	var parentIndex = 0;
+
+    $.getJSON("/get-term-parents/"+encodeURIComponent(varId), function( arr_parents ) {
+		parents = arr_parents[arr_parents.length - 1] ;// for TD: [0] = root, [1] = trait class, [2] = T, [3] = M, [4] = S, [5]= V. XXX For OBO, may be different
+
+		// recursively load the branches for the root, the trait classes, the traits, the methods of the variable
+		load_branch_rec(parentUl, "/get-children/"+ parents[parentIndex]["id"], parents, parentIndex, load_branch_rec);
+	});
+}
+ 
  
 function mylogin() {
     var jmylogin = $("#mylogin");
@@ -1685,8 +1768,8 @@ function LoadOntology(ontoId) {
             DEFAULT_LANGUAGE = $('select[name=language]').val()
         }
     });
-	// get variables
-	get_variables(ontoId+":ROOT");
+//	// get variables
+//	get_variables(ontoId+":ROOT");
 }
 function get_variables(id){
 
@@ -1716,15 +1799,15 @@ var load_variable = (function(){
 	// select variable
     $(this).addClass("selected");
 
-	term_loader(true);
-	
-	
     var name = $(this).text();
     var id = $(this).attr("title");
 
-// XXX GET PARENTS	    var parent = li.parent();
+	// expand and highlight trait method, scale and trait class of the variable
+	load_branch_variable(id);
+
     var attributes = {};
     
+	  term_loader(true);
     $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
