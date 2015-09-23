@@ -878,6 +878,7 @@ load_branch = function(parent, url, cb) {
  * @index - index to go through the object parents
  */
 load_branch_rec = function(parentUl, url, parents, index) {
+	var count = index;
 
     $.getJSON(url, function(children) {
 
@@ -919,31 +920,30 @@ load_branch_rec = function(parentUl, url, parents, index) {
 	        }
 		}
         loader(parentUl, false);
-		var nextParentId = parents[ index + 1 ]["id"];
+		var nextParentId = parents[ count + 1 ]["id"];
 		var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
 		nextParentLi.find(".minibutton").first().addClass("selected");
 		var nextParentUl = nextParentLi.find("ul") ;
-		if ( index < parents.length - 3 ) {
+		if ( count < parents.length - 2 ) {
 			var nextUrl = "/get-children/"+nextParentId;
-			index++;
-			load_branch_rec(nextParentUl, nextUrl, parents, index, load_branch_rec);
+			count += 1;
+			load_branch_rec(nextParentUl, nextUrl, parents, count, load_branch_rec);
 		}
     });
 }
 
 /*
- * loads a branch for one variable 
- * i.e., the t, m, s triplet and the upper class (trait class)
- *
+ * loads a branch for a term 
+ * i.e., expands the parents of the term
  */
-load_branch_variable = function(varId){
+load_branch_term = function(id){
 
 	$("ul#root").find(".minibutton").removeClass("selected");
 	$("ul#root").find("a.minibutton").first().addClass("selected");
 	var parentUl = $( "ul#root ul" );
 	var parentIndex = 0;
 
-    $.getJSON("/get-term-parents/"+encodeURIComponent(varId), function( arr_parents ) {
+    $.getJSON("/get-term-parents/"+encodeURIComponent(id), function( arr_parents ) {
 		parents = arr_parents[arr_parents.length - 1] ;// for TD: [0] = root, [1] = trait class, [2] = T, [3] = M, [4] = S, [5]= V. XXX For OBO, may be different
 
 		// recursively load the branches for the root, the trait classes, the traits, the methods of the variable
@@ -1767,9 +1767,41 @@ function LoadOntology(ontoId) {
             // set it to whatever it is
             DEFAULT_LANGUAGE = $('select[name=language]').val()
         }
+		if (termid != ""){ // LoadOntology() runs after /terms/termid/termname has been called
+			
+			// load the tree that shows the parents of the term and the term
+			load_branch_term(termid);
+			
+			// get the variables related to the term
+			get_variables(termid);
+
+			// load the attributes of the term
+			term_loader(true);
+    		var attributes = {};
+    		$.getJSON("/get-attributes/"+encodeURIComponent(termid), function(this_attrs) {
+    		    $.each(this_attrs, function(i) {
+    		        attributes[this_attrs[i].key] = this_attrs[i].value;
+    		    });
+
+    		    // let's show the attributes
+				var name = translate(currUser, attributes["name"]).translation;
+    		    show_attributes(termid, name, attributes);
+    		    term_loader(false);
+    		});
+
+			// get comments on term
+    		$.get("/get-comments", {termId: termid}, function(data){
+    		    comments.load(data);
+    		}, "json");
+
+    		// build graph for term
+    		var $graph = $("#graph");
+    		$.getJSON("/get-term-parents/"+termid, function(data) {
+    		  $graph.show();
+    		  buildGraph($graph, data);
+    		});
+		}
     });
-//	// get variables
-//	get_variables(ontoId+":ROOT");
 }
 function get_variables(id){
 
@@ -1779,13 +1811,19 @@ function get_variables(id){
     $.getJSON("/get-variables/"+id, function(variables) {
 		if ( variables.length > 0 ){
 			$( ".browser-variables" ).show();
-			for ( i in variables ){
-				$( ".browser-content .cont .variables" ).show();
-				var variableName = translate(currUser, variables[i].name).translation;
-
-				var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+			$( ".browser-content .cont .variables" ).show();
+			if ( variables.length == 1 && variables[0].isVariable){ // get_variables(variable ID) -> make the style of the minibutton as selected 
+				var variableName = translate(currUser, variables[0].name).translation;
+				var varButton = "<a class='minibutton' title='"+variables[0].id+"'><span>"+ variableName +"</span></a>";
 				$( ".browser-content .cont .variables " ).append( varButton );
-				
+				$( ".browser-content .cont .variables .minibutton" ).addClass("selected");
+			} else {
+				for ( i in variables ){
+					var variableName = translate(currUser, variables[i].name).translation;
+					var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+					$( ".browser-content .cont .variables " ).append( varButton );
+					
+				}
 			}
 		}
 	// set function to get variable information		
@@ -1794,20 +1832,20 @@ function get_variables(id){
 };
 
 var load_variable = (function(){
+
     // first deselect everything
     $(".minibutton").removeClass("selected");
 	// select variable
-    $(this).addClass("selected");
-
+	$(this).addClass("selected");
     var name = $(this).text();
-    var id = $(this).attr("title");
+	var id = $(this).attr("title");
 
-	// expand and highlight trait method, scale and trait class of the variable
-	load_branch_variable(id);
-
-    var attributes = {};
+	// expand and highlight the term and its parents
+	load_branch_term(id);
     
-	  term_loader(true);
+	// get term attributes
+	term_loader(true);
+    var attributes = {};
     $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
@@ -1817,13 +1855,13 @@ var load_variable = (function(){
         show_attributes(id, name, attributes);
         term_loader(false);
     });
-	    // get comments
+
+	// get comments on term
     $.get("/get-comments", {termId: id}, function(data){
         comments.load(data);
     }, "json");
 
-// manage parent() first
-    // build graph
+    // build graph for term
     var $graph = $("#graph");
     $.getJSON("/get-term-parents/"+id, function(data) {
       $graph.show();
@@ -2240,9 +2278,10 @@ $(document).ready(function(){
       if(user && ontologyid !== "")
           Editable.init(ontologyid);
 
-      if(termid !== "") {
-          Term.init(termid);
-          expand_collapse();
+      if(termid !== "") { // it means that the document is loaded after the call /terms/termid/termname
+        expand_collapse();
+		var ontoId = termid.split(":")[0];
+		LoadOntology(ontoId);
       }
 
         /*

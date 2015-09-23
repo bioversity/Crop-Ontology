@@ -630,12 +630,12 @@ apejs.urls = {
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
 
-            var parentId = matches[1];
-            if(!parentId)
+            var id = matches[1];
+            if(!id)
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
 
-			var cropId = parentId.split(":")[0];
-			var IdRight = parentId.split(":")[1];
+			var cropId = id.split(":")[0];
+			var IdRight = id.split(":")[1];
 
             try {
 
@@ -657,7 +657,7 @@ apejs.urls = {
 				// case 2: a trait class has been loaded -> get the traits of the class and display all variables that are children of the traits
 				} else if ( /^[a-z A-Z]+$/.test(IdRight) ) {
 	                var traits = googlestore.query("term")
-	                                .filter("parent", "=", parentId)
+	                                .filter("parent", "=", id)
 	                                .fetch();
                 	traits.forEach(function(trait) {
 						var variables = googlestore.query("term")
@@ -673,18 +673,29 @@ apejs.urls = {
 						});
 					});
 
-				// case 3: a trait, a method or a scale i.e., a term with an digit ID has been loaded -> display all variables that are children of this term
-				} else if ( /^\d+$/.test(IdRight) ) {
-	                var variables = googlestore.query("term")
-	                                .filter("parent", "=", parentId)
-	                                .filter("relationship", "=", "variable_of")
-	                                .fetch();
-                	variables.forEach(function(term) {
-                	    ret.push({
-                	        "id": ""+term.getProperty("id"),
-                	        "name": ""+term.getProperty("Variable name")
-                	    });
-                	});
+				} else if ( /^\d+$/.test(IdRight) ) { // a term with a digit ID has been loaded
+                	var termKey = googlestore.createKey("term", id),
+                    termEntity = googlestore.get(termKey);
+					if (termEntity.getProperty("relationship") == "variable_of" ){
+						// case 3: id is a variable
+						ret.push({
+							"id": ""+id,
+							"name": ""+ termEntity.getProperty("Variable name"),
+							"isVariable": true
+						})
+					} else {
+					// case 4: the id is the id of a trait, a method or a scale -> display all variables that are children of this term
+	                	var variables = googlestore.query("term")
+	                	                .filter("parent", "=", id)
+	                	                .filter("relationship", "=", "variable_of")
+	                	                .fetch();
+                		variables.forEach(function(term) {
+                		    ret.push({
+                		        "id": ""+term.getProperty("id"),
+                		        "name": ""+term.getProperty("Variable name")
+                		    });
+                		});
+					}
 				}
 
                 // sort results by name
