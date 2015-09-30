@@ -210,8 +210,16 @@ Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikip
     <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
 </ul>
 
+<h2>Retrieve all Comments from an Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-comments-onto/?ontoId={ontologyId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> a JSON object that lists the comments and the details about the comments' authors. Comments are grouped by terms</li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_321"></span></li>
+</ul>
+
 </div><!-- /api_left -->
-<div class="api_right">
+<div class="api_right" style="margin-top:40px">
     <div id="disqus_thread"></div>
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */

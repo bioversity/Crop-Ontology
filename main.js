@@ -1322,6 +1322,60 @@ apejs.urls = {
             googlestore.put(comment);
         }
     },
+    "/get-comments-onto" : {
+        get: function(request, response) {
+            var ontoId = request.getParameter("ontoId");
+            if(ontoId == "" || !ontoId) {
+                response.sendError(response.SC_BAD_REQUEST, "missing paramaters");
+                return;
+            }
+            // get all the comments published on an ontology
+            try {
+                var comments = googlestore.query("comment")
+                    .filter("ontology_id", "=", ontoId)
+					.sort("termId", "ASC")
+					.sort("created", "ASC") // XXX this does not sort dates, but it is a bit useful because it sorts the comments published on the same day
+                    .fetch();
+                var ret = {};
+                for(var i=0; i<comments.length; i++) {
+                    var comment = comments[i];
+					var termId = "" + comment.getProperty("termId");
+					var term = googlestore.query("term")
+						.filter("id", "=", termId)
+						.fetch();
+                    var author = false;
+					var term;
+                    try {
+                        author = googlestore.get(comment.getProperty("userKey"));
+                    } catch(e) {
+                    }
+
+                    if(author) {
+						var termName = "";
+						if ( term[0] ){
+							var termName = translate(term[0].getProperty("name"));
+						}
+						var key = termId + " " + termName; 
+						if (!ret[ key ]){
+							ret[ key ] = [];
+						}
+
+                        ret[ key ].push({
+                            "date": ""+comment.getProperty("created"),
+                            "comment": ""+comment.getProperty("comment").getValue(),
+                            "username": ""+author.getProperty("username"),
+                            "last name, first name": ""+author.getProperty("sirname") + ", " + author.getProperty("name"),
+                            "institution": ""+author.getProperty("institution")
+                           // "email": ""+author.getProperty("email")
+                        });
+                    }
+                }
+            	print(response).json(ret, request.getParameter("callback"));
+            } catch(e) {
+                return response.sendError(response.SC_BAD_REQUEST, e);
+            }
+        }
+    },
     "/get-comments" : {
         get: function(request, response) {
             var termId = request.getParameter("termId");
