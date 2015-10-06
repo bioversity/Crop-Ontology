@@ -25,14 +25,20 @@ function addRow(obj, par) {
     // replace slasehs with dashes because then url goes crazy
     var escapedName = obj.ontology_name.replace("/", "-");
 
-    if(obj.oboTerms == 0)
+    if(obj.onto_type.indexOf("OBO") == -1)
         $row.find("h3").addClass("template");
 
     $row.find("h3 a.term").attr("title", obj.ontology_name)
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName)
                 .text(obj.ontology_name);
 
-    $row.find("h3 small").text((obj.oboTerms || obj.tot) + " terms");
+	if(obj.onto_type == "TDv5" || obj.onto_type == "OBOvar" ){
+	    $row.find("h3 small").text(obj.tot + " variables");
+	} else if (obj.onto_type == "TDv4") {
+	    $row.find("h3 small").text(obj.tot + " traits");
+	} else if (obj.onto_type =="OBO") {
+	    $row.find("h3 small").text(obj.tot + " terms");
+	} 
 
     $row.find(".comments_rss")
                 .attr("href", "/ontology/"+obj.ontology_id+"/"+escapedName+"/rss");

@@ -640,9 +640,32 @@ apejs.urls = {
             try {
 
                 var ret = [];
+				
+            	var termKey = googlestore.createKey("term", id),
+                termEntity = googlestore.get(termKey);
+				if (termEntity.getProperty("obo_blob_key")){
+					// case 1 : we are on an OBO
+					
+					// get crop name (used to get the variable namespace)
+					var onto = googlestore.query("ontology")
+									.filter("ontology_id", "=", cropId)
+									.fetch()
+					var cropName = onto[0].getProperty("ontology_name")
+					
+					// get the OBO variables
+	            	var variables = googlestore.query("term")
+	            	                .filter("parent", "=", id)
+	            	            	.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms have "namespace: <crop>Variable"
+	            	                .fetch();
 
-				// case 1: we are on ROOT -> display all variables of the onto
-				if ( IdRight == "ROOT" ){
+            		variables.forEach(function(term) {
+            		    ret.push({
+            		        "id": ""+term.getProperty("id"),
+            		        "name": ""+term.getProperty("name")
+            		    });
+					});
+				} else if ( IdRight == "ROOT" ){
+					// case 2 (TDv5): we are on ROOT -> display all variables of the onto
 	                var variables = googlestore.query("term")
 	                                .filter("ontology_id", "=", cropId)
 	                                .filter("relationship", "=", "variable_of")
@@ -654,7 +677,7 @@ apejs.urls = {
                 	    });
                 	});
 
-				// case 2: a trait class has been loaded -> get the traits of the class and display all variables that are children of the traits
+				// case 3 (TDv5): a trait class has been loaded -> get the traits of the class and display all variables that are children of the traits
 				} else if ( /^[a-z A-Z]+$/.test(IdRight) ) {
 	                var traits = googlestore.query("term")
 	                                .filter("parent", "=", id)
@@ -674,20 +697,18 @@ apejs.urls = {
 					});
 
 				} else if ( /^\d+$/.test(IdRight) ) { // a term with a digit ID has been loaded
-                	var termKey = googlestore.createKey("term", id),
-                    termEntity = googlestore.get(termKey);
 					if (termEntity.getProperty("relationship") == "variable_of" ){
-						// case 3: id is a variable
+						// case 4 (TDv5): id is a variable
 						ret.push({
 							"id": ""+id,
 							"name": ""+ termEntity.getProperty("Variable name"),
 							"isVariable": true
 						})
 					} else {
-					// case 4: the id is the id of a trait, a method or a scale -> display all variables that are children of this term
+					// case 5 (TDv5): the id is the id of a trait, a method or a scale -> display all variables that are children of this term
 	                	var variables = googlestore.query("term")
 	                	                .filter("parent", "=", id)
-	                	                .filter("relationship", "=", "variable_of")
+	                                	.filter("relationship", "=", "variable_of")
 	                	                .fetch();
                 		variables.forEach(function(term) {
                 		    ret.push({
@@ -2048,26 +2069,60 @@ apejs.urls = {
                         username = user.getProperty("username"); 
                         userid = user.getKey().getId();
                     }
-                    // get all terms for this ontology
-                    // maybe we can cache this... let's see how it performs
-                    var terms = googlestore.query("term") 
+					// get crop name (used to get the variable namespace)
+					cropName = onto.getProperty("ontology_name")
+					// case 1: onto = TDv5
+					// get all the variables for this ontology
+                    var variables = googlestore.query("term") 
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
-                                  .filter("Crop", "!=", null)
+                                  .filter("relationship", "=", "variable_of")
                                   .fetch();
-                    // get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
-                    var oboTerms = googlestore.query("term")
+
+					var total = variables.length;
+					var ontoType;
+
+					if(total > 0){ 
+					ontoType = "TDv5";
+					} else {
+					// case 2: onto = TDv4
+						// let's get the number of traits (number of triplets T-M-S is expensive to get)
+	                    var traits = googlestore.query("term") 
+	                                  .filter("ontology_id", "=", onto.getProperty("ontology_id"))
+	                                  .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
+	                                  .fetch();
+						total = traits.length;
+						if (total > 0) { 
+							ontoType = "TDv4";
+						} else {
+							// case 3: onto = OBO with variables
+		                    // get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
+    		                var oboTerms = googlestore.query("term")
                                     .filter("ontology_id", "=", onto.getProperty("ontology_id"))
                                     .filter("obo_blob_key", "!=", null)
+	            	            	.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms have "namespace: <crop>Variable"
                                     .fetch();
-
+							total = oboTerms.length;
+							if ( total > 0 ){
+								ontoType = "OBOvar";
+							} else {
+								// case 4: onto = any OBO
+	    	                	var oboTerms = googlestore.query("term")
+    	                    	            .filter("ontology_id", "=", onto.getProperty("ontology_id"))
+        	                	            .filter("obo_blob_key", "!=", null)
+            	            	            .fetch();
+								total = oboTerms.length;
+								ontoType = "OBO";
+							}
+						}
+					}
                     categories[key].push({
                         ontology_id: ""+onto.getProperty("ontology_id"),
                         ontology_name: ""+onto.getProperty("ontology_name"),
                         ontology_summary: ""+onto.getProperty("ontology_summary"),
                         username: ""+username,
                         userid: ""+userid,
-                        tot: terms.length,
-                        oboTerms: oboTerms.length
+                        tot: ""+total,
+						onto_type: ontoType
                     });
                 }
             });
