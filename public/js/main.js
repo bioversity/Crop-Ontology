@@ -552,6 +552,8 @@ load_term = function(li) {
         comments.load(data);
     }, "json");
 
+	// get the variables of the loaded term
+	get_variables(id);
 
     // build graph
     var $graph = $("#graph");
@@ -602,7 +604,10 @@ function make_li(obj, last) {
     var has_children = obj.has_children,
         relationship = obj.relationship,
         hitarea,
-        has_method = (!obj.has_children && obj.method && obj.method !== "null");
+        has_method = (!obj.has_children && obj.method && obj.method !== "null"),
+		is_scale = (relationship == "scale_of") ;
+	
+	// the scale has children but 
 
     var li = $("<li></li>");
     if(last)
@@ -611,12 +616,12 @@ function make_li(obj, last) {
     // add a hidden input to track the id of this node
     li.append('<input type="hidden" class="id" value="'+id+'" />');
  
-    if(has_children || has_method){
+    if( (has_children || has_method) && (!is_scale) ){
         li.addClass("expandable");
         hitarea = $('<div class="hitarea expandable-hitarea"></div>'); 
         li.append(hitarea);
     }
-    if(last && (has_children || has_method)) {
+    if(last && (!is_scale) && (has_children || has_method)) {
         li.addClass("lastExpandable");
         hitarea.addClass("lastExpandable-hitarea");
     }
@@ -807,19 +812,137 @@ load_branch = function(parent, url, cb) {
         
         for(var i=0,len=children.length; i<len; i++) {
             var child = children[i];
-            var last = false;
-            if(i == (children.length-1))
-                last = true;
+			// display child only if term is not a variable
+			if (child.relationship != "variable_of"){
+            	var last = false;
+	            if(i == (children.length-1) || 
+					( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+					){
+    	            last = true;
+				}
 
-            var li = make_li(child, last);
-            parent.append(li);
-            
+	            var li = make_li(child, last);
+    	        parent.append(li);
+        	}    
         }
          
         loader(parent, false);
         if(cb) cb(li);
     });
 }
+/*
+ * (function adapted from load_branch)
+ * It recursively loads the branches of the tree so that it shows a varible in a full tree
+ * @parentUl - the container of the branch, a jquery DOM element (<ul>); 
+ *           this gets populated with the elements (<li>)
+ * @url - /get-children/<parent ID>
+ * @parents - the output object of /get-terms-parents/id the branches to expand
+ * @branchIndex - index to move from branch to branch (like Tarzan)
+ * @parentIndex - index to move from parent to parent inside a branch
+ */
+load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
+    $.getJSON(url, function(children) {
+		var maxBoucleOne = parents.length;
+		var maxBoucleTwo = parents[ branchIndex ].length;
+		while (branchIndex < parents.length){
+			while (parentIndex < parents[branchIndex].length) {
+				// set parent style as expanded
+				var parentLi = parentUl.parent();
+        		parentLi.removeClass("expandable");
+        		parentLi.addClass("collapsable");
+        		var hitarea = parentLi.find(".hitarea").first();
+        		hitarea.removeClass("expandable-hitarea");
+        		hitarea.addClass("collapsable-hitarea");
+        		if(parentLi.hasClass("lastExpandable")) {
+        			parentLi.removeClass("lastExpandable");
+        		    parentLi.addClass("lastCollapsable");
+        		    hitarea.removeClass("lastExpandable-hitarea");
+        		    hitarea.addClass("lastCollapsable-hitarea");
+        		}
+    			loader(parentUl, true);
+	    		parentUl.show();
+				// make the li for each child
+				if(!parentUl.children().length) {
+	    		    for(var i=0,len=children.length; i<len; i++) {
+	    		        var child = children[i];
+						var childId = child["id"];
+						if (child.relationship != "variable_of"){	// display child only if term is not a variable
+	    		        	var last = false;
+				            if(i == (children.length-1) || 
+								( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+								){
+	    			            last = true;
+							}
+							// make the new list item
+				            var li = make_li(child, last);
+	    			        parentUl.append(li);
+	    		    	} 
+	    		    }
+				}
+        		loader(parentUl, false);
+			
+				// select the next parent on the branch
+				var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
+				var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
+				nextParentLi.find(".minibutton").first().addClass("selected");
+				var nextParentUl = nextParentLi.find("ul") ;
+				// define the last parent on the branch to expand
+				var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
+				if ( endBranchTermRel == "variable_of"){
+					var maxParentIndex = parents[ branchIndex ].length -2 ;
+				} else {
+					var maxParentIndex = parents[ branchIndex ].length -1 ;
+				}
+				
+				var check = parents[ branchIndex ].length - 1 ; // XXX
+				// expand the branch under the next parent
+				if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
+					var nextUrl = "/get-children/"+nextParentId;
+					parentIndex  +=1 ;
+					load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
+				} else {
+					parentIndex++ ;
+				}
+			}
+			// start next branch
+			branchIndex++;
+			parentIndex = 0;
+			parentUl = $( "ul#root ul" );
+//			load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
+		}
+			
+
+    });
+}
+
+
+/*
+ * loads a branch for a term 
+ * i.e., expands the parents of the term
+ */
+load_branch_term = function(id){
+
+	$("ul#root").find(".minibutton").removeClass("selected");
+	$("ul#root").find("a.minibutton").first().addClass("selected");
+	var parentUl = $( "ul#root ul" );
+
+    $.getJSON("/get-term-parents/"+encodeURIComponent(id), function( parents ) {
+		lastBranch = parents[parents.length - 1];
+		var rel = lastBranch[lastBranch.length -1]["relationship"];//relationship of the last child
+
+		if (rel == "variable_of"){
+			// parents is an array with the different branches that contain the term
+			// a variable is child of a T, a M and a S. For a variable, arr_parents is composed of 3 branches but which are actually the same branch. So let's take only the branch of the scale (the last one in parents) 		
+			// recursively load the branches for the root, the trait classes, the traits, the methods of the variable
+			var branchIndex = parents.length -1;
+		} else {
+			var branchIndex = 0;
+		}
+		var parentIndex = 0;
+		load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
+	});
+}
+ 
  
 function mylogin() {
     var jmylogin = $("#mylogin");
@@ -946,6 +1069,7 @@ function buildGraph($cont, data) {
  * clicks, mouseovers etc etc..
  */
 var events = function(){
+
     // right navigation
     $("ul.sorts li").click(function(){
         var $this = $(this);
@@ -1647,8 +1771,108 @@ function LoadOntology(ontoId) {
             // set it to whatever it is
             DEFAULT_LANGUAGE = $('select[name=language]').val()
         }
+		if (termid != ""){ // LoadOntology() runs after /terms/termid/termname has been called
+			
+			// load the tree that shows the parents of the term and the term
+			load_branch_term(termid);
+			
+			// get the variables related to the term
+			get_variables(termid);
+
+			// load the attributes of the term
+			term_loader(true);
+    		var attributes = {};
+    		$.getJSON("/get-attributes/"+encodeURIComponent(termid), function(this_attrs) {
+    		    $.each(this_attrs, function(i) {
+    		        attributes[this_attrs[i].key] = this_attrs[i].value;
+    		    });
+
+    		    // let's show the attributes
+				var name = translate(currUser, attributes["name"]).translation;
+    		    show_attributes(termid, name, attributes);
+    		    term_loader(false);
+    		});
+
+			// get comments on term
+    		$.get("/get-comments", {termId: termid}, function(data){
+    		    comments.load(data);
+    		}, "json");
+
+    		// build graph for term
+    		var $graph = $("#graph");
+    		$.getJSON("/get-term-parents/"+termid, function(data) {
+    		  $graph.show();
+    		  buildGraph($graph, data);
+    		});
+		}
     });
 }
+function get_variables(id){
+
+	// first, remove all the variables that are displayed, if any
+	$( ".browser-content .cont .variables" ).text("");
+
+    $.getJSON("/get-variables/"+id, function(variables) {
+		if ( variables.length > 0 ){
+			$( ".browser-variables" ).show();
+			$( ".browser-content .cont .variables" ).show();
+			if ( variables.length == 1 && variables[0].isVariable){ // get_variables(variable ID) -> make the style of the minibutton as selected 
+				var variableName = translate(currUser, variables[0].name).translation;
+				var varButton = "<a class='minibutton' title='"+variables[0].id+"'><span>"+ variableName +"</span></a>";
+				$( ".browser-content .cont .variables " ).append( varButton );
+				$( ".browser-content .cont .variables .minibutton" ).addClass("selected");
+			} else {
+				for ( i in variables ){
+					var variableName = translate(currUser, variables[i].name).translation;
+					var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+					$( ".browser-content .cont .variables " ).append( varButton );
+					
+				}
+			}
+		}
+	// set function to get variable information		
+	$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);
+    });
+};
+
+var load_variable = (function(){
+
+    // first deselect everything
+    $(".minibutton").removeClass("selected");
+	// select variable
+	$(this).addClass("selected");
+    var name = $(this).text();
+	var id = $(this).attr("title");
+
+	// expand and highlight the term and its parents
+	load_branch_term(id);
+    
+	// get term attributes
+	term_loader(true);
+    var attributes = {};
+    $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
+        $.each(this_attrs, function(i) {
+            attributes[this_attrs[i].key] = this_attrs[i].value;
+        });
+
+        // let's show the attributes
+        show_attributes(id, name, attributes);
+        term_loader(false);
+    });
+
+	// get comments on term
+    $.get("/get-comments", {termId: id}, function(data){
+        comments.load(data);
+    }, "json");
+
+    // build graph for term
+    var $graph = $("#graph");
+    $.getJSON("/get-term-parents/"+id, function(data) {
+      $graph.show();
+      buildGraph($graph, data);
+    });
+});
+	
 
 /**
  * Checks if this login user can edit this ontology
@@ -2113,9 +2337,10 @@ $(document).ready(function(){
       if(user && ontologyid !== "")
           Editable.init(ontologyid);
 
-      if(termid !== "") {
-          Term.init(termid);
-          expand_collapse();
+      if(termid !== "") { // it means that the document is loaded after the call /terms/termid/termname
+        expand_collapse();
+		var ontoId = termid.split(":")[0];
+		LoadOntology(ontoId);
       }
 
         /*
