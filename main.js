@@ -3140,5 +3140,84 @@ apejs.urls = {
 
         }
     },
-};
+	"/traits/([^/]*)":{
+	  get: function(request, response, matches) {
 
+			// prepare output object
+			var ret={};
+			ret["metadata"] = {"pagination":{}, "status": []};
+			ret["result"] = [];
+
+			// get the trait
+            var id = matches[1];
+            var traits = googlestore.query("term")
+                            .filter("id", "=", id)
+                            .fetch();
+
+			traits.forEach( function(trait){
+				var traitId = trait.getProperty("id");
+
+				var object = {
+                    "traitBdId": ""+ traitId,
+                    "traitId": ""+trait.getProperty("id"),
+                    "name": ""+ translate(trait.getProperty("name"))
+				};
+
+			  	// get the variables under each trait
+//// (would be nice to use the call "/get-variables", instead of writing the query)
+//var callGetVariables = apejs.urls["/get-variables/(.*)"]["get"]; 
+//var variables = callGetVariables({ getParameter: function(){ return "";}}, null, [0, traitId]);
+				var variables = googlestore.query("term")
+			  							.filter("parent", "=", traitId)
+			  							.filter("relationship", "=", "variable_of")
+			  							.fetch()
+				object.observationVariables = [];
+				variables.forEach( function(variable){
+					object.observationVariables.push(""+variable.getProperty("id"));
+				});
+				ret["result"].push(object);
+            });
+	        print(response).json(ret);
+	  }
+	},
+	"/traits":{
+	  get: function(request, response, matches) {
+			// prepare output object
+			var ret={};
+			ret["metadata"] = {"pagination":{}, "status": []};
+			ret["result"] = [];
+
+			// get the traits 
+			// NB only the traits from TDv5
+			// Not implemented for OBOs
+	        var traits = googlestore.query("term")
+			  			 .filter("Trait", "!=", null)
+                         .fetch();
+
+			traits.forEach( function(trait){
+				var traitId = trait.getProperty("id");
+
+				var object = {
+                    "traitBdId": ""+ traitId,
+                    "traitId": ""+trait.getProperty("id"),
+                    "name": ""+ translate(trait.getProperty("name"))
+				};
+
+			  	// get the variables under each trait
+//// (would be nice to use the call "/get-variables", instead of writing the query)
+//var callGetVariables = apejs.urls["/get-variables/(.*)"]["get"]; 
+//var variables = callGetVariables({ getParameter: function(){ return "";}}, null, [0, traitId]);
+				var variables = googlestore.query("term")
+			  							.filter("parent", "=", traitId)
+			  							.filter("relationship", "=", "variable_of")
+			  							.fetch()
+				object.observationVariables = [];
+				variables.forEach( function(variable){
+					object.observationVariables.push(""+variable.getProperty("id"));
+				});
+				ret["result"].push(object);
+            });
+	        print(response).json(ret);
+	  }
+	},
+};
