@@ -546,7 +546,7 @@ exports = {
                     }
                 }); 
                
-            } else { ///Trait Dictionnary
+            } else if(terms[1].getProperty("Crop")) {  // TD v4
 
                 terms.forEach(function(term){
                     // var ibfieldbook = term.getProperty("ibfieldbook");
