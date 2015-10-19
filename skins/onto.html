@@ -1,8 +1,16 @@
-            <div class="left">
+			<div class="left">
 				<h2>Traits, methods and scales</h2>
 				<div class="browser-content"> 
             	    <a href="#" class="print-button rounded-button download-button">DOWNLOAD</a>
-            	    <a href="#!/ibfieldbook" class="ibfieldbook-button rounded-button">Show IBFieldbook list</a>
+            	    <a href="#!/ibfieldbook" class="ibfieldbook-button rounded-button" style="display:none">Show IBFieldbook list</a>
+            	    <a href="#" class="variables-button rounded-button" style="display:none"></a>
+					<script>
+						if (termid != ""){
+						  $(".variables-button").text("hide obsolete terms");
+						} else {
+						  $(".variables-button").text("show obsolete terms");
+						}
+					</script>
             	    <a href="#" class="edit-button rounded-button" style="display: none;">EDIT</a>
             	    <div class="languages_refresh" style="float:right"></div>
             	    <div class="edit_box" style="display: none;">

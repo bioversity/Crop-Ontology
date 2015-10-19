@@ -807,24 +807,44 @@ load_branch = function(parent, url, cb) {
     loader(parent, true);
  
     parent.show();
+	
+	var var_button = $(".variables-button").text();
  
     $.getJSON(url, function(children) {
         
-        for(var i=0,len=children.length; i<len; i++) {
-            var child = children[i];
-			// display child only if term is not a variable
-			if (child.relationship != "variable_of"){
-            	var last = false;
-	            if(i == (children.length-1) || 
-					( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
-					){
-    	            last = true;
-				}
-
-	            var li = make_li(child, last);
-    	        parent.append(li);
-        	}    
-        }
+		if ( var_button == "show obsolete terms") {
+	        for(var i=0,len=children.length; i<len; i++) {
+	            var child = children[i];
+				// display child only if term is not a variable and if term is not a deprecated/obsolete term
+				if (child.relationship != "variable_of" && translate("EN", child.trait_status).translation.toLowerCase() != "deprecated" && translate("EN", child.trait_status).translation.toLowerCase() != "obsolete"){
+	            	var last = false;
+		            if(i == (children.length-1) || 
+						( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+						){
+	    	            last = true;
+					}
+	
+		            var li = make_li(child, last);
+	    	        parent.append(li);
+	        	}    
+	        }
+		} else {
+	        for(var i=0,len=children.length; i<len; i++) {
+	            var child = children[i];
+				// display child only if term is not a variable and if term is not a deprecated/obsolete term
+				if (child.relationship != "variable_of"){
+	            	var last = false;
+		            if(i == (children.length-1) || 
+						( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+						){
+	    	            last = true;
+					}
+	
+		            var li = make_li(child, last);
+	    	        parent.append(li);
+	        	}    
+	        }
+		}
          
         loader(parent, false);
         if(cb) cb(li);
@@ -842,76 +862,146 @@ load_branch = function(parent, url, cb) {
  */
 load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
     $.getJSON(url, function(children) {
-		var maxBoucleOne = parents.length;
-		var maxBoucleTwo = parents[ branchIndex ].length;
-		while (branchIndex < parents.length){
-			while (parentIndex < parents[branchIndex].length) {
-				// set parent style as expanded
-				var parentLi = parentUl.parent();
-        		parentLi.removeClass("expandable");
-        		parentLi.addClass("collapsable");
-        		var hitarea = parentLi.find(".hitarea").first();
-        		hitarea.removeClass("expandable-hitarea");
-        		hitarea.addClass("collapsable-hitarea");
-        		if(parentLi.hasClass("lastExpandable")) {
-        			parentLi.removeClass("lastExpandable");
-        		    parentLi.addClass("lastCollapsable");
-        		    hitarea.removeClass("lastExpandable-hitarea");
-        		    hitarea.addClass("lastCollapsable-hitarea");
-        		}
-    			loader(parentUl, true);
-	    		parentUl.show();
-				// make the li for each child
-				if(!parentUl.children().length) {
-	    		    for(var i=0,len=children.length; i<len; i++) {
-	    		        var child = children[i];
-						var childId = child["id"];
-						if (child.relationship != "variable_of"){	// display child only if term is not a variable
-	    		        	var last = false;
-				            if(i == (children.length-1) || 
-								( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
-								){
-	    			            last = true;
-							}
-							// make the new list item
-				            var li = make_li(child, last);
-	    			        parentUl.append(li);
-	    		    	} 
-	    		    }
+			var maxBoucleOne = parents.length;
+			var maxBoucleTwo = parents[ branchIndex ].length;
+
+			var var_button = $(".variables-button").text();
+			if ( var_button == "show obsolete terms") { // display only non-obsolete terms
+
+				while (branchIndex < parents.length){
+					while (parentIndex < parents[branchIndex].length) {
+						// set parent style as expanded
+						var parentLi = parentUl.parent();
+	    	    		parentLi.removeClass("expandable");
+	    	    		parentLi.addClass("collapsable");
+	    	    		var hitarea = parentLi.find(".hitarea").first();
+	    	    		hitarea.removeClass("expandable-hitarea");
+	    	    		hitarea.addClass("collapsable-hitarea");
+	    	    		if(parentLi.hasClass("lastExpandable")) {
+	    	    			parentLi.removeClass("lastExpandable");
+	    	    		    parentLi.addClass("lastCollapsable");
+	    	    		    hitarea.removeClass("lastExpandable-hitarea");
+	    	    		    hitarea.addClass("lastCollapsable-hitarea");
+	    	    		}
+	    				loader(parentUl, true);
+			    		parentUl.show();
+						// make the li for each child
+						if(!parentUl.children().length) {
+			    		    for(var i=0,len=children.length; i<len; i++) {
+			    		        var child = children[i];
+								var childId = child["id"];
+								// display child only if term is not a variable and if term is not a deprecated/obsolete term
+								if (child.relationship != "variable_of" && translate("EN", child.trait_status).translation.toLowerCase() != "deprecated" && translate("EN", child.trait_status).translation.toLowerCase() != "obsolete"){
+			    		        	var last = false;
+						            if(i == (children.length-1) || 
+										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+										){
+			    			            last = true;
+									}
+									// make the new list item
+						            var li = make_li(child, last);
+			    			        parentUl.append(li);
+			    		    	} 
+			    		    }
+						}
+	    	    		loader(parentUl, false);
+					
+						// select the next parent on the branch
+						var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
+						var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
+						nextParentLi.find(".minibutton").first().addClass("selected");
+						var nextParentUl = nextParentLi.find("ul") ;
+						// define the last parent on the branch to expand
+						var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
+						if ( endBranchTermRel == "variable_of"){
+							var maxParentIndex = parents[ branchIndex ].length -2 ;
+						} else {
+							var maxParentIndex = parents[ branchIndex ].length -1 ;
+						}
+						
+						// expand the branch under the next parent
+						if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
+							var nextUrl = "/get-children/"+nextParentId;
+							parentIndex  +=1 ;
+							load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
+						} else {
+							parentIndex++ ;
+						}
+					}
+					// start next branch
+					branchIndex++;
+					parentIndex = 0;
+					parentUl = $( "ul#root ul" );
+	//				load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
 				}
-        		loader(parentUl, false);
-			
-				// select the next parent on the branch
-				var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
-				var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
-				nextParentLi.find(".minibutton").first().addClass("selected");
-				var nextParentUl = nextParentLi.find("ul") ;
-				// define the last parent on the branch to expand
-				var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
-				if ( endBranchTermRel == "variable_of"){
-					var maxParentIndex = parents[ branchIndex ].length -2 ;
-				} else {
-					var maxParentIndex = parents[ branchIndex ].length -1 ;
-				}
-				
-				var check = parents[ branchIndex ].length - 1 ; // XXX
-				// expand the branch under the next parent
-				if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
-					var nextUrl = "/get-children/"+nextParentId;
-					parentIndex  +=1 ;
-					load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
-				} else {
-					parentIndex++ ;
+			} else { // load all terms (not only the ones that are not deprecated
+				while (branchIndex < parents.length){
+					while (parentIndex < parents[branchIndex].length) {
+						// set parent style as expanded
+						var parentLi = parentUl.parent();
+	    	    		parentLi.removeClass("expandable");
+	    	    		parentLi.addClass("collapsable");
+	    	    		var hitarea = parentLi.find(".hitarea").first();
+	    	    		hitarea.removeClass("expandable-hitarea");
+	    	    		hitarea.addClass("collapsable-hitarea");
+	    	    		if(parentLi.hasClass("lastExpandable")) {
+	    	    			parentLi.removeClass("lastExpandable");
+	    	    		    parentLi.addClass("lastCollapsable");
+	    	    		    hitarea.removeClass("lastExpandable-hitarea");
+	    	    		    hitarea.addClass("lastCollapsable-hitarea");
+	    	    		}
+	    				loader(parentUl, true);
+			    		parentUl.show();
+						// make the li for each child
+						if(!parentUl.children().length) {
+			    		    for(var i=0,len=children.length; i<len; i++) {
+			    		        var child = children[i];
+								var childId = child["id"];
+								// display child only if term is not a variable and if term is not a deprecated/obsolete term
+								if (child.relationship != "variable_of"){
+			    		        	var last = false;
+						            if(i == (children.length-1) || 
+										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+										){
+			    			            last = true;
+									}
+									// make the new list item
+						            var li = make_li(child, last);
+			    			        parentUl.append(li);
+			    		    	} 
+			    		    }
+						}
+	    	    		loader(parentUl, false);
+					
+						// select the next parent on the branch
+						var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
+						var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
+						nextParentLi.find(".minibutton").first().addClass("selected");
+						var nextParentUl = nextParentLi.find("ul") ;
+						// define the last parent on the branch to expand
+						var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
+						if ( endBranchTermRel == "variable_of"){
+							var maxParentIndex = parents[ branchIndex ].length -2 ;
+						} else {
+							var maxParentIndex = parents[ branchIndex ].length -1 ;
+						}
+						
+						// expand the branch under the next parent
+						if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
+							var nextUrl = "/get-children/"+nextParentId;
+							parentIndex  +=1 ;
+							load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
+						} else {
+							parentIndex++ ;
+						}
+					}
+					// start next branch
+					branchIndex++;
+					parentIndex = 0;
+					parentUl = $( "ul#root ul" );
+	//				load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
 				}
 			}
-			// start next branch
-			branchIndex++;
-			parentIndex = 0;
-			parentUl = $( "ul#root ul" );
-//			load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
-		}
-			
-
     });
 }
 
@@ -1771,6 +1861,41 @@ function LoadOntology(ontoId) {
             // set it to whatever it is
             DEFAULT_LANGUAGE = $('select[name=language]').val()
         }
+
+		// display filter button according to onto type
+		if(roots[0].ontologyType == "TDv4"){
+		  $(".ibfieldbook-button").show()
+		} else if(roots[0].ontologyType == "TDv5"){
+			$(".variables-button").show();
+			var incl_var = "show obsolete terms"
+			var excl_var = "hide obsolete terms"
+//			if (termid != ""){ // LoadOntology() runs after /terms/termid/termname has been called
+//			  	// all terms can potentially be accessed from terms/, so show all
+//				$(".variables-button").text(excl_var);
+//			}
+			
+			$(".variables-button").click(function(){
+				if( $(this).text() == incl_var){
+ 					$(this).text(excl_var);
+			  	} else { 
+ 					$(this).text(incl_var);
+				}
+				// clear the tree and the displayed variables
+				$(".cont ul#root ul").text("");
+				$(".cont ul#root ul").text("");
+        		$(".cont ul#root li a").removeClass("selected");
+        		$(".cont ul#root li").removeClass("collapsable");
+        		$(".cont ul#root li").removeClass("lastCollapsable");
+        		$(".cont ul#root li").addClass("expandable");
+        		$(".cont ul#root li").addClass("lastExpandable");
+        		$(".cont ul#root li .hitarea").removeClass("collapsable-hitarea");
+        		$(".cont ul#root li .hitarea").removeClass("lastCollapsable-hitarea");
+        		$(".cont ul#root li .hitarea").addClass("expandable-hitarea");
+        		$(".cont ul#root li .hitarea").addClass("lastExpandable-hitarea");
+				$(".cont .variables").text("");
+			});
+	  	}	  
+
 		if (termid != ""){ // LoadOntology() runs after /terms/termid/termname has been called
 			
 			// load the tree that shows the parents of the term and the term
@@ -1822,13 +1947,25 @@ function get_variables(id){
 				$( ".browser-content .cont .variables " ).append( varButton );
 				$( ".browser-content .cont .variables .minibutton" ).addClass("selected");
 			} else {
-				for ( i in variables ){
-					var variableName = translate(currUser, variables[i].name).translation;
-					var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
-					$( ".browser-content .cont .variables " ).append( varButton );
-					
+			  var var_button = $(".variables-button").text();
+			  if ( var_button == "show obsolete terms") { // display only non-obsolete terms
+					for ( i in variables ){
+					  	if ( translate("EN", variables[i].varStatus).translation.toLowerCase() != "obsolete" && translate("EN", variables[i].varStatus).translation.toLowerCase() != "deprecated"){
+							var variableName = translate(currUser, variables[i].name).translation;
+							var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+							$( ".browser-content .cont .variables " ).append( varButton );
+						}
+					}
+				} else { // display all variables
+					for ( i in variables ){
+					  var stat = translate("EN", variables[i].varStatus).translation.toLowerCase();
+						var variableName = translate(currUser, variables[i].name).translation;
+						var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
+						$( ".browser-content .cont .variables " ).append( varButton );
+					}
 				}
-			}
+			  } 
+
 		}
 	// set function to get variable information		
 	$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);

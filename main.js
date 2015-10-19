@@ -439,6 +439,44 @@ apejs.urls = {
 
 
                 }catch(e){}
+					// case 1: onto = TDv5
+                    var variables = googlestore.query("term") 
+                                  .filter("ontology_id", "=", ontoId)
+                                  .filter("relationship", "=", "variable_of")
+                                  .fetch();
+
+					var total = variables.length;
+					var ontoType;
+
+					if(total > 0){ 
+					ontoType = "TDv5";
+					} else {
+					// case 2: onto = TDv4
+	                    var traits = googlestore.query("term") 
+	                                  .filter("ontology_id", "=", ontoId)
+	                                  .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
+	                                  .fetch();
+						total = traits.length;
+						if (total > 0) { 
+							ontoType = "TDv4";
+						} else {
+						  //XXX does not work for OBOs
+							// case 3: onto = OBO with variables
+							var cropName = matches[2];
+    		                var oboTerms = googlestore.query("term")
+                                    .filter("ontology_id", "=", ontoId)
+                                    .filter("obo_blob_key", "!=", null)
+	            	            	.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms as "namespace: <crop>Variable"
+                                    .fetch();
+							total = oboTerms.length;
+							if ( total > 0 ){
+								ontoType = "OBOvar";
+							} else {
+								// case 4: onto = any OBO
+								ontoType = "OBO";
+							}
+						}
+					}
 
 
                 rootTerms.forEach(function(term) {
@@ -449,7 +487,8 @@ apejs.urls = {
                         "id": ""+term.getProperty("id"),
                         "name": ""+(name instanceof Text ? name.getValue() : name),
                         oboBlobKey: ''+term.getProperty('obo_blob_key'),
-                        excelBlobKey: ''+excelBlobKey
+                        excelBlobKey: ''+excelBlobKey,
+					    ontologyType: ''+ontoType
                     });
                 });
 
@@ -572,6 +611,9 @@ apejs.urls = {
 
                     var relationship = defaultRelationship(term.getProperty("relationship"));
 
+					// get the status of the trait child
+ 					var traitStatus = term.getProperty("Trait status");
+
                     // get the method of this child
                     var method = term.getProperty("Describe how measured (method)");
 
@@ -605,6 +647,7 @@ apejs.urls = {
                         "name": ""+(name instanceof Text ? name.getValue() : name),
                         "relationship": relationship,
                         "has_children": q.length,
+					    "trait_status": "" + traitStatus,
                         "method": ""+method,
                         "scales": scales
                     });
@@ -673,7 +716,8 @@ apejs.urls = {
                 	variables.forEach(function(term) {
                 	    ret.push({
                 	        "id": ""+term.getProperty("id"),
-                	        "name": ""+term.getProperty("Variable name")
+                	        "name": ""+term.getProperty("Variable name"),
+						    "varStatus": ""+term.getProperty("Variable status")
                 	    });
                 	});
 
@@ -691,7 +735,8 @@ apejs.urls = {
 						variables.forEach(function(variable){
 							ret.push({
     		                   	"id": ""+variable.getProperty("id"),
-	        	                "name": ""+variable.getProperty("Variable name")
+	        	                "name": ""+variable.getProperty("Variable name"),
+						    	"varStatus": ""+variable.getProperty("Variable status")
 							});
 						});
 					});
@@ -702,6 +747,7 @@ apejs.urls = {
 						ret.push({
 							"id": ""+id,
 							"name": ""+ termEntity.getProperty("Variable name"),
+						    "varStatus": ""+termEntity.getProperty("Variable status"),
 							"isVariable": true
 						})
 					} else {
@@ -713,7 +759,8 @@ apejs.urls = {
                 		variables.forEach(function(term) {
                 		    ret.push({
                 		        "id": ""+term.getProperty("id"),
-                		        "name": ""+term.getProperty("Variable name")
+                		        "name": ""+term.getProperty("Variable name"),
+						    	"varStatus": ""+term.getProperty("Variable status")
                 		    });
                 		});
 					}
