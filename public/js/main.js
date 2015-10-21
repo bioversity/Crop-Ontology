@@ -867,139 +867,133 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 
 			var var_button = $(".variables-button").text();
 			if ( var_button == "show obsolete terms") { // display only non-obsolete terms
-
 				while (branchIndex < parents.length){
-					while (parentIndex < parents[branchIndex].length) {
-						// set parent style as expanded
-						var parentLi = parentUl.parent();
-	    	    		parentLi.removeClass("expandable");
-	    	    		parentLi.addClass("collapsable");
-	    	    		var hitarea = parentLi.find(".hitarea").first();
-	    	    		hitarea.removeClass("expandable-hitarea");
-	    	    		hitarea.addClass("collapsable-hitarea");
-	    	    		if(parentLi.hasClass("lastExpandable")) {
-	    	    			parentLi.removeClass("lastExpandable");
-	    	    		    parentLi.addClass("lastCollapsable");
-	    	    		    hitarea.removeClass("lastExpandable-hitarea");
-	    	    		    hitarea.addClass("lastCollapsable-hitarea");
-	    	    		}
-	    				loader(parentUl, true);
-			    		parentUl.show();
-						// make the li for each child
-						if(!parentUl.children().length) {
-			    		    for(var i=0,len=children.length; i<len; i++) {
-			    		        var child = children[i];
-								var childId = child["id"];
-								// display child only if term is not a variable and if term is not a deprecated/obsolete term
-								if (child.relationship != "variable_of" && translate("EN", child.trait_status).translation.toLowerCase() != "deprecated" && translate("EN", child.trait_status).translation.toLowerCase() != "obsolete"){
-			    		        	var last = false;
-						            if(i == (children.length-1) || 
-										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
-										){
-			    			            last = true;
-									}
-									// make the new list item
-						            var li = make_li(child, last);
-			    			        parentUl.append(li);
-			    		    	} 
-			    		    }
-						}
-	    	    		loader(parentUl, false);
-					
-						// select the next parent on the branch
-						var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
-						var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
-						nextParentLi.find(".minibutton").first().addClass("selected");
-						var nextParentUl = nextParentLi.find("ul") ;
-						// define the last parent on the branch to expand
-						var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
-						if ( endBranchTermRel == "variable_of"){
-							var maxParentIndex = parents[ branchIndex ].length -2 ;
-						} else {
-							var maxParentIndex = parents[ branchIndex ].length -1 ;
-						}
-						
-						// expand the branch under the next parent
-						if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
-							var nextUrl = "/get-children/"+nextParentId;
-							parentIndex  +=1 ;
-							load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
-						} else {
-							parentIndex++ ;
-						}
+					// set parent style as expanded
+					var parentLi = parentUl.parent();
+	    	    	parentLi.removeClass("expandable");
+	    	    	parentLi.addClass("collapsable");
+	    	    	var hitarea = parentLi.find(".hitarea").first();
+	    	    	hitarea.removeClass("expandable-hitarea");
+	    	    	hitarea.addClass("collapsable-hitarea");
+	    	    	if(parentLi.hasClass("lastExpandable")) {
+	    	    		parentLi.removeClass("lastExpandable");
+	    	    	    parentLi.addClass("lastCollapsable");
+	    	    	    hitarea.removeClass("lastExpandable-hitarea");
+	    	    	    hitarea.addClass("lastCollapsable-hitarea");
+	    	    	}
+	    			loader(parentUl, true);
+			    	parentUl.show();
+					// make the li for each child
+					if(!parentUl.children().length) {
+			    	    for(var i=0,len=children.length; i<len; i++) {
+			    	        var child = children[i];
+							var childId = child["id"];
+							// display child only if term is not a variable and if term is not a deprecated/obsolete term
+							if (child.relationship != "variable_of" && translate("EN", child.trait_status).translation.toLowerCase() != "deprecated" && translate("EN", child.trait_status).translation.toLowerCase() != "obsolete"){
+			    	        	var last = false;
+					            if(i == (children.length-1) || 
+									( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+									){
+			    		            last = true;
+								}
+								// make the new list item
+					            var li = make_li(child, last);
+			    		        parentUl.append(li);
+			    	    	} 
+			    	    }
 					}
-					// start next branch
-					branchIndex++;
-					parentIndex = 0;
-					parentUl = $( "ul#root ul" );
-	//				load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
+	    	    	loader(parentUl, false);
+				
+					// select the next parent on the branch
+					var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
+					var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
+					nextParentLi.find(".minibutton").first().addClass("selected");
+					var nextParentUl = nextParentLi.find("ul") ;
+					// define the last parent on the branch to expand
+					var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
+					if ( endBranchTermRel == "variable_of"){
+						var maxParentIndex = parents[ branchIndex ].length -2 ;
+					} else {
+						var maxParentIndex = parents[ branchIndex ].length -1 ;
+					}
+					
+					// expand the branch under the next parent
+					if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
+						var nextUrl = "/get-children/"+nextParentId;
+						parentIndex  +=1 ;
+						load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
+					}
+					parentIndex +=1;
+					if (parentIndex == maxParentIndex) {
+						// start next branch
+						branchIndex +=1;
+						parentIndex = 0;
+						parentUl = $( "ul#root ul" );
+					}
 				}
 			} else { // load all terms (not only the ones that are not deprecated
 				while (branchIndex < parents.length){
-					while (parentIndex < parents[branchIndex].length) {
-						// set parent style as expanded
-						var parentLi = parentUl.parent();
-	    	    		parentLi.removeClass("expandable");
-	    	    		parentLi.addClass("collapsable");
-	    	    		var hitarea = parentLi.find(".hitarea").first();
-	    	    		hitarea.removeClass("expandable-hitarea");
-	    	    		hitarea.addClass("collapsable-hitarea");
-	    	    		if(parentLi.hasClass("lastExpandable")) {
-	    	    			parentLi.removeClass("lastExpandable");
-	    	    		    parentLi.addClass("lastCollapsable");
-	    	    		    hitarea.removeClass("lastExpandable-hitarea");
-	    	    		    hitarea.addClass("lastCollapsable-hitarea");
-	    	    		}
-	    				loader(parentUl, true);
-			    		parentUl.show();
-						// make the li for each child
-						if(!parentUl.children().length) {
-			    		    for(var i=0,len=children.length; i<len; i++) {
-			    		        var child = children[i];
-								var childId = child["id"];
-								// display child only if term is not a variable and if term is not a deprecated/obsolete term
-								if (child.relationship != "variable_of"){
-			    		        	var last = false;
-						            if(i == (children.length-1) || 
-										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
-										){
-			    			            last = true;
-									}
-									// make the new list item
-						            var li = make_li(child, last);
-			    			        parentUl.append(li);
-			    		    	} 
-			    		    }
-						}
-	    	    		loader(parentUl, false);
-					
-						// select the next parent on the branch
-						var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
-						var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
-						nextParentLi.find(".minibutton").first().addClass("selected");
-						var nextParentUl = nextParentLi.find("ul") ;
-						// define the last parent on the branch to expand
-						var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
-						if ( endBranchTermRel == "variable_of"){
-							var maxParentIndex = parents[ branchIndex ].length -2 ;
-						} else {
-							var maxParentIndex = parents[ branchIndex ].length -1 ;
-						}
-						
-						// expand the branch under the next parent
-						if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
-							var nextUrl = "/get-children/"+nextParentId;
-							parentIndex  +=1 ;
-							load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex);
-						} else {
-							parentIndex++ ;
-						}
+					// set parent style as expanded
+					var parentLi = parentUl.parent();
+	    			parentLi.removeClass("expandable");
+	    			parentLi.addClass("collapsable");
+	    			var hitarea = parentLi.find(".hitarea").first();
+	    			hitarea.removeClass("expandable-hitarea");
+	    			hitarea.addClass("collapsable-hitarea");
+	    			if(parentLi.hasClass("lastExpandable")) {
+	    				parentLi.removeClass("lastExpandable");
+	    			    parentLi.addClass("lastCollapsable");
+	    			    hitarea.removeClass("lastExpandable-hitarea");
+	    			    hitarea.addClass("lastCollapsable-hitarea");
+	    			}
+	    			loader(parentUl, true);
+					parentUl.show();
+					// make the li for each child
+					if(!parentUl.children().length) {
+					    for(var i=0,len=children.length; i<len; i++) {
+					        var child = children[i];
+							var childId = child["id"];
+							// display child only if term is not a variable and if term is not a deprecated/obsolete term
+							if (child.relationship != "variable_of"){
+					        	var last = false;
+					            if(i == (children.length-1) || 
+									( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+									){
+						            last = true;
+								}
+								// make the new list item
+					            var li = make_li(child, last);
+						        parentUl.append(li);
+					    	} 
+					    }
 					}
-					// start next branch
-					branchIndex++;
-					parentIndex = 0;
-					parentUl = $( "ul#root ul" );
-	//				load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
+	    			loader(parentUl, false);
+				
+					// select the next parent on the branch
+					var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
+					var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
+					nextParentLi.find(".minibutton").first().addClass("selected");
+					var nextParentUl = nextParentLi.find("ul") ;
+					// define the last parent on the branch to expand
+					var endBranchTermRel = parents[ branchIndex ][ parents[ branchIndex ].length - 1 ]["relationship"];
+					if ( endBranchTermRel == "variable_of"){
+						var maxParentIndex = parents[ branchIndex ].length -2 ;
+					} else {
+						var maxParentIndex = parents[ branchIndex ].length -1 ;
+					}
+					
+					// expand the branch under the next parent
+					if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
+						var nextUrl = "/get-children/"+nextParentId;
+						load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex + 1);
+					} 
+					parentIndex +=1;
+					if (parentIndex == maxParentIndex) {
+						// start next branch
+						branchIndex +=1;
+						parentIndex = 0;
+						parentUl = $( "ul#root ul" );
+					}
 				}
 			}
     });
