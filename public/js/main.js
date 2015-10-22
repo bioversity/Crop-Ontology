@@ -411,6 +411,10 @@ runInOrder = function(first, last, obj, cb, hideObj) {
         if(key) cb(key)
     }
 }
+
+function rm_special_char(string){
+  return string.replace(/%/g, "");
+}
  
 // attributes is an object of key:value pairs
 function show_attributes(id, name, attributes) {
@@ -459,9 +463,9 @@ function show_attributes(id, name, attributes) {
     str += '<span class="add_attribute">Add a new attribute</span>';
 
     $(".right ul.filters li a").text(name);
-    $("#static-html").attr("href", "/terms/"+id+"/"+name+"/static-html?language=" + (currUser ? (currUser.language || DEFAULT_LANGUAGE): DEFAULT_LANGUAGE));
+    $("#static-html").attr("href", "/terms/"+id+"/"+rm_special_char(name)+"/static-html?language=" + (currUser ? (currUser.language || DEFAULT_LANGUAGE): DEFAULT_LANGUAGE));
     $("#term_id").text(id);
-    $(".term_id").attr("href", "/terms/"+id+"/"+name);
+    $(".term_id").attr("href", "/terms/"+id+"/"+rm_special_char(name));
     $("#pages .general").html(str);
 }
 
