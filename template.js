@@ -246,6 +246,20 @@ t.prototype.findFreeId = function() {
 t.prototype.processTerms = function() {
     // find freeId
     var freeId = this.findFreeId()
+
+    // return the occurence of a given item in an array
+    function nbOcc(array, item){
+        var count = 0;
+        for(var i = 0; i < array.length; ++i){
+            if(array[i] === item)
+                count++;
+        }
+        return count;
+    }
+
+    // handle same ids
+    var methodIds = {};
+    var scaleIds = {};
     
     // MAIN LOOP
     for(var i in this.terms) {
@@ -273,7 +287,23 @@ t.prototype.processTerms = function() {
             } else {
                 method.id = this.ontologyId + ':' + pad(freeId++, 7);
             }
-            method.parent = trait.id;
+            //when same method applies for several traits
+            if(nbOcc(this.editedIds,method.id) > 1){
+                if(methodIds[method.id]){ // if the method already exists in the database
+                    if(methodIds[method.id].indexOf(trait.id) >= 0){ // if the parent is already there, don't add it
+                        method.parent = methodIds[method.id];
+                    }else{
+                        methodIds[method.id].push(trait.id);
+                        method.parent = methodIds[method.id];
+                    }
+                }else{
+                    methodIds[method.id] = [trait.id];
+                    method.parent = trait.id;
+                }
+            }else{
+                method.parent = trait.id;
+            }
+            
         }
 
         // SCALE
@@ -286,7 +316,22 @@ t.prototype.processTerms = function() {
             } else {
                 scale.id = this.ontologyId + ':' + pad(freeId++, 7);
             }
-            scale.parent = method.id;
+            //when same scale applies for several methods
+            if(nbOcc(this.editedIds,scale.id) > 1){
+                if(scaleIds[scale.id]){ // if the scale already exists in the database
+                    if(scaleIds[scale.id].indexOf(method.id) >= 0){ // if the parent is already there, don't add it
+                        scale.parent = scaleIds[scale.id];
+                    }else{
+                        scaleIds[scale.id].push(method.id);
+                        scale.parent = scaleIds[scale.id];
+                    }
+                }else{
+                    scaleIds[scale.id] = [method.id];
+                    scale.parent = method.id;
+                }
+            }else{
+                scale.parent = method.id;
+            }   
         }
 
         // VARIABLE
@@ -329,8 +374,7 @@ t.prototype.processTerms = function() {
         // add trait
         delete trait['variable'];
         delete trait['method'];
-        taskqueue.createTask("/create-term", JSON.stringify(trait));
-        
+        taskqueue.createTask("/create-term", JSON.stringify(trait));   
     }
 }
 
