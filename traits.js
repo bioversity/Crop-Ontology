@@ -381,6 +381,12 @@ exports = {
             if(terms[1].getProperty("obo_blob_key")) {   ///OBO file
                 terms.forEach(function(term){
                   
+                  //if the term is a variable, ignore it
+                  var variable = get("namespace", term);
+                  if(JSON.stringify(variable).indexOf("Variable") >= 0){
+                    return;
+                  }
+
                   var name = get("name", term);
                   var parent = get("parent", term);
                   var rel = get("relationship", term);
@@ -419,6 +425,11 @@ exports = {
                var methods = {};
 
                 terms.forEach(function(term){
+                    //if the term is a variable, ignore it
+                    var variable = get("namespace", term);
+                    if(JSON.stringify(variable).indexOf("Variable")>= 0){
+                      return;
+                    }
                     var parent = term.getProperty("relationship");
                     if(!parent) return;
 
@@ -471,6 +482,11 @@ exports = {
 
                // scales
                 terms.forEach(function(term){
+                    //if the term is a variable, ignore it
+                    var variable = get("namespace", term);
+                    if(JSON.stringify(variable).indexOf("Variable") >= 0){
+                      return;
+                    }
                     var parent = term.getProperty("relationship");
                     if(!parent) return;
                     if(parent.getClass() == "class java.util.ArrayList"){
@@ -546,7 +562,7 @@ exports = {
                     }
                 }); 
                
-            } else if(terms[1].getProperty("Crop")) {  // TD v4
+            } else {  // TD v4&&v5
 
                 terms.forEach(function(term){
                     // var ibfieldbook = term.getProperty("ibfieldbook");
@@ -554,15 +570,16 @@ exports = {
                     //     return;
                     // }
                     var name = get("name", term);
-                    var def = get("Description of Trait", term);
-                    var fb = get("ibfieldbook", term);
-                    var creator = get("Name of submitting scientist",term);
-                    var inst = get("Institution",term);
+                    var def = get("Description of Trait", term) || get("Trait description", term);
+                    //var fb = get("ibfieldbook", term) || get("Trait status", term) ;
+                    //var creator = get("Name of submitting scientist",term) || get("Scientist",term) ;
+                    //var inst = get("Institution",term);
                     var crop = get("Crop", term);
-                    var abbr = get("Abbreviated name", term);
-                    var syn = get("Synonyms (separate by commas)", term);
-                    var created_at = get("created_at", term);
-                    var isa = get("Trait Class", term);
+                    var abbr = get("Abbreviated name", term) || get("Trait abbreviation", term);
+                    var syn = get("Synonyms (separate by commas)", term) || get("Trait synonyms", term) ;
+                    //var created_at = get("created_at", term) || get("Date of submission", term);;
+                    var isa = get("Trait Class", term) ||  get("Trait class", term);
+                    //var syn = "" + term.getClass();
                     //var syn = "" + term.getClass();
 
                     traits["" + term.getProperty("id")] = {
@@ -571,10 +588,10 @@ exports = {
                         synonym : syn, 
                         abbreviation : abbr, 
                         is_a : isa,
-                        creator : creator, 
-                        institution : inst, 
-                        creation_date : created_at, 
-                        crop: crop 
+                        // creator : creator, 
+                        // institution : inst, 
+                        // creation_date : created_at, 
+                        // crop: crop 
                     };
                     
                     for(var k in traits["" + term.getProperty("id")])
@@ -586,7 +603,8 @@ exports = {
 
                 terms.forEach(function(term){
                     var parent = term.getProperty("parent");
-                    if(!parent) return;
+                    var variable = term.getProperty("Crop"); // only the variable will hae this prop
+                    if(!parent || variable) return;
 
                     if(parent.getClass() == "class java.util.ArrayList"){
                         for(var i = 0; i<parent.size();i++){
@@ -595,7 +613,10 @@ exports = {
                                 //this is a method
                                 if(!traits[p]["method"]) traits[p]["method"] = {};
 
-                                traits[p]["method"]["" + term.getProperty("id")] = { name : get("name", term) , definition : get("Describe how measured (method)", term)}
+                                traits[p]["method"]["" + term.getProperty("id")] = { 
+                                    name : get("name", term) , 
+                                    definition : get("Describe how measured (method)", term) || get("Method description", term) 
+                                };
 
                                 methods["" + term.getProperty("id")] = traits[p]["method"]["" + term.getProperty("id")];
 
@@ -605,9 +626,11 @@ exports = {
                         if(traits[parent]){
                             //this is a method
                             if(!traits[parent]["method"]) traits[parent]["method"] = {};
-
-                            traits[parent]["method"]["" + term.getProperty("id")] = { name : get("name", term) , definition : get("Describe how measured (method)", term) }
                             
+                            traits[parent]["method"]["" + term.getProperty("id")] = { 
+                                    name : get("name", term) , 
+                                    definition : get("Describe how measured (method)", term) || get("Method description", term) 
+                            };                            
                             methods["" + term.getProperty("id")] = traits[parent]["method"]["" + term.getProperty("id")];
                         }
                     }
@@ -617,7 +640,8 @@ exports = {
                 // scales
                 terms.forEach(function(term){
                     var parent = term.getProperty("parent");
-                    if(!parent) return;
+                    var variable = term.getProperty("Crop");
+                    if(!parent || variable) return;
                     if(parent.getClass() == "class java.util.ArrayList"){
                         for(var i = 0; i<parent.size();i++){
                             var p = parent.get(i);
@@ -625,12 +649,14 @@ exports = {
                                 //this is a scale
                                 if(!methods[p]["scale"]) methods[p]["scale"] = {};
 
-                                var nameSc = get("For Continuous: units of measurement", term ) 
+                                var nameSc = get("Scale name", term )
+                                                    || get("For Continuous: units of measurement", term ) 
                                                     || get("For Discrete: Name of scale or units of measurement", term )
-                                                    || get ("For Categorical: Name of rating scale");
-                                var type = get("Type of Measure (Continuous, Discrete or Categorical)", term);
-                                var min = get("For Continuous: minimum", term);
-                                var max = get("For Continuous: maximum", term);
+                                                    || get("For Categorical: Name of rating scale", term);
+
+                                var type = get ("Scale class", term ) || get("Type of Measure (Continuous, Discrete or Categorical)", term);
+                                var min = get("For Continuous: minimum", term) || get("Lower limit", term);
+                                var max = get("For Continuous: maximum", term) || get("Upper limit", term);
 
                                 var obj = { 
                                     name : nameSc, 
@@ -654,12 +680,14 @@ exports = {
                             //this is a scale
                             if(!methods[parent]["scale"]) methods[parent]["scale"] = {};
 
-                                var nameSc = get("For Continuous: units of measurement", term ) 
+                                var nameSc = get("Scale name", term )
+                                                    || get("For Continuous: units of measurement", term ) 
                                                     || get("For Discrete: Name of scale or units of measurement", term )
-                                                    || get ("For Categorical: Name of rating scale");
-                                var type = get("Type of Measure (Continuous, Discrete or Categorical)", term);
-                                var min = get("For Continuous: minimum", term);
-                                var max = get("For Continuous: maximum", term);
+                                                    || get("For Categorical: Name of rating scale", term);
+
+                               var type = get ("Scale class", term ) || get("Type of Measure (Continuous, Discrete or Categorical)", term);
+                                var min = get("For Continuous: minimum", term) || get("Lower limit", term);
+                                var max = get("For Continuous: maximum", term) || get("Upper limit", term);
 
                             var obj = { 
                                     name : nameSc, 
@@ -713,10 +741,15 @@ exports = {
             function addCategory(term, obj){
                 term = select.fn.toJS(term);
                 var type = findLangs(term['Type of Measure (Continuous, Discrete or Categorical)']);
-                if(type.english && type.english == 'Categorical') { // it's categorical
 
+                if(type.english == undefined) {
+                   type = findLangs(term['Scale class']);
+                }
+
+                if(type.english && (type.english == 'Categorical' || type.english == 'Ordinal' || type.english == 'Nominal')) {// it's categorical
+                    
                     for(var i in term) {
-                        if(i.indexOf('For Categorical') == 0) { // starts with
+                        if(i.indexOf('For Categorical') == 0 || i.indexOf('Category') == 0 ) { // starts with
                             var categoryId = i.match(/\d+/g);
                             if(!categoryId) continue;
                             if(categoryId.length) {
