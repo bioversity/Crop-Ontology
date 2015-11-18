@@ -455,7 +455,14 @@ function show_attributes(id, name, attributes) {
         var t = translate(currUser, attributes[i]);
         var lang = currUser.language || DEFAULT_LANGUAGE;
         if(t.lang !== lang) return;
-        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
+		if(/Category/.test(i)){ // the category label (TD header) is not necessarily the same as the one defined by the curator in the template e.g. "Category 1":"3=P=poor". Following instructions turn into "Category 3":"P=poor"
+		  var catNumber = t.translation.split("=", 1)[0];
+		  catLabel = i.replace(/[\d]+/, "") + catNumber;
+		  catContent = t.translation.replace(/[\d]+(| )*=(| )*/, "");
+		  str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(catContent)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
+		} else {
+	        str += '<div class="attribute editable"><label for="'+i+'">'+i+'</label><span class="value">'+markdown(t.translation)+'</span><input type="hidden" value="'+t.lang+'" class="language" /></div>';
+		}
     }, hide);
 
     if(count == 0)
