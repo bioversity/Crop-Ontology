@@ -1192,7 +1192,7 @@ apejs.urls = {
                                             print(response).textPlain('namespace: ' + crop+'Scale');
                                         }
                                         print(response).textPlain('synonym: "' + synId + '" EXACT []');
-                                        print(response).textPlain('relationship: is_a ' + r.encodeID(this.id));
+                                        print(response).textPlain('is_a ' + r.encodeID(this.id));
                                         print(response).text('');
                                     }
 
@@ -1216,7 +1216,7 @@ apejs.urls = {
                             }
                         }
                     } else if(this.parent && this.parent != "null") {
-                            print(response).textPlain('relationship: is_a ' + r.encodeID(this.parent)); 
+                            print(response).textPlain('is_a ' + r.encodeID(this.parent)); 
                     }
 
                     print(response).text('');
