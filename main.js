@@ -1081,6 +1081,14 @@ apejs.urls = {
             print(response).textPlain('ontology: TEMP');
             print(response).textPlain('');
 
+            var crop = '';
+            select('ontology')
+                .find({ 
+                    ontology_id: ontologyId
+                }).each(function() {
+                    crop = this.ontology_name;
+                }) ;
+
             select('term')
                 .find({ 
                     ontology_id: ontologyId
@@ -1097,22 +1105,30 @@ apejs.urls = {
                     if(this['Description of Trait'] ) {
                         if(this['Crop']){
                             print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Trait');
+                        }else if (crop!=''){
+                            print(response).textPlain('namespace: ' + crop+'Trait');
                         }
                         print(response).textPlain('def: "' + translate(this['Description of Trait'], isoLang) + '" []');
-                    }else if(this['Trait Description']){
+                    }else if(this['Trait description']){
                         if(this['Crop']){
                             print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Trait');
+                        }else if (crop!=''){
+                            print(response).textPlain('namespace: ' + crop+'Trait');
                         }
                         print(response).textPlain('def: "' + translate(this['Trait Description'], isoLang) + '" []');
                     }
                     else if(this['Describe how measured (method)']) {
                         if(this['Crop']){
                             print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Method');
+                        }else if (crop!=''){
+                            print(response).textPlain('namespace: ' + crop+'Method');
                         }
                         print(response).textPlain('def: "' + translate(this['Describe how measured (method)'], isoLang) + '" []');
                     }else if(this['Method description']){
                         if(this['Crop']){
                             print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Method');
+                        }else if (crop!=''){
+                            print(response).textPlain('namespace: ' + crop+'Method');
                         }
                         print(response).textPlain('def: "' + translate(this['Method description'], isoLang) + '" []');
                     }
@@ -1139,9 +1155,18 @@ apejs.urls = {
                         if(this.relationship == 'scale_of'){
                             if(this['Crop']){
                                 print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Scale');
+                            }else if (crop!=''){
+                            print(response).textPlain('namespace: ' + crop+'Scale');
                             }
-                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
-                        
+                            
+                            if(typeof this.parent != 'string'){
+                                for(var i in this.parent) {
+                                    print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[i]));
+                                }
+                            }else{
+                                print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
+                            }
+                           
                             var type = translate(this['Type of Measure (Continuous, Discrete or Categorical)'], isoLang)
                                             || translate(this['Scale class'], isoLang);
                             if( type == 'Categorical' || type == 'Ordinal' || type == 'Nominal') { // it's categorical                                
@@ -1163,6 +1188,8 @@ apejs.urls = {
                                         print(response).textPlain('name: ' + nameId);
                                         if(this['Crop']){
                                             print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Scale');
+                                        }else if (crop!=''){
+                                            print(response).textPlain('namespace: ' + crop+'Scale');
                                         }
                                         print(response).textPlain('synonym: "' + synId + '" EXACT []');
                                         print(response).textPlain('relationship: is_a ' + r.encodeID(this.id));
@@ -1173,17 +1200,23 @@ apejs.urls = {
                             }
                         }else if(this.relationship == 'variable_of'){
                             if(this['Crop']){
-                                print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Scale');
+                                print(response).textPlain('namespace: ' + translate(this['Crop'], isoLang)+'Variable');
                             }
                             print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[0]));
                             print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[1]));
                             print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[2]));
 
                         }else{
-                            print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
+                            if(typeof this.parent != 'string'){
+                                for(var i in this.parent) {
+                                    print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[i]));
+                                }
+                            }else{
+                                print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
+                            }
                         }
                     } else if(this.parent && this.parent != "null") {
-                        print(response).textPlain('relationship: is_a ' + r.encodeID(this.parent));
+                            print(response).textPlain('relationship: is_a ' + r.encodeID(this.parent)); 
                     }
 
                     print(response).text('');
