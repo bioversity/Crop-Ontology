@@ -3396,4 +3396,202 @@ apejs.urls = {
 	        print(response).json(ret);
 	  }
 	},
+  	"/ontos_stats":{
+        get: function(request, response) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/json; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+			var ret = [];
+			var onto_type;
+
+			var ontologies = googlestore.query("ontology")
+                              	.filter("category", "=", "300-499 Phenotype and Trait Ontology")
+			  					.fetch(); 
+			ontologies.forEach(function(ontology){
+
+				// GET onto name
+				var onto_id = ontology.getProperty("ontology_id");
+				var onto_name = ontology.getProperty("ontology_name");
+
+				// GET total number of terms
+      	  		var terms = googlestore.query("term") 
+            	                      .filter("ontology_id", "=", onto_id)
+            	                      .fetch();
+				var count_terms=0;
+				var count_vars=0;
+				var count_traits=0;
+				var count_methods=0;
+				var count_scales=0;
+				terms.forEach(function(term){
+					count_terms++;
+					if (term.getProperty("relationship") == "variable_of" || //TD5
+    	        		term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Variable\"}"){// OBOvar (variable terms have the namespace: <crop>Variable)
+						// COUNT VARIABLES
+						count_vars++;
+					} else if (term.getProperty("Trait ID") || //TD5
+								term.getProperty("Trait ID for modification, Blank for New") || //TD4
+    	        				term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Trait\"}"){// OBOvar. (trait terms have the namespace: <crop>Trait)
+						// COUNT TRAITS
+						count_traits++;
+					} else if (term.getProperty("Method ID") || //TD5
+								term.getProperty("Method ID for modification, Blank for New") || //TD4
+    	        				term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Method\"}"){// OBOvar. (method terms have the namespace: <crop>Method)
+						// COUNT METHODS
+						count_methods++;
+					} else if (term.getProperty("Scale ID") || //TD5
+								term.getProperty("Scale ID for modification, Blank for New") || //TD4
+    	        				term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Scale\"}"){// OBOvar. (scale terms have the namespace: <crop>Scale)
+						// COUNT SCALES
+						count_scales++;
+					}
+				});
+				// GET the type of ontology
+				var onto_type;
+				var vars_TD5 = googlestore.query("term") 
+                              .filter("ontology_id", "=", onto_id)
+                              .filter("relationship", "=", "variable_of")
+                              .fetch(1);
+				if(vars_TD5.length > 0){ 
+				  	// TDv5
+					onto_type = "TDv5";
+				}else{
+		            var traits_TD4 = googlestore.query("term") 
+	                              .filter("ontology_id", "=", onto_id)
+	                              .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
+	                              .fetch(1);
+					if (traits_TD4.length > 0) { 
+//						//TDv4
+						onto_type = "TDv4";
+					} else {
+	    			    var vars_OBO = googlestore.query("term")
+	            	            .filter("ontology_id", "=", onto_id)
+	            	            .filter("obo_blob_key", "!=", null)
+		        	        	.filter("namespace", "=", "{\"undefined\":\""+ onto_name + "Variable\"}")// NB the OBOs that have variables store the variable terms with the "namespace: <crop>Variable"
+	            	            .fetch(1);
+						if (vars_OBO.length>0){
+							//OBO with var
+							onto_type = "OBOvar"
+						} else {
+						  	// OBO (any OBO)
+							onto_type = "OBO";
+						}
+					}
+				}
+        	    ret.push({
+				  	"Ontology ID":""+onto_id,
+					"Ontology name":""+onto_name,
+					"Ontology file": onto_type,
+					"Number of terms": ""+count_terms,
+					"Number of variables": ""+count_vars,
+				  	"Number of traits": ""+count_traits,
+				  	"Number of methods": ""+count_methods,
+				  	"Number of scales": ""+count_scales
+				});
+			});
+
+			// SUMMARY ALL CROPS
+			var sum_all_crops = [];
+			var terms_tot=vars_tot=traits_tot=methods_tot=scales_tot=0;
+			var CO_terms_tot=CO_vars_tot=CO_traits_tot=CO_methods_tot=CO_scales_tot=0;
+			var nonCO_terms_tot=nonCO_vars_tot=nonCO_traits_tot=nonCO_methods_tot=nonCO_scales_tot=0;
+			var crop_list=[];
+			var CO_crop_list=[];
+			var nonCO_crop_list=[];
+			var files = [];
+			var files_CO = [];
+
+			var i = i_CO = 0;
+			while (i<ret.length ){
+
+			  	// Stats all crops
+				crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
+				terms_tot = terms_tot + parseInt(ret[i]["Number of terms"]);
+				vars_tot = vars_tot + parseInt(ret[i]["Number of variables"]);
+				traits_tot = traits_tot + parseInt(ret[i]["Number of traits"]);
+				methods_tot = methods_tot + parseInt(ret[i]["Number of methods"]);
+				scales_tot = methods_tot + parseInt(ret[i]["Number of scales"]);
+				files.push(ret[i]["Ontology file"]);
+			
+			 	if ( ret[i]["Ontology ID"].indexOf("CO_") != -1) {
+
+					// Stats CO ontologies
+				  	CO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
+					CO_terms_tot = CO_terms_tot + parseInt(ret[i]["Number of terms"]);
+					CO_vars_tot = CO_vars_tot + parseInt(ret[i]["Number of variables"]);
+					CO_traits_tot = CO_traits_tot + parseInt(ret[i]["Number of traits"]);
+					CO_methods_tot = CO_methods_tot + parseInt(ret[i]["Number of methods"]);
+					CO_scales_tot = CO_methods_tot + parseInt(ret[i]["Number of scales"]);
+					files_CO.push(ret[i]["Ontology file"]);
+					i_CO++;
+
+				} else { 
+
+					// Stats non CO ontologies
+				  	nonCO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
+					nonCO_terms_tot = nonCO_terms_tot + parseInt(ret[i]["Number of terms"]);
+					nonCO_vars_tot = nonCO_vars_tot + parseInt(ret[i]["Number of variables"]);
+					nonCO_traits_tot = nonCO_traits_tot + parseInt(ret[i]["Number of traits"]);
+					nonCO_methods_tot = nonCO_methods_tot + parseInt(ret[i]["Number of methods"]);
+					nonCO_scales_tot = nonCO_methods_tot + parseInt(ret[i]["Number of scales"]);
+				}
+				i++;
+		  	}
+
+			// export
+			var sum_all_crops = {
+			  "Total number of terms":""+terms_tot,
+			  "Total number of variables":""+vars_tot,
+			  "Total number of traits":""+traits_tot,
+			  "Total number of methods":""+methods_tot,
+			  "Total number of scales":""+scales_tot,
+			  "Crops":crop_list,
+			  "Number of ontologies": ""+i,
+			  "Files":{
+				"TDv4": "" + (files.toString().match(/TDv4/g) || []).length,
+				"TDv5": "" + (files.toString().match(/TDv5/g) || []).length,
+				"OBOvar": "" + (files.toString().match(/OBOvar/g) || []).length,
+				"OBO": "" + (files.toString().match(/\bOBO\b/g) || []).length
+			  }
+			};
+			var sum_CO_crops = {
+			  "Total number of terms":""+CO_terms_tot,
+			  "Total number of variables":""+CO_vars_tot,
+			  "Total number of traits":""+CO_traits_tot,
+			  "Total number of methods":""+CO_methods_tot,
+			  "Total number of scales":""+CO_scales_tot,
+			  "Crops":CO_crop_list,
+			  "Number of ontologies":""+i_CO,
+			  "Files":{
+				"TDv4": "" + (files_CO.toString().match(/TDv4/g) || []).length,
+				"TDv5": "" + (files_CO.toString().match(/TDv5/g) || []).length,
+				"OBOvar": "" + (files_CO.toString().match(/OBOvar/g) || []).length,
+				"OBO": "" + (files_CO.toString().match(/\bOBO\b/g) || []).length
+			  }
+			};
+			var sum_non_CO_crops = {
+			  "Total number of terms":""+nonCO_terms_tot,
+			  "Total number of variables":""+nonCO_vars_tot,
+			  "Total number of traits":""+nonCO_traits_tot,
+			  "Total number of methods":""+nonCO_methods_tot,
+			  "Total number of scales":""+nonCO_scales_tot,
+			  "Crops":nonCO_crop_list,
+			  "Number of ontologies":""+ i - i_CO,
+			  "Files":{
+				"TDv4":""+sum_all_crops["Files"]["TDv4"] - sum_CO_crops["Files"]["TDv4"],
+				"TDv5":""+sum_all_crops["Files"]["TDv5"] - sum_CO_crops["Files"]["TDv5"],
+				"OBOvar":""+sum_all_crops["Files"]["OBOvar"] - sum_CO_crops["Files"]["OBOvar"],
+				"OBO":""+sum_all_crops["Files"]["OBO"] - sum_CO_crops["Files"]["OBO"]
+			  }
+			};
+
+			var out = {
+			  "summary CO crops": sum_CO_crops,
+			  "summary non CO crops": sum_non_CO_crops,
+			  "summary all crops": sum_all_crops,
+			  "summary per crop":ret
+			};
+            print(response).json(out, request.getParameter("callback"));
+		}
+	},
 };
