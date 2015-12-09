@@ -1,0 +1,340 @@
+{
+  "summary CO crops": {
+    "Total number of terms": "7341",
+    "Total number of variables": "1157",
+    "Total number of traits": "1731",
+    "Total number of methods": "1795",
+    "Total number of scales": "1835",
+    "Crops": [
+      "CO_320 Rice",
+      "CO_321 Wheat",
+      "CO_322 Maize",
+      "CO_323 Barley Trait Dictionary",
+      "CO_324 Sorghum ontology",
+      "CO_325 Banana",
+      "CO_327 Pearl Millet",
+      "CO_330 Potato",
+      "CO_331 Sweet potato",
+      "CO_334 Cassava",
+      "CO_335 Common bean",
+      "CO_336 Soybean",
+      "CO_337 Groundnut",
+      "CO_338 Chickpea",
+      "CO_339 Lentil",
+      "CO_340 Cowpea",
+      "CO_341 Pigeonpea",
+      "CO_343 Yam trait",
+      "CO_350 Oat"
+    ],
+    "Number of ontologies": "19",
+    "Files": {
+      "TDv4": "10",
+      "TDv5": "7",
+      "OBOvar": "0",
+      "OBO": "2"
+    }
+  },
+  "summary non CO crops": {
+    "Total number of terms": "1910",
+    "Total number of variables": "0",
+    "Total number of traits": "0",
+    "Total number of methods": "0",
+    "Total number of scales": "0",
+    "Crops": [
+      "GCP_312 Rice Mutants Phenotype",
+      "POLAPGEN_BARLEY Barley Trait POLAPGEN Ontology",
+      "SOY SoyBase Soybean Trait Ontology",
+      "SP Solanaceae Phenotype Ontology",
+      "VITIS Vitis"
+    ],
+    "Number of ontologies": 5,
+    "Files": {
+      "TDv4": 1,
+      "TDv5": 0,
+      "OBOvar": 0,
+      "OBO": 4
+    }
+  },
+  "summary all crops": {
+    "Total number of terms": "9251",
+    "Total number of variables": "1157",
+    "Total number of traits": "1731",
+    "Total number of methods": "1795",
+    "Total number of scales": "1795",
+    "Crops": [
+      "CO_320 Rice",
+      "CO_321 Wheat",
+      "CO_322 Maize",
+      "CO_323 Barley Trait Dictionary",
+      "CO_324 Sorghum ontology",
+      "CO_325 Banana",
+      "CO_327 Pearl Millet",
+      "CO_330 Potato",
+      "CO_331 Sweet potato",
+      "CO_334 Cassava",
+      "CO_335 Common bean",
+      "CO_336 Soybean",
+      "CO_337 Groundnut",
+      "CO_338 Chickpea",
+      "CO_339 Lentil",
+      "CO_340 Cowpea",
+      "CO_341 Pigeonpea",
+      "CO_343 Yam trait",
+      "CO_350 Oat",
+      "GCP_312 Rice Mutants Phenotype",
+      "POLAPGEN_BARLEY Barley Trait POLAPGEN Ontology",
+      "SOY SoyBase Soybean Trait Ontology",
+      "SP Solanaceae Phenotype Ontology",
+      "VITIS Vitis"
+    ],
+    "Number of ontologies": "24",
+    "Files": {
+      "TDv4": "11",
+      "TDv5": "7",
+      "OBOvar": "0",
+      "OBO": "6"
+    }
+  },
+  "summary per crop": [
+    {
+      "Ontology ID": "CO_320",
+      "Ontology name": "Rice",
+      "Ontology file": "OBO",
+      "Number of terms": "501",
+      "Number of variables": "0",
+      "Number of traits": "49",
+      "Number of methods": "44",
+      "Number of scales": "43"
+    },
+    {
+      "Ontology ID": "CO_321",
+      "Ontology name": "Wheat",
+      "Ontology file": "TDv5",
+      "Number of terms": "1037",
+      "Number of variables": "394",
+      "Number of traits": "266",
+      "Number of methods": "251",
+      "Number of scales": "118"
+    },
+    {
+      "Ontology ID": "CO_322",
+      "Ontology name": "Maize",
+      "Ontology file": "OBO",
+      "Number of terms": "520",
+      "Number of variables": "0",
+      "Number of traits": "0",
+      "Number of methods": "0",
+      "Number of scales": "0"
+    },
+    {
+      "Ontology ID": "CO_323",
+      "Ontology name": "Barley Trait Dictionary",
+      "Ontology file": "TDv4",
+      "Number of terms": "234",
+      "Number of variables": "0",
+      "Number of traits": "76",
+      "Number of methods": "76",
+      "Number of scales": "76"
+    },
+    {
+      "Ontology ID": "CO_324",
+      "Ontology name": "Sorghum ontology",
+      "Ontology file": "TDv4",
+      "Number of terms": "353",
+      "Number of variables": "0",
+      "Number of traits": "113",
+      "Number of methods": "116",
+      "Number of scales": "118"
+    },
+    {
+      "Ontology ID": "CO_325",
+      "Ontology name": "Banana",
+      "Ontology file": "TDv4",
+      "Number of terms": "159",
+      "Number of variables": "0",
+      "Number of traits": "52",
+      "Number of methods": "52",
+      "Number of scales": "52"
+    },
+    {
+      "Ontology ID": "CO_327",
+      "Ontology name": "Pearl Millet",
+      "Ontology file": "TDv4",
+      "Number of terms": "153",
+      "Number of variables": "0",
+      "Number of traits": "49",
+      "Number of methods": "49",
+      "Number of scales": "49"
+    },
+    {
+      "Ontology ID": "CO_330",
+      "Ontology name": "Potato",
+      "Ontology file": "TDv4",
+      "Number of terms": "227",
+      "Number of variables": "0",
+      "Number of traits": "73",
+      "Number of methods": "73",
+      "Number of scales": "73"
+    },
+    {
+      "Ontology ID": "CO_331",
+      "Ontology name": "Sweet potato",
+      "Ontology file": "TDv4",
+      "Number of terms": "149",
+      "Number of variables": "0",
+      "Number of traits": "48",
+      "Number of methods": "48",
+      "Number of scales": "48"
+    },
+    {
+      "Ontology ID": "CO_334",
+      "Ontology name": "Cassava",
+      "Ontology file": "TDv5",
+      "Number of terms": "897",
+      "Number of variables": "239",
+      "Number of traits": "175",
+      "Number of methods": "238",
+      "Number of scales": "239"
+    },
+    {
+      "Ontology ID": "CO_335",
+      "Ontology name": "Common bean",
+      "Ontology file": "TDv4",
+      "Number of terms": "560",
+      "Number of variables": "0",
+      "Number of traits": "184",
+      "Number of methods": "184",
+      "Number of scales": "184"
+    },
+    {
+      "Ontology ID": "CO_336",
+      "Ontology name": "Soybean",
+      "Ontology file": "TDv5",
+      "Number of terms": "350",
+      "Number of variables": "90",
+      "Number of traits": "82",
+      "Number of methods": "85",
+      "Number of scales": "86"
+    },
+    {
+      "Ontology ID": "CO_337",
+      "Ontology name": "Groundnut",
+      "Ontology file": "TDv4",
+      "Number of terms": "217",
+      "Number of variables": "0",
+      "Number of traits": "69",
+      "Number of methods": "70",
+      "Number of scales": "72"
+    },
+    {
+      "Ontology ID": "CO_338",
+      "Ontology name": "Chickpea",
+      "Ontology file": "TDv5",
+      "Number of terms": "351",
+      "Number of variables": "89",
+      "Number of traits": "86",
+      "Number of methods": "85",
+      "Number of scales": "84"
+    },
+    {
+      "Ontology ID": "CO_339",
+      "Ontology name": "Lentil",
+      "Ontology file": "TDv5",
+      "Number of terms": "273",
+      "Number of variables": "68",
+      "Number of traits": "66",
+      "Number of methods": "66",
+      "Number of scales": "65"
+    },
+    {
+      "Ontology ID": "CO_340",
+      "Ontology name": "Cowpea",
+      "Ontology file": "TDv5",
+      "Number of terms": "776",
+      "Number of variables": "204",
+      "Number of traits": "182",
+      "Number of methods": "190",
+      "Number of scales": "193"
+    },
+    {
+      "Ontology ID": "CO_341",
+      "Ontology name": "Pigeonpea",
+      "Ontology file": "TDv5",
+      "Number of terms": "274",
+      "Number of variables": "73",
+      "Number of traits": "62",
+      "Number of methods": "69",
+      "Number of scales": "62"
+    },
+    {
+      "Ontology ID": "CO_343",
+      "Ontology name": "Yam trait",
+      "Ontology file": "TDv4",
+      "Number of terms": "181",
+      "Number of variables": "0",
+      "Number of traits": "59",
+      "Number of methods": "59",
+      "Number of scales": "59"
+    },
+    {
+      "Ontology ID": "CO_350",
+      "Ontology name": "Oat",
+      "Ontology file": "TDv4",
+      "Number of terms": "129",
+      "Number of variables": "0",
+      "Number of traits": "40",
+      "Number of methods": "40",
+      "Number of scales": "40"
+    },
+    {
+      "Ontology ID": "GCP_312",
+      "Ontology name": "Rice Mutants Phenotype",
+      "Ontology file": "OBO",
+      "Number of terms": "148",
+      "Number of variables": "0",
+      "Number of traits": "0",
+      "Number of methods": "0",
+      "Number of scales": "0"
+    },
+    {
+      "Ontology ID": "POLAPGEN_BARLEY",
+      "Ontology name": "Barley Trait POLAPGEN Ontology",
+      "Ontology file": "TDv4",
+      "Number of terms": "449",
+      "Number of variables": "0",
+      "Number of traits": "0",
+      "Number of methods": "0",
+      "Number of scales": "0"
+    },
+    {
+      "Ontology ID": "SOY",
+      "Ontology name": "SoyBase Soybean Trait Ontology",
+      "Ontology file": "OBO",
+      "Number of terms": "678",
+      "Number of variables": "0",
+      "Number of traits": "0",
+      "Number of methods": "0",
+      "Number of scales": "0"
+    },
+    {
+      "Ontology ID": "SP",
+      "Ontology name": "Solanaceae Phenotype Ontology",
+      "Ontology file": "OBO",
+      "Number of terms": "387",
+      "Number of variables": "0",
+      "Number of traits": "0",
+      "Number of methods": "0",
+      "Number of scales": "0"
+    },
+    {
+      "Ontology ID": "VITIS",
+      "Ontology name": "Vitis",
+      "Ontology file": "OBO",
+      "Number of terms": "248",
+      "Number of variables": "0",
+      "Number of traits": "0",
+      "Number of methods": "0",
+      "Number of scales": "0"
+    }
+  ]
+}
