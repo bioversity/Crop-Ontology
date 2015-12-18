@@ -60,10 +60,14 @@ t.prototype.createTraitClass = function(term) {
 }
 t.prototype.getTrait = function(row) {
     var obj = {};
+    var startCopy = false;
     for(var i in row) {
-        obj[i] = row[i]; 
-        if(obj[i] == "") delete obj[i]; 
+        if(startCopy) {
+            obj[i] = row[i]; 
+            if(obj[i] == "") delete obj[i]; 
+        }
         if(i == 'Trait Xref' || i == 'Trait Class') break;
+        if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') startCopy = true;
     }
     // this is because it may be at the end of the template as well
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
@@ -135,13 +139,12 @@ t.prototype.getScale = function(row) {
 
 t.prototype.getVariable = function(row) {
     var obj = {};
-    var startCopy = false;
     for(var i in row) {
-        if(startCopy && i.indexOf('Category') < 0 ) {
-            obj[i] = row[i]; 
-            if(obj[i] == "") delete obj[i];
-        }
-        if(i.indexOf('Category') >= 0) startCopy = true;
+        if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') break;
+        obj[i] = row[i]; 
+        if(obj[i] == "") delete obj[i];
+        
+        
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
