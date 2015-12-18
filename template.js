@@ -62,12 +62,12 @@ t.prototype.getTrait = function(row) {
     var obj = {};
     var startCopy = false;
     for(var i in row) {
+        if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') startCopy = true;
         if(startCopy) {
             obj[i] = row[i]; 
             if(obj[i] == "") delete obj[i]; 
         }
         if(i == 'Trait Xref' || i == 'Trait Class') break;
-        if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') startCopy = true;
     }
     // this is because it may be at the end of the template as well
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
