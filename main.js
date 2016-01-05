@@ -3594,4 +3594,32 @@ apejs.urls = {
             print(response).json(out, request.getParameter("callback"));
 		}
 	},
+    "/ontos_stats_make_csv": {
+        get: function(request, response) {
+        	try {
+            var url = 'http://localhost:8080/ontos_stats.json';
+                var result = httpget(url);
+                var j = JSON.parse(result);
+                if(j.error) throw "ERROR";
+
+				var out = "ID;Crop;Onto file;NTerms;NVariable;NTrait;NMethod;NScale";
+				j["summary per crop"].forEach(function(crop){
+			 		if ( crop["Ontology ID"].indexOf("CO_") != -1) {
+						out = out +
+						"\n"+crop["Ontology ID"] +
+				    	";"+crop["Ontology name"] +
+				    	";"+crop["Ontology file"] +
+				    	";"+crop["Number of terms"] +
+				    	";"+crop["Number of variables"] +
+				    	";"+crop["Number of traits"] +
+				    	";"+crop["Number of methods"] +
+				    	";"+crop["Number of scales"];
+					}
+				});
+					
+                print(response).textPlain(out);
+           } catch(e) {
+           }
+        }
+    },
 };

@@ -1,10 +1,10 @@
 {
   "summary CO crops": {
-    "Total number of terms": "7341",
-    "Total number of variables": "1157",
-    "Total number of traits": "1731",
-    "Total number of methods": "1795",
-    "Total number of scales": "1835",
+    "Total number of terms": "8108",
+    "Total number of variables": "1781",
+    "Total number of traits": "2019",
+    "Total number of methods": "2178",
+    "Total number of scales": "2218",
     "Crops": [
       "CO_320 Rice",
       "CO_321 Wheat",
@@ -28,39 +28,38 @@
     ],
     "Number of ontologies": "19",
     "Files": {
-      "TDv4": "10",
-      "TDv5": "7",
+      "TDv4": "9",
+      "TDv5": "10",
       "OBOvar": "0",
-      "OBO": "2"
+      "OBO": "0"
     }
   },
   "summary non CO crops": {
-    "Total number of terms": "1910",
+    "Total number of terms": "1762",
     "Total number of variables": "0",
     "Total number of traits": "0",
     "Total number of methods": "0",
     "Total number of scales": "0",
     "Crops": [
-      "GCP_312 Rice Mutants Phenotype",
       "POLAPGEN_BARLEY Barley Trait POLAPGEN Ontology",
       "SOY SoyBase Soybean Trait Ontology",
       "SP Solanaceae Phenotype Ontology",
       "VITIS Vitis"
     ],
-    "Number of ontologies": 5,
+    "Number of ontologies": 4,
     "Files": {
       "TDv4": 1,
       "TDv5": 0,
       "OBOvar": 0,
-      "OBO": 4
+      "OBO": 3
     }
   },
   "summary all crops": {
-    "Total number of terms": "9251",
-    "Total number of variables": "1157",
-    "Total number of traits": "1731",
-    "Total number of methods": "1795",
-    "Total number of scales": "1795",
+    "Total number of terms": "9870",
+    "Total number of variables": "1781",
+    "Total number of traits": "2019",
+    "Total number of methods": "2178",
+    "Total number of scales": "2178",
     "Crops": [
       "CO_320 Rice",
       "CO_321 Wheat",
@@ -81,30 +80,29 @@
       "CO_341 Pigeonpea",
       "CO_343 Yam trait",
       "CO_350 Oat",
-      "GCP_312 Rice Mutants Phenotype",
       "POLAPGEN_BARLEY Barley Trait POLAPGEN Ontology",
       "SOY SoyBase Soybean Trait Ontology",
       "SP Solanaceae Phenotype Ontology",
       "VITIS Vitis"
     ],
-    "Number of ontologies": "24",
+    "Number of ontologies": "23",
     "Files": {
-      "TDv4": "11",
-      "TDv5": "7",
+      "TDv4": "10",
+      "TDv5": "10",
       "OBOvar": "0",
-      "OBO": "6"
+      "OBO": "3"
     }
   },
   "summary per crop": [
     {
       "Ontology ID": "CO_320",
       "Ontology name": "Rice",
-      "Ontology file": "OBO",
-      "Number of terms": "501",
-      "Number of variables": "0",
-      "Number of traits": "49",
-      "Number of methods": "44",
-      "Number of scales": "43"
+      "Ontology file": "TDv5",
+      "Number of terms": "935",
+      "Number of variables": "269",
+      "Number of traits": "157",
+      "Number of methods": "234",
+      "Number of scales": "266"
     },
     {
       "Ontology ID": "CO_321",
@@ -119,12 +117,12 @@
     {
       "Ontology ID": "CO_322",
       "Ontology name": "Maize",
-      "Ontology file": "OBO",
-      "Number of terms": "520",
-      "Number of variables": "0",
-      "Number of traits": "0",
-      "Number of methods": "0",
-      "Number of scales": "0"
+      "Ontology file": "TDv5",
+      "Number of terms": "771",
+      "Number of variables": "254",
+      "Number of traits": "169",
+      "Number of methods": "210",
+      "Number of scales": "55"
     },
     {
       "Ontology ID": "CO_323",
@@ -180,11 +178,11 @@
       "Ontology ID": "CO_331",
       "Ontology name": "Sweet potato",
       "Ontology file": "TDv4",
-      "Number of terms": "149",
+      "Number of terms": "65",
       "Number of variables": "0",
       "Number of traits": "48",
-      "Number of methods": "48",
-      "Number of scales": "48"
+      "Number of methods": "6",
+      "Number of scales": "6"
     },
     {
       "Ontology ID": "CO_334",
@@ -219,12 +217,12 @@
     {
       "Ontology ID": "CO_337",
       "Ontology name": "Groundnut",
-      "Ontology file": "TDv4",
-      "Number of terms": "217",
-      "Number of variables": "0",
-      "Number of traits": "69",
-      "Number of methods": "70",
-      "Number of scales": "72"
+      "Ontology file": "TDv5",
+      "Number of terms": "383",
+      "Number of variables": "101",
+      "Number of traits": "80",
+      "Number of methods": "95",
+      "Number of scales": "101"
     },
     {
       "Ontology ID": "CO_338",
@@ -285,16 +283,6 @@
       "Number of traits": "40",
       "Number of methods": "40",
       "Number of scales": "40"
-    },
-    {
-      "Ontology ID": "GCP_312",
-      "Ontology name": "Rice Mutants Phenotype",
-      "Ontology file": "OBO",
-      "Number of terms": "148",
-      "Number of variables": "0",
-      "Number of traits": "0",
-      "Number of methods": "0",
-      "Number of scales": "0"
     },
     {
       "Ontology ID": "POLAPGEN_BARLEY",
