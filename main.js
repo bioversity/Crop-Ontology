@@ -318,6 +318,10 @@ apejs.urls = {
     },
     // haha nice REGEX!
     "/ontology(?:/([^/]*)(?:/([^/]*)(?:/([^/]*))?)?)?": {
+        head: function(request, response) {
+            print(response);
+            return;
+        },
         get: function(request, response, matches) {
 
             var ontoId = matches[1];
@@ -346,6 +350,7 @@ apejs.urls = {
                     response.sendRedirect(converter);
                     return;
                 }
+               // response.setHeader("contentType", "text/plain");
                 response.setContentType('text/plain');
                 // get this ontology data from it's id
                 var ontoKey = googlestore.createKey("ontology", ontoId),
@@ -1277,6 +1282,10 @@ apejs.urls = {
         }
     },
     "/serve/([^/]*)" : {
+        head: function(request, response) {
+            print(response);
+            return;
+        },
         get: function(request, response, matches) {
             var blobKeyString = matches[1];
 
@@ -1775,6 +1784,7 @@ apejs.urls = {
         }
     },
     "/serve" : {
+
         get: function(request, response) {
             var blobKey = new BlobKey(request.getParameter("blob-key"));
 
@@ -2670,109 +2680,20 @@ apejs.urls = {
             if(isblank(language)) 
                 language = languages.default;
 
-            var terms = {};
-            var parents = {};
-            select('term')
-                .find({ 
-                    ontology_id: ontoId
-                })
-                .each(function() {
-                    /*
-                    var isoLang = languages.getIso[language]
-                    try {
-                        var jlang = JSON.parse(this.language)
-                        if(!jlang[language]) return;
-                        
-                    } catch(e) { // it's just a regular string
-                        if(this.language != isoLang) return;
-                    }
-                    */
-                    terms[this.id] = this;
-                    parents[''+defaultParent(this.parent)] = true;
-                });
+            
+             var terms = googlestore.query("term")
+                            //.filter(property, "!=", null)
+                            .filter("ontology_id", "=", ontoId)
+                            .fetch();
 
-            var traits = [];
+            var result = [];
+            terms.forEach(function(term){
+                result.push(googlestore.toJS(term));
+            });
 
-            if(terms[Object.keys(terms)[0]].obo_blob_key){   ///OBO file
-                traits = traitsUtil.getOBO(ontoId);
-            }else{
-                
-                for(var id in terms) {
-                    var term = terms[id];
-                    var relationship = term.relationship;
-                    if(typeof relationship == 'object') {
-                        relationship = ''+relationship[0];
-                    }
-                    if(relationship)
-                        relationship = ''+relationship.split(' ')[0];
+            var traits = result;
 
-                    if(relationship == 'scale_of') {
-                        var obj = {};
-                        var scale = term;
-                        scale.parent = ''+defaultParent(scale.parent);
-                        var method = terms[scale.parent];
-                        if(!method) continue;
-                        method.parent = ''+defaultParent(method.parent);
-                        var trait = terms[method.parent];
-
-                        addTo(obj, trait, 'trait');
-                        addTo(obj, method, 'method');
-                        addTo(obj, scale, 'scale');
-
-                        traits.push(obj);
-                    } else if(relationship == 'method_of' && !parents[id]) { // this method isn't parent of anything
-                        var obj = {};
-                        var scale = {};
-                        var method = term;
-                        method.parent = ''+defaultParent(method.parent);
-                        var trait = terms[method.parent];
-
-                        addTo(obj, method, 'method');
-
-                        traits.push(obj);
-                    } else if(!parents[id]) { // this should be trait, isn't parent of anything - or it could also be OBO last child
-                        var obj = {};
-                        var scale = {};
-                        var method = {};
-                        var trait = term;
-
-                        //addTo(obj, trait, 'trait');
-
-                        traits.push(term);
-                    }
-                }
-
-                if(!traits.length) { // probably no methods nor scales, just get the last child
-                    function hasChildren(termId) {
-                        for(var i in terms) {
-                            var term = terms[i];
-                            term.parent = ''+defaultParent(term.parent);
-                            if(term.parent == termId)
-                                return false;
-                        }
-                        return true;
-                    }
-                    for(var id in terms) {
-                        var term = terms[id];
-
-                        if(hasChildren(term.id)) {
-                            var empty = true;
-                            var obj = {};
-                            addTo(obj, term, 'obo');
-                            // check that obj is full before adding
-                            for(var x in obj) {
-                                empty = false;
-                                break;
-                            }
-                            if(!empty) {
-                                traits.push(obj);
-                            }
-                        }
-                    }
-                }
-
-            }
-
+           
             function JSON2CSV(objArray) {
                 var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
                 var str = '';
@@ -2798,6 +2719,15 @@ apejs.urls = {
                 }
                 return str;
                 
+            }
+
+            function JSON2XLS(objArray) {
+                var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+
+                var out = excel.createXls(array);
+
+                return out;
+
             }
             function translate(value, language) {
                 try {
@@ -2872,10 +2802,16 @@ apejs.urls = {
                     if(obj[k] == 'false') obj[k]='';
             }
 
-            response.setContentType("application/csv");
-            response.setHeader('Content-Disposition', 'attachment; filename='+ontoId+'.csv');
-            print(response).text(JSON2CSV(traits));
-            //print(response).json(JSON2CSV(traits));
+            var blobKey = JSON2XLS(traits);
+            
+            
+
+             // get metadata
+            var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+             response.setHeader("Cache-Control", "max-age=315360000");
+             response.setContentType(blobInfo.getContentType());
+             response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
+            blobstore.blobstoreService.serve(blobKey, response);
         },
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
