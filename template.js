@@ -62,7 +62,7 @@ t.prototype.getTrait = function(row) {
     var obj = {};
     var startCopy = false;
     for(var i in row) {
-        if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') startCopy = true;
+        if(i == 'Trait ID' || i == 'ibfieldbook') startCopy = true;
         if(startCopy) {
             obj[i] = row[i]; 
             if(obj[i] == "") delete obj[i]; 
@@ -73,8 +73,8 @@ t.prototype.getTrait = function(row) {
     if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
     if(row['Variable status']) obj['ibfieldbook'] = row['Variable status'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language of submission"];
-    obj.name = obj["Name of Trait"] || obj["Trait"];
+    obj['language'] = row[langKey] || row["Language"];
+    obj.name = obj["Name of Trait"] || obj["Trait name"];
     if(!obj.name) {
         obj.name = 'No trait name found'
     }
@@ -96,9 +96,9 @@ t.prototype.getMethod = function(row) {
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language of submission"];
+    obj['language'] = row[langKey] || row["Language"];
 
-    obj.name = obj["Name of method"] || obj["Method"];
+    obj.name = obj["Name of method"] || obj["Method name"];
 
     if(!obj.name) { 
         obj.name = 'No method name found';
@@ -124,7 +124,7 @@ t.prototype.getScale = function(row) {
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language of submission"];
+    obj['language'] = row[langKey] || row["Language"];
 
     obj.name = obj["Scale name"] || obj['For Continuous: units of measurement'] || obj['For Discrete: Name of scale or units of measurement']
                          || obj['For Categorical: Name of rating scale'];
@@ -142,13 +142,11 @@ t.prototype.getVariable = function(row) {
     for(var i in row) {
         if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') break;
         obj[i] = row[i]; 
-        if(obj[i] == "") delete obj[i];
-        
-        
+        if(obj[i] == "") delete obj[i];     
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
-    obj['language'] = row[langKey] || row["Language of submission"];
+    obj['language'] = row[langKey] || row["Language"];
 
     obj.name = obj["Variable name"];
     if(!obj.name) { // look in the 22nd column
