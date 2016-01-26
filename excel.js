@@ -1,8 +1,8 @@
 importPackage(org.apache.poi.ss.usermodel);
 importPackage(org.apache.poi.hssf.usermodel);
 
-importPackage(com.google.appengine.api.blobstore);
-importPackage(com.google.appengine.api.files);
+//importPackage(com.google.appengine.api.blobstore);
+//importPackage(com.google.appengine.tools.cloudstorage);
 
 var excel = {
 
@@ -417,36 +417,93 @@ var excel = {
             } else{//obo
                 //SILL NEED TO ADD WHEN A TRAIT DOES NOT HAVE A METHOD OR SCALE
             }
-        
-        
-        //ByteArrayOutputStream
-        var bos = new ByteArrayOutputStream();
-        myWorkBook.write(bos);
-        
-        //byte[]
-        var bytes = bos.toByteArray();
-        bos.close();
-        ///////////////
-        //blob
-        // Get a file service
-        var fileService = FileServiceFactory.getFileService();
+       
+            /////CSV
+            var data = new StringBuffer();
+            var sheet = myWorkBook.getSheetAt(1);
+            
+            for(var id=0; id<sheet.getLastRowNum(); id++) {
+                var row = sheet.getRow(id);
+               for(var cn=0; cn<row.getLastCellNum(); cn++) {
+                   // If the cell is missing from the file, generate a blank one
+                   // (Works by specifying a MissingCellPolicy)
+                   var cell = row.getCell(cn, Row.CREATE_NULL_AS_BLANK);
+                   
+                   data.append("\""+cell.toString().trim() + "\""+ ";");
+               }
+              data.append("\r\n"); 
+            }
 
-        // Create a new Blob file with mime-type "text/plain"
-        var file = fileService.createNewBlobFile("application/vnd.ms-excel", "temp.xls");
+            return data.toString();
 
-        // Open a channel to write to it
-        var lock = true;
-        var writeChannel = fileService.openWriteChannel(file, lock);
-
-        var bb = java.nio.ByteBuffer.wrap(bytes);
-        writeChannel.write(bb);
+///// for the day I'll want to fix the upload in excel
+        // //ByteArrayOutputStream
+        // var bos = new ByteArrayOutputStream();
+        // myWorkBook.write(bos);
         
-        // Now finalize
-        writeChannel.closeFinally();
+        // //byte[]
+        // var bytes = bos.toByteArray();
+        // bos.close();
 
-        var blobKey = fileService.getBlobKey(file);
-        return blobKey;
-        //return blobstore.createFile(bytes);
+
+
+
+        //  //Get GCS service
+        // var gcsService = GcsServiceFactory.createGcsService();
+        // //Generate string for my photo
+        // var unique = UUID.randomUUID().toString();    
+        // //Open GCS File
+        // var filename = new GcsFilename("cropontology-curationtool", unique+".xls"); 
+
+        // //Set Option for that file
+        // var options = new GcsFileOptions.Builder()
+        //             .mimeType("application/vnd.ms-excel")
+        //             //.acl("public-read")
+        //             .build();
+        // //Canal to write on it
+        // var writeChannel = gcsService.createOrReplace(filename, options);
+        // try{
+        // //write data
+        //     var bb = java.nio.ByteBuffer.wrap(bytes);
+        //     writeChannel.write(bb);
+        // }finally{
+        //     writeChannel.close();
+        // }
+
+        // var cloudStorageURL = "/gs/" + filename.getBucketName() + "/" + filename.getObjectName();
+        // var bs = BlobstoreServiceFactory.getBlobstoreService();
+        // return bs.createGsBlobKey(cloudStorageURL);
+
+//////////////////////
+       //  ///////////////
+       //  // create blob url
+       //  //BlobstorageService blobService = BlobstoreServiceFactory.getBlobstoreService();
+       //  //String uploadUrl = blobService.createUploadUrl("temp.xls");
+       //  //blob
+       //  // Get a file service
+       //  //var fileService = FileServiceFactory.getFileService();
+       //  var fileService = GcsServiceFactory.createGcsService();
+       //  // Create a new Blob file with mime-type "text/plain"
+       //  //var file = fileService.createNewBlobFile("application/vnd.ms-excel", "temp.xls");
+       // // var file = fileService.createNewBlobFile("application/vnd.ms-excel", "temp.xls");
+
+       //  // Open a channel to write to it
+       //  var lock = true;
+       //  //var writeChannel = fileService.openWriteChannel(file, lock);
+       //  var writeChannel = GcsService.createOrReplace("temp.xls", lock);
+
+       //  var bb = java.nio.ByteBuffer.wrap(bytes);
+       //  //writeChannel.write(bb);
+       //  writeChannel.write(bb);
+       //  writeChannel.close();
+        
+       //  // Now finalize
+       //  // writeChannel.closeFinally();
+       //  BlobstoreService bs = BlobstoreServiceFactory.getBlobstoreService();
+       //  //var blobKey = fileService.getBlobKey(file);
+       //  var blobKey = bs.createGsBlobKey(cloudStorageURL);
+       //  return blobKey;
+       //  //return blobstore.createFile(bytes);
     }
 
 };

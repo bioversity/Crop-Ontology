@@ -2801,17 +2801,23 @@ apejs.urls = {
                 for(var k in obj)
                     if(obj[k] == 'false') obj[k]='';
             }
-
-            var blobKey = JSON2XLS(traits);
+            ////////CSV EXPORT
+            var csvString = JSON2XLS(traits);
+            response.setContentType("text/csv");
+            response.setHeader("Content-Disposition","attachment;filename="+ontoId+".csv"); 
             
-            
+            response.getWriter().println(csvString);
 
-             // get metadata
-            var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-             response.setHeader("Cache-Control", "max-age=315360000");
-             response.setContentType(blobInfo.getContentType());
-             response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
-            blobstore.blobstoreService.serve(blobKey, response);
+            ///////XLS EXPORT
+            // var blobKey = JSON2XLS(traits);
+        
+
+            //  // get metadata
+            // var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+            // response.setHeader("Cache-Control", "max-age=315360000");
+            // response.setContentType(blobInfo.getContentType());
+            // response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
+            // blobstore.blobstoreService.serve(blobKey, response);
         },
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
