@@ -21,10 +21,10 @@ function markdown(str) {
     // do obo links
     str = oboid(str, "PATO|TO|PO", function(prefix, id){
       if(prefix === "PO") {
-        return "<a target='_blank' href='http://www.plantontology.org/amigo/go.cgi?view=details&search_constraint=terms&depth=0&query="+id+"'>" + id + "</a>"
+        return "<a target='_blank' href='http://browser.planteome.org/amigo/term/"+id+"'>" + id + "</a>"
       } else if(prefix === "TO") {
         // old site : return "<a target='_blank' href='http://www.gramene.org/db/ontology/search?id="+id+"'>" + id + "</a>"
-        return "<a target='_blank' href='http://planteome.org/amigo/cgi-bin/crop_amigo/term_details?term="+id+"'>" + id + "</a>"
+        return "<a target='_blank' href='http://browser.planteome.org/amigo/term/"+id+"'>" + id + "</a>"
       } else {
         return id;
       }
