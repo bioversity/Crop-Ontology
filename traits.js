@@ -564,151 +564,135 @@ exports = {
                
             } else {  // TD v4&&v5
 
+                var methods = {};
+                var methods_of = {};
+                var scales = {};
+                var scales_of = {};
+                var variables = {};
+                var variables_of = {};
+
                 terms.forEach(function(term){
-                    // var ibfieldbook = term.getProperty("ibfieldbook");
-                    // if(ibfieldbook == null){
-                    //     return;
-                    // }
-                    var name = get("name", term);
-                    var def = get("Description of Trait", term) || get("Trait description", term);
+
+                    var term_name = get("name", term);
+					var term_parents = term.getProperty("parent");
+					var parent_array = [];
+					if(term_parents){
+						if(term_parents.getClass() == "class java.util.ArrayList"){
+							for(var i = 0; i<term_parents.size();i++){
+								parent_array.push("" + term_parents.get(i));
+							}
+						} else {
+							parent_array.push("" + term_parents);
+						}
+					}
+
+					// 3/ make an object with the scales
                     //var fb = get("ibfieldbook", term) || get("Trait status", term) ;
                     //var creator = get("Name of submitting scientist",term) || get("Scientist",term) ;
                     //var inst = get("Institution",term);
-                    var crop = get("Crop", term);
-                    var abbr = get("Abbreviated name", term) || get("Trait abbreviation", term);
-                    var syn = get("Synonyms (separate by commas)", term) || get("Trait synonyms", term) ;
                     //var created_at = get("created_at", term) || get("Date of submission", term);;
-                    var isa = get("Trait Class", term) ||  get("Trait class", term);
-                    //var syn = "" + term.getClass();
-                    //var syn = "" + term.getClass();
 
-                    traits["" + term.getProperty("id")] = {
-                        name : name,
-                        definition : def,
-                        synonym : syn, 
-                        abbreviation : abbr, 
-                        is_a : isa,
-                        // creator : creator, 
-                        // institution : inst, 
-                        // creation_date : created_at, 
-                        // crop: crop 
-                    };
-                    
+					// 1/ Make object with traits
+					
+                    var trait_def = get("Description of Trait", term) || get("Trait description", term);
+
+					if(trait_def){ //this is a trait
+						traits["" + term.getProperty("id")] = {
+							name : term_name,
+							definition : trait_def,
+							synonym : get("Synonyms (separate by commas)", term) || get("Trait synonyms", term) , 
+							abbreviation : get("Abbreviated name", term) || get("Trait abbreviation", term), 
+							is_a : get("Trait Class", term) ||  get("Trait class", term),
+							related_variables :{},
+							method : {},
+							// creator : creator, 
+							// institution : inst, 
+							// creation_date : created_at, 
+						};
+					}
                     for(var k in traits["" + term.getProperty("id")])
                         if(!traits["" + term.getProperty("id")][k]) delete traits["" + term.getProperty("id")][k];
 
-                  });
+					// 2/ make an object with the methods
+					
+					var method_def = get("Describe how measured (method)", term) || get("Method description", term);
+					if (method_def){ //this is a method
+						methods["" + term.getProperty("id")] = {
+						//	method_ID: "" + term.getProperty("id"),
+							name: term_name,
+                            definition : method_def,
+						//	related_variables :{},
+							scale : {},
+						};
+						methods_of[ "" + term.getProperty("id")] = parent_array;
+					}
 
-                var methods = {};
+					// 3/ make an object with the scales
+                    var nameSc = get("Scale name", term )
+                                        || get("For Continuous: units of measurement", term ) 
+                                        || get("For Discrete: Name of scale or units of measurement", term )
+                                        || get("For Categorical: Name of rating scale", term);
+					if (nameSc){
+						scales["" + term.getProperty("id")] = {
+							scale_ID: "" + term.getProperty("id"),
+							scale_name: term_name,
+                            type : get ("Scale class", term ) || get("Type of Measure (Continuous, Discrete or Categorical)", term),
+                            min : get("For Continuous: minimum", term) || get("Lower limit", term),
+                            max : get("For Continuous: maximum", term) || get("Upper limit", term),
+						//	related_variables :{},
+						};
+						addCategory(term, scales["" + term.getProperty("id")]);
+						scales_of["" + term.getProperty("id")] = parent_array;
+						for(var k in scales["" + term.getProperty("id")])
+                        	if(!scales["" + term.getProperty("id")][k]) delete scales["" + term.getProperty("id")][k];
+					}
 
-                terms.forEach(function(term){
-                    var parent = term.getProperty("parent");
-                    var variable = term.getProperty("Crop"); // only the variable will hae this prop
-                    if(!parent || variable) return;
+					// 4/ make an object with the variables
+					
+                    var crop = get("Crop", term);
+					if (crop && !trait_def ){ // "Crop" is part of the trait in TDv4 and part of the var in TDv5. 
+//						variables["" + term.getProperty("id")]={
+//							variable_ID: "" + term.getProperty("id"),
+//							variable_name: term_name,
+//						};
+						variables["" + term.getProperty("id")] = term_name[Object.keys(term_name)];
+						variables_of[ "" + term.getProperty("id")] = parent_array;
+					}
 
-                    if(parent.getClass() == "class java.util.ArrayList"){
-                        for(var i = 0; i<parent.size();i++){
-                            var p = parent.get(i);
-                            if(traits[p]) {
-                                //this is a method
-                                if(!traits[p]["method"]) traits[p]["method"] = {};
+                });
 
-                                traits[p]["method"]["" + term.getProperty("id")] = { 
-                                    name : get("name", term) , 
-                                    definition : get("Describe how measured (method)", term) || get("Method description", term) 
-                                };
+				// 5/ add the variables related to the T, M, S
+				for (variable_id in variables){
+					parent_trait_id = variables_of[variable_id][0];
+					parent_method_id = variables_of[variable_id][1];
+					parent_scale_id = variables_of[variable_id][2];
+					traits[parent_trait_id]["related_variables"][variable_id] = variables[variable_id];
+			//		methods[parent_method_id]["related_variables"][variable_id] = variables[variable_id];
+			//		scales[parent_scale_id]["related_variables"][variable_id] = variables[variable_id];
+				}
 
-                                methods["" + term.getProperty("id")] = traits[p]["method"]["" + term.getProperty("id")];
 
-                            }
-                        }
-                    } else {
-                        if(traits[parent]){
-                            //this is a method
-                            if(!traits[parent]["method"]) traits[parent]["method"] = {};
-                            
-                            traits[parent]["method"]["" + term.getProperty("id")] = { 
-                                    name : get("name", term) , 
-                                    definition : get("Describe how measured (method)", term) || get("Method description", term) 
-                            };                            
-                            methods["" + term.getProperty("id")] = traits[parent]["method"]["" + term.getProperty("id")];
-                        }
-                    }
+				// 6/ add the scales to the methods
+				for (scale_id in scales){
+					for (var parent_index in scales_of[scale_id]){
+						if (!Object.keys(methods[scales_of[scale_id][parent_index]]["scale"]).length){
+							methods[scales_of[scale_id][parent_index]]["scale"]= {};
+						}
+						methods[scales_of[scale_id][parent_index]]["scale"][scale_id] = {};
+						methods[scales_of[scale_id][parent_index]]["scale"][scale_id] = scales[scale_id];
+					}
+				}
 
-                }); 
-
-                // scales
-                terms.forEach(function(term){
-                    var parent = term.getProperty("parent");
-                    var variable = term.getProperty("Crop");
-                    if(!parent || variable) return;
-                    if(parent.getClass() == "class java.util.ArrayList"){
-                        for(var i = 0; i<parent.size();i++){
-                            var p = parent.get(i);
-                            if(methods[p]){
-                                //this is a scale
-                                if(!methods[p]["scale"]) methods[p]["scale"] = {};
-
-                                var nameSc = get("Scale name", term )
-                                                    || get("For Continuous: units of measurement", term ) 
-                                                    || get("For Discrete: Name of scale or units of measurement", term )
-                                                    || get("For Categorical: Name of rating scale", term);
-
-                                var type = get ("Scale class", term ) || get("Type of Measure (Continuous, Discrete or Categorical)", term);
-                                var min = get("For Continuous: minimum", term) || get("Lower limit", term);
-                                var max = get("For Continuous: maximum", term) || get("Upper limit", term);
-
-                                var obj = { 
-                                    name : nameSc, 
-                                    type : type, 
-                                    minimum : min, 
-                                    maximum : max
-                                };
-
-                                for(var k in obj)
-                                    if(!obj[k]) delete obj[k];
-                               
-
-                                addCategory(term, obj);
-
-                                methods[p]["scale"]["" + term.getProperty("id")] = obj;
-
-                            }
-                        }
-                    } else {
-                        if(methods[parent]){
-                            //this is a scale
-                            if(!methods[parent]["scale"]) methods[parent]["scale"] = {};
-
-                                var nameSc = get("Scale name", term )
-                                                    || get("For Continuous: units of measurement", term ) 
-                                                    || get("For Discrete: Name of scale or units of measurement", term )
-                                                    || get("For Categorical: Name of rating scale", term);
-
-                               var type = get ("Scale class", term ) || get("Type of Measure (Continuous, Discrete or Categorical)", term);
-                                var min = get("For Continuous: minimum", term) || get("Lower limit", term);
-                                var max = get("For Continuous: maximum", term) || get("Upper limit", term);
-
-                            var obj = { 
-                                    name : nameSc, 
-                                    type : type, 
-                                    minimum : min, 
-                                    maximum : max
-                                };
-
-                                for(var k in obj)
-                                    if(!obj[k]) delete obj[k];
-                                
-
-                            addCategory(term, obj);
-
-                            methods[parent]["scale"]["" + term.getProperty("id")] = obj;
-
-                            
-
-                        }
-                    }
-                }); 
+	  			// 7/ add the methods to the traits
+				for (method_id in methods){
+					for (var parent_index in methods_of[method_id]){
+							if (!Object.keys(traits[methods_of[method_id][parent_index]]["method"]).length){
+							traits[methods_of[method_id][parent_index]]["method"]= {};
+						}
+						traits[methods_of[method_id][parent_index]]["method"][method_id] = {};
+						traits[methods_of[method_id][parent_index]]["method"][method_id] = methods[method_id];
+					}
+				}
             }
 
             function get(property, term) {
