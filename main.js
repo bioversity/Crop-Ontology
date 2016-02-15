@@ -3309,7 +3309,7 @@ apejs.urls = {
 			// NB only the traits from TDv5
 			// Not implemented for OBOs
 	        var traits = googlestore.query("term")
-			  			 .filter("Trait", "!=", null)
+			  			 .filter("Trait name", "!=", null)
                          .fetch();
 
 			traits.forEach( function(trait){
@@ -3337,6 +3337,78 @@ apejs.urls = {
             });
 	        print(response).json(ret);
 	  }
+	},
+	"/variables/([^/]*)":{
+		get: function(request, response, matches) {
+			var ret={};
+			ret["metadata"] = {
+				"pagination":null, 
+				"status": []
+			};
+
+            var var_id = matches[1];
+	        var variables = googlestore.query("term")
+			  			 .filter("id", "=", var_id)
+                         .fetch();
+			var variable_of;
+			variables.forEach(function(variable){
+				ret["result"] = {
+					"traitDbId" : null,
+					"observationVariableId": "" + variable.getProperty("id"),
+					trait: {},
+					method: {},
+					scale: {},
+				};
+				variable_of = variable.getProperty("parent");
+			});
+			
+	        var traits = googlestore.query("term")
+			  			 .filter("id", "=", variable_of.get(0))
+                         .fetch();
+			traits.forEach(function(trait){
+				ret["result"]["trait"] = {
+					"traitId" : "" + trait.getProperty("id"),
+					"name": "" + translate(trait.getProperty("name")),
+					"description": "" + translate(trait.getProperty("Trait description")),
+				}
+			});
+
+	        var methods = googlestore.query("term")
+			  			 .filter("id", "=", variable_of.get(1))
+                         .fetch();
+			methods.forEach(function(method){
+				ret["result"]["method"] = {
+					"methodId" : "" + method.getProperty("id"),
+					"name": "" + translate(method.getProperty("name")),
+					"description": "" + translate(method.getProperty("Method description")),
+				}
+			});
+			
+	        var scales = googlestore.query("term")
+			  			 .filter("id", "=", variable_of.get(2))
+                         .fetch();
+			scales.forEach(function(scale){
+				ret["result"]["scale"] = {
+					"scaleId" : "" + scale.getProperty("id"),
+					"name": "" + translate(scale.getProperty("name")),
+					"dataType": "" + translate(scale.getProperty("Scale class")),
+					"validValues": {
+						"min": "" + translate(scale.getProperty("Lower limit")),
+						"max":  "" + translate(scale.getProperty("Upper limit")),
+						"categories": [],
+					}
+				}
+				if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
+					var i = 1;
+					while (scale.getProperty("Category " + i)){
+						ret["result"]["scale"]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
+						i = i + 1;
+					}
+				}
+
+			});
+			print(response).json(ret);
+		}
 	},
   	"/ontos_stats":{
         get: function(request, response) {
