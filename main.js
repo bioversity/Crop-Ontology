@@ -3374,7 +3374,7 @@ apejs.urls = {
 					"observationVariableDbId" : "" + variable.getProperty("id"),
 					"observationVariableId": "" + variable.getProperty("id"),
 					trait: {},
-					method: {},
+					measurementMethod: {},
 					scale: {},
 				};
 				variable_of = variable.getProperty("parent");
@@ -3385,6 +3385,7 @@ apejs.urls = {
                          .fetch();
 			traits.forEach(function(trait){
 				ret["result"]["trait"] = {
+					"traitDbId" : "" + trait.getProperty("id"),
 					"traitId" : "" + trait.getProperty("id"),
 					"name": "" + translate(trait.getProperty("name")),
 					"description": "" + translate(trait.getProperty("Trait description")),
@@ -3422,9 +3423,100 @@ apejs.urls = {
 						ret["result"]["scale"]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
 						i = i + 1;
 					}
+				} else {
+					ret["result"]["scale"]["validValues"]["categories"]= null;
 				}
 
 			});
+			print(response).json(ret);
+		}
+	},
+	"/variables":{
+		get: function(request, response, matches) {
+			var ret={};
+			ret={
+				"metadata" : {
+					"pagination":{
+						 "pageSize": null, 
+			             "currentPage": null, 
+			             "totalCount": null, 
+			             "totalPages": null 
+					}, 
+					"status": [],
+				},
+				"result": {
+					"data": [],
+				}
+			};
+
+	        var traits = googlestore.query("term")
+			  			 .filter("Trait ID", "!=", null)
+                         .fetch();
+			var traits_object = {};
+			traits.forEach(function(trait){
+				traits_object["" + trait.getProperty("id")] = {
+					"traitDbId" : "" + trait.getProperty("id"),
+					"traitId" : "" + trait.getProperty("id"),
+					"name": "" + translate(trait.getProperty("name")),
+					"description": "" + translate(trait.getProperty("Trait description")),
+				}
+			});
+
+	        var methods = googlestore.query("term")
+			  			 .filter("Method ID", "!=", null)
+                         .fetch();
+			var methods_object = {};
+			methods.forEach(function(method){
+				methods_object[ "" + method.getProperty("id")] = {
+					"methodId" : "" + method.getProperty("id"),
+					"name": "" + translate(method.getProperty("name")),
+					"description": "" + translate(method.getProperty("Method description")),
+				};
+			});
+
+	        var scales = googlestore.query("term")
+			  			 .filter("Scale ID", "!=", null)
+                         .fetch();
+			var scales_object = {};
+			scales.forEach(function(scale){
+				scales_object["" + scale.getProperty("id")] = {
+					"scaleId" : "" + scale.getProperty("id"),
+					"name": "" + translate(scale.getProperty("name")),
+					"dataType": "" + translate(scale.getProperty("Scale class")),
+					"validValues": {
+						"min": "" + translate(scale.getProperty("Lower limit")),
+						"max":  "" + translate(scale.getProperty("Upper limit")),
+						"categories": [],
+					}
+				}
+				if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
+					var i = 1;
+					while (scale.getProperty("Category " + i)){
+						scales_object["" + scale.getProperty("id")]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
+						i = i + 1;
+					}
+				} else {
+					scales_object["" + scale.getProperty("id")]["validValues"]["categories"]= null;
+				}
+			});
+
+
+	        var variables = googlestore.query("term")
+			  			 .filter("Variable ID", "!=", null)
+                         .fetch();
+			variables.forEach(function(variable){
+				ret["result"]["data"].push({
+					"observationVariableDbId" : "" + variable.getProperty("id"),
+					"observationVariableId": "" + variable.getProperty("id"),
+					"name": "" + translate(variable.getProperty("name")),
+					"trait": traits_object["" + variable.getProperty("parent").get(0)],
+					"measurementMethod": methods_object["" + variable.getProperty("parent").get(1)],
+					"scale": scales_object["" + variable.getProperty("parent").get(2)],
+				});
+			});
+			
+//			
+//			});
 			print(response).json(ret);
 		}
 	},
