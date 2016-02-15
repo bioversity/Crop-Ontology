@@ -3258,7 +3258,7 @@ apejs.urls = {
 
         }
     },
-	"/traits/([^/]*)":{
+	"/brapi/v1/traits/([^/]*)":{
 	  get: function(request, response, matches) {
 
 			// prepare output object
@@ -3307,7 +3307,7 @@ apejs.urls = {
 	        print(response).json(ret);
 	  }
 	},
-	"/traits":{
+	"/brapi/v1/traits":{
 	  get: function(request, response, matches) {
 			// prepare output object
 			var ret={};
@@ -3356,7 +3356,7 @@ apejs.urls = {
 	        print(response).json(ret);
 	  }
 	},
-	"/variables/([^/]*)":{
+	"/brapi/v1/variables/([^/]*)":{
 		get: function(request, response, matches) {
 			var ret={};
 			ret["metadata"] = {
@@ -3431,7 +3431,7 @@ apejs.urls = {
 			print(response).json(ret);
 		}
 	},
-	"/variables":{
+	"/brapi/v1/variables":{
 		get: function(request, response, matches) {
 			var ret={};
 			ret={
