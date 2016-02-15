@@ -3263,7 +3263,15 @@ apejs.urls = {
 
 			// prepare output object
 			var ret={};
-			ret["metadata"] = {"pagination":{}, "status": []};
+			ret["metadata"] = {
+				"pagination":{
+					 "pageSize": null, 
+		             "currentPage": null, 
+		             "totalCount": null, 
+		             "totalPages": null 
+				}, 
+				"status": []
+			}
 			ret["result"] = [];
 
 			// get the trait
@@ -3276,9 +3284,11 @@ apejs.urls = {
 				var traitId = trait.getProperty("id");
 
 				var object = {
-                    "traitBdId": ""+ traitId,
+                    "traitDbId": ""+trait.getProperty("id"),
                     "traitId": ""+trait.getProperty("id"),
-                    "name": ""+ translate(trait.getProperty("name"))
+                    "name": ""+ translate(trait.getProperty("name")),
+					"observationVariables": [],
+					"defaultValue": null,
 				};
 
 			  	// get the variables under each trait
@@ -3289,7 +3299,6 @@ apejs.urls = {
 			  							.filter("parent", "=", traitId)
 			  							.filter("relationship", "=", "variable_of")
 			  							.fetch()
-				object.observationVariables = [];
 				variables.forEach( function(variable){
 					object.observationVariables.push(""+variable.getProperty("id"));
 				});
@@ -3302,7 +3311,15 @@ apejs.urls = {
 	  get: function(request, response, matches) {
 			// prepare output object
 			var ret={};
-			ret["metadata"] = {"pagination":{}, "status": []};
+			ret["metadata"] = {
+				"pagination":{
+					 "pageSize": null, 
+		             "currentPage": null, 
+		             "totalCount": null, 
+		             "totalPages": null 
+				}, 
+				"status": []
+			};
 			ret["result"] = [];
 
 			// get the traits 
@@ -3316,9 +3333,11 @@ apejs.urls = {
 				var traitId = trait.getProperty("id");
 
 				var object = {
-                    "traitBdId": ""+ traitId,
+                    "traitDbId": ""+trait.getProperty("id"),
                     "traitId": ""+trait.getProperty("id"),
-                    "name": ""+ translate(trait.getProperty("name"))
+                    "name": ""+ translate(trait.getProperty("name")),
+					"observationVariables": [],
+					"defaultValue": null,
 				};
 
 			  	// get the variables under each trait
@@ -3328,8 +3347,7 @@ apejs.urls = {
 				var variables = googlestore.query("term")
 			  							.filter("parent", "=", traitId)
 			  							.filter("relationship", "=", "variable_of")
-			  							.fetch()
-				object.observationVariables = [];
+			  							.fetch();
 				variables.forEach( function(variable){
 					object.observationVariables.push(""+variable.getProperty("id"));
 				});
@@ -3353,7 +3371,7 @@ apejs.urls = {
 			var variable_of;
 			variables.forEach(function(variable){
 				ret["result"] = {
-					"traitDbId" : null,
+					"observationVariableDbId" : "" + variable.getProperty("id"),
 					"observationVariableId": "" + variable.getProperty("id"),
 					trait: {},
 					method: {},
