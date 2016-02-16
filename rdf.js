@@ -25,6 +25,24 @@ rdf.prototype.findLangs = function(value) {
     }
     return obj;
 }
+rdf.prototype.translate = function(value) {
+    try {
+        var j = JSON.parse(value);
+        if(j['english']) {
+            value = j['english'];
+        } else {
+        // could be "undefined"
+            if(j['undefined'])
+                return j['undefined'];
+            else
+                return false;
+            } 
+    } catch(e) {
+        //throw value;
+    }
+    return value;
+}
+
 rdf.prototype.convertId = function(id) {
     function idUrl() { return arguments[1].toUpperCase(); };
     id = id.replace(/ (.)/g, idUrl);
@@ -133,10 +151,27 @@ rdf.prototype.buildTriple = function(term) {
                             //let's assume that info is in the same order in parent and relationship
                              if(term.relationship[i].indexOf('scale_of')==0) { 
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                if(term["Scale class"] != undefined){
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                }else{
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+                                }
                             }else if (term.relationship[i].indexOf('method_of')==0){
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                if(term["Method class"]!= undefined){
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                                }else{
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+                                }
+                               
                             }else if (term.relationship[i].indexOf('variable_of')==0){
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'variable_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
+                                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
                             }else{
                                 this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                             }
@@ -145,23 +180,66 @@ rdf.prototype.buildTriple = function(term) {
                             if(i==0){
                                 if(typeof term.relationship === 'string' && term.relationship.indexOf('variable_of')==0){
                                     this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'variable_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
                                 } else  if(typeof term.relationship === 'string' && term.relationship.indexOf('scale_of')==0){
                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                } else{
+                                   if(term["Scale class"]){
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                        }else{
+                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+                                        }
+                                }else  if(typeof term.relationship === 'string' && term.relationship.indexOf('method_of')==0){
+                                   this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                   if(term["Method class"]){
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                                        }else{
+                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+                                        }
+                                }else{
                                     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n'
                                 }
                             }else{
                                 if(term.relationship[i-1] != undefined && term.relationship[i-1].indexOf('scale_of')==0) { 
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                if(term["Scale class"]){
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                    }else{
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+                                    }
                                 }else if(term.relationship[i-1] == undefined && term.relationship.indexOf('scale_of')==0) { 
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                if(term["Scale class"]){
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                                    }else{
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+                                    }
                                 }else if (term.relationship[i-1] != undefined && term.relationship[i-1].indexOf('method_of')==0){
                                     this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                    if(term["Method class"]){
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                                    }else{
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+                                    }
                                 }else if (term.relationship.indexOf('variable_of')==0){
                                     this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'variable_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
                                 }else{
                                     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
+                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
                                 }
                             }
                         }
@@ -179,8 +257,22 @@ rdf.prototype.buildTriple = function(term) {
         } else { // just a single broader
             if(term.relationship == 'scale_of') {
                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent) + '> .\n';
+                if(term["Scale class"]){
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
+                }else{
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+                }
             }else if (term.relationship == 'method_of'){
                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent) + '> .\n';
+                if(term["Method class"]){
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
+               }else{
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+                }
 
             }else {
                 this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.encodeID(term.parent) + '> .\n';
@@ -226,6 +318,7 @@ rdf.prototype.buildTriple = function(term) {
 
     }
 
+   
     return this.turtle;
 }
 
@@ -247,6 +340,31 @@ rdf.prototype.buildNtriples = function(ontologyId) {
             }
             */
         });
+
+     /////Create the superclasses (top classes) for scales and methods
+    this.turtle += '<' + this.uri + 'Computation' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Computation' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Measurement' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Measurement' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Estimation' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Estimation' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Counting' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+    this.turtle += '<' + this.uri + 'Counting' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+
+    this.turtle += '<' + this.uri + 'Nominal' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Nominal' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Ordinal' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Ordinal' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Numerical' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Numerical' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Text' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Text' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Code' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Code' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Duration' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Duration' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Time' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+    this.turtle += '<' + this.uri + 'Time' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
 
     return this.turtle;
 };
