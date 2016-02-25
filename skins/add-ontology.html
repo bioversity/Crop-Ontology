@@ -3,16 +3,16 @@
                 <div class="cont" style="width: 877px;"> 
 
                     <div class="add_title">
-                        <a href="#!/add/upload_obo" title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch selected"><span>Upload an OBO File</span></a>
+                        <a href="#!/add/upload_excel" title="Upload Excel Template" cont="upload_excel_cont" class="minibutton btn-watch selected"><span>Upload Excel Trait Template</span></a>
+                        or
+                        <a href="#!/add/upload_obo" title="Upload OBO" cont="upload_obo_cont" class="minibutton btn-watch"><span>Upload an OBO File</span></a>
                         or
                         <a href="#!/add/create_ontology" title="Generate Ontology" cont="create_ontology_cont" class="minibutton btn-watch"><span>Create an Ontology</span></a>
-                        or
-                        <a href="#!/add/upload_excel" title="Upload Excel Template" cont="upload_excel_cont" class="minibutton btn-watch"><span>Upload Excel Trait Template</span></a>
                     </div>
 
                     <a class="button" id="error" style="display: none; margin-bottom: 10px;"></a>
 
-                    <div id="upload_obo_cont">
+                    <div id="upload_obo_cont" style="display: none">
 
                         <form action="{{UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="obo_upload_iframe">
                             <p>
@@ -37,6 +37,7 @@
 
 
                     <div id="create_ontology_cont" style="display: none">
+                        <p><b>Note:</b> this feature is not fully supported. For instance, deleting terms or term attributes is not possible.</p>
                             <p>
                             Category:
                             {{{ONTOLOGY_CATEGORIES}}}
@@ -56,7 +57,7 @@
                             <a title="Save" id="save" class="minibutton btn-watch"><span>Save</span></a>
                         </div>
                     </div><!-- create_ontology_cont -->
-                    <div id="upload_excel_cont" style="display: none">
+                    <div id="upload_excel_cont">
                         <p><b>Note:</b> Be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href="/TD_template_v5.xls">Trait Dictionary template version 5</a></p>
 
                         <form action="{{EXCEL_UPLOAD_URL}}" method="post" enctype="multipart/form-data" target="excel_upload_iframe">
