@@ -356,9 +356,23 @@ apejs.urls = {
                 var ontoKey = googlestore.createKey("ontology", ontoId),
                     ontoEntity = googlestore.get(ontoKey),
                     ontologyId = ontoEntity.getProperty('ontology_id');
-
-                var nt = new rdf().buildNtriples(ontologyId);
-                print(response).text(nt);
+                if(ontologyId == "CO_320"){
+                    var url = 'http://www.cropontology.org/RiceCO_320.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_321"){
+                    var url = 'http://www.cropontology.org/wheatCO_321.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }if(ontologyId == "CO_322"){
+                    var url = 'http://www.cropontology.org/maizeCO_322.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else{
+                    var nt = new rdf().buildNtriples(ontologyId);
+                    print(response).text(nt);
+                }
+                
                 return;
             }
             var assoc = {
@@ -368,18 +382,18 @@ apejs.urls = {
               "CO_320": render('skins/crop_projects/CO_320_rice_project.html'), //rice
               "CO_324": render('skins/crop_projects/CO_324_sorghum_project.html'), //sorghum
               "CO_323": render('skins/crop_projects/CO_323_barley_project.html'), //barley
-	      "CO_325": render('skins/crop_projects/CO_325_banana_project.html'), //banana
-	      "POLAPGEN_BARLEY": render('skins/crop_projects/POLAPGEN_BARLEY_barley_project.html'), //barley polapgen
-	      "CO_335": render('skins/crop_projects/CO_335_common_bean_project.html'), //common bean
-	      "CO_340": render('skins/crop_projects/CO_340_cowpea_project.html'), //cowpea
-	      "CO_337": render('skins/crop_projects/CO_337_groundnut_project.html'), //groundnut
-	      "CO_339": render('skins/crop_projects/CO_339_lentil_project.html'), //lentil
-	      "CO_327": render('skins/crop_projects/CO_327_pearl_millet_project.html'),
-	      "CO_341": render('skins/crop_projects/CO_341_pigeon_pea_project.html'),
-	      "CO_330": render('skins/crop_projects/CO_330_potato_project.html'),
-	      "CO_331": render('skins/crop_projects/CO_331_sweet_potato_project.html'),
-	      "CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
-	      "CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
+    	      "CO_325": render('skins/crop_projects/CO_325_banana_project.html'), //banana
+    	      "POLAPGEN_BARLEY": render('skins/crop_projects/POLAPGEN_BARLEY_barley_project.html'), //barley polapgen
+    	      "CO_335": render('skins/crop_projects/CO_335_common_bean_project.html'), //common bean
+    	      "CO_340": render('skins/crop_projects/CO_340_cowpea_project.html'), //cowpea
+    	      "CO_337": render('skins/crop_projects/CO_337_groundnut_project.html'), //groundnut
+    	      "CO_339": render('skins/crop_projects/CO_339_lentil_project.html'), //lentil
+    	      "CO_327": render('skins/crop_projects/CO_327_pearl_millet_project.html'),
+    	      "CO_341": render('skins/crop_projects/CO_341_pigeon_pea_project.html'),
+    	      "CO_330": render('skins/crop_projects/CO_330_potato_project.html'),
+    	      "CO_331": render('skins/crop_projects/CO_331_sweet_potato_project.html'),
+    	      "CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
+    	      "CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
               "CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
               "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') //cacao
             };
@@ -3431,7 +3445,7 @@ apejs.urls = {
 			print(response).json(ret);
 		}
 	},
-	"/brapi/v1/variables":{
+	"/brapi/v1/variables/?([^/]*)":{
 		get: function(request, response, matches) {
 			var ret={};
 			ret={
