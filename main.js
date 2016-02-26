@@ -3272,7 +3272,7 @@ apejs.urls = {
 
         }
     },
-	"/brapi/v1/traits/([^/]*)":{
+	"/brapi/v1/traits(|/([^/]*))":{
 	  get: function(request, response, matches) {
 
 			// prepare output object
@@ -3288,167 +3288,83 @@ apejs.urls = {
 			}
 			ret["result"] = [];
 
-			// get the trait
-            var id = matches[1];
-            var traits = googlestore.query("term")
-                            .filter("id", "=", id)
-                            .fetch();
+		
 
-			traits.forEach( function(trait){
-				var traitId = trait.getProperty("id");
 
-				var object = {
-                    "traitDbId": ""+trait.getProperty("id"),
-                    "traitId": ""+trait.getProperty("id"),
-                    "name": ""+ translate(trait.getProperty("name")),
-					"observationVariables": [],
-					"defaultValue": null,
-				};
+			if (matches[1].match(/:/)){
+				// retrieve 1 trait
 
-			  	// get the variables under each trait
-//// (would be nice to use the call "/get-variables", instead of writing the query)
-//var callGetVariables = apejs.urls["/get-variables/(.*)"]["get"]; 
-//var variables = callGetVariables({ getParameter: function(){ return "";}}, null, [0, traitId]);
-				var variables = googlestore.query("term")
-			  							.filter("parent", "=", traitId)
-			  							.filter("relationship", "=", "variable_of")
-			  							.fetch()
+				var thiscase = "trait id";
+            var idd = matches[1].match(/[^\\/]*/g)[1];
+            	var id = matches[1].match(/[^\\/]*/g)[1];
+            	var traits = googlestore.query("term")
+            	                .filter("id", "=", id)
+            	                .fetch();
+
+				traits.forEach( function(trait){
+					var traitId = trait.getProperty("id");
+
+					var object = {
+            	        "traitDbId": ""+trait.getProperty("id"),
+            	        "traitId": ""+trait.getProperty("id"),
+            	        "name": ""+ translate(trait.getProperty("name")),
+						"observationVariables": [],
+						"defaultValue": null,
+					};
+
+				  	// get the variables under each trait
+					var variables = googlestore.query("term")
+				  							.filter("parent", "=", traitId)
+				  							.filter("relationship", "=", "variable_of")
+				  							.fetch()
+					variables.forEach( function(variable){
+						object.observationVariables.push(""+variable.getProperty("id"));
+					});
+					ret["result"].push(object);
+            	});
+			} else {
+				// retrieve more than one trait
+				if (matches[1]){
+					// set filter to retrieve all the traits of only one crop
+				  	var filterCropID = '.filter("ontology_id", "=", "' + matches[1].match(/[^\/]*/g)[1] + '")';
+				} else if (!matches[1]){
+					// no filter, all the traits, from all the crops, will be retrieved
+					var filterCropID = "";
+				}
+
+				var variables_object = {};
+	        	var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
+				var variables = eval(variablesQuery);
 				variables.forEach( function(variable){
-					object.observationVariables.push(""+variable.getProperty("id"));
+					if (typeof(variables_object["" + variable.getProperty("parent").get(0)]) == "undefined"){
+						variables_object["" + variable.getProperty("parent").get(0)] = {
+							"is_trait_of": []
+						}
+					}
+					variables_object["" + variable.getProperty("parent").get(0)]["is_trait_of"].push("" + variable.getProperty("id"));
 				});
-				ret["result"].push(object);
-            });
+
+	        	var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();';
+				var traits = eval(traitsQuery);
+				traits.forEach( function(trait){
+					var traitId = trait.getProperty("id");
+
+					var object = {
+    	                "traitDbId": ""+trait.getProperty("id"),
+    	                "traitId": ""+trait.getProperty("id"),
+    	                "name": ""+ translate(trait.getProperty("name")),
+						"observationVariables": variables_object["" + trait.getProperty("id")].is_trait_of,
+						"defaultValue": null,
+					};
+					ret["result"].push(object);
+    	        });
+			}
 	        print(response).json(ret);
 	  }
 	},
-	"/brapi/v1/traits":{
-	  get: function(request, response, matches) {
-			// prepare output object
-			var ret={};
-			ret["metadata"] = {
-				"pagination":{
-					 "pageSize": null, 
-		             "currentPage": null, 
-		             "totalCount": null, 
-		             "totalPages": null 
-				}, 
-				"status": []
-			};
-			ret["result"] = [];
-
-			// get the traits 
-			// NB only the traits from TDv5
-			// Not implemented for OBOs
-	        var traits = googlestore.query("term")
-			  			 .filter("Trait name", "!=", null)
-                         .fetch();
-
-			traits.forEach( function(trait){
-				var traitId = trait.getProperty("id");
-
-				var object = {
-                    "traitDbId": ""+trait.getProperty("id"),
-                    "traitId": ""+trait.getProperty("id"),
-                    "name": ""+ translate(trait.getProperty("name")),
-					"observationVariables": [],
-					"defaultValue": null,
-				};
-
-			  	// get the variables under each trait
-//// (would be nice to use the call "/get-variables", instead of writing the query)
-//var callGetVariables = apejs.urls["/get-variables/(.*)"]["get"]; 
-//var variables = callGetVariables({ getParameter: function(){ return "";}}, null, [0, traitId]);
-				var variables = googlestore.query("term")
-			  							.filter("parent", "=", traitId)
-			  							.filter("relationship", "=", "variable_of")
-			  							.fetch();
-				variables.forEach( function(variable){
-					object.observationVariables.push(""+variable.getProperty("id"));
-				});
-				ret["result"].push(object);
-            });
-	        print(response).json(ret);
-	  }
-	},
-	"/brapi/v1/variables/([^/]*)":{
+	"/brapi/v1/variables(|/([^/]*))":{
 		get: function(request, response, matches) {
-			var ret={};
-			ret["metadata"] = {
-				"pagination":null, 
-				"status": []
-			};
-
-            var var_id = matches[1];
-	        var variables = googlestore.query("term")
-			  			 .filter("id", "=", var_id)
-                         .fetch();
-			var variable_of;
-			variables.forEach(function(variable){
-				ret["result"] = {
-					"observationVariableDbId" : "" + variable.getProperty("id"),
-					"observationVariableId": "" + variable.getProperty("id"),
-					trait: {},
-					measurementMethod: {},
-					scale: {},
-				};
-				variable_of = variable.getProperty("parent");
-			});
-			
-	        var traits = googlestore.query("term")
-			  			 .filter("id", "=", variable_of.get(0))
-                         .fetch();
-			traits.forEach(function(trait){
-				ret["result"]["trait"] = {
-					"traitDbId" : "" + trait.getProperty("id"),
-					"traitId" : "" + trait.getProperty("id"),
-					"name": "" + translate(trait.getProperty("name")),
-					"description": "" + translate(trait.getProperty("Trait description")),
-				}
-			});
-
-	        var methods = googlestore.query("term")
-			  			 .filter("id", "=", variable_of.get(1))
-                         .fetch();
-			methods.forEach(function(method){
-				ret["result"]["method"] = {
-					"methodId" : "" + method.getProperty("id"),
-					"name": "" + translate(method.getProperty("name")),
-					"description": "" + translate(method.getProperty("Method description")),
-				}
-			});
-			
-	        var scales = googlestore.query("term")
-			  			 .filter("id", "=", variable_of.get(2))
-                         .fetch();
-			scales.forEach(function(scale){
-				ret["result"]["scale"] = {
-					"scaleId" : "" + scale.getProperty("id"),
-					"name": "" + translate(scale.getProperty("name")),
-					"dataType": "" + translate(scale.getProperty("Scale class")),
-					"validValues": {
-						"min": "" + translate(scale.getProperty("Lower limit")),
-						"max":  "" + translate(scale.getProperty("Upper limit")),
-						"categories": [],
-					}
-				}
-				if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
-					var i = 1;
-					while (scale.getProperty("Category " + i)){
-						ret["result"]["scale"]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
-						i = i + 1;
-					}
-				} else {
-					ret["result"]["scale"]["validValues"]["categories"]= null;
-				}
-
-			});
-			print(response).json(ret);
-		}
-	},
-	"/brapi/v1/variables/?([^/]*)":{
-		get: function(request, response, matches) {
-			var ret={};
-			ret={
+			var ret={
 				"metadata" : {
 					"pagination":{
 						 "pageSize": null, 
@@ -3456,84 +3372,247 @@ apejs.urls = {
 			             "totalCount": null, 
 			             "totalPages": null 
 					}, 
-					"status": [],
+					"status": []
 				},
 				"result": {
 					"data": [],
 				}
 			};
 
-	        var traits = googlestore.query("term")
-			  			 .filter("Trait ID", "!=", null)
-                         .fetch();
-			var traits_object = {};
-			traits.forEach(function(trait){
-				traits_object["" + trait.getProperty("id")] = {
-					"traitDbId" : "" + trait.getProperty("id"),
-					"traitId" : "" + trait.getProperty("id"),
-					"name": "" + translate(trait.getProperty("name")),
-					"description": "" + translate(trait.getProperty("Trait description")),
-				}
-			});
-
-	        var methods = googlestore.query("term")
-			  			 .filter("Method ID", "!=", null)
-                         .fetch();
-			var methods_object = {};
-			methods.forEach(function(method){
-				methods_object[ "" + method.getProperty("id")] = {
-					"methodId" : "" + method.getProperty("id"),
-					"name": "" + translate(method.getProperty("name")),
-					"description": "" + translate(method.getProperty("Method description")),
-				};
-			});
-
-	        var scales = googlestore.query("term")
-			  			 .filter("Scale ID", "!=", null)
-                         .fetch();
-			var scales_object = {};
-			scales.forEach(function(scale){
-				scales_object["" + scale.getProperty("id")] = {
-					"scaleId" : "" + scale.getProperty("id"),
-					"name": "" + translate(scale.getProperty("name")),
-					"dataType": "" + translate(scale.getProperty("Scale class")),
-					"validValues": {
-						"min": "" + translate(scale.getProperty("Lower limit")),
-						"max":  "" + translate(scale.getProperty("Upper limit")),
-						"categories": [],
-					}
-				}
-				if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
-					var i = 1;
-					while (scale.getProperty("Category " + i)){
-						scales_object["" + scale.getProperty("id")]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
-						i = i + 1;
-					}
-				} else {
-					scales_object["" + scale.getProperty("id")]["validValues"]["categories"]= null;
-				}
-			});
-
-
-	        var variables = googlestore.query("term")
-			  			 .filter("Variable ID", "!=", null)
-                         .fetch();
-			variables.forEach(function(variable){
-				ret["result"]["data"].push({
-					"observationVariableDbId" : "" + variable.getProperty("id"),
-					"observationVariableId": "" + variable.getProperty("id"),
-					"name": "" + translate(variable.getProperty("name")),
-					"trait": traits_object["" + variable.getProperty("parent").get(0)],
-					"measurementMethod": methods_object["" + variable.getProperty("parent").get(1)],
-					"scale": scales_object["" + variable.getProperty("parent").get(2)],
+			var foo, thiscase;
+			if (matches[1].match(/:/)){
+				// retrieve 1 variable
+				foo = matches[1].match(/[^\\/]*/g)[1];
+				thiscase = "var ID";
+				
+        	    var var_id = matches[1].match(/[^\\/]*/g)[1];
+	    	    var variables = googlestore.query("term")
+				  			 .filter("id", "=", var_id)
+        	                 .fetch();
+				var variable_of;
+				variables.forEach(function(variable){
+					ret["result"] = {
+						"observationVariableDbId" : "" + variable.getProperty("id"),
+						"observationVariableId": "" + variable.getProperty("id"),
+						trait: {},
+						measurementMethod: {},
+						scale: {},
+					};
+					variable_of = variable.getProperty("parent");
 				});
-			});
-			
-//			
-//			});
+				
+	    	    var traits = googlestore.query("term")
+				  			 .filter("id", "=", variable_of.get(0))
+				  			 .filter("id", "=", variable_of.get(0))
+        	                 .fetch();
+				traits.forEach(function(trait){
+					ret["result"]["trait"] = {
+						"traitDbId" : "" + trait.getProperty("id"),
+						"traitId" : "" + trait.getProperty("id"),
+						"name": "" + translate(trait.getProperty("name")),
+						"description": "" + translate(trait.getProperty("Trait description")),
+					}
+				});
+
+	    	    var methods = googlestore.query("term")
+				  			 .filter("id", "=", variable_of.get(1))
+        	                 .fetch();
+				methods.forEach(function(method){
+					ret["result"]["measurementMethod"] = {
+						"methodId" : "" + method.getProperty("id"),
+						"name": "" + translate(method.getProperty("name")),
+						"description": "" + translate(method.getProperty("Method description")),
+					}
+				});
+				
+	    	    var scales = googlestore.query("term")
+				  			 .filter("id", "=", variable_of.get(2))
+        	                 .fetch();
+				scales.forEach(function(scale){
+					ret["result"]["scale"] = {
+						"scaleId" : "" + scale.getProperty("id"),
+						"name": "" + translate(scale.getProperty("name")),
+						"dataType": "" + translate(scale.getProperty("Scale class")),
+						"validValues": {
+							"min": "" + translate(scale.getProperty("Lower limit")),
+							"max":  "" + translate(scale.getProperty("Upper limit")),
+							"categories": [],
+						}
+					}
+					if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
+						var i = 1;
+						while (scale.getProperty("Category " + i)){
+							ret["result"]["scale"]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
+							i = i + 1;
+						}
+					} else {
+						ret["result"]["scale"]["validValues"]["categories"]= null;
+					}
+				});
+			} else {
+				// retrieve more than one variable ID
+				if (matches[1]){
+					// set filter to retrieve all the variables of only one crop
+				  	var filterCropID = '.filter("ontology_id", "=", "' + matches[1].match(/[^\/]*/g)[1] + '")';
+					
+				} else if (!matches[1]){
+					// no filter, all the variables, from all the crops, will be retrieved
+					var filterCropID = "";
+				}
+	        	var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();';
+				var traits = eval(traitsQuery);
+				var traits_object = {};
+				traits.forEach(function(trait){
+					traits_object["" + trait.getProperty("id")] = {
+						"traitDbId" : "" + trait.getProperty("id"),
+						"traitId" : "" + trait.getProperty("id"),
+						"name": "" + translate(trait.getProperty("name")),
+						"description": "" + translate(trait.getProperty("Trait description")),
+					}
+				});
+
+	        	var methodsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Method ID", "!=", null).fetch();';
+				var methods = eval(methodsQuery);
+				var methods_object = {};
+				methods.forEach(function(method){
+					methods_object[ "" + method.getProperty("id")] = {
+						"methodId" : "" + method.getProperty("id"),
+						"name": "" + translate(method.getProperty("name")),
+						"description": "" + translate(method.getProperty("Method description")),
+					};
+				});
+
+	        	var scalesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Scale ID", "!=", null).fetch();';
+				var scales = eval(scalesQuery);
+				var scales_object = {};
+				scales.forEach(function(scale){
+					scales_object["" + scale.getProperty("id")] = {
+						"scaleId" : "" + scale.getProperty("id"),
+						"name": "" + translate(scale.getProperty("name")),
+						"dataType": "" + translate(scale.getProperty("Scale class")),
+						"validValues": {
+							"min": "" + translate(scale.getProperty("Lower limit")),
+							"max":  "" + translate(scale.getProperty("Upper limit")),
+							"categories": [],
+						}
+					}
+					if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
+						var i = 1;
+						while (scale.getProperty("Category " + i)){
+							scales_object["" + scale.getProperty("id")]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
+							i = i + 1;
+						}
+					} else {
+						scales_object["" + scale.getProperty("id")]["validValues"]["categories"]= null;
+					}
+				});
+
+
+	        	var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
+				var variables = eval(variablesQuery);
+				variables.forEach(function(variable){
+					ret["result"]["data"].push({
+						"observationVariableDbId" : "" + variable.getProperty("id"),
+						"observationVariableId": "" + variable.getProperty("id"),
+						"name": "" + translate(variable.getProperty("name")),
+						"trait": traits_object["" + variable.getProperty("parent").get(0)],
+						"measurementMethod": methods_object["" + variable.getProperty("parent").get(1)],
+						"scale": scales_object["" + variable.getProperty("parent").get(2)],
+					});
+				});
+			}
 			print(response).json(ret);
 		}
 	},
+//	"/brapi/v1/variables/?([^/]*)":{
+//		get: function(request, response, matches) {
+//			var ret={};
+//			ret={
+//				"metadata" : {
+//					"pagination":{
+//						 "pageSize": null, 
+//			             "currentPage": null, 
+//			             "totalCount": null, 
+//			             "totalPages": null 
+//					}, 
+//					"status": [],
+//				},
+//				"result": {
+//					"data": [],
+//				}
+//			};
+//
+//	        var traits = googlestore.query("term")
+//			  			 .filter("Trait ID", "!=", null)
+//                         .fetch();
+//			var traits_object = {};
+//			traits.forEach(function(trait){
+//				traits_object["" + trait.getProperty("id")] = {
+//					"traitDbId" : "" + trait.getProperty("id"),
+//					"traitId" : "" + trait.getProperty("id"),
+//					"name": "" + translate(trait.getProperty("name")),
+//					"description": "" + translate(trait.getProperty("Trait description")),
+//				}
+//			});
+//
+//	        var methods = googlestore.query("term")
+//			  			 .filter("Method ID", "!=", null)
+//                         .fetch();
+//			var methods_object = {};
+//			methods.forEach(function(method){
+//				methods_object[ "" + method.getProperty("id")] = {
+//					"methodId" : "" + method.getProperty("id"),
+//					"name": "" + translate(method.getProperty("name")),
+//					"description": "" + translate(method.getProperty("Method description")),
+//				};
+//			});
+//
+//	        var scales = googlestore.query("term")
+//			  			 .filter("Scale ID", "!=", null)
+//                         .fetch();
+//			var scales_object = {};
+//			scales.forEach(function(scale){
+//				scales_object["" + scale.getProperty("id")] = {
+//					"scaleId" : "" + scale.getProperty("id"),
+//					"name": "" + translate(scale.getProperty("name")),
+//					"dataType": "" + translate(scale.getProperty("Scale class")),
+//					"validValues": {
+//						"min": "" + translate(scale.getProperty("Lower limit")),
+//						"max":  "" + translate(scale.getProperty("Upper limit")),
+//						"categories": [],
+//					}
+//				}
+//				if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
+//					var i = 1;
+//					while (scale.getProperty("Category " + i)){
+//						scales_object["" + scale.getProperty("id")]["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
+//						i = i + 1;
+//					}
+//				} else {
+//					scales_object["" + scale.getProperty("id")]["validValues"]["categories"]= null;
+//				}
+//			});
+//
+//
+//	        var variables = googlestore.query("term")
+//			  			 .filter("Variable ID", "!=", null)
+//                         .fetch();
+//			variables.forEach(function(variable){
+//				ret["result"]["data"].push({
+//					"observationVariableDbId" : "" + variable.getProperty("id"),
+//					"observationVariableId": "" + variable.getProperty("id"),
+//					"name": "" + translate(variable.getProperty("name")),
+//					"trait": traits_object["" + variable.getProperty("parent").get(0)],
+//					"measurementMethod": methods_object["" + variable.getProperty("parent").get(1)],
+//					"scale": scales_object["" + variable.getProperty("parent").get(2)],
+//				});
+//			});
+//			
+////			
+////			});
+//			print(response).json(ret);
+//		}
+//	},
   	"/ontos_stats":{
         get: function(request, response) {
             request.setCharacterEncoding("utf-8");
