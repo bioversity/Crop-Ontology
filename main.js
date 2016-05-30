@@ -2460,6 +2460,7 @@ apejs.urls = {
         get: function(request, response) {
             try {
                 var users = googlestore.query("user")
+							.sort("username")
                             .fetch();
                     
                 var ret = [];
