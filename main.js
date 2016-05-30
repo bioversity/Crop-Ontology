@@ -1554,16 +1554,22 @@ apejs.urls = {
 //				auth.login(response, user.username, user.password);
 
 				// send email to admin / moderator for confirmation
+				var bodyMessage	= "New user has register on " + URL + " on " + user.created  + "\n\n - Username: " + user.username  + "\n - First name: " + user.name + "\n - Last name: " + user.sirname + "\n - Host institution: " + user.institution + "\n - email: " + user.email + "\n \n Link to accept this request: " + URL + "/users_admin#" + userid
 				var from = {
         		    address: "admin@cropontology-curationtool.org",
         		    personal: "Crop Ontology Curation Tool"
         		};
 
-				var to = {
-        			address: "l.valette@cgiar.org",
-        		    personal: "L. Valette"
+				var to1 = {
+        			address: "m.a.laporte@cgiar.org",
+        		    personal: "M.A Laporte"
         		};
-				email.send(from, to, "New registration on cropontology.org", "New user has register on " + URL + " on " + user.created  + "\n\n - Username: " + user.username  + "\n - First name: " + user.name + "\n - Last name: " + user.sirname + "\n - Host institution: " + user.institution + "\n - email: " + user.email + "\n \n Link to accept this request: " + URL + "/users_admin#" + userid); 
+				var to2 = {
+        			address: "e.arnaud@cgiar.org",
+        		    personal: "E. Arnaud"
+        		};
+				email.send(from, to1, "New registration on cropontology.org", bodyMessage); 
+				email.send(from, to2, "New registration on cropontology.org", bodyMessage); 
 
                 var message = "Thank you! <br/> You will be notified by email that your registration request has been approved by the website administrator. <br/><br/> For any enquiry, please contact admin(at)cropontology-curationtool(dot)org";
                 response.getWriter().println('{"message":"'+message+'"}');
