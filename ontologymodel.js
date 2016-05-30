@@ -14,7 +14,11 @@ var ontologymodel = (function() {
     function catsSelectHtml() {
         var options = "<select name='category'>";
         for(var i=0; i<categories.length; i++) {
-            options += "<option value='"+categories[i]+"'>"+categories[i]+"</option>";
+			if(categories[i]=="300-499 Phenotype and Trait Ontology"){
+				options += "<option value='"+categories[i]+"' selected>"+categories[i]+"</option>";
+			} else {
+				options += "<option value='"+categories[i]+"'>"+categories[i]+"</option>";
+			}
         }
         options += "</select>";
         return options;
