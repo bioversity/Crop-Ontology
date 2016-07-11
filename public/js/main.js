@@ -617,6 +617,7 @@ function make_li(obj, last) {
         hitarea,
         has_method = (!obj.has_children && obj.method && obj.method !== "null"),
 		is_scale = (relationship == "scale_of") ;
+
 	
 	// the scale has children but 
 
@@ -637,11 +638,15 @@ function make_li(obj, last) {
         hitarea.addClass("lastExpandable-hitarea");
     }
 
- 
+ 	
     var nameTrans = translate(currUser, name);
     if(currUser.language && currUser.language !== nameTrans.lang) {
         li.hide();
     }
+    //if the term is root, add traits to its name
+	if(id.match(/ROOT/g))
+		nameTrans.translation = nameTrans.translation + " traits";
+
     var link = $('<a title="'+nameTrans.translation+'" class="minibutton btn-watch"><span>'+nameTrans.translation+'</span></a>');
  
     link.click(function(e) {
