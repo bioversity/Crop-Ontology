@@ -385,5 +385,12 @@ rdf.prototype.buildNtriples = function(ontologyId) {
     this.turtle += '<' + this.uri + 'Time' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
     this.turtle += '<' + this.uri + 'Time' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
 
+
+    //declare the properties
+    this.turtle += '<' + this.uri + 'method_of' + '> <http://www.w3.org/2000/01/rdf-schema#subProperty> <' + 'http://www.w3.org/2004/02/skos/core#related' + '> .\n';
+    this.turtle += '<' + this.uri + 'scale_of' + '> <http://www.w3.org/2000/01/rdf-schema#subProperty> <' + 'http://www.w3.org/2004/02/skos/core#related' + '> .\n';
+    this.turtle += '<' + this.uri + 'variable_of' + '> <http://www.w3.org/2000/01/rdf-schema#subProperty> <' + 'http://www.w3.org/2004/02/skos/core#related' + '> .\n';
+    this.turtle += '<' + this.uri + 'acronym' + '> <http://www.w3.org/2000/01/rdf-schema#subProperty> <' + 'http://www.w3.org/2004/02/skos/core#altLabel' + '> .\n';
+
     return this.turtle;
 };
