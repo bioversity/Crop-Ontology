@@ -111,8 +111,16 @@ rdf.prototype.buildTriple = function(term) {
         try{
             var jsonSyn = JSON.stringify(syn[i]);
             if(jsonSyn != undefined) {
-                  jsonSyn=jsonSyn.replace(/\[\"\\\"/g, '"');jsonSyn=jsonSyn.replace(/\\\"/g, "");jsonSyn=jsonSyn.replace(/\",\"/g, " ");jsonSyn=jsonSyn.replace(/\"\]/g, '"');
+                //replace weird stuff. there is probably a better way to do so
+                jsonSyn=jsonSyn.replace(/\[\"\\\"/g, '"');jsonSyn=jsonSyn.replace(/\\\"/g, "");jsonSyn=jsonSyn.replace(/\",\"/g, " ");jsonSyn=jsonSyn.replace(/\"\]/g, '"');
+                if(jsonSyn.split(",").length > 1){//several syn
+                    var jsonSynTab = jsonSyn.split(',');
+                     for(var j=0; j<jsonSynTab.length; j++) {
+                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#altLabel> ' + jsonSynTab[j] + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                    }
+                }else{
                     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#altLabel> ' + jsonSyn + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                }
             }
         }catch(e){
             throw e;
@@ -123,16 +131,27 @@ rdf.prototype.buildTriple = function(term) {
     //do abbreviated name
     if(term['Abbreviated name']) {
         var abbrev = this.findLangs(term['Abbreviated name']);
-    } if(term['Trait abbreviation']) {
+    } else if(term['Trait abbreviation']) {
         var abbrev = this.findLangs(term['Trait abbreviation']);
+    } else if(term['Main trait abbreviation']) {
+        var abbrev = this.findLangs(term['Main trait abbreviation']);
+    }else if(term['Alternative trait abbreviations']) {
+        var abbrev = this.findLangs(term['Alternative trait abbreviations']);
     } else { // no descritption
         var abbrev = {};
     }
     for(var i in abbrev) {
         try{
-             var jsonAbbrev = JSON.stringify(abbrev[i]);
+            var jsonAbbrev = JSON.stringify(abbrev[i]);
             if(jsonAbbrev != undefined) {
-                this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'acronym' +'> ' + jsonAbbrev + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                if(jsonAbbrev.split(",").length > 1){//several syn
+                    var jsonAbbrevTab = jsonAbbrev.split(',');
+                    for(var j=0; j<jsonAbbrevTab.length; j++) {
+                        this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'acronym' +'> ' + jsonAbbrevTab[j] + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                    }
+                }else{
+                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'acronym' +'> ' + jsonAbbrev + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                }
             }
         }catch(e){
             throw e;
