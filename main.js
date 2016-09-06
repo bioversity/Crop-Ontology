@@ -1096,10 +1096,6 @@ apejs.urls = {
 
             response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
 
-            print(response).textPlain('format-version: 1.2');
-            print(response).textPlain('ontology: TEMP');
-            print(response).textPlain('');
-
             var crop = '';
             select('ontology')
                 .find({ 
@@ -1107,6 +1103,10 @@ apejs.urls = {
                 }).each(function() {
                     crop = this.ontology_name;
                 }) ;
+
+            print(response).textPlain('format-version: 1.2');
+            print(response).textPlain('ontology: '+crop+' ontology');
+            print(response).textPlain('');    
 
             select('term')
                 .find({ 
@@ -1134,7 +1134,7 @@ apejs.urls = {
                         }else if (crop!=''){
                             print(response).textPlain('namespace: ' + crop+'Trait');
                         }
-                        print(response).textPlain('def: "' + translate(this['Trait Description'], isoLang) + '" []');
+                        print(response).textPlain('def: "' + translate(this['Trait description'], isoLang) + '" []');
                     }
                     else if(this['Describe how measured (method)']) {
                         if(this['Crop']){
@@ -1154,11 +1154,29 @@ apejs.urls = {
 
                     ///synonyms
                     if(this['Synonyms (separate by commas)']) {
-                        print(response).textPlain('synonym: "' + translate(this['Synonyms (separate by commas)'], isoLang) + '" EXACT []');
+                        if(translate(this['Synonyms (separate by commas)'], isoLang).split(",").length > 1){//several syn
+                            var synTab = translate(this['Synonyms (separate by commas)'], isoLang).split(',');
+                            for(var j=0; j<synTab.length; j++) {
+                                print(response).textPlain('synonym: "' + synTab[j] + '" EXACT []');                            }
+                        }else{
+                            print(response).textPlain('synonym: "' + translate(this['Synonyms (separate by commas)'], isoLang) + '" EXACT []');
+                        }
                     } else if(this['Trait synonyms']) {
-                        print(response).textPlain('synonym: "' + translate(this['Trait synonyms'], isoLang) + '" EXACT []');
+                        if(translate(this['Trait synonyms'], isoLang).split(",").length > 1){//several syn
+                            var synTab = translate(this['Trait synonyms'], isoLang).split(',');
+                            for(var j=0; j<synTab.length; j++) {
+                                print(response).textPlain('synonym: "' + synTab[j] + '" EXACT []');                            }
+                        }else{
+                            print(response).textPlain('synonym: "' + translate(this['Trait synonyms'], isoLang) + '" EXACT []');
+                        }
                     } else if(this['Variable synonyms']) {
-                        print(response).textPlain('synonym: "' + translate(this['Variable synonyms'], isoLang) + '" EXACT []');
+                        if(translate(this['Variable synonyms'], isoLang).split(",").length > 1){//several syn
+                            var synTab = translate(this['Variable synonyms'], isoLang).split(',');
+                            for(var j=0; j<synTab.length; j++) {
+                                print(response).textPlain('synonym: "' + synTab[j] + '" EXACT []');                            }
+                        }else{
+                            print(response).textPlain('synonym: "' + translate(this['Variable synonyms'], isoLang) + '" EXACT []');
+                        }
                     } 
 
                     //abbrev
@@ -1166,8 +1184,12 @@ apejs.urls = {
                         print(response).textPlain('synonym: "' + translate(this['Abbreviated name'], isoLang) + '" EXACT []');
                     } else if(this['Trait abbreviation']) {
                         print(response).textPlain('synonym: "' + translate(this['Trait abbreviation'], isoLang) + '" EXACT []');
-                    } if(this['Trait abbreviation synonym']) {
+                    } else if(this['Trait abbreviation synonym']) {
                         print(response).textPlain('synonym: "' + translate(this['Trait abbreviation synonym'], isoLang) + '" EXACT []');
+                    } else if(this['Main trait abbreviation']) {
+                        print(response).textPlain('synonym: "' + translate(this['Main trait abbreviation'], isoLang) + '" EXACT []');
+                    } else if(this['Alternative trait abbreviations']) {
+                        print(response).textPlain('synonym: "' + translate(this['Alternative trait abbreviations'], isoLang) + '" EXACT []');
                     } 
                     ///scales
                     if(this.relationship) {
