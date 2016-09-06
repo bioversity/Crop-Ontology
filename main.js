@@ -1105,7 +1105,7 @@ apejs.urls = {
                 }) ;
 
             print(response).textPlain('format-version: 1.2');
-            print(response).textPlain('ontology: '+crop+' ontology');
+            print(response).textPlain('ontology: '+crop+'_ontology');
             print(response).textPlain('');    
 
             select('term')
