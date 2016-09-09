@@ -364,11 +364,29 @@ apejs.urls = {
                     var url = 'http://www.cropontology.org/wheatCO_321.rdf';
                     var result = httpget(url);
                     print(response).text(result);
-                }if(ontologyId == "CO_322"){
+                }else if(ontologyId == "CO_322"){
                     var url = 'http://www.cropontology.org/maizeCO_322.rdf';
                     var result = httpget(url);
                     print(response).text(result);
-                }else{
+                }else if(ontologyId == "CO_334"){
+                    var url = 'http://www.cropontology.org/CassavaCO_334.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_340"){
+                    var url = 'http://www.cropontology.org/CowpeaCO_340.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_331"){
+                    var url = 'http://www.cropontology.org/SweetPotatoCO_331.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }
+                // else if(ontologyId == "CO_335"){
+                //     var url = 'http://www.cropontology.org/CommonBeanCO_335.rdf';
+                //     var result = httpget(url);
+                //     print(response).text(result);
+                // }
+                else{
                     var nt = new rdf().buildNtriples(ontologyId);
                     print(response).text(nt);
                 }
