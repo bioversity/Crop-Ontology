@@ -3414,10 +3414,10 @@ apejs.urls = {
 			var ret={
 				"metadata" : {
 					"pagination":{
-						 "pageSize": null, 
-			             "currentPage": null, 
-			             "totalCount": null, 
-			             "totalPages": null 
+						"pageSize": null,
+						"currentPage": null,
+						"totalCount": null,
+						"totalPages": null 
 					}, 
 					"status": []
 				},
@@ -3431,55 +3431,84 @@ apejs.urls = {
 				// retrieve 1 variable
 				foo = matches[1].match(/[^\\/]*/g)[1];
 				thiscase = "var ID";
-				
-        	    var var_id = matches[1].match(/[^\\/]*/g)[1];
-	    	    var variables = googlestore.query("term")
-				  			 .filter("id", "=", var_id)
-        	                 .fetch();
+
+				var var_id = matches[1].match(/[^\\/]*/g)[1];
+				var variables = googlestore.query("term")
+					.filter("id", "=", var_id)
+					.fetch();
+
 				var variable_of;
 				variables.forEach(function(variable){
+					//var synonyms = [];
+					var contextOfUse = [];
+
 					ret["result"] = {
 						"observationVariableDbId" : "" + variable.getProperty("id"),
-						"observationVariableId": "" + variable.getProperty("id"),
+						"name": translate(variable.getProperty("name")),
+						"ontologyDbId": "" + variable.getProperty("ontology_id"),
+						"ontologyName": "" + variable.getProperty("ontology_name"),
+						"synonyms": translate(variable.getProperty("Variable synonyms")),
+						"contextOfUse": contextOfUse,
+						"growthStage": null,
+						"status": null,
+						"xref": null,
+						"institution": translate(variable.getProperty("Institution")),
+						"scientist": translate(variable.getProperty("Scientist")),
+						"date": translate(variable.getProperty("Date")),
+						"language": translate(variable.getProperty("Language")),
+						"crop": translate(variable.getProperty("Crop")),
 						trait: {},
-						measurementMethod: {},
+						method: {},
 						scale: {},
 					};
 					variable_of = variable.getProperty("parent");
 				});
 				
-	    	    var traits = googlestore.query("term")
-				  			 .filter("id", "=", variable_of.get(0))
-				  			 .filter("id", "=", variable_of.get(0))
-        	                 .fetch();
-				traits.forEach(function(trait){
-					ret["result"]["trait"] = {
-						"traitDbId" : "" + trait.getProperty("id"),
-						"traitId" : "" + trait.getProperty("id"),
-						"name": "" + translate(trait.getProperty("name")),
-						"description": "" + translate(trait.getProperty("Trait description")),
-					}
-				});
+				var traits = googlestore.query("term")
+					.filter("id", "=", variable_of.get(0))
+					.filter("id", "=", variable_of.get(0))
+					.fetch();
+					traits.forEach(function(trait){
+						var traitSynonyms = [];
+						ret["result"]["trait"] = {
+							"traitDbId" : "" + trait.getProperty("id"),
+							"name": translate(trait.getProperty("name")),
+							"class": translate(trait.getProperty("Trait class")),
+							"description": translate(trait.getProperty("Trait description")),
+							"synonyms": traitSynonyms,
+							"mainAbbreviation": null,
+							"alternativeAbbreviations": null,
+							"entity": translate(trait.getProperty("Entity")),
+							"attribute": translate(trait.getProperty("Attribute")),
+							"status": null,
+							"xref": null,
+						}
+					});
 
-	    	    var methods = googlestore.query("term")
-				  			 .filter("id", "=", variable_of.get(1))
-        	                 .fetch();
+				var methods = googlestore.query("term")
+					.filter("id", "=", variable_of.get(1))
+					.fetch();
 				methods.forEach(function(method){
-					ret["result"]["measurementMethod"] = {
+					ret["result"]["method"] = {
 						"methodId" : "" + method.getProperty("id"),
 						"name": "" + translate(method.getProperty("name")),
+						"class": null,
 						"description": "" + translate(method.getProperty("Method description")),
+						"formula": null,
+						"reference": null,
 					}
 				});
 				
-	    	    var scales = googlestore.query("term")
-				  			 .filter("id", "=", variable_of.get(2))
-        	                 .fetch();
+				var scales = googlestore.query("term")
+					.filter("id", "=", variable_of.get(2))
+					.fetch();
 				scales.forEach(function(scale){
 					ret["result"]["scale"] = {
 						"scaleId" : "" + scale.getProperty("id"),
 						"name": "" + translate(scale.getProperty("name")),
 						"dataType": "" + translate(scale.getProperty("Scale class")),
+						"decimalPlaces": null,
+						"xref": null,
 						"validValues": {
 							"min": "" + translate(scale.getProperty("Lower limit")),
 							"max":  "" + translate(scale.getProperty("Upper limit")),
@@ -3506,7 +3535,7 @@ apejs.urls = {
 					// no filter, all the variables, from all the crops, will be retrieved
 					var filterCropID = "";
 				}
-	        	var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();';
+			var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();';
 				var traits = eval(traitsQuery);
 				var traits_object = {};
 				traits.forEach(function(trait){
@@ -3518,7 +3547,7 @@ apejs.urls = {
 					}
 				});
 
-	        	var methodsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Method ID", "!=", null).fetch();';
+	 		var methodsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Method ID", "!=", null).fetch();';
 				var methods = eval(methodsQuery);
 				var methods_object = {};
 				methods.forEach(function(method){
@@ -3529,7 +3558,7 @@ apejs.urls = {
 					};
 				});
 
-	        	var scalesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Scale ID", "!=", null).fetch();';
+			var scalesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Scale ID", "!=", null).fetch();';
 				var scales = eval(scalesQuery);
 				var scales_object = {};
 				scales.forEach(function(scale){
@@ -3555,7 +3584,7 @@ apejs.urls = {
 				});
 
 
-	        	var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
+				var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
 				var variables = eval(variablesQuery);
 				variables.forEach(function(variable){
 					ret["result"]["data"].push({
@@ -3563,7 +3592,7 @@ apejs.urls = {
 						"observationVariableId": "" + variable.getProperty("id"),
 						"name": "" + translate(variable.getProperty("name")),
 						"trait": traits_object["" + variable.getProperty("parent").get(0)],
-						"measurementMethod": methods_object["" + variable.getProperty("parent").get(1)],
+						"method": methods_object["" + variable.getProperty("parent").get(1)],
 						"scale": scales_object["" + variable.getProperty("parent").get(2)],
 					});
 				});
