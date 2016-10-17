@@ -1,16 +1,16 @@
 // Functions that create different parts of Json output
 function getVariableDetails(variable, varTrait, varMethod, varScale) {
-	var contextOfUse = [];
+	var VariableSynonyms = String(translate(variable.getProperty("Variable synonyms"))).split(",");
 	var variableDetails = {
 		"observationVariableDbId" : "" + variable.getProperty("id"),
 		"name": translate(variable.getProperty("name")),
 		"ontologyDbId": "" + variable.getProperty("ontology_id"),
 		"ontologyName": "" + variable.getProperty("ontology_name"),
-		"synonyms": translate(variable.getProperty("Variable synonyms")),
-		"contextOfUse": contextOfUse,
-		"growthStage": null,
-		"status": null,
-		"xref": null,
+		"synonyms": VariableSynonyms,
+		"contextOfUse": [translate(variable.getProperty("Context of use"))],
+		"growthStage": translate(variable.getProperty("Growth stage")),
+		"status": translate(variable.getProperty("Variable status")),
+		"xref": translate(variable.getProperty("Variable Xref")),
 		"institution": translate(variable.getProperty("Institution")),
 		"scientist": translate(variable.getProperty("Scientist")),
 		"date": translate(variable.getProperty("Date")),
@@ -24,19 +24,19 @@ function getVariableDetails(variable, varTrait, varMethod, varScale) {
 }
 
 function getTraitDetails(trait) {
-	var traitSynonyms = [];
+	var traitSynonyms = String(translate(trait.getProperty("Trait synonyms"))).split(",");
 	var traitDetails = {
 		"traitDbId" : "" + trait.getProperty("id"),
 		"name": translate(trait.getProperty("name")),
 		"class": translate(trait.getProperty("Trait class")),
 		"description": translate(trait.getProperty("Trait description")),
 		"synonyms": traitSynonyms,
-		"mainAbbreviation": null,
-		"alternativeAbbreviations": null,
+		"mainAbbreviation": translate(trait.getProperty("Main trait abbreviation")),
+		"alternativeAbbreviations": translate(trait.getProperty("Alternative trait abbreviations")),
 		"entity": translate(trait.getProperty("Entity")),
 		"attribute": translate(trait.getProperty("Attribute")),
-		"status": null,
-		"xref": null,
+		"status": translate(trait.getProperty("Trait status")),
+		"xref": translate(trait.getProperty("Trait Xref")),
 	};
 	return traitDetails;
 }
@@ -44,36 +44,34 @@ function getTraitDetails(trait) {
 function getMethodDetails(method) {
 	var methodDetails = {
 		"methodId" : "" + method.getProperty("id"),
-		"name": "" + translate(method.getProperty("name")),
-		"class": null,
-		"description": "" + translate(method.getProperty("Method description")),
-		"formula": null,
-		"reference": null,
+		"name": translate(method.getProperty("name")),
+		"class": translate(method.getProperty("Method class")),
+		"description": translate(method.getProperty("Method description")),
+		"formula": translate(method.getProperty("Formula")),
+		"reference": translate(method.getProperty("Method reference")),
 	};
 	return methodDetails;
 }
 
 function getScaleDetails(scale) {
+	var i = 1;
+	var categories = [];
+	while (scale.getProperty("Category " + i)){
+		categories.push(translate(scale.getProperty("Category " + i)));
+		i = i + 1;
+	}
+
 	var scaleDetails = {
 		"scaleId" : "" + scale.getProperty("id"),
-		"name": "" + translate(scale.getProperty("name")),
-		"dataType": "" + translate(scale.getProperty("Scale class")),
-		"decimalPlaces": null,
-		"xref": null,
+		"name": translate(scale.getProperty("name")),
+		"dataType": translate(scale.getProperty("Scale class")),
+		"decimalPlaces": translate(scale.getProperty("Decimal places")),
+		"xref": translate(scale.getProperty("Scale Xref")),
 		"validValues": {
 			"min": "" + translate(scale.getProperty("Lower limit")),
 			"max":  "" + translate(scale.getProperty("Upper limit")),
-			"categories": [],
+			"categories": categories,
 		}
-	}
-	if (translate(scale.getProperty("Scale class"))=="Nominal" || translate(scale.getProperty("Scale class"))=="Ordinal" ){
-		var i = 1;
-		while (scale.getProperty("Category " + i)){
-			scaleDetails["validValues"]["categories"].push(translate(scale.getProperty("Category " + i)));
-			i = i + 1;
-		}
-	} else {
-		scaleDetails["validValues"]["categories"]= null;
 	}
 	return scaleDetails;
 }
