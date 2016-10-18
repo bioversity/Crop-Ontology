@@ -413,7 +413,8 @@ apejs.urls = {
     	      "CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
     	      "CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
               "CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
-              "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') //cacao
+              "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') ,//cacao
+              "CO_445": render('skins/crop_projects/CO_445_brachiaria_project.html') //Brachiaria
             };
 
             var cropLogos = assoc[matches[1]] || "";
@@ -2782,10 +2783,10 @@ apejs.urls = {
                 
             }
 
-            function JSON2XLS(objArray) {
+            function JSON2XLS(objArray, language) {
                 var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
-                var out = excel.createXls(array);
+                var out = excel.createXls(array, language);
 
                 return out;
 
@@ -2863,7 +2864,7 @@ apejs.urls = {
                     if(obj[k] == 'false') obj[k]='';
             }
             ////////CSV EXPORT
-            var csvString = JSON2XLS(traits);
+            var csvString = JSON2XLS(traits, language);
             response.setContentType("text/csv");
             response.setHeader("Content-Disposition","attachment;filename="+ontoId+".csv"); 
             
