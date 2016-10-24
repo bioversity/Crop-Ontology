@@ -3414,12 +3414,7 @@ apejs.urls = {
 		get: function(request, response, matches) {
 			var ret= brapi.getMetadata();
 
-			var foo, thiscase;
 			if (matches[1].match(/:/)){
-				// retrieve 1 variable
-				foo = matches[1].match(/[^\\/]*/g)[1];
-				thiscase = "var ID";
-
 				var var_id = matches[1].match(/[^\\/]*/g)[1];
 				brapi.getVariableJson(var_id, ret);
 				
