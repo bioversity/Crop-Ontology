@@ -65,7 +65,7 @@ function getScaleDetails(scale) {
 
 	var scaleDetails = {
 		"scaleId" : "" + scale.getProperty("id"),
-		"name": translate(scale.getProperty("name")),
+		"name": "" + translate(scale.getProperty("name")),
 		"dataType": translate(scale.getProperty("Scale class")),
 		"decimalPlaces": translate(scale.getProperty("Decimal places")),
 		"xref": translate(scale.getProperty("Scale Xref")),
