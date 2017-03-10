@@ -381,6 +381,10 @@ apejs.urls = {
                     var url = 'http://www.cropontology.org/SweetPotatoCO_331.rdf';
                     var result = httpget(url);
                     print(response).text(result);
+                }else if(ontologyId == "CO_324"){
+                    var url = 'http://www.cropontology.org/SorghumCO_324.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
                 }
                 // else if(ontologyId == "CO_335"){
                 //     var url = 'http://www.cropontology.org/CommonBeanCO_335.rdf';
@@ -414,8 +418,8 @@ apejs.urls = {
     	      "CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
     	      "CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
               "CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
-              "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') ,//cacao
-              "CO_445": render('skins/crop_projects/CO_445_brachiaria_project.html') //Brachiaria
+             // "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') ,//cacao
+              "CO_345": render('skins/crop_projects/CO_445_brachiaria_project.html') //Brachiaria
             };
 
             var cropLogos = assoc[matches[1]] || "";
@@ -1882,6 +1886,9 @@ apejs.urls = {
                 var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
                     ontologyNameString = ""+ontologyName;
 
+                // if(typeof oboBlobKeyString === 'object'){
+                //     oboBlobKeyString = ""+oboBlobKeyString[Object.keys(oboBlobKeyString)[0]];
+                // }
 
                 var first = true,
                     ontologyId = 0,
@@ -1950,7 +1957,7 @@ apejs.urls = {
 
                 return err("");
             } catch(e) {
-                return err(e);
+                return err(e );
             }
 
         }
@@ -3661,6 +3668,49 @@ apejs.urls = {
                 print(response).textPlain(out);
            } catch(e) {
            }
+        }
+    },
+     "/metadata": {
+        get: function(request, response) {
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/x-yaml; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+
+            var ret = "\"@context\":\nontologies:\n";
+            var onto_type;
+
+            var ontologies = googlestore.query("ontology")
+                                .filter("category", "=", "300-499 Phenotype and Trait Ontology")
+                                .fetch(); 
+            ontologies.forEach(function(ontology){
+                // GET onto name
+                var onto_id = ontology.getProperty("ontology_id");
+                var onto_name = ontology.getProperty("ontology_name");
+                var onto_description = ontology.getProperty("ontology_summary");
+
+
+                ret += "  - id: "+onto_id+"\n";
+                ret += "    title: "+ onto_name+" ontology\n";
+                ret += "    uri: http://www.cropontology.org/ontology/"+onto_id+"/"+onto_name+"\n";
+                ret += "    description: \""+onto_description+"\""+"\n";
+                ret += "    homepage: http://www.cropontology.org/ontology/"+onto_id+"/"+onto_name+"\n";
+                ret += "    mailing_list: helpdesk@cropontology-curationtool.org\n";
+                ret += "    definition_property:\n";
+                ret += "      - http://www.w3.org/2004/02/skos/core#altLabel\n";
+                ret += "      - http://www.cropontology.org/rdf/acronym\n";
+                ret += "    hierarchical_property:\n";
+                ret += "      - http://purl.obolibrary.org/obo/BFO_0000050\n";
+                ret += "      - http://purl.obolibrary.org/obo/RO_0002202\n";
+                ret += "    base_uri:\n";
+                ret += "      - http://www.cropontology.org/rdf/"+onto_id+"\n";
+                ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+onto_name+"/nt\n";
+
+            });
+
+            var out = ret;
+                    
+            print(response).textPlain(out);
+          
         }
     },
 };
