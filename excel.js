@@ -422,7 +422,7 @@ var excel = {
             var data = new StringBuffer();
             var sheet = myWorkBook.getSheetAt(1);
             
-            for(var id=0; id<sheet.getLastRowNum(); id++) {
+            for(var id=0; id<=sheet.getLastRowNum(); id++) { //let's assume that the file has more than 10 rows....poi pb
                 var row = sheet.getRow(id);
                for(var cn=0; cn<row.getLastCellNum(); cn++) {
                    // If the cell is missing from the file, generate a blank one
