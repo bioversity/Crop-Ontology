@@ -3693,9 +3693,9 @@ apejs.urls = {
 
                 ret += "  - id: "+onto_id+"\n";
                 ret += "    title: "+ onto_name+" ontology\n";
-                ret += "    uri: http://www.cropontology.org/ontology/"+onto_id+"/"+onto_name+"\n";
+                ret += "    uri: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
                 ret += "    description: \""+onto_description+"\""+"\n";
-                ret += "    homepage: http://www.cropontology.org/ontology/"+onto_id+"/"+onto_name+"\n";
+                ret += "    homepage: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
                 ret += "    mailing_list: helpdesk@cropontology-curationtool.org\n";
                 ret += "    definition_property:\n";
                 ret += "      - http://www.w3.org/2004/02/skos/core#altLabel\n";
@@ -3705,7 +3705,7 @@ apejs.urls = {
                 ret += "      - http://purl.obolibrary.org/obo/RO_0002202\n";
                 ret += "    base_uri:\n";
                 ret += "      - http://www.cropontology.org/rdf/"+onto_id+"\n";
-                ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+onto_name+"/nt\n";
+                ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"/nt\n";
 
             });
 
