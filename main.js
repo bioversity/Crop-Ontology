@@ -3688,6 +3688,8 @@ apejs.urls = {
                 var onto_name = ontology.getProperty("ontology_name");
                 var onto_description = ontology.getProperty("ontology_summary");
 
+                if(!onto_id.startsWith("CO_"))
+                    return;
 
                 ret += "  - id: "+onto_id+"\n";
                 ret += "    title: "+ onto_name+" ontology\n";
