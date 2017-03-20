@@ -432,6 +432,16 @@ rdf.prototype.buildNtriples = function(ontologyId) {
     this.turtle += '<' + this.uri + 'Time' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
     this.turtle += '<' + this.uri + 'Time' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
 
+    if(ontologyId == "CO_325"){
+        this.turtle += '<' + this.uri + 'Photo' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
+        this.turtle += '<' + this.uri + 'Photo' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
+
+        this.turtle += '<' + this.uri + 'Metadata' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+        this.turtle += '<' + this.uri + 'Metadata' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+        this.turtle += '<' + this.uri + 'Observation' + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
+        this.turtle += '<' + this.uri + 'Observation' + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
+    }
+
 
     //declare the properties
     this.turtle += '<' + this.uri + 'method_of' + '> <http://www.w3.org/2000/01/rdf-schema#subProperty> <' + 'http://www.w3.org/2004/02/skos/core#related' + '> .\n';

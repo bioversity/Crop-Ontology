@@ -385,7 +385,12 @@ apejs.urls = {
                     var url = 'http://www.cropontology.org/SorghumCO_324.rdf';
                     var result = httpget(url);
                     print(response).text(result);
+                }else if(ontologyId == "CO_325"){
+                    var url = 'http://www.cropontology.org/BananaCO_325.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
                 }
+
                 // else if(ontologyId == "CO_335"){
                 //     var url = 'http://www.cropontology.org/CommonBeanCO_335.rdf';
                 //     var result = httpget(url);
