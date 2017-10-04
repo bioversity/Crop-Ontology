@@ -1,3 +1,5 @@
+"use strict";
+
 // Functions that create different parts of Json output
 function getVariableDetails(variable, varTrait, varMethod, varScale) {
 	var VariableSynonyms = String(translate(variable.getProperty("Variable synonyms"))).split(",");
@@ -16,9 +18,9 @@ function getVariableDetails(variable, varTrait, varMethod, varScale) {
 		"date": translate(variable.getProperty("Date")),
 		"language": translate(variable.getProperty("Language")),
 		"crop": translate(variable.getProperty("Crop")),
-		trait: varTrait,
-		method: varMethod,
-		scale: varScale,
+		"trait": varTrait,
+		"method": varMethod,
+		"scale": varScale,
 	};
 	return variableDetails;
 }
@@ -46,7 +48,7 @@ function getMethodDetails(method) {
 		"methodId" : "" + method.getProperty("id"),
 		"name": translate(method.getProperty("name")),
 		"class": translate(method.getProperty("Method class")),
-		"description": translate(method.getProperty("Method description")),
+		"description": "" + translate(method.getProperty("Method description")),
 		"formula": translate(method.getProperty("Formula")),
 		"reference": translate(method.getProperty("Method reference")),
 	};
@@ -63,7 +65,7 @@ function getScaleDetails(scale) {
 
 	var scaleDetails = {
 		"scaleId" : "" + scale.getProperty("id"),
-		"name": translate(scale.getProperty("name")),
+		"name": "" + translate(scale.getProperty("name")),
 		"dataType": translate(scale.getProperty("Scale class")),
 		"decimalPlaces": translate(scale.getProperty("Decimal places")),
 		"xref": translate(scale.getProperty("Scale Xref")),
@@ -75,6 +77,7 @@ function getScaleDetails(scale) {
 	}
 	return scaleDetails;
 }
+
 
 var brapi = {
 	getMetadata: function() {
@@ -109,7 +112,6 @@ var brapi = {
 				
 		var traits = googlestore.query("term")
 			.filter("id", "=", variable_of.get(0))
-			.filter("id", "=", variable_of.get(0))
 			.fetch();
 		traits.forEach(function(trait){
 			result["result"]["trait"] = getTraitDetails(trait);
@@ -132,32 +134,34 @@ var brapi = {
 
 	// Functions used in the main file that create the entire Json for all the variables existing in the crop
 	getVariableListJson: function (filterCropID, result) {
-		var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();';
-		var traits = eval(traitsQuery);
-		var traits_object = {};
-		traits.forEach(function(trait){
-			traits_object["" + trait.getProperty("id")] = getTraitDetails(trait);
-		});
-
-		var methodsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Method ID", "!=", null).fetch();';
-		var methods = eval(methodsQuery);
-		var methods_object = {};
-		methods.forEach(function(method){
-			methods_object[ "" + method.getProperty("id")] = getMethodDetails(method);
-		});
-
-		var scalesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Scale ID", "!=", null).fetch();';
-		var scales = eval(scalesQuery);
-		var scales_object = {};
-		scales.forEach(function(scale){
-			scales_object["" + scale.getProperty("id")] = getScaleDetails(scale);
-		});
-
 		var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
 		var variables = eval(variablesQuery);
+	
 		variables.forEach(function(variable){
-			result["result"]["data"].push(getVariableDetails(variable, traits_object["" + variable.getProperty("parent").get(0)], methods_object["" + variable.getProperty("parent").get(1)], scales_object["" + variable.getProperty("parent").get(2)]));
+			var variable_of = variable.getProperty("parent");
+			var variable_object = getVariableDetails(variable, {}, {}, {});
+			
+			var traits = googlestore.query("term")
+				.filter("id", "=", variable_of.get(0))
+				.fetch();
+			var traits_object = getTraitDetails(traits[0]);
+			variable_object["trait"] = traits_object;
+		
+			var methods = googlestore.query("term")
+				.filter("id", "=", variable_of.get(1))
+				.fetch();
+			var methods_object = getMethodDetails(methods[0]);
+			variable_object["method"] = methods_object;
+				
+			var scales = googlestore.query("term")
+				.filter("id", "=", variable_of.get(2))
+				.fetch();
+			var scales_object = getScaleDetails(scales[0]);
+			variable_object["scale"] = scales_object;
+
+			result["result"]["data"].push(variable_object);
 		});
 	}
+
 }
 exports = brapi;
