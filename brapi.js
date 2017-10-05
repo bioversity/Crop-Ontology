@@ -80,14 +80,14 @@ function getScaleDetails(scale) {
 
 
 var brapi = {
-	getMetadata: function() {
+	getMetadata: function(page, pageSize, totalCount) {
 		var metadata = {
 			"metadata" : {
 				"pagination":{
-					"pageSize": null,
-					"currentPage": null,
-					"totalCount": null,
-					"totalPages": null 
+					"pageSize": parseInt(pageSize),
+					"currentPage": parseInt(page),
+					"totalCount": parseInt(totalCount),
+					"totalPages": parseInt(totalCount/pageSize)+1
 				}, 
 				"status": []
 			},
@@ -99,10 +99,7 @@ var brapi = {
 	},
 
 	// Functions used in the main file that create the entire Json for one variable id
-	getVariableJson: function (var_id, result) {
-		var variables = googlestore.query("term")
-			.filter("id", "=", var_id)
-			.fetch();
+	getVariableJson: function (variables, result) {
 
 		var variable_of;
 		variables.forEach(function(variable){
@@ -133,9 +130,7 @@ var brapi = {
 	},
 
 	// Functions used in the main file that create the entire Json for all the variables existing in the crop
-	getVariableListJson: function (filterCropID, result) {
-		var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
-		var variables = eval(variablesQuery);
+	getVariableListJson: function (variables, result) {
 	
 		variables.forEach(function(variable){
 			var variable_of = variable.getProperty("parent");

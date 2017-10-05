@@ -361,10 +361,10 @@ apejs.urls = {
                     var url = 'http://www.cropontology.org/RiceCO_320.rdf';
                     var result = httpget(url);
                     print(response).text(result);
-                }else if(ontologyId == "CO_321"){
-                    var url = 'http://www.cropontology.org/wheatCO_321.rdf';
-                    var result = httpget(url);
-                    print(response).text(result);
+                 }else if(ontologyId == "CO_321"){
+                     var url = 'http://www.cropontology.org/wheatCO_321.rdf';
+                     var result = httpget(url);
+                     print(response).text(result);
                 }else if(ontologyId == "CO_322"){
                     var url = 'http://www.cropontology.org/maizeCO_322.rdf';
                     var result = httpget(url);
@@ -377,10 +377,10 @@ apejs.urls = {
                     var url = 'http://www.cropontology.org/CowpeaCO_340.rdf';
                     var result = httpget(url);
                     print(response).text(result);
-                }else if(ontologyId == "CO_331"){
-                    var url = 'http://www.cropontology.org/SweetPotatoCO_331.rdf';
-                    var result = httpget(url);
-                    print(response).text(result);
+                 }else if(ontologyId == "CO_331"){
+                     var url = 'http://www.cropontology.org/SweetPotatoCO_331.rdf';
+                     var result = httpget(url);
+                     print(response).text(result);
                 }else if(ontologyId == "CO_324"){
                     var url = 'http://www.cropontology.org/SorghumCO_324.rdf';
                     var result = httpget(url);
@@ -389,13 +389,51 @@ apejs.urls = {
                     var url = 'http://www.cropontology.org/BananaCO_325.rdf';
                     var result = httpget(url);
                     print(response).text(result);
+                }else if(ontologyId == "CO_338"){
+                    var url = 'http://www.cropontology.org/ChickpeaCO_338.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_339"){
+                    var url = 'http://www.cropontology.org/LentilCO_339.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_337"){
+                    var url = 'http://www.cropontology.org/GroundnutCO_337.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_327"){
+                    var url = 'http://www.cropontology.org/PearlMilletCO_327.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_341"){
+                    var url = 'http://www.cropontology.org/PigeonpeaCO_341.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_336"){
+                    var url = 'http://www.cropontology.org/SoybeanCO_326.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_343"){
+                    var url = 'http://www.cropontology.org/YamCO_343.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_330"){
+                    var url = 'http://www.cropontology.org/PotatoCO_330.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_335"){
+                    var url = 'http://www.cropontology.org/CommonBeanCO_335.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_346"){
+                    var url = 'http://www.cropontology.org/MungbeanCO_346.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_347"){
+                    var url = 'http://www.cropontology.org/CastorBeanCO_347.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
                 }
-
-                // else if(ontologyId == "CO_335"){
-                //     var url = 'http://www.cropontology.org/CommonBeanCO_335.rdf';
-                //     var result = httpget(url);
-                //     print(response).text(result);
-                // }
                 else{
                     var nt = new rdf().buildNtriples(ontologyId);
                     print(response).text(nt);
@@ -403,6 +441,102 @@ apejs.urls = {
                 
                 return;
             }
+
+            if(matches[3] && (matches[3] == "owl")) {
+                response.setContentType('text/plain');
+                // get this ontology data from it's id
+                var ontoKey = googlestore.createKey("ontology", ontoId),
+                    ontoEntity = googlestore.get(ontoKey),
+                    ontologyId = ontoEntity.getProperty('ontology_id');
+                if(ontologyId == "CO_320"){
+                    var url = 'http://www.cropontology.org/RiceCO_320.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                 }else if(ontologyId == "CO_321"){
+                     var url = 'http://www.cropontology.org/wheatCO_321.owl';
+                     var result = httpget(url);
+                     print(response).text(result);
+                }else if(ontologyId == "CO_322"){
+                    var url = 'http://www.cropontology.org/maizeCO_322.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_334"){
+                    var url = 'http://www.cropontology.org/CassavaCO_334.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_340"){
+                    var url = 'http://www.cropontology.org/CowpeaCO_340.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_331"){
+                    var url = 'http://www.cropontology.org/SweetPotatoCO_331.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_324"){
+                    var url = 'http://www.cropontology.org/SorghumCO_324.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_325"){
+                    var url = 'http://www.cropontology.org/BananaCO_325.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_338"){
+                    var url = 'http://www.cropontology.org/ChickpeaCO_338.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_339"){
+                    var url = 'http://www.cropontology.org/LentilCO_339.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_337"){
+                    var url = 'http://www.cropontology.org/GroundnutCO_337.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_327"){
+                    var url = 'http://www.cropontology.org/PearlMilletCO_327.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_341"){
+                    var url = 'http://www.cropontology.org/PigeonpeaCO_341.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_336"){
+                    var url = 'http://www.cropontology.org/SoybeanCO_326.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_343"){
+                    var url = 'http://www.cropontology.org/YamCO_343.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_330"){
+                    var url = 'http://www.cropontology.org/PotatoCO_330.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_335"){
+                    var url = 'http://www.cropontology.org/CommonBeanCO_335.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_345"){
+                    var url = 'http://www.cropontology.org/BrachiariaCO_345.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_346"){
+                    var url = 'http://www.cropontology.org/MungbeanCO_346.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_347"){
+                    var url = 'http://www.cropontology.org/CastorBeanCO_347.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }
+                else{
+                    var nt = new rdf().buildNtriples(ontologyId);
+                    print(response).text(nt);
+                }
+                
+                return;
+            }
+            
             var assoc = {
               "CO_334": render('skins/crop_projects/CO_334_cassava_project.html'),	//cassava
               "CO_338": render('skins/crop_projects/CO_338_chickpea_project.html'), //chickpea
@@ -1891,6 +2025,13 @@ apejs.urls = {
                 var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
                     ontologyNameString = ""+ontologyName;
 
+                try {
+                    oboBlobKeyString = JSON.parse(oboBlobKeyString);
+                    for(var i in oboBlobKeyString) {
+                        oboBlobKeyString = oboBlobKeyString[i];
+                    }
+                } catch(e) {}
+
                 // if(typeof oboBlobKeyString === 'object'){
                 //     oboBlobKeyString = ""+oboBlobKeyString[Object.keys(oboBlobKeyString)[0]];
                 // }
@@ -3335,32 +3476,29 @@ apejs.urls = {
     },
 	"/brapi/v1/traits(|/([^/]*))":{
 	  get: function(request, response, matches) {
-
-			// prepare output object
-			var ret={};
-			ret["metadata"] = {
-				"pagination":{
-					 "pageSize": null, 
-		             "currentPage": null, 
-		             "totalCount": null, 
-		             "totalPages": null 
-				}, 
-				"status": []
-			}
-			ret["result"] = [];
-
-		
-
-
 			if (matches[1].match(/:/)){
 				// retrieve 1 trait
 
 				var thiscase = "trait id";
-            var idd = matches[1].match(/[^\\/]*/g)[1];
+            	var idd = matches[1].match(/[^\\/]*/g)[1];
             	var id = matches[1].match(/[^\\/]*/g)[1];
             	var traits = googlestore.query("term")
             	                .filter("id", "=", id)
             	                .fetch();
+
+            	// prepare output object
+				var ret={};
+				ret["metadata"] = {
+					"pagination":{
+						 "pageSize": 1, 
+			             "currentPage": 0, 
+			             "totalCount": 1, 
+			             "totalPages": 1 
+					}, 
+					"status": [],
+					"datafiles": []
+				}
+				ret["result"] = [];
 
 				traits.forEach( function(trait){
 					var traitId = trait.getProperty("id");
@@ -3392,10 +3530,24 @@ apejs.urls = {
 					// no filter, all the traits, from all the crops, will be retrieved
 					var filterCropID = "";
 				}
+				if(request.getParameter("page")){
+					var filterPage = request.getParameter("page");
+				}else{
+					var filterPage = 0;
+				}
+				if(request.getParameter("pageSize")){
+					var filterPageSize = request.getParameter("pageSize");
+				}else{
+					var filterPageSize = 10;
+				}
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
 
 				var variables_object = {};
 	        	var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();';
 				var variables = eval(variablesQuery);
+
 				variables.forEach( function(variable){
 					if (typeof(variables_object["" + variable.getProperty("parent").get(0)]) == "undefined"){
 						variables_object["" + variable.getProperty("parent").get(0)] = {
@@ -3405,8 +3557,24 @@ apejs.urls = {
 					variables_object["" + variable.getProperty("parent").get(0)]["is_trait_of"].push("" + variable.getProperty("id"));
 				});
 
-	        	var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();';
+				var traitsQueryTot = eval('googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).fetch();');
+	        	var traitsQuery = 'googlestore.query("term")' + filterCropID + '.filter("Trait ID", "!=", null).offset('+ offset +').fetch('+ limit +');';
 				var traits = eval(traitsQuery);
+
+				// prepare output object
+				var ret={};
+				ret["metadata"] = {
+					"pagination":{
+						 "pageSize": traits.length, 
+			             "currentPage": parseInt(filterPage), 
+			             "totalCount": traitsQueryTot.length, 
+			             "totalPages": parseInt(traitsQueryTot.length/filterPageSize)+1
+					}, 
+					"status": [],
+					"datafiles": []
+				}
+				ret["result"] = [];
+
 				traits.forEach( function(trait){
 					var traitId = trait.getProperty("id");
 
@@ -3425,13 +3593,56 @@ apejs.urls = {
 	},
 	"/brapi/v1/variables(|/([^/]*))":{
 		get: function(request, response, matches) {
-			var ret= brapi.getMetadata();
 
+			if(request.getParameter("page")){
+				var filterPage = request.getParameter("page");
+			}else{
+				var filterPage = 0;
+			}
+			if(request.getParameter("pageSize")){
+				var filterPageSize = request.getParameter("pageSize");
+			}else{
+				var filterPageSize = 10;
+			}
+
+			var offset = filterPage * filterPageSize;
+			var limit = filterPageSize;
+
+			var ret= {};
+			System.out.println(matches[1]);
 			if (matches[1].match(/:/)){
 				var var_id = matches[1].match(/[^\\/]*/g)[1];
-				brapi.getVariableJson(var_id, ret);
+				var variables = googlestore.query("term")
+					.filter("id", "=", var_id)
+					.fetch();
+				ret = brapi.getMetadata(filterPage, filterPageSize, variables.length);
+				brapi.getVariableJson(variables, ret);
 				
-			} else {
+			} else if (matches[1] == "/datatypes") {
+				ret["metadata"] = {
+					"pagination":{
+						 "pageSize": 1, 
+			             "currentPage": 0, 
+			             "totalCount": 1, 
+			             "totalPages": 1 
+					}, 
+					"status": [],
+					"datafiles": []
+				}
+				
+				ret["result"] = {
+					"data": [
+						"Numeric",
+				      "Categorical",
+				      "Date",
+				      "Text",
+				      "Picture",
+				      "Boolean"
+					]
+				};
+				
+			}
+			else {
 				// retrieve more than one variable ID
 				var filterCropID = "";
 				if (matches[1]){
@@ -3439,11 +3650,134 @@ apejs.urls = {
 				  	filterCropID = '.filter("ontology_id", "=", "' + matches[1].match(/[^\/]*/g)[1] + '")';
 					
 				}
-				brapi.getVariableListJson(filterCropID, ret);
+				var variablesQueryTotal = eval('googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();');
+				var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).offset('+ offset +').fetch('+ limit +');';
+				var variables = eval(variablesQuery);
+
+				ret = brapi.getMetadata(filterPage, filterPageSize, variablesQueryTotal.length);
+
+				brapi.getVariableListJson(variables, ret);
 			}
 			print(response).json(ret);
 		}
 	},
+	"/brapi/v1/ontologies":{
+        get: function(request, response) {
+            if(request.getParameter("page")){
+                var filterPage = request.getParameter("page");
+            }else{
+                var filterPage = 0;
+            }
+            if(request.getParameter("pageSize")){
+                var filterPageSize = request.getParameter("pageSize");
+            }else{
+                var filterPageSize = 10;
+            }
+
+            var offset = filterPage * filterPageSize;
+            var limit = filterPageSize;
+
+            var offset = filterPage * filterPageSize;
+            var limit = filterPageSize;
+
+            var ontologyTot = googlestore.query("ontology")
+                                .filter("category", "=", "300-499 Phenotype and Trait Ontology")
+                                .fetch(); 
+            var ontologies = googlestore.query("ontology")
+                                .filter("category", "=", "300-499 Phenotype and Trait Ontology")
+                                .offset(offset)
+                                .fetch(limit); 
+
+            // prepare output object
+            var ret={};
+            ret["metadata"] = {
+                "pagination":{
+                     "pageSize": parseInt(filterPageSize), 
+                     "currentPage": parseInt(filterPage), 
+                     "totalCount": ontologyTot.length, 
+                     "totalPages": parseInt(ontologyTot.length/filterPageSize)+1
+                }, 
+                "status": [],
+                   "datafiles": []
+            };
+            ret["result"] = {"data" : []};
+
+            ontologies.forEach(function(ontology){
+                // userId = ontology.getProperty("user_key");
+                // var regExp = /\(([^)]+)\)/;
+                // var matches = regExp.exec(userId);
+                // var user = googlestore.query("user")
+                //                 .filter("ID/Name", "=", matches[0].replace("(", "").replace(")", ""))
+                //                 .fetch(); 
+                var obj = {
+                    "ontologyDbId": ontology.getProperty("ontology_id")+'',
+                    "ontologyName": ontology.getProperty("ontology_name")+'',
+                    "authors": null,
+                    "version": ""+ontology.getProperty("created_at"),
+                    "description": ontology.getProperty("ontology_summary")+'',
+                    "copyright": null,
+                    "licence": "CC BY-SA 4.0"
+                };
+                ret["result"]["data"].push(obj);
+                
+            });
+            
+            print(response).json(ret);
+
+        }
+    },
+    "/brapi/v1/variables-search":{
+        post: function(request, response) {
+              var jb = new StringBuffer();
+              var line = null;
+              try {
+                var reader = request.getReader();
+                while ((line = reader.readLine()) != null)
+                  jb.append(line);
+              } catch (e) { /*report an error*/ }
+
+              try {
+                var obj = JSON.parse(jb);
+              } catch (e) {
+                // crash and burn
+                throw "Error parsing JSON request string";
+              }
+
+
+            if(request.getParameter("page") || obj.page ){
+                var filterPage = request.getParameter("page") || obj.page;
+            }else{
+                var filterPage = 0;
+            }
+            if(request.getParameter("pageSize") || obj.pageSize){
+                var filterPageSize = request.getParameter("pageSize") || obj.pageSize;
+            }else{
+                var filterPageSize = 10;
+            }
+
+            var offset = filterPage * filterPageSize;
+            var limit = filterPageSize;
+
+            var offset = filterPage * filterPageSize;
+            var limit = filterPageSize;
+
+              var ret={};
+                ret["metadata"] = {
+                    "pagination":{
+                         "pageSize": parseInt(filterPageSize), 
+                         "currentPage": parseInt(filterPage), 
+                         "totalCount": 0, 
+                         "totalPages": 1
+                    }, 
+                    "status": [],
+                       "datafiles": []
+                };
+                ret["result"] = {"data" : []};
+
+              print(response).json(ret);
+
+        } 
+    },
   	"/ontos_stats":{
         get: function(request, response) {
             request.setCharacterEncoding("utf-8");
@@ -3705,7 +4039,7 @@ apejs.urls = {
                 ret += "      - http://purl.obolibrary.org/obo/RO_0002202\n";
                 ret += "    base_uri:\n";
                 ret += "      - http://www.cropontology.org/rdf/"+onto_id+"\n";
-                ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"/nt\n";
+                ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"/owl\n";
 
             });
 
