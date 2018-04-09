@@ -410,7 +410,7 @@ apejs.urls = {
                     var result = httpget(url);
                     print(response).text(result);
                 }else if(ontologyId == "CO_336"){
-                    var url = 'http://www.cropontology.org/SoybeanCO_326.rdf';
+                    var url = 'http://www.cropontology.org/SoybeanCO_336.rdf';
                     var result = httpget(url);
                     print(response).text(result);
                 }else if(ontologyId == "CO_343"){
@@ -431,6 +431,10 @@ apejs.urls = {
                     print(response).text(result);
                 }else if(ontologyId == "CO_347"){
                     var url = 'http://www.cropontology.org/CastorBeanCO_347.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_357"){
+                    var url = 'http://www.cropontology.org/WoodyCO_357.rdf';
                     var result = httpget(url);
                     print(response).text(result);
                 }
@@ -526,6 +530,10 @@ apejs.urls = {
                     print(response).text(result);
                 }else if(ontologyId == "CO_347"){
                     var url = 'http://www.cropontology.org/CastorBeanCO_347.owl';
+                    var result = httpget(url);
+                    print(response).text(result);
+                }else if(ontologyId == "CO_357"){
+                    var url = 'http://www.cropontology.org/WoodyCO_357.owl';
                     var result = httpget(url);
                     print(response).text(result);
                 }
@@ -3358,6 +3366,11 @@ apejs.urls = {
         get: function(req, res) {
             var q = req.getParameter('q');
             var s = new search();
+            var regExp = /co_(\d+):(\d+)/g;
+            var matches = regExp.exec(q);
+            if(matches !== null){
+                q = "\""+q+"\"";
+            }
             var results = s.search(q);
             var iter = results.iterator();
             var arr = [];
@@ -3365,7 +3378,7 @@ apejs.urls = {
                 var scoredDoc = iter.next();
 
                 var fields = scoredDoc.getExpressions();
-
+                //throw(fields);
                 var obj = {}
                 obj.id = ''+scoredDoc.getOnlyField('id').getText();
                 obj.name = ''+scoredDoc.getOnlyField('name').getText();
@@ -3382,6 +3395,12 @@ apejs.urls = {
                 } catch(e) {
                     // if parsing failed, revert to what it was
                     obj.ontology_name = obj.ontology_name;
+                }
+                try {
+                    obj.id = JSON.parse(obj.id);
+                } catch(e) {
+                    // if parsing failed, revert to what it was
+                    obj.id = obj.id;
                 }
                 arr.push(obj);
             }
@@ -3623,7 +3642,7 @@ apejs.urls = {
 					"pagination":{
 						 "pageSize": 1, 
 			             "currentPage": 0, 
-			             "totalCount": 1, 
+			             "totalCount": 7, 
 			             "totalPages": 1 
 					}, 
 					"status": [],
@@ -3632,12 +3651,13 @@ apejs.urls = {
 				
 				ret["result"] = {
 					"data": [
-						"Numeric",
-				      "Categorical",
-				      "Date",
+					  "Code",
+				      "Duration",
+				      "Nominal",
+				      "Numerical",
+				      "Ordinal",
 				      "Text",
-				      "Picture",
-				      "Boolean"
+                      "Date"
 					]
 				};
 				
@@ -3777,6 +3797,54 @@ apejs.urls = {
               print(response).json(ret);
 
         } 
+    },
+    "/brapi/v1/calls":{
+        get: function(request, response) {
+            if(request.getParameter("page")){
+                var filterPage = request.getParameter("page");
+            }else{
+                var filterPage = 0;
+            }
+            if(request.getParameter("pageSize")){
+                var filterPageSize = request.getParameter("pageSize");
+            }else{
+                var filterPageSize = 10;
+            }
+
+            var offset = filterPage * filterPageSize;
+            var limit = filterPageSize;
+
+            var offset = filterPage * filterPageSize;
+            var limit = filterPageSize;
+
+            var totCall = 6; 
+
+            // prepare output object
+            var ret={};
+            ret["metadata"] = {
+                "pagination":{
+                     "pageSize": parseInt(filterPageSize), 
+                     "currentPage": parseInt(filterPage), 
+                     "totalCount": parseInt(totCall), 
+                     "totalPages": parseInt(totCall/filterPageSize)+1
+                }, 
+                "status": [],
+                   "datafiles": []
+            };
+            ret["result"] = {"data" : []};
+            ret["result"]["data"] = [
+              { "call": "traits", "datatypes" : ["json"], "methods" : ["GET"] },
+              { "call": "traits/{traitDbId}" , "datatypes" : ["json"], "methods" : ["GET"] },
+              { "call": "variables/datatypes", "datatypes": ["json"], "methods": ["GET"] },
+              { "call": "variables", "datatypes" : ["json"], "methods" : ["GET"] },
+              { "call": "variables/{observationVariableDbId}", "datatypes" : ["json"], "methods" : ["GET"] },
+              { "call": "ontologies", "datatypes" : [ "json" ], "methods" : ["GET"] }
+            ];
+        
+            
+            print(response).json(ret);
+
+        }
     },
   	"/ontos_stats":{
         get: function(request, response) {
@@ -4032,11 +4100,13 @@ apejs.urls = {
                 ret += "    homepage: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
                 ret += "    mailing_list: helpdesk@cropontology-curationtool.org\n";
                 ret += "    definition_property:\n";
+                ret += "      - http://www.w3.org/2004/02/skos/core#definition\n";
+                ret += "    synonym_property:\n";
                 ret += "      - http://www.w3.org/2004/02/skos/core#altLabel\n";
                 ret += "      - http://www.cropontology.org/rdf/acronym\n";
                 ret += "    hierarchical_property:\n";
-                ret += "      - http://purl.obolibrary.org/obo/BFO_0000050\n";
-                ret += "      - http://purl.obolibrary.org/obo/RO_0002202\n";
+                ret += "      - http://www.cropontology.org/rdf/method_of\n";
+                ret += "      - http://www.cropontology.org/rdf/scale_of\n";
                 ret += "    base_uri:\n";
                 ret += "      - http://www.cropontology.org/rdf/"+onto_id+"\n";
                 ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"/owl\n";
@@ -4047,6 +4117,73 @@ apejs.urls = {
                     
             print(response).textPlain(out);
           
+        }
+    },
+    "/webhook": {
+        post: function(request, response) {
+            var jb = new StringBuffer();
+            var line = null;
+            var obj;
+            try {
+                var reader = request.getReader();
+                while ((line = reader.readLine()) != null)
+                  jb.append(line);
+            } catch (e) { /*report an error*/ }
+
+            try {
+                obj = JSON.parse(jb);
+            } catch (e) {
+                // crash and burn
+                throw "Error parsing JSON request string";
+            }
+
+            //now that we know that a commit happened, check that this is on the ontology file in the master branch
+            
+            //commit on the master branch
+            if(obj["ref"].indexOf("master") !== -1){
+                if(obj["repository"]["name"]=="ibp-sweetpotato-traits"){
+                    //ontology file has been changed
+                    if(obj["head_commit"]["modified"]=="sweetpotato_trait.obo"){
+                        //get ontology details from the database
+                        ontos = googlestore.query("ontology")
+                                    .filter("ontology_id", "=", "CO_331")
+                                    .fetch()
+
+                        var res = [];
+                        ontos.forEach(function(onto){
+
+                            var username = "",
+                                userid = "";
+                            if(onto.getProperty("user_key")) {
+                                var user = googlestore.get(onto.getProperty("user_key"));
+                                username = user.getProperty("username"); 
+                                userid = user.getKey().getId();
+
+                            }
+                            res.push({
+                                ontology_id: ""+onto.getProperty("ontology_id"),
+                                ontology_name: ""+onto.getProperty("ontology_name"),
+                                ontology_summary: ""+onto.getProperty("ontology_summary"),
+                                username: ""+username,
+                                userid: ""+userid
+                            });
+                        });
+
+
+                        //read the file from github
+                        token = '1343e49b4a3234ae9b63eaed4e3a2963ca5427f1'
+
+                        
+                        print(response).json(res);
+
+                        
+                    }
+                }
+            }
+           
+
+        //print(response).json(obj);
+
         }
     },
 };
