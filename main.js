@@ -4171,7 +4171,7 @@ apejs.urls = {
 
 
                         //read the file from github
-                        token = '1343e49b4a3234ae9b63eaed4e3a2963ca5427f1'
+                        token = ''
 
                         
                         print(response).json(res);
