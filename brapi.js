@@ -9,7 +9,7 @@ function getVariableDetails(variable, varTrait, varMethod, varScale) {
 		"ontologyDbId": "" + variable.getProperty("ontology_id"),
 		"ontologyName": "" + variable.getProperty("ontology_name"),
 		"synonyms": VariableSynonyms,
-		"contextOfUse": [translate(variable.getProperty("Context of use"))],
+		"contextOfUse": translate(variable.getProperty("Context of use")) || "",
 		"growthStage": translate(variable.getProperty("Growth stage")),
 		"status": translate(variable.getProperty("Variable status")),
 		"xref": translate(variable.getProperty("Variable Xref")),
@@ -21,6 +21,7 @@ function getVariableDetails(variable, varTrait, varMethod, varScale) {
 		"trait": varTrait,
 		"method": varMethod,
 		"scale": varScale,
+		"defaultValue": null
 	};
 	return variableDetails;
 }
@@ -45,7 +46,7 @@ function getTraitDetails(trait) {
 
 function getMethodDetails(method) {
 	var methodDetails = {
-		"methodId" : "" + method.getProperty("id"),
+		"methodDbId" : "" + method.getProperty("id"),
 		"name": translate(method.getProperty("name")),
 		"class": translate(method.getProperty("Method class")),
 		"description": "" + translate(method.getProperty("Method description")),
@@ -64,14 +65,14 @@ function getScaleDetails(scale) {
 	}
 
 	var scaleDetails = {
-		"scaleId" : "" + scale.getProperty("id"),
+		"scaleDbId" : "" + scale.getProperty("id"),
 		"name": "" + translate(scale.getProperty("name")),
 		"dataType": translate(scale.getProperty("Scale class")),
 		"decimalPlaces": translate(scale.getProperty("Decimal places")),
 		"xref": translate(scale.getProperty("Scale Xref")),
 		"validValues": {
-			"min": "" + translate(scale.getProperty("Lower limit")),
-			"max":  "" + translate(scale.getProperty("Upper limit")),
+			"min":  parseInt(translate(scale.getProperty("Lower limit"))),
+			"max":  parseInt(translate(scale.getProperty("Upper limit"))),
 			"categories": categories,
 		}
 	}

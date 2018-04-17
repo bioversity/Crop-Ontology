@@ -3517,7 +3517,7 @@ apejs.urls = {
 					"status": [],
 					"datafiles": []
 				}
-				ret["result"] = [];
+				ret["result"] = {};
 
 				traits.forEach( function(trait){
 					var traitId = trait.getProperty("id");
@@ -3538,7 +3538,7 @@ apejs.urls = {
 					variables.forEach( function(variable){
 						object.observationVariables.push(""+variable.getProperty("id"));
 					});
-					ret["result"].push(object);
+					ret["result"] = object;
             	});
 			} else {
 				// retrieve more than one trait
