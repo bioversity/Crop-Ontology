@@ -1,36 +1,36 @@
-var apejs = require("apejs.js");
-var googlestore = require("googlestore.js");
-var memcache = require("memcache.js");
-var select = require("select.js");
+var apejs = require("apejs.js"),
+    googlestore = require("googlestore.js"),
+    memcache = require("memcache.js"),
+    select = require("select.js"),
 
-var usermodel = require("./usermodel.js");
-var ontologymodel = require("./ontologymodel.js");
-var commentmodel = require("./commentmodel.js");
-var termmodel = require("./termmodel.js");
-var usermodel = require("./usermodel.js");
+    usermodel = require("./usermodel.js"),
+    ontologymodel = require("./ontologymodel.js"),
+    commentmodel = require("./commentmodel.js"),
+    termmodel = require("./termmodel.js"),
+    usermodel = require("./usermodel.js"),
 
-var fileupload = require("./fileupload.js");
-var auth = require("./auth.js");
-var log = require("./log.js");
-var email = require("./email.js");
-var rss = require("./rss.js");
-var rdf = require("./rdf.js");
-var httpget = require("./httpget.js");
-var blobstore = require("./blobstore.js");
-var taskqueue = require("./taskqueue.js");
-var jsonobo = require("./public/js/jsonobo.js"); // also client uses this, SWEET!!!
-var excel = require("./excel.js");
-var languages = require("./languages.js");
-var template = require('./template.js');
-var search = require('./search.js');
-var traitsUtil = require('./traits.js');
-var brapi = require('./brapi.js');
+    fileupload = require("./fileupload.js"),
+    auth = require("./auth.js"),
+    log = require("./log.js"),
+    email = require("./email.js"),
+    rss = require("./rss.js"),
+    rdf = require("./rdf.js"),
+    httpget = require("./httpget.js"),
+    blobstore = require("./blobstore.js"),
+    taskqueue = require("./taskqueue.js"),
+    jsonobo = require("./public/js/jsonobo.js"), // also client uses this, SWEET!!!
+    excel = require("./excel.js"),
+    languages = require("./languages.js"),
+    template = require('./template.js'),
+    search = require('./search.js'),
+    traitsUtil = require('./traits.js'),
+    brapi = require('./brapi.js'),
 
-// commonjs modules
-var Mustache = require("./common/mustache.js");
+    // commonjs modules
+    Mustache = require("./common/mustache.js");
 
 var VERSION = "0.8.26";
-var URL = 'http://www.cropontology.org';
+    URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
     if(javaStr == null || javaStr.equals(""))
@@ -48,7 +48,7 @@ var print = function(response) {
             var jsonString = JSON.stringify(j, null, 2);
 
             if(!isblank(callback)) { // JSONP
-              jsonString = "" + callback + "(" + jsonString + ");";  
+              jsonString = "" + callback + "(" + jsonString + ");";
             }
 
             response.setContentType("application/json");
@@ -88,7 +88,7 @@ function translate(jsonStr, isoLang) {
               return obj['undefined'];
         }else {
             return jsonStr;
-        } 
+        }
     } catch(e) {
         return jsonStr;
     }
@@ -141,8 +141,8 @@ function defaultParent(parent) {
 
 function renderIndex(htmlFile, data) {
   if(!data) data = {};
-  var partials = { 
-    CONTENT: render(htmlFile), 
+  var partials = {
+    CONTENT: render(htmlFile),
     VERSION: VERSION,
     languages: JSON.stringify(languages.all)
   };
@@ -163,7 +163,7 @@ apejs.urls = {
             var html = renderIndex("skins/list-ontologies.html", {isHome: true});
             print(response).text(html);
 
-            var token = request.getParameter("token"); 
+            var token = request.getParameter("token");
             if(!isblank(token)) {
                 try {
                     var url = 'https://www.integratedbreeding.net/auth/?key=cropon_nc39F34j&token=' + token;
@@ -258,7 +258,7 @@ apejs.urls = {
                 try {
                     if(onto.getProperty("user_key")) {
                         var user = googlestore.get(onto.getProperty("user_key"));
-                        username = user.getProperty("username"); 
+                        username = user.getProperty("username");
                         userid = user.getKey().getId();
                     }
                 } catch(e){ // user might not exist for this ontology
@@ -281,7 +281,7 @@ apejs.urls = {
     },
     "/ontologies": {
         get: function(request, response) {
-            var category = request.getParameter("category"); 
+            var category = request.getParameter("category");
             var ontologies = googlestore.query("ontology");
 
             ontologies.sort("ontology_name", "ASC");
@@ -300,7 +300,7 @@ apejs.urls = {
                     userid = "";
                 if(onto.getProperty("user_key")) {
                     var user = googlestore.get(onto.getProperty("user_key"));
-                    username = user.getProperty("username"); 
+                    username = user.getProperty("username");
                     userid = user.getKey().getId();
 
                 }
@@ -314,7 +314,7 @@ apejs.urls = {
             });
 
             print(response).json(res, request.getParameter("callback"));
-            
+
         }
     },
     // haha nice REGEX!
@@ -442,7 +442,7 @@ apejs.urls = {
                     var nt = new rdf().buildNtriples(ontologyId);
                     print(response).text(nt);
                 }
-                
+
                 return;
             }
 
@@ -541,10 +541,10 @@ apejs.urls = {
                     var nt = new rdf().buildNtriples(ontologyId);
                     print(response).text(nt);
                 }
-                
+
                 return;
             }
-            
+
             var assoc = {
               "CO_334": render('skins/crop_projects/CO_334_cassava_project.html'),	//cassava
               "CO_338": render('skins/crop_projects/CO_338_chickpea_project.html'), //chickpea
@@ -623,14 +623,14 @@ apejs.urls = {
                     var o = JSON.parse(excelBlobKey);
 
                     for(var i in o) {
-                        excelBlobKey = o[i]; 
+                        excelBlobKey = o[i];
                         break;
                     }
 
 
                 }catch(e){}
 					// case 1: onto = TDv5
-                    var variables = googlestore.query("term") 
+                    var variables = googlestore.query("term")
                                   .filter("ontology_id", "=", ontoId)
                                   .filter("relationship", "=", "variable_of")
                                   .fetch();
@@ -638,16 +638,16 @@ apejs.urls = {
 					var total = variables.length;
 					var ontoType;
 
-					if(total > 0){ 
+					if(total > 0){
 					ontoType = "TDv5";
 					} else {
 					// case 2: onto = TDv4
-	                    var traits = googlestore.query("term") 
+	                    var traits = googlestore.query("term")
 	                                  .filter("ontology_id", "=", ontoId)
 	                                  .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
 	                                  .fetch();
 						total = traits.length;
-						if (total > 0) { 
+						if (total > 0) {
 							ontoType = "TDv4";
 						} else {
 						  //XXX does not work for OBOs
@@ -830,7 +830,7 @@ apejs.urls = {
                         else
                             scales[i] = ""+s;
                     });
-                    
+
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
@@ -873,18 +873,18 @@ apejs.urls = {
             try {
 
                 var ret = [];
-				
+
             	var termKey = googlestore.createKey("term", id),
                 termEntity = googlestore.get(termKey);
 				if (termEntity.getProperty("obo_blob_key")){
 					// case 1 : we are on an OBO
-					
+
 					// get crop name (used to get the variable namespace)
 					var onto = googlestore.query("ontology")
 									.filter("ontology_id", "=", cropId)
 									.fetch()
 					var cropName = onto[0].getProperty("ontology_name")
-					
+
 					// get the OBO variables
 	            	var variables = googlestore.query("term")
 	            	                .filter("parent", "=", id)
@@ -1127,7 +1127,7 @@ apejs.urls = {
                 }
                 return newAttrObj;
             }
-        
+
             if(method && !scale) { // only show specific attributes
                 var methodAttrs = ['Name of method','Describe how measured (method)','Growth stages','Bibliographic Reference Comments'];
                 attrObj = newAttrs(methodAttrs, attrObj);
@@ -1196,7 +1196,7 @@ apejs.urls = {
                     filename = fieldName;
                     value = fieldValue;
                 } else {
-                    if(fieldName == "key") key = fieldValue; 
+                    if(fieldName == "key") key = fieldValue;
                     if(fieldName == "value") value = fieldValue;
                     if(fieldName == "term_id") term_id = fieldValue;
                     //err("Got form-field. "+fieldName+": "+fieldValue+"<br>");
@@ -1224,7 +1224,7 @@ apejs.urls = {
     },
     "/remove-attribute": {
         post: function(request, response) {
-            function err(msg) { 
+            function err(msg) {
                 response.sendError(response.SC_BAD_REQUEST, msg);
             }
             // only if logged in
@@ -1265,11 +1265,11 @@ apejs.urls = {
 
             var isoLang = request.getParameter('isoLang');
 
-            response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo"); 
+            response.setHeader("Content-Disposition","attachment;filename="+ontologyId+".obo");
 
             var crop = '';
             select('ontology')
-                .find({ 
+                .find({
                     ontology_id: ontologyId
                 }).each(function() {
                     crop = this.ontology_name;
@@ -1277,10 +1277,10 @@ apejs.urls = {
 
             print(response).textPlain('format-version: 1.2');
             print(response).textPlain('ontology: '+crop+'_ontology');
-            print(response).textPlain('');    
+            print(response).textPlain('');
 
             select('term')
-                .find({ 
+                .find({
                     ontology_id: ontologyId
                 })
                 .sort('id', 'DESC')
@@ -1348,7 +1348,7 @@ apejs.urls = {
                         }else{
                             print(response).textPlain('synonym: "' + translate(this['Variable synonyms'], isoLang) + '" EXACT []');
                         }
-                    } 
+                    }
 
                     //abbrev
                     if(this['Abbreviated name']) {
@@ -1361,7 +1361,7 @@ apejs.urls = {
                         print(response).textPlain('synonym: "' + translate(this['Main trait abbreviation'], isoLang) + '" EXACT []');
                     } else if(this['Alternative trait abbreviations']) {
                         print(response).textPlain('synonym: "' + translate(this['Alternative trait abbreviations'], isoLang) + '" EXACT []');
-                    } 
+                    }
                     ///scales
                     if(this.relationship) {
                         if(this.relationship == 'scale_of'){
@@ -1370,7 +1370,7 @@ apejs.urls = {
                             }else if (crop!=''){
                             print(response).textPlain('namespace: ' + crop+'Scale');
                             }
-                            
+
                             if(typeof this.parent != 'string'){
                                 for(var i in this.parent) {
                                     print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent[i]));
@@ -1378,10 +1378,10 @@ apejs.urls = {
                             }else{
                                 print(response).textPlain('relationship: ' + this.relationship + ' ' + r.encodeID(this.parent));
                             }
-                           
+
                             var type = translate(this['Type of Measure (Continuous, Discrete or Categorical)'], isoLang)
                                             || translate(this['Scale class'], isoLang);
-                            if( type == 'Categorical' || type == 'Ordinal' || type == 'Nominal') { // it's categorical                                
+                            if( type == 'Categorical' || type == 'Ordinal' || type == 'Nominal') { // it's categorical
                                 for(var i in this) {
                                     if(i.indexOf('For Categorical') == 0 || i.indexOf('Category') == 0) { // starts with
                                         var categoryId = i.match(/\d+/g);
@@ -1428,7 +1428,7 @@ apejs.urls = {
                             }
                         }
                     } else if(this.parent && this.parent != "null") {
-                            print(response).textPlain('is_a: ' + r.encodeID(this.parent)); 
+                            print(response).textPlain('is_a: ' + r.encodeID(this.parent));
                     }
 
                     print(response).text('');
@@ -1521,7 +1521,7 @@ apejs.urls = {
                 var mimeType = ApeServlet.CONFIG.getServletContext().getMimeType(filename);
 
                 response.setContentType(mimeType);
-                
+
                 if(!mimeType && !mimeType.startsWith("image")) // if it's not an image, download it
                     response.setHeader("Content-Disposition", "attachment; filename=\"" + filename+"\"");
 
@@ -1553,7 +1553,7 @@ apejs.urls = {
 
                 var name = termEntity.getProperty('name');
                 if(name instanceof Text) name = name.getValue();
-                try { 
+                try {
                     var jname = JSON.parse(name);
                     name = jname[lang] || jname[languages.default];
                 } catch(e) {
@@ -1626,7 +1626,7 @@ apejs.urls = {
                         if(i == 0) {
                             termIds[id] = true;
                             matchedTerms.push(termEntity);
-                        } else { 
+                        } else {
                             if(termIds[id] === true)  {
                                 matchedTerms.push(termEntity);
                                 newTermIds[id] = true; // track new term ids
@@ -1650,7 +1650,7 @@ apejs.urls = {
             matchedTerms.forEach(function(entity) {
                 res.push(googlestore.toJS(entity));
             });
-            
+
             return print(response).json(res, callback);
         }
     },
@@ -1665,14 +1665,14 @@ apejs.urls = {
                 username = user.getProperty("username");
                 userid = user.getKey().getId();
             }
-            
+
             print(response).json({
                 username: ""+username,
                 userid: ""+userid
             });
             //response.getWriter().println('{"username":"'+username+'"}');
         },
-		
+
 		// check that user has been activated
         post: function(request, response) {
             var username = request.getParameter("username"),
@@ -1690,7 +1690,7 @@ apejs.urls = {
             // just delete it on the server
             var userEntity = auth.getUser(request);
             if(userEntity) {
-                userEntity.setProperty("token", null); 
+                userEntity.setProperty("token", null);
                 googlestore.put(userEntity);
             }
         }
@@ -1725,7 +1725,7 @@ apejs.urls = {
 
             if(usermodel.usernameExists(user.username))
                 error = "This username already exists";
-                
+
             if(!usermodel.validUsername(user.username))
                 error = "The username is not of valid format";
 
@@ -1734,7 +1734,7 @@ apejs.urls = {
             } else {
                 // sha1 the password
                 user.password = usermodel.sha1(user.password);
-				
+
 				// store user in DB
                 var entity = googlestore.entity("user", user);
                 var userKey = googlestore.put(entity);
@@ -1742,8 +1742,8 @@ apejs.urls = {
 				// get user id
 				var userDB = usermodel.out(entity);
 				var userid = userDB.userid;
-				
-				// does not log in the user until it has been activated by admin 
+
+				// does not log in the user until it has been activated by admin
 //				auth.login(response, user.username, user.password);
 
 				// send email to admin / moderator for confirmation
@@ -1761,8 +1761,8 @@ apejs.urls = {
         			address: "e.arnaud@cgiar.org",
         		    personal: "E. Arnaud"
         		};
-				email.send(from, to1, "New registration on cropontology.org", bodyMessage); 
-				email.send(from, to2, "New registration on cropontology.org", bodyMessage); 
+				email.send(from, to1, "New registration on cropontology.org", bodyMessage);
+				email.send(from, to2, "New registration on cropontology.org", bodyMessage);
 
                 var message = "Thank you! <br/> You will be notified by email that your registration request has been approved by the website administrator. <br/><br/> For any enquiry, please contact admin(at)cropontology-curationtool(dot)org";
                 response.getWriter().println('{"message":"'+message+'"}');
@@ -1828,7 +1828,7 @@ apejs.urls = {
 						if ( term[0] ){
 							var termName = translate(term[0].getProperty("name"));
 						}
-						var key = termId + " " + termName; 
+						var key = termId + " " + termName;
 						if (!ret[ key ]){
 							ret[ key ] = [];
 						}
@@ -1904,7 +1904,7 @@ apejs.urls = {
             var currUser = auth.getUser(request);
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-                
+
             var json = request.getParameter("json");
 
             try {
@@ -1947,7 +1947,7 @@ apejs.urls = {
             } catch(e) {
                 return response.sendError(response.SC_BAD_REQUEST, e);
             }
-        
+
         }
     },
     "/edit-ontology" : {
@@ -2013,7 +2013,7 @@ apejs.urls = {
             if(!currUser)
                 return err("Not logged in");
 
-            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+            var blobs = blobstore.blobstoreService.getUploads(request),
                 oboBlobKey = blobs.get("obofile");
 
             if(oboBlobKey == null) {
@@ -2069,7 +2069,7 @@ apejs.urls = {
                                 stop = false;
                             }
                         }
-                        
+
                         if(stop) return;
 
                         // need a reference to the obo we just created
@@ -2150,7 +2150,7 @@ apejs.urls = {
 
             // every term should have a langauge
             var term = termmodel.translate(term, languages);
-            
+
             // add it to datastore
             termmodel.createTerm(term);
         }
@@ -2231,11 +2231,11 @@ apejs.urls = {
             if(!currUser)
                 return err("Not logged in");
 
-            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+            var blobs = blobstore.blobstoreService.getUploads(request),
                 blobKey = blobs.get("value");
-                
+
             var value = request.getParameter("value");
-            var term_id = request.getParameter("term_id"); 
+            var term_id = request.getParameter("term_id");
             var key = request.getParameter("key");
             var lang = request.getParameter("language");
 
@@ -2276,7 +2276,7 @@ apejs.urls = {
                 var cpy = obj;
                 obj = {};
                 if(cpy !== "") {
-                  obj[languages.default] = cpy;   
+                  obj[languages.default] = cpy;
                 }
               }
               if(isblank(lang)) {
@@ -2305,7 +2305,7 @@ apejs.urls = {
             if(!currUser)
                 response.sendError(response.SC_BAD_REQUEST, "Not logged in");
 
-            
+
             var ontos = googlestore.query("ontology");
             // return all ontologies if admin
             if(!auth.isAdmin(currUser)) {
@@ -2342,7 +2342,7 @@ apejs.urls = {
             function getParent(arr, untouched, branch, termId) {
                 var termKey = googlestore.createKey("term", termId),
                     termEntity = googlestore.get(termKey);
-                
+
                 var parentList = termEntity.getProperty("parent");
 
                 if(!parentList) { // reached a root term, stop
@@ -2368,7 +2368,7 @@ apejs.urls = {
                   };
                   if(i === 0) {
                     if(parentList.size() > 0) { // has parents
-                      untouched = branch.slice(0);   
+                      untouched = branch.slice(0);
                     }
                     branch.push(o);
                   } else if(i > 0) {
@@ -2420,17 +2420,17 @@ apejs.urls = {
             // to get categories we need to get all ontologies and
             // filter the unique values
             var ontologies = googlestore.query("ontology")
-                            //.setCacheKey("get-categories") 
+                            //.setCacheKey("get-categories")
                             .fetch();
 
             var categories = {}; // use an object so keys are unique :D
             ontologies.forEach(function(onto){
-                if(onto.getProperty("category")) 
+                if(onto.getProperty("category"))
                     categories[""+onto.getProperty("category")] = 0;
             });
             // convert object to simple array
             var cats = [];
-            for(var i in categories) 
+            for(var i in categories)
                 cats.push(i);
 
             print(response).json(cats);
@@ -2456,14 +2456,14 @@ apejs.urls = {
                         userid = "";
                     if(onto.getProperty("user_key")) {
                         var user = googlestore.get(onto.getProperty("user_key"));
-                        username = user.getProperty("username"); 
+                        username = user.getProperty("username");
                         userid = user.getKey().getId();
                     }
 					// get crop name (used to get the variable namespace)
 					cropName = onto.getProperty("ontology_name")
 					// case 1: onto = TDv5
 					// get all the variables for this ontology
-                    var variables = googlestore.query("term") 
+                    var variables = googlestore.query("term")
                                   .filter("ontology_id", "=", onto.getProperty("ontology_id"))
                                   .filter("relationship", "=", "variable_of")
                                   .fetch();
@@ -2471,17 +2471,17 @@ apejs.urls = {
 					var total = variables.length;
 					var ontoType;
 
-					if(total > 0){ 
+					if(total > 0){
 					ontoType = "TDv5";
 					} else {
 					// case 2: onto = TDv4
 						// let's get the number of traits (number of triplets T-M-S is expensive to get)
-	                    var traits = googlestore.query("term") 
+	                    var traits = googlestore.query("term")
 	                                  .filter("ontology_id", "=", onto.getProperty("ontology_id"))
 	                                  .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
 	                                  .fetch();
 						total = traits.length;
-						if (total > 0) { 
+						if (total > 0) {
 							ontoType = "TDv4";
 						} else {
 							// case 3: onto = OBO with variables
@@ -2523,7 +2523,7 @@ apejs.urls = {
     "/edit_profile": {
         post: function(request, response) {
 			//currUser : user from DB (google format)
-            var currUser = auth.getUser(request);            
+            var currUser = auth.getUser(request);
 			if(!currUser){
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
 	    	} else {
@@ -2544,7 +2544,7 @@ apejs.urls = {
 						var user = usermodel.outEdit(currUser);
 					}
 				}
-				print(response).json(user);		
+				print(response).json(user);
 	    	}
 		}
     },
@@ -2566,7 +2566,7 @@ apejs.urls = {
                 var users = googlestore.query("user")
                             .sort("username", "ASC")
                             .fetch();
-                    
+
                 var ret = [];
 
                 users.forEach(function(userEntity) {
@@ -2574,7 +2574,7 @@ apejs.urls = {
                 });
             	print(response).json({
                 	"users": ret
-				});		
+				});
             } catch (e) {
                 response.sendError(response.SC_BAD_REQUEST, e);
             }
@@ -2598,7 +2598,7 @@ apejs.urls = {
 			if ( activate == "true" ) {
 	    	 	user.setProperty("active", true);
 				googlestore.put(user);
-					
+
 				// get user info
 				var userjson = usermodel.outadmin(user);
 
@@ -2612,8 +2612,8 @@ apejs.urls = {
 	                    address: "" + userjson.email,
 	                    personal: "" + userjson.name + " " + userjson.sirname
 	                };
-			
-					email.send(from, to, "Welcome to "+ URL , "Dear " + userjson.name + ",\n\nFollowing on from your registration on " + URL + " (" + userjson.created + "), we are happy to welcome you in the Crop Ontology community. Your profile has been approved and you can now log in.\n\nYour details are: \n - Username: " + userjson.username + "\n - First name: " + userjson.name + "\n - Last name: " + userjson.sirname + "\n - Host institution: " + userjson.institution +"\n\nBest Regards,\nThe "+ URL + " administrator"); 
+
+					email.send(from, to, "Welcome to "+ URL , "Dear " + userjson.name + ",\n\nFollowing on from your registration on " + URL + " (" + userjson.created + "), we are happy to welcome you in the Crop Ontology community. Your profile has been approved and you can now log in.\n\nYour details are: \n - Username: " + userjson.username + "\n - First name: " + userjson.name + "\n - Last name: " + userjson.sirname + "\n - Host institution: " + userjson.institution +"\n\nBest Regards,\nThe "+ URL + " administrator");
 				}
 
 			} else {
@@ -2645,7 +2645,7 @@ apejs.urls = {
     	   		var key = googlestore.createKey("user", parseInt(userid, 10));
     	   		var user = googlestore.get(key);
 				var userConfirm = usermodel.outadmin(user);
-				
+
 				// To prevent from accidently deleting a user, users that are active cannot be deleted
 				if (userConfirm.active == "true" ){
 		    		print(response).json({
@@ -2663,7 +2663,7 @@ apejs.urls = {
 					});
 				}
 			}
-		}	
+		}
 	},
     "/users": {
         get: function(request, response) {
@@ -2671,7 +2671,7 @@ apejs.urls = {
                 var users = googlestore.query("user")
 							.sort("username")
                             .fetch();
-                    
+
                 var ret = [];
 
                 users.forEach(function(userEntity) {
@@ -2753,8 +2753,8 @@ apejs.urls = {
     "/csv-download": {
         post: function(request, response) {
             response.setContentType("text/csv");
-            response.setHeader("Content-Disposition","attachment;filename=result.csv"); 
-            
+            response.setHeader("Content-Disposition","attachment;filename=result.csv");
+
             var csvString = request.getParameter("csvString");
             response.getWriter().println(csvString);
         }
@@ -2775,7 +2775,7 @@ apejs.urls = {
             function getTrait(row) {
                 var obj = {};
                 for(var i in row) {
-                    obj[i] = row[i]; 
+                    obj[i] = row[i];
                     if(obj[i] == "") delete obj[i];
                     if(i == 'Trait Class') break;
                 }
@@ -2788,7 +2788,7 @@ apejs.urls = {
                 var startCopy = false;
                 for(var i in row) {
                     if(startCopy) {
-                        obj[i] = row[i]; 
+                        obj[i] = row[i];
                         if(obj[i] == "") delete obj[i];
                     }
                     if(i == 'Comments') break;
@@ -2802,7 +2802,7 @@ apejs.urls = {
                 var startCopy = false;
                 for(var i in row) {
                     if(startCopy) {
-                        obj[i] = row[i]; 
+                        obj[i] = row[i];
                         if(obj[i] == "") delete obj[i];
                     }
                     if(i == 'Comments') startCopy = true;
@@ -2810,12 +2810,12 @@ apejs.urls = {
                 delete obj['ibfieldbook'];
                 return obj;
             }
-            
+
             function getCol(obj, col) {
                 var count = 0;
-                for(var i in obj) { 
-                    count++; 
-                    if(count == col) return obj[i]; 
+                for(var i in obj) {
+                    count++;
+                    if(count == col) return obj[i];
                 }
             }
             function isEmpty(obj) {
@@ -2826,9 +2826,9 @@ apejs.urls = {
 
                 return true;
             }
-            
 
-            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+
+            var blobs = blobstore.blobstoreService.getUploads(request),
                 blobKey = blobs.get("excelfile"),
                 ontologyName = request.getParameter("ontology_name"),
                 ontologyId = request.getParameter("ontology_id"),
@@ -2878,7 +2878,7 @@ apejs.urls = {
             var currUser = auth.getUser(request);
             if(!currUser)
                 return error(response, "Not logged in");
-            if(!auth.isAdmin(currUser)) 
+            if(!auth.isAdmin(currUser))
                 return error(response, "Need to be an admin");
 
             // CSV?
@@ -2887,7 +2887,7 @@ apejs.urls = {
                                 .fetch();
                 var arr = [];
                 entities.forEach(function(entity) {
-                    arr.push(googlestore.toJS(entity)); 
+                    arr.push(googlestore.toJS(entity));
                 });
                 return print(response).json(arr);
             } catch (e) {
@@ -2901,10 +2901,10 @@ apejs.urls = {
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
             var language = request.getParameter('language');
-            if(isblank(language)) 
+            if(isblank(language))
                 language = languages.default;
 
-            
+
              var terms = googlestore.query("term")
                             //.filter(property, "!=", null)
                             .filter("ontology_id", "=", ontoId)
@@ -2917,7 +2917,7 @@ apejs.urls = {
 
             var traits = result;
 
-           
+
             function JSON2CSV(objArray) {
                 var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
                 var str = '';
@@ -2942,7 +2942,7 @@ apejs.urls = {
                     str += line + '\r\n';
                 }
                 return str;
-                
+
             }
 
             function JSON2XLS(objArray, language) {
@@ -2964,7 +2964,7 @@ apejs.urls = {
                             return j['undefined'];
                         else
                             return false;
-                    } 
+                    }
                 } catch(e) {
                     if(language != languages.default) {
                         return false;
@@ -3028,13 +3028,13 @@ apejs.urls = {
             ////////CSV EXPORT
             var csvString = JSON2XLS(traits, language);
             response.setContentType("text/csv");
-            response.setHeader("Content-Disposition","attachment;filename="+ontoId+".csv"); 
-            
+            response.setHeader("Content-Disposition","attachment;filename="+ontoId+".csv");
+
             response.getWriter().println(csvString);
 
             ///////XLS EXPORT
             // var blobKey = JSON2XLS(traits);
-        
+
 
             //  // get metadata
             // var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
@@ -3062,7 +3062,7 @@ apejs.urls = {
                 'CO_320': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Rice%2020120521%20CN%20-Default%20Set%20NB%20plus%20revised%20method%20names.xlsx?attredirects=0&d=1',
                 'CO_321': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Wheat%2020120506%20EN-50%20Traits-AP-RS-Revised-.xlsx?attredirects=0&d=1',
                 'CO_343': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Yam%2020121129%20EN%20Traits%20Template%20v4.xlsx?attredirects=0&d=1'
-              
+
             };
 
             if(excels[ontoId]) {
@@ -3078,7 +3078,7 @@ apejs.urls = {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
             var language = request.getParameter('language');
-            if(isblank(language)) 
+            if(isblank(language))
                 language = languages.default;
 
             print(response).text(
@@ -3120,7 +3120,7 @@ apejs.urls = {
 
                 // find parents of this term (reusing http api, powerful)
                 // and be sure this parentId doesn't exist in there
-                var getTermParents = apejs.urls["/get-term-parents/([^/]*)"]["get"]; 
+                var getTermParents = apejs.urls["/get-term-parents/([^/]*)"]["get"];
                 var pathsToParent = getTermParents({ getParameter: function(){ return "";}}, null, [0, parentId]);
 
                 pathsToParent.forEach(function(path) {
@@ -3208,7 +3208,7 @@ apejs.urls = {
                 var ontoId = term.getProperty("ontology_id");
                 if(!obj[ontoId])
                     obj[ontoId] = [];
-                
+
                 // toJS is SLOW
                 // only do it if it has JSON
                 var name = term.getProperty("name");
@@ -3255,7 +3255,7 @@ apejs.urls = {
                 .find({ email: emailPar })
                 .limit(1)
                 .each(function() {
-                    foundUser = this; 
+                    foundUser = this;
                 });
 
             if(!foundUser) data.error = "User with this email doesn't exist";
@@ -3269,7 +3269,7 @@ apejs.urls = {
                     address: foundUser.email,
                     personal: foundUser.username
                 };
-                email.send(from, to, "Password reset!", "Please click on this link to reset your password: " + URL + '/reset-password?email=' + foundUser.email + '&secret=' + foundUser.password); 
+                email.send(from, to, "Password reset!", "Please click on this link to reset your password: " + URL + '/reset-password?email=' + foundUser.email + '&secret=' + foundUser.password);
 
                 data.success = "Check your email!";
             }
@@ -3290,13 +3290,13 @@ apejs.urls = {
 
             var foundUser = false;
             select('user')
-                .find({ 
+                .find({
                     email: emailPar,
                     password: secret
                 })
                 .limit(1)
                 .each(function() {
-                    foundUser = this; 
+                    foundUser = this;
                 });
 
             if(!foundUser) data.error = 'Something went wrong. Please try again';
@@ -3315,7 +3315,7 @@ apejs.urls = {
             data.secret = secret;
 
             var user = select('user')
-                        .find({ 
+                        .find({
                             email: emailPar,
                             password: secret
                         })
@@ -3357,7 +3357,7 @@ apejs.urls = {
                     }catch(e){
 
                     }
-                    
+
                 });
 
         }
@@ -3427,7 +3427,7 @@ apejs.urls = {
 
 
             print(res).json(result);
-            
+
         }
     },
     "/dump": {
@@ -3509,11 +3509,11 @@ apejs.urls = {
 				var ret={};
 				ret["metadata"] = {
 					"pagination":{
-						 "pageSize": 1, 
-			             "currentPage": 0, 
-			             "totalCount": 1, 
-			             "totalPages": 1 
-					}, 
+						 "pageSize": 1,
+			             "currentPage": 0,
+			             "totalCount": 1,
+			             "totalPages": 1
+					},
 					"status": [],
 					"datafiles": []
 				}
@@ -3584,11 +3584,11 @@ apejs.urls = {
 				var ret={};
 				ret["metadata"] = {
 					"pagination":{
-						 "pageSize": traits.length, 
-			             "currentPage": parseInt(filterPage), 
-			             "totalCount": traitsQueryTot.length, 
+						 "pageSize": traits.length,
+			             "currentPage": parseInt(filterPage),
+			             "totalCount": traitsQueryTot.length,
 			             "totalPages": parseInt(traitsQueryTot.length/filterPageSize)+1
-					}, 
+					},
 					"status": [],
 					"datafiles": []
 				}
@@ -3636,19 +3636,19 @@ apejs.urls = {
 					.fetch();
 				ret = brapi.getMetadata(filterPage, filterPageSize, variables.length);
 				brapi.getVariableJson(variables, ret);
-				
+
 			} else if (matches[1] == "/datatypes") {
 				ret["metadata"] = {
 					"pagination":{
-						 "pageSize": 1, 
-			             "currentPage": 0, 
-			             "totalCount": 7, 
-			             "totalPages": 1 
-					}, 
+						 "pageSize": 1,
+			             "currentPage": 0,
+			             "totalCount": 7,
+			             "totalPages": 1
+					},
 					"status": [],
 					"datafiles": []
 				}
-				
+
 				ret["result"] = {
 					"data": [
 					  "Code",
@@ -3660,7 +3660,7 @@ apejs.urls = {
                       "Date"
 					]
 				};
-				
+
 			}
 			else {
 				// retrieve more than one variable ID
@@ -3668,7 +3668,7 @@ apejs.urls = {
 				if (matches[1]){
 					// set filter to retrieve all the variables of only one crop
 				  	filterCropID = '.filter("ontology_id", "=", "' + matches[1].match(/[^\/]*/g)[1] + '")';
-					
+
 				}
 				var variablesQueryTotal = eval('googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).fetch();');
 				var variablesQuery = 'googlestore.query("term")' + filterCropID + '.filter("Variable ID", "!=", null).offset('+ offset +').fetch('+ limit +');';
@@ -3702,21 +3702,21 @@ apejs.urls = {
 
             var ontologyTot = googlestore.query("ontology")
                                 .filter("category", "=", "300-499 Phenotype and Trait Ontology")
-                                .fetch(); 
+                                .fetch();
             var ontologies = googlestore.query("ontology")
                                 .filter("category", "=", "300-499 Phenotype and Trait Ontology")
                                 .offset(offset)
-                                .fetch(limit); 
+                                .fetch(limit);
 
             // prepare output object
             var ret={};
             ret["metadata"] = {
                 "pagination":{
-                     "pageSize": parseInt(filterPageSize), 
-                     "currentPage": parseInt(filterPage), 
-                     "totalCount": ontologyTot.length, 
+                     "pageSize": parseInt(filterPageSize),
+                     "currentPage": parseInt(filterPage),
+                     "totalCount": ontologyTot.length,
                      "totalPages": parseInt(ontologyTot.length/filterPageSize)+1
-                }, 
+                },
                 "status": [],
                    "datafiles": []
             };
@@ -3728,7 +3728,7 @@ apejs.urls = {
                 // var matches = regExp.exec(userId);
                 // var user = googlestore.query("user")
                 //                 .filter("ID/Name", "=", matches[0].replace("(", "").replace(")", ""))
-                //                 .fetch(); 
+                //                 .fetch();
                 var obj = {
                     "ontologyDbId": ontology.getProperty("ontology_id")+'',
                     "ontologyName": ontology.getProperty("ontology_name")+'',
@@ -3739,9 +3739,9 @@ apejs.urls = {
                     "licence": "CC BY-SA 4.0"
                 };
                 ret["result"]["data"].push(obj);
-                
+
             });
-            
+
             print(response).json(ret);
 
         }
@@ -3784,11 +3784,11 @@ apejs.urls = {
               var ret={};
                 ret["metadata"] = {
                     "pagination":{
-                         "pageSize": parseInt(filterPageSize), 
-                         "currentPage": parseInt(filterPage), 
-                         "totalCount": 0, 
+                         "pageSize": parseInt(filterPageSize),
+                         "currentPage": parseInt(filterPage),
+                         "totalCount": 0,
                          "totalPages": 1
-                    }, 
+                    },
                     "status": [],
                        "datafiles": []
                 };
@@ -3796,7 +3796,7 @@ apejs.urls = {
 
               print(response).json(ret);
 
-        } 
+        }
     },
     "/brapi/v1/calls":{
         get: function(request, response) {
@@ -3817,17 +3817,17 @@ apejs.urls = {
             var offset = filterPage * filterPageSize;
             var limit = filterPageSize;
 
-            var totCall = 6; 
+            var totCall = 6;
 
             // prepare output object
             var ret={};
             ret["metadata"] = {
                 "pagination":{
-                     "pageSize": parseInt(filterPageSize), 
-                     "currentPage": parseInt(filterPage), 
-                     "totalCount": parseInt(totCall), 
+                     "pageSize": parseInt(filterPageSize),
+                     "currentPage": parseInt(filterPage),
+                     "totalCount": parseInt(totCall),
                      "totalPages": parseInt(totCall/filterPageSize)+1
-                }, 
+                },
                 "status": [],
                    "datafiles": []
             };
@@ -3840,8 +3840,8 @@ apejs.urls = {
               { "call": "variables/{observationVariableDbId}", "datatypes" : ["json"], "methods" : ["GET"] },
               { "call": "ontologies", "datatypes" : [ "json" ], "methods" : ["GET"] }
             ];
-        
-            
+
+
             print(response).json(ret);
 
         }
@@ -3857,7 +3857,7 @@ apejs.urls = {
 
 			var ontologies = googlestore.query("ontology")
                               	.filter("category", "=", "300-499 Phenotype and Trait Ontology")
-			  					.fetch(); 
+			  					.fetch();
 			ontologies.forEach(function(ontology){
 
 				// GET onto name
@@ -3865,7 +3865,7 @@ apejs.urls = {
 				var onto_name = ontology.getProperty("ontology_name");
 
 				// GET total number of terms
-      	  		var terms = googlestore.query("term") 
+      	  		var terms = googlestore.query("term")
             	                      .filter("ontology_id", "=", onto_id)
             	                      .fetch();
 				var count_terms=0;
@@ -3898,19 +3898,19 @@ apejs.urls = {
 				});
 				// GET the type of ontology
 				var onto_type;
-				var vars_TD5 = googlestore.query("term") 
+				var vars_TD5 = googlestore.query("term")
                               .filter("ontology_id", "=", onto_id)
                               .filter("relationship", "=", "variable_of")
                               .fetch(1);
-				if(vars_TD5.length > 0){ 
+				if(vars_TD5.length > 0){
 				  	// TDv5
 					onto_type = "TDv5";
 				}else{
-		            var traits_TD4 = googlestore.query("term") 
+		            var traits_TD4 = googlestore.query("term")
 	                              .filter("ontology_id", "=", onto_id)
 	                              .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
 	                              .fetch(1);
-					if (traits_TD4.length > 0) { 
+					if (traits_TD4.length > 0) {
 //						//TDv4
 						onto_type = "TDv4";
 					} else {
@@ -3962,7 +3962,7 @@ apejs.urls = {
 				methods_tot = methods_tot + parseInt(ret[i]["Number of methods"]);
 				scales_tot = methods_tot + parseInt(ret[i]["Number of scales"]);
 				files.push(ret[i]["Ontology file"]);
-			
+
 			 	if ( ret[i]["Ontology ID"].indexOf("CO_") != -1) {
 
 					// Stats CO ontologies
@@ -3975,7 +3975,7 @@ apejs.urls = {
 					files_CO.push(ret[i]["Ontology file"]);
 					i_CO++;
 
-				} else { 
+				} else {
 
 					// Stats non CO ontologies
 				  	nonCO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
@@ -4066,7 +4066,7 @@ apejs.urls = {
 				    	";"+crop["Number of scales"];
 					}
 				});
-					
+
                 print(response).textPlain(out);
            } catch(e) {
            }
@@ -4083,7 +4083,7 @@ apejs.urls = {
 
             var ontologies = googlestore.query("ontology")
                                 .filter("category", "=", "300-499 Phenotype and Trait Ontology")
-                                .fetch(); 
+                                .fetch();
             ontologies.forEach(function(ontology){
                 // GET onto name
                 var onto_id = ontology.getProperty("ontology_id");
@@ -4114,9 +4114,9 @@ apejs.urls = {
             });
 
             var out = ret;
-                    
+
             print(response).textPlain(out);
-          
+
         }
     },
     "/webhook": {
@@ -4138,7 +4138,7 @@ apejs.urls = {
             }
 
             //now that we know that a commit happened, check that this is on the ontology file in the master branch
-            
+
             //commit on the master branch
             if(obj["ref"].indexOf("master") !== -1){
                 if(obj["repository"]["name"]=="ibp-sweetpotato-traits"){
@@ -4156,7 +4156,7 @@ apejs.urls = {
                                 userid = "";
                             if(onto.getProperty("user_key")) {
                                 var user = googlestore.get(onto.getProperty("user_key"));
-                                username = user.getProperty("username"); 
+                                username = user.getProperty("username");
                                 userid = user.getKey().getId();
 
                             }
@@ -4173,14 +4173,14 @@ apejs.urls = {
                         //read the file from github
                         token = ''
 
-                        
+
                         print(response).json(res);
 
-                        
+
                     }
                 }
             }
-           
+
 
         //print(response).json(obj);
 
