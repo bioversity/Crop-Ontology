@@ -2013,7 +2013,7 @@ apejs.urls = {
             if(!currUser)
                 return err("Not logged in");
 
-            var blobs = blobstore.blobstoreService.getUploads(request),
+            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 oboBlobKey = blobs.get("obofile");
 
             if(oboBlobKey == null) {
@@ -2231,7 +2231,7 @@ apejs.urls = {
             if(!currUser)
                 return err("Not logged in");
 
-            var blobs = blobstore.blobstoreService.getUploads(request),
+            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("value");
 
             var value = request.getParameter("value");
@@ -2828,7 +2828,7 @@ apejs.urls = {
             }
 
 
-            var blobs = blobstore.blobstoreService.getUploads(request),
+            var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
                 blobKey = blobs.get("excelfile"),
                 ontologyName = request.getParameter("ontology_name"),
                 ontologyId = request.getParameter("ontology_id"),
