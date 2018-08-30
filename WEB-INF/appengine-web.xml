@@ -7,4 +7,7 @@ xsi:schemaLocation="http://appengine.google.com/ns/1.0 http://googleappengine.go
     <public-root>/public</public-root>
     <sessions-enabled>true</sessions-enabled>
     <threadsafe>true</threadsafe>
+    <automatic-scaling>
+    	<max-concurrent-requests>50</max-concurrent-requests>
+  	</automatic-scaling>
 </appengine-web-app>
