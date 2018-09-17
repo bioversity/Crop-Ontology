@@ -108,15 +108,15 @@ jQuery.prototype.draggable = function(dropSelector, cb){
     }
 
     // Start the dragging
-    this.live("mousedown", startDragging);    
+    this.live("mousedown", startDragging);
 };
 var currUser = false;
 (function(){
- 
+
 var URL = "http://test.development.grinfo.net/Luca/datadict";
 var OLS_MAINURL = "http://cropontology.org";
 var roots_loaded = false;
- 
+
 function tooltip() {
     // tool tip
     //
@@ -136,8 +136,8 @@ function tooltip() {
 DEFAULT_LANGUAGE = "english";
 function findTranslation(lang, obj) {
   var translation = "";
-  translation = obj[lang];  
-  if(!obj[lang]) { 
+  translation = obj[lang];
+  if(!obj[lang]) {
     // this object doesn't contain the language.
     // show the first key
     for(var i in obj) {
@@ -200,7 +200,7 @@ Login = function(func) {
             func(false);
 
         }
-            
+
     }, "json");
 }
 
@@ -213,7 +213,7 @@ function editProfile(input){
 	$.post("/edit_profile", input, function(output){
 		var arrayVar = ["username", "email", "name", "sirname", "institution"];
 		for ( var i = 0 ; i < arrayVar.length; i++ ){
-	//		if ( output[arrayVar[i]] != "" ){ 
+	//		if ( output[arrayVar[i]] != "" ){
 				$( "#" + arrayVar[i] + " span" ).text(output[arrayVar[i]]);
 	//		}
 		}
@@ -226,16 +226,16 @@ function editProfile(input){
  */
 function expand_collapse() {
     var div = $(".hitarea");
- 
+
     div.live("click", function() {
- 
+
         var $this = $(this);
 
         var li = $this.parent();
 
         var parent = li.find("ul").first();
- 
- 
+
+
         // check whether we need to expand or collapse
         if(li.hasClass("collapsable")) { // collapsing
             li.removeClass("collapsable");
@@ -249,11 +249,11 @@ function expand_collapse() {
                 hitarea.removeClass("lastCollapsable-hitarea");
                 hitarea.addClass("lastExpandable-hitarea");
             }
- 
+
             // let's clear the ul contents
             parent.hide();
- 
- 
+
+
         } else if(li.hasClass("expandable")) { // expanding
             li.removeClass("expandable");
             li.addClass("collapsable");
@@ -266,12 +266,12 @@ function expand_collapse() {
                 hitarea.removeClass("lastExpandable-hitarea");
                 hitarea.addClass("lastCollapsable-hitarea");
             }
- 
+
             // if parent contains a filled UL, dont run the ajax call again, just show it
             if(parent.children().length) {
                 parent.show();
             } else {
- 
+
                 var id = li.find(".id").val();
 
                 load_branch(parent, "/get-children/"+id);
@@ -288,11 +288,11 @@ function expand_collapse() {
                 }
                 */
             }
- 
+
         }
- 
+
     });
- 
+
 }
 function slugify(s) {
     if(!s) return s;
@@ -302,47 +302,47 @@ function slugify(s) {
     s = s.replace(_slugify_hyphenate_re, '-');
     return s;
 }
- 
+
 // load comments on the right side
 var comments = (function(){
     var template;
- 
+
     function make_comment(data) {
         var clone = template.clone();
- 
+
         var link = clone.find("strong.author a");
         link.attr("href", "#");
         link.text(data.author);
         link.attr("userid", data.author_id);
- 
+
         clone.find(".date .relatize").text(data.created);
- 
+
         clone.find(".body .content-body p").html(markdown(data.comment));
- 
+
         return clone;
     }
     function load(data) {
         if(!template)
             template = $(".comment").first().clone();
-        
+
         // add the number in the comments tab
         var nc = $("#new-comments");
 
         nc.text( data.length + " Comments" );
         // clear comment list
         $(".comment-list").html("");
- 
+
         for(var i=0; i<data.length; i++) {
             $(".comment-list").append(make_comment(data[i]));
         }
- 
+
     }
- 
+
     return {
         load: load
     };
 })();
- 
+
 // global, blah
 term_loader = function(show) {
     var context = $(".context-loader");
@@ -350,13 +350,13 @@ term_loader = function(show) {
         //fade.fadeTo("fast", 0.5);
         $(".error").hide();
         context.show();
- 
- 
+
+
     } else {
         context.hide();
         //fade.fadeTo("fast", 1);
     }
- 
+
 }
 
 function firstWord(word) {
@@ -367,7 +367,7 @@ function findWord(key, obj) {
     for(var i in obj) {
         var first = firstWord(i);
         if(first === key) {
-            return i; 
+            return i;
         }
     }
 }
@@ -415,7 +415,7 @@ runInOrder = function(first, last, obj, cb, hideObj) {
 function rm_special_char(string){
   return string.replace(/%/g, "");
 }
- 
+
 // attributes is an object of key:value pairs
 function show_attributes(id, name, attributes) {
     var str = "", count = 0;
@@ -486,7 +486,7 @@ function highlight(li) {
 
     // for each parent li, also select
     li.parents("li").each(function() {
-        var $this = $(this); 
+        var $this = $(this);
         $this.find(".minibutton:first").addClass(className);
 
     });
@@ -505,8 +505,9 @@ function showMethodAttr(attributes) {
 }
 function showScaleAttr(attributes) {
     var type = attributes["Type of Measure (Continuous, Discrete or Categorical)"];
+    var show = [];
     if(type == "Continuous") {
-        var show = [
+        show = [
             "Type of Measure (Continuous, Discrete or Categorical)",
             "For Continuous: units of measurement",
             "For Continuous: minimum",
@@ -514,7 +515,7 @@ function showScaleAttr(attributes) {
         ];
 
     } else if(type == "Categorical") {
-        var show = [
+        show = [
             "Type of Measure (Continuous, Discrete or Categorical)",
             "For Categorical: Class 1 - value = meaning",
             "For Categorical: Class 2 - value = meaning",
@@ -530,7 +531,7 @@ function showScaleAttr(attributes) {
     }
     return ret;
 }
- 
+
 // click event function
 // must load data for this specifict
 load_term = function(li) {
@@ -539,15 +540,14 @@ load_term = function(li) {
 
     highlight(li);
 
- 
+
     var id = li.find(".id:first").val();
     var name = li.find("a.minibutton:first span").text();
- 
+
     var parent = li.parent();
- 
- 
+
+
     var attributes = {};
-    
     $.getJSON("/get-attributes/"+encodeURIComponent(id), function(this_attrs) {
         $.each(this_attrs, function(i) {
             attributes[this_attrs[i].key] = this_attrs[i].value;
@@ -557,7 +557,7 @@ load_term = function(li) {
         show_attributes(id, name, attributes);
         term_loader(false);
     });
- 
+
     /* get comments */
     $.get("/get-comments", {termId: id}, function(data){
         comments.load(data);
@@ -600,13 +600,13 @@ load_term = function(li) {
     });
     */
 }
- 
+
 /*
  *
  * @returns a jquery dom element
  */
 function make_li(obj, last) {
- 
+
     // generic attributes
     var id = obj.id;
     var name = obj.name;
@@ -618,19 +618,19 @@ function make_li(obj, last) {
         has_method = (!obj.has_children && obj.method && obj.method !== "null"),
 		is_scale = (relationship == "scale_of") ;
 
-	
-	// the scale has children but 
+
+	// the scale has children but
 
     var li = $("<li></li>");
     if(last)
         li.addClass("last");
- 
+
     // add a hidden input to track the id of this node
     li.append('<input type="hidden" class="id" value="'+id+'" />');
- 
+
     if( (has_children || has_method) && (!is_scale) ){
         li.addClass("expandable");
-        hitarea = $('<div class="hitarea expandable-hitarea"></div>'); 
+        hitarea = $('<div class="hitarea expandable-hitarea"></div>');
         li.append(hitarea);
     }
     if(last && (!is_scale) && (has_children || has_method)) {
@@ -638,7 +638,7 @@ function make_li(obj, last) {
         hitarea.addClass("lastExpandable-hitarea");
     }
 
- 	
+
     var nameTrans = translate(currUser, name);
     if(currUser.language && currUser.language !== nameTrans.lang) {
         li.hide();
@@ -648,13 +648,13 @@ function make_li(obj, last) {
 		nameTrans.translation = nameTrans.translation + " traits";
 
     var link = $('<a title="'+nameTrans.translation+'" class="minibutton btn-watch"><span>'+nameTrans.translation+'</span></a>');
- 
+
     link.click(function(e) {
         load_term(li);
         e.preventDefault();
         e.stopPropagation();
     });
- 
+
     li.append(link);
 
     if(relationship) {
@@ -663,24 +663,24 @@ function make_li(obj, last) {
         li.append(rel);
 
     }
- 
+
     if(label)
         li.append('<div class="meta">'+label+'</div>');
- 
+
     // last child
     if(has_children){
         li.append('<ul style="display:none;"></ul>');
- 
+
         // assign click events for expansion/collapse
         //expand_collapse(li);
     }
 
     // if it's the last leaf node and it has a method
     // just show it as a child
-    if(has_method) { 
+    if(has_method) {
         li.append(methodScale(obj));
     }
- 
+
     return li;
 }
 
@@ -750,16 +750,16 @@ function methodScale(obj) {
     method_ul.append(method_li);
     return method_ul;
 }
- 
+
 function loader(parent, show) {
     var jimg = $("<img>").attr("src", "/images/metabox_loader.gif");
- 
+
     if(show) {
         jimg.insertBefore(parent);
     } else { // hide
         $(parent).prev().remove();
     }
- 
+
 }
 function get_id_desc(ontologyName, func) {
     // first get id
@@ -772,12 +772,12 @@ function get_id_desc(ontologyName, func) {
 
             // call the callback
             func(id, description, has_children);
-            
+
         }, "xml");
 
     }, "xml");
 }
- 
+
 function do_search() {
     // just replace the text value
     $("#search").val(searchQuery);
@@ -804,7 +804,7 @@ function do_search() {
                 li = make_li(obj, true);
             else
                 li = make_li(obj);
-            
+
             parent.append(li);
         });
         loader(parent, false);
@@ -812,37 +812,37 @@ function do_search() {
 }
 /*
  * loads a single branch given an array of objects
- * @parent - the container of the branch, a jquery DOM element; 
+ * @parent - the container of the branch, a jquery DOM element;
  *           this gets populated with the elements
  * @url - the json array of objects to do an AJAX request to
  */
 load_branch = function(parent, url, cb) {
     var obj, li;
- 
+
     // insert before the parent a loading image
     loader(parent, true);
- 
+
     parent.show();
-	
+
 	var var_button = $(".variables-button").text();
- 
+
     $.getJSON(url, function(children) {
-        
+
 		if ( var_button == "show obsolete terms") {
 	        for(var i=0,len=children.length; i<len; i++) {
 	            var child = children[i];
 				// display child only if term is not a variable and if term is not a deprecated/obsolete term
 				if (child.relationship != "variable_of" && translate("EN", child.trait_status).translation.toLowerCase() != "deprecated" && translate("EN", child.trait_status).translation.toLowerCase() != "obsolete"){
 	            	var last = false;
-		            if(i == (children.length-1) || 
-						( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+		            if(i == (children.length-1) ||
+						( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch)
 						){
 	    	            last = true;
 					}
-	
+
 		            var li = make_li(child, last);
 	    	        parent.append(li);
-	        	}    
+	        	}
 	        }
 		} else {
 	        for(var i=0,len=children.length; i<len; i++) {
@@ -850,18 +850,18 @@ load_branch = function(parent, url, cb) {
 				// display child only if term is not a variable and if term is not a deprecated/obsolete term
 				if (child.relationship != "variable_of"){
 	            	var last = false;
-		            if(i == (children.length-1) || 
-						( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+		            if(i == (children.length-1) ||
+						( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch)
 						){
 	    	            last = true;
 					}
-	
+
 		            var li = make_li(child, last);
 	    	        parent.append(li);
-	        	}    
+	        	}
 	        }
 		}
-         
+
         loader(parent, false);
         if(cb) cb(li);
     });
@@ -869,7 +869,7 @@ load_branch = function(parent, url, cb) {
 /*
  * (function adapted from load_branch)
  * It recursively loads the branches of the tree so that it shows a varible in a full tree
- * @parentUl - the container of the branch, a jquery DOM element (<ul>); 
+ * @parentUl - the container of the branch, a jquery DOM element (<ul>);
  *           this gets populated with the elements (<li>)
  * @url - /get-children/<parent ID>
  * @parents - the output object of /get-terms-parents/id the branches to expand
@@ -878,7 +878,7 @@ load_branch = function(parent, url, cb) {
  */
 load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 	if(parents.length < 10){
-	// get-term-parents returns an array (parents) with the tree branches that contain the term 
+	// get-term-parents returns an array (parents) with the tree branches that contain the term
 	// And the branches that contain the parent terms of the term.
 	// It can represent a lot of branches (eg if there is only 1 id for units like "cm", "%")
 	// By experience, the client crashes when computating, a large number of branches
@@ -886,7 +886,7 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 	    $.getJSON(url, function(children) {
 				var maxBoucleOne = parents.length;
 				var maxBoucleTwo = parents[ branchIndex ].length;
-	
+
 				var var_button = $(".variables-button").text();
 				if ( var_button == "show obsolete terms") { // display only non-obsolete terms
 					while (branchIndex < parents.length){
@@ -913,19 +913,19 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 								// display child only if term is not a variable and if term is not a deprecated/obsolete term
 								if (child.relationship != "variable_of" && translate("EN", child.trait_status).translation.toLowerCase() != "deprecated" && translate("EN", child.trait_status).translation.toLowerCase() != "obsolete"){
 				    	        	var last = false;
-						            if(i == (children.length-1) || 
-										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+						            if(i == (children.length-1) ||
+										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch)
 										){
 				    		            last = true;
 									}
 									// make the new list item
 						            var li = make_li(child, last);
 				    		        parentUl.append(li);
-				    	    	} 
+				    	    	}
 				    	    }
 						}
 		    	    	loader(parentUl, false);
-					
+
 						// select the next parent on the branch
 						var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
 						var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
@@ -938,7 +938,7 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 						} else {
 							var maxParentIndex = parents[ branchIndex ].length -1 ;
 						}
-						
+
 						// expand the branch under the next parent
 						if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
 							var nextUrl = "/get-children/"+nextParentId;
@@ -978,19 +978,19 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 								// display child only if term is not a variable and if term is not a deprecated/obsolete term
 								if (child.relationship != "variable_of"){
 						        	var last = false;
-						            if(i == (children.length-1) || 
-										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch) 
+						            if(i == (children.length-1) ||
+										( i == (children.length-2) && children[children.length-1].relationship == "variable_of") // the child is the second to last child and the last child is a variable (variables are not displayed on branch)
 										){
 							            last = true;
 									}
 									// make the new list item
 						            var li = make_li(child, last);
 							        parentUl.append(li);
-						    	} 
+						    	}
 						    }
 						}
 		    			loader(parentUl, false);
-					
+
 						// select the next parent on the branch
 						var nextParentId = parents[ branchIndex ][ parentIndex + 1 ]["id"];
 						var nextParentLi = parentUl.find("input[value='"+nextParentId+"']").parent() ;
@@ -1003,12 +1003,12 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 						} else {
 							var maxParentIndex = parents[ branchIndex ].length -1 ;
 						}
-						
+
 						// expand the branch under the next parent
 						if ( parentIndex < maxParentIndex ){ // don't load the children terms if we are on the last term on the branch or if the last term on the branch is a variable (because variables are not displayed on the tree ) XXX
 							var nextUrl = "/get-children/"+nextParentId;
 							load_branch_rec(nextParentUl, nextUrl, parents, branchIndex, parentIndex + 1);
-						} 
+						}
 						parentIndex +=1;
 						if (parentIndex == maxParentIndex) {
 							// start next branch
@@ -1024,7 +1024,7 @@ load_branch_rec = function(parentUl, url, parents, branchIndex, parentIndex) {
 
 
 /*
- * loads a branch for a term 
+ * loads a branch for a term
  * i.e., expands the parents of the term
  */
 load_branch_term = function(id){
@@ -1039,7 +1039,7 @@ load_branch_term = function(id){
 
 		if (rel == "variable_of"){
 			// parents is an array with the different branches that contain the term
-			// a variable is child of a T, a M and a S. For a variable, arr_parents is composed of 3 branches but which are actually the same branch. So let's take only the branch of the scale (the last one in parents) 		
+			// a variable is child of a T, a M and a S. For a variable, arr_parents is composed of 3 branches but which are actually the same branch. So let's take only the branch of the scale (the last one in parents)
 			// recursively load the branches for the root, the trait classes, the traits, the methods of the variable
 			var branchIndex = parents.length -1;
 		} else {
@@ -1049,14 +1049,14 @@ load_branch_term = function(id){
 		load_branch_rec(parentUl, "/get-children/"+parents[branchIndex][parentIndex]["id"], parents, branchIndex, parentIndex);
 	});
 }
- 
- 
+
+
 function mylogin() {
     var jmylogin = $("#mylogin");
     var jmain = $("#main, .footer");
 
     $(".error_box").hide();
- 
+
     if(jmylogin.is(":visible")) {
         jmylogin.hide();
         jmain.css("opacity", "1");
@@ -1068,7 +1068,7 @@ function mylogin() {
 function myregister() {
     var jmyregister = $("#myregister");
     var jmain = $("#main");
- 
+
     if(jmyregister.is(":visible")) {
         jmyregister.hide();
         jmain.css("opacity", "1");
@@ -1086,7 +1086,7 @@ var langs = {
   html: function(langs){
     var html = "<select name='language'>";
     for(var i=0; i<langs.length; i++) {
-      html += "<option value='"+langs[i]+"'>" + this.capitaliseFirstLetter(langs[i]) + "</option>"; 
+      html += "<option value='"+langs[i]+"'>" + this.capitaliseFirstLetter(langs[i]) + "</option>";
     }
     html += "</select>";
     return html;
@@ -1116,11 +1116,11 @@ var row_edit_template = '\
         </form>\
     </div>\
         ';
- 
+
 function createUploadUrl(jcont) {
     var form = jcont.find("form:first");
     $.get("/attribute-upload-url", function(str) {
-        form.attr("action", str); 
+        form.attr("action", str);
     });
 }
 
@@ -1135,7 +1135,7 @@ function buildGraph($cont, data) {
     } else {
       biggest = label;
     }
-    
+
     var set = r.set().push(
         /* custom objects go here */
         r.rect(n.point[0], n.point[1]-13, biggest.length + 120, 44).attr({"fill": "#feb", r : "12px", "stroke-width" : n.distance == 0 ? "3px" : "1px" })).push(
@@ -1181,16 +1181,16 @@ var events = function(){
     $("ul.sorts li").click(function(){
         var $this = $(this);
         if($this.attr("id") == "download") return;
- 
+
         // deselect all navigation buttons
         $("ul.sorts li").removeClass("desc");
- 
+
         // select this nav button
         $this.addClass("desc");
- 
+
         // get the id of this node
         var id = $this.attr("id");
- 
+
         // hide all pages
         $("#pages").children().hide();
 
@@ -1200,14 +1200,14 @@ var events = function(){
         } else {
             toolbar.hide();
         }
- 
+
         // load page pased on this id
         $("."+id).show();
- 
+
     });
- 
-    
- 
+
+
+
     // mousedown event
     $(".minibutton, .classy").live("mousedown", function() {
         $(this).addClass("mousedown");
@@ -1218,13 +1218,13 @@ var events = function(){
     $(".minibutton, .classy").live("mouseout", function() {
         $(this).removeClass("mousedown");
     });
- 
+
     // comment post
     $(".new-comments .form-actions button").click(function(e) {
         var commentTextarea = $(".new-comments .comment-form textarea");
         var comment = commentTextarea.val();
         var term_id = $("#term_id").text();
- 
+
         var ontoId = "";
         if(ontologyid === "") {
             // get it from the term_id
@@ -1233,7 +1233,7 @@ var events = function(){
             ontoId = ontologyid;
         }
         term_loader(true);
- 
+
         $.ajax({
           type: 'POST',
           url: '/add-comment',
@@ -1255,39 +1255,39 @@ var events = function(){
             fileupload_done();
           }
         });
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
     $("#login-close").click(function(e){
- 
+
         mylogin();
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
     $("#register-close").click(function(e){
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
     $("#dologin").click(function(e){
         Modal.show("login");
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
     $("#dologout").click(function(e){
         $.get("/logout", function() {
-            Login(); 
+            Login();
         });
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
     $("#doregister").click(function(e){
         Modal.show("register");
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
@@ -1296,7 +1296,7 @@ var events = function(){
         e.preventDefault()
         e.stopPropagation()
     })
- 
+
     $("#login_form").submit(function(e){
         $(".context-loader").show();
         $.ajax({
@@ -1314,9 +1314,9 @@ var events = function(){
 				} else if (data.error == "not_active"){
 				var errorMessage = "This profile has not been approved yet. <br /><br />Please, contact admin(at)cropontology-curationtool(dot)org for further inquiry."
 				}
-				
-                $(".error_box").show(); 
-                $(".error_box").html(errorMessage); 
+
+                $(".error_box").show();
+                $(".error_box").html(errorMessage);
             } else {
                 Login(function(user) {
                     if(ontologyid !== "")
@@ -1326,11 +1326,11 @@ var events = function(){
                 $(".error").hide();
                 $(".error_box").hide();
             }
-            
+
             term_loader(false);
           }
         });
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
@@ -1351,21 +1351,21 @@ var events = function(){
           },
           success: function(data){
 	          if(data && data.error) {
-	  	        $(".error_box").show(); 
-	   	        $(".error_box").html(data.error); 
+	  	        $(".error_box").show();
+	   	        $(".error_box").html(data.error);
 			} else {
 				$(".error").hide();
 	            $(".error_box").hide();
 	            $(".submit_btn").hide();
-	            $(".message_box").show(); 
-	            $(".message_box").html(data.message); 
+	            $(".message_box").show();
+	            $(".message_box").html(data.message);
 //		        Modal.hide();
 //	            Login(function(){});
 			}
 	        term_loader(false);
           }
         });
- 
+
         e.preventDefault();
         e.stopPropagation();
     });
@@ -1393,7 +1393,7 @@ var events = function(){
         var cont = $this.parent().prev();
         if($this.val() == "File") {
             cont.replaceWith(img);
-        } else { 
+        } else {
             cont.replaceWith(text);
         }
     });
@@ -1419,7 +1419,7 @@ var events = function(){
         term_loader(true);
     });
 
-    
+
     toolbar = $(".toolbar");
     jcurrHovered = false,
         jcurrEditing = false;
@@ -1522,7 +1522,7 @@ var events = function(){
         var name = term.name
         var ontologyName = term.ontology_name
 
-        if(name.english) { 
+        if(name.english) {
             name = name.english
         } else if($.isPlainObject(name)) {
             for(var i in name) {
@@ -1530,7 +1530,7 @@ var events = function(){
                 break;
             }
         }
-        if(ontologyName.english) { 
+        if(ontologyName.english) {
             ontologyName = ontologyName.english
         } else if($.isPlainObject(ontologyName)) {
             for(var i in ontologyName) {
@@ -1559,7 +1559,7 @@ var events = function(){
     /*
     $(".aboutbtn a").click(function(e) {
         Modal.show("about");
-        
+
         e.preventDefault();
         e.stopPropagation();
     });
@@ -1632,8 +1632,8 @@ var events = function(){
 			$( this ).attr( "value", "Disable" );
 		}
 	 	// sends user id and the action (activate ou deactivate) to the server
-		$.post("/activate_user/", { 
-				userId: userid, 
+		$.post("/activate_user/", {
+				userId: userid,
 				doActivate: activate,
 				sendEmail: send
 			}, function(data){
@@ -1642,18 +1642,18 @@ var events = function(){
 		 		$(".loader").css("display","none");
 		});
 	});
-	
+
 	$( ".del_user" ).live( "click", function() {
 		// shows loader
 	 	$(".loader").css("display","block");
 
-		// gets user details 
+		// gets user details
 		var userid = $( this ).parent().parent().attr( "id" );
 		var userEmail = $( this ).parent().siblings( ".email" ).text();
 		var username = $( this ).parent().siblings( ".username" ).text();
-		
+
 		if ( confirm("Are you sure you wan to delete this user :\n\n"+ username + "  ( " + userEmail + " ) \n ?") ) {
-			
+
 			//post delete
 	 		$.post("/delete_user/", {userId: userid}, function(data){
 				if (data.doDelete == "false"){
@@ -1681,11 +1681,11 @@ var Modal = (function() {
         $(".modal .popup .close").click(function(e) {
 
             hide();
-            
+
             e.stopPropagation();
             e.preventDefault();
         });
-        
+
     }
     function setModalHeight() {
         // set the modal height based on the current modal height
@@ -1701,7 +1701,7 @@ var Modal = (function() {
     }
     function load(s) {
         if(s) {
-            
+
         } else {
             setModalHeight();
         }
@@ -1809,7 +1809,7 @@ function LoadOntology(ontoId) {
         //Search.init(jsonTree);
         var oboBlobKey = false;
         var excelBlobKey = false;
-       
+
         for(var i=0, len=roots.length; i<len; i++) {
             var last = false;
             if(i == (roots.length-1))
@@ -1827,7 +1827,7 @@ function LoadOntology(ontoId) {
         /*
         if(excelBlobKey && excelBlobKey != 'null') {
             if(excelBlobKey.charAt(0) != '[') {
-                $('.excel-blob-key').attr('href', '/serve/'+excelBlobKey).show() 
+                $('.excel-blob-key').attr('href', '/serve/'+excelBlobKey).show()
             }
         }
         */
@@ -1838,7 +1838,7 @@ function LoadOntology(ontoId) {
                     oboBlobKey = oboBlobKey[i];
                 }
             } catch(e) {}
-            $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show() 
+            $('.obo-blob-key').attr('href', '/serve/'+oboBlobKey).show()
         }
 
         // try to parse the name property to see if it's a JSON
@@ -1847,6 +1847,8 @@ function LoadOntology(ontoId) {
                 var j = $.parseJSON(roots[0].name);
                 var ls = [];
                 for(var i in j) ls.push(i);
+                // Strip "undefined" items from the array
+                ls = array_clean(ls, "undefined");
 
                 // make the language dropdown
                 var $languages_refresh = $(".languages_refresh");
@@ -1890,11 +1892,11 @@ function LoadOntology(ontoId) {
 //			  	// all terms can potentially be accessed from terms/, so show all
 //				$(".variables-button").text(excl_var);
 //			}
-			
+
 			$(".variables-button").click(function(){
 				if( $(this).text() == incl_var){
  					$(this).text(excl_var);
-			  	} else { 
+			  	} else {
  					$(this).text(incl_var);
 				}
 				// clear the tree and the displayed variables
@@ -1911,13 +1913,13 @@ function LoadOntology(ontoId) {
         		$(".cont ul#root li .hitarea").addClass("lastExpandable-hitarea");
 				$(".cont .variables").text("");
 			});
-	  	}	  
+	  	}
 
 		if (termid != ""){ // LoadOntology() runs after /terms/termid/termname has been called
-			
+
 			// load the tree that shows the parents of the term and the term
 			load_branch_term(termid);
-			
+
 			// get the variables related to the term
 			get_variables(termid);
 
@@ -1958,7 +1960,7 @@ function get_variables(id){
 		if ( variables.length > 0 ){
 			$( ".browser-variables" ).show();
 			$( ".browser-content .cont .variables" ).show();
-			if ( variables.length == 1 && variables[0].isVariable){ // get_variables(variable ID) -> make the style of the minibutton as selected 
+			if ( variables.length == 1 && variables[0].isVariable){ // get_variables(variable ID) -> make the style of the minibutton as selected
 				var variableName = translate(currUser, variables[0].name).translation;
 				var varButton = "<a class='minibutton' title='"+variables[0].id+"'><span>"+ variableName +"</span></a>";
 				$( ".browser-content .cont .variables " ).append( varButton );
@@ -1981,10 +1983,10 @@ function get_variables(id){
 						$( ".browser-content .cont .variables " ).append( varButton );
 					}
 				}
-			  } 
+			  }
 
 		}
-	// set function to get variable information		
+	// set function to get variable information
 	$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);
     });
 };
@@ -2000,7 +2002,7 @@ var load_variable = (function(){
 
 	// expand and highlight the term and its parents
 	load_branch_term(id);
-    
+
 	// get term attributes
 	term_loader(true);
     var attributes = {};
@@ -2026,7 +2028,7 @@ var load_variable = (function(){
       buildGraph($graph, data);
     });
 });
-	
+
 
 /**
  * Checks if this login user can edit this ontology
@@ -2067,7 +2069,7 @@ var Editable = (function(){
             var last = true;
             if(hitarea.length)
                 last = false;
-                
+
             var parentId = currLi.find("input.id:first").val();
 
             // the id is whatever the server returns PLUS all the editable_input
@@ -2101,14 +2103,14 @@ var Editable = (function(){
         $(".treeview li").live("hover", function(e) {
             var target;
             if(e.target.nodeName != "LI") {
-                target = $(e.target).parents("li:first"); 
+                target = $(e.target).parents("li:first");
             } else {
                 target = $(e.target);
             }
             if(currTarget == target.get(0))
                 return;
 
-            showButtons(target); 
+            showButtons(target);
 
             currTarget = target.get(0);
             e.stopPropagation();
@@ -2235,13 +2237,13 @@ var Editable = (function(){
 
 
         $editbutton.click(function(e) {
-            editToggle(ontology); 
+            editToggle(ontology);
             e.preventDefault();
             e.stopPropagation();
         });
 
         $(".edit_box .cancel").click(function(e) {
-            editToggle(ontology); 
+            editToggle(ontology);
             e.preventDefault();
             e.stopPropagation();
         });
@@ -2280,7 +2282,7 @@ var Editable = (function(){
 
                 }
             });
-            
+
         });
     }
 
@@ -2320,7 +2322,7 @@ var Term = (function(){
               $.getJSON('/get-children/' + fatherId, function(children) {
                 var li;
                 for(var i=0; i<children.length; i++) {
-                    var el = children[i]; 
+                    var el = children[i];
                     if(el.id === termId) {
                         li = make_li(el, true);
                         parent.append(li);
@@ -2371,7 +2373,7 @@ UserWidget = (function() {
 	                curr.find(".institution").text("");
 				}
                 curr.show();
-                    
+
                 var cont = curr.find("ul li:first");
 
                 // now get this users ontologies
@@ -2398,7 +2400,7 @@ UserWidget = (function() {
 
 
             });
-        
+
         });
     }
     function edit(userid) {
@@ -2416,10 +2418,10 @@ UserWidget = (function() {
                 curr.find("#institution span").text(user.institution);
                 curr.find("#email").text(user.email);
                 curr.show();
-			});	
-		
+			});
+
 			// change user info
-			that.curr.find("#edit_button input").click( function(){ 
+			that.curr.find("#edit_button input").click( function(){
 				if	(that.curr.find("#edit_button input").attr("value") == "Edit"){
 					// goes to editable mode
 					that.curr.find(".editable input").show();
@@ -2434,10 +2436,10 @@ UserWidget = (function() {
 				} else if (that.curr.find("#edit_button input").attr("value") == "Send"){
 					// get edits
 					var edits = {
-						name: that.curr.find("#name input" ).attr( "value" ), 
+						name: that.curr.find("#name input" ).attr( "value" ),
 						sirname: that.curr.find("#sirname input").attr( "value" ),
-						institution: that.curr.find("#institution input" ).attr( "value" ) 
-					} 
+						institution: that.curr.find("#institution input" ).attr( "value" )
+					}
 					// send edits
 					editProfile(edits);
 					// back to non-edit mode
@@ -2446,7 +2448,7 @@ UserWidget = (function() {
 					that.curr.find("#edit_button input").attr("value", "Edit");
 				}
 			});
-	
+
 		});
 	}
     function showAll() {
@@ -2475,7 +2477,7 @@ UserWidget = (function() {
                 }
                 that.load(false);
             });
-        
+
         });
     }
     return {
@@ -2484,9 +2486,9 @@ UserWidget = (function() {
 	    showAll: showAll
     };
 })();
- 
+
 $(document).ready(function(){
- 
+
     Login(function(user) {
       if(user && ontologyid !== "")
           Editable.init(ontologyid);
@@ -2516,15 +2518,15 @@ $(document).ready(function(){
 
     /* assign some events for ui */
     events();
- 
+
     /* global ajax setup thing */
     $.ajaxSetup({
-        "success": function() {   
+        "success": function() {
             $(".error").hide();
             $(".error_box").hide();
             term_loader(false);
         },
-        "error": function(e, type, msg) {   
+        "error": function(e, type, msg) {
             term_loader(false);
 
             $(".error").show().first().text(msg);
@@ -2532,11 +2534,11 @@ $(document).ready(function(){
         },
         "cache": false
     });
- 
+
 });
- 
+
 })();
- 
+
 
 function fileupload_done(error) {
     if(error) {
@@ -2568,13 +2570,13 @@ function adminTable() {
 
             clone.attr("id", this.userid); // row id gets the user id
 
-            clone.find(".name").text(this.name); 
-            clone.find(".sirname").text(this.sirname); 
-            clone.find(".institution").text(this.institution); 
+            clone.find(".name").text(this.name);
+            clone.find(".sirname").text(this.sirname);
+            clone.find(".institution").text(this.institution);
             clone.find(".username").text(this.username); // finds the username cell and adds the value of the username property of the users object
             clone.find(".email").text(this.email);
-            clone.find(".created").text(this.created); 
-            clone.find(".admin").text(this.admin); 
+            clone.find(".created").text(this.created);
+            clone.find(".admin").text(this.admin);
 
 			// active status
             clone.find(".active_dev").text(this.active);// change text in column "active (status)"
@@ -2583,7 +2585,7 @@ function adminTable() {
 	   	 	}
 
 	   	 	// adds row to table
-       	 	$("#table_users").append(clone); 
+       	 	$("#table_users").append(clone);
 
        	 	clone.show(); // turns off "display:none;" of "row_user"
        	 }); //end user forEach

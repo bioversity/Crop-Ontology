@@ -31,6 +31,7 @@ $(function(){
 var languages = {{>languages}};
 </script>
 <script type="text/javascript" src="/js/markdown.js?{{>VERSION}}"></script>
+<script type="text/javascript" src="/js/common/functions.js?{{>VERSION}}"></script>
 <script type="text/javascript" src="/js/main.js?{{>VERSION}}"></script>
 
 <!-- new sammy refactoring happening here -->
@@ -64,10 +65,10 @@ $(function() {
 
 </script>
 
-</head> 
- 
-<body class="explore"> 
-    <div id="main" class=""> 
+</head>
+
+<body class="explore">
+    <div id="main" class="">
 	<div class="header_top">
 		<div class="header_title">
 
@@ -98,8 +99,8 @@ $(function() {
             </div>
         </div>
         <div id="header_outer">
-            <div id="header" style="height: 50px;"> 
-     
+            <div id="header" style="height: 50px;">
+
                 <div class="api">
                     <a class="button" href="/">Home</a>
                 </div>
@@ -115,34 +116,34 @@ $(function() {
                 <div class="feedbackbtn">
                     <a class="button" href="/feedback">Feedback</a>
                 </div>
-                <div class="header_images"> 
+                <div class="header_images">
                     <img src="/images/2_test.png?1" />
                     <img src="/images/1_test.png?1" />
                     <img src="/images/wheat.jpg?01" />
                     <img src="/images/rice.png?01" />
-                </div> 
+                </div>
 -->
-            </div> 
+            </div>
         </div>
         <div id="survey" style="display: none;">
-            <img src="/images/lightbulb.png" style="float: left" /> 
+            <img src="/images/lightbulb.png" style="float: left" />
             <div class="help_content" style="margin-left: 20px;">Loading...</div>
         </div>
 <!-- to display the box "survey" only on the home page-->
 <script>
 var isHome= "{{isHome}}";
 if(isHome) {
-	document.getElementById('survey').style.display = 'block'; 
+	document.getElementById('survey').style.display = 'block';
 	}
 </script>
-	<div class="crop-logos" >{{{CROP_LOGOS}}}</div> 
-        <div class="site" style="margin:10px auto"> 
-<div class="pagehead"> 
+	<div class="crop-logos" >{{{CROP_LOGOS}}}</div>
+        <div class="site" style="margin:10px auto">
+<div class="pagehead">
     <div class="head_left">
         <input id="search" type="text" name="q" placeholder="Search" tabindex="0" /><!--<button id="dosearch" class="minibutton">Search</button>-->
-    </div> 
-    <div class="head_right"> 
- 
+    </div>
+    <div class="head_right">
+
           <a href="#" id="dologin" class="feed" style="background: none">Login</a>
           <a href="#" id="doregister" class="feed" style="background: none">Register</a>
           <a href="#" id="doprofile" class="feed" style="background: none; display: none;"></a>
@@ -158,18 +159,18 @@ if(isHome) {
           <a href="/api" class="feed" style="background: none;">API</a>
 <!--          <a href="/add-ontology" class="feed" style="background: none; padding-right: 20px;">Add New Terms</a>-->
           <a href="/add-ontology" class="feed" style="background: none; padding-left:0px;">Add New Terms</a>
-    </div> 
-</div> 
- 
-{{>CONTENT}} 
- 
- 
+    </div>
+</div>
+
+{{>CONTENT}}
+
+
         </div> <!-- /site -->
-    <div style="clear:both;"></div> 
-    </div><!-- /main --> 
- 
- 
- 
+    <div style="clear:both;"></div>
+    </div><!-- /main -->
+
+
+
 <div class="toolbar" style="display: none; position: absolute; top:0; left:0;">
     <div class="toolbar_edit"></div>
     <div class="toolbar_remove"></div>
@@ -178,18 +179,18 @@ if(isHome) {
 <a title="Add" class="editable_add minibutton btn-watch" style="display: none"><span>+</span></a>
 <!--<a title="Delete" class="editable_delete minibutton btn-watch" style="display: none"><span>-</span></a>-->
 
- 
+
 <!--[if IE 8]>
 <script type="text/javascript" charset="utf-8">
   $(document.body).addClass("ie8")
 </script>
-<![endif]--> 
- 
+<![endif]-->
+
 <!--[if IE 7]>
 <script type="text/javascript" charset="utf-8">
   $(document.body).addClass("ie7")
 </script>
-<![endif]--> 
+<![endif]-->
 
 <div class="footer">
     <a href="mailto:helpdesk@cropontology-curationtool.org">Contact Us</a> -
@@ -207,101 +208,101 @@ if(isHome) {
 <img src="/images/logos_crps_footer.png" />
 </div>
 
-<div class="modal" style="display: none;"> 
-    <div class="popup"> 
-        <div class="content"> 
+<div class="modal" style="display: none;">
+    <div class="popup">
+        <div class="content">
             <div class="about" style="display: none;">
                 <h1>Ontology Tool</h1>
                 <p>This site is meant to let you store and navigate ontologies</p>
             </div><!-- /about -->
             <div class="login_form register" style="display: none;">
-              <form method="post" id="register_form" action="">      
-                  <h1>Register</h1> 
-                  <div class="formbody"> 
+              <form method="post" id="register_form" action="">
+                  <h1>Register</h1>
+                  <div class="formbody">
 					<p style="margin-bottom:10px;">To prevent from spamming, registration is restricted to the Crop Ontology community.</p>
-                    
-                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
-                    <div class="error_box" style="display: none;">Incorrect login or password.</div> 
-                    
-                    <label for="reg_username"> 
-                        Username<br> 
-                        <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="reg_username" class="text"> 
+
+                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div>
+                    <div class="error_box" style="display: none;">Incorrect login or password.</div>
+
+                    <label for="reg_username">
+                        Username<br>
+                        <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="reg_username" class="text">
                     </label>
- 
-                    <label for="reg_email"> 
-                        Email<br> 
-                        <input type="text" value="" tabindex="2" style="width: 21em;" name="email" id="reg_email" class="text"> 
-                    </label> 
-             
-                    <label for="reg_password"> 
-                        Password 
-                        <br> 
-                        <input type="password" value="" tabindex="3" style="width: 21em;" name="password" id="reg_password" class="text"> 
-                    </label> 
 
-                    <label for="reg_name"> 
-                        First name<br> 
-                        <input type="text" value="" tabindex="4" style="width: 21em;" name="first_name" id="reg_name" class="text"> 
-                    </label> 
-             
-                    <label for="reg_sirname"> 
-                        Last name<br> 
-                        <input type="text" value="" tabindex="5" style="width: 21em;" name="sirname" id="reg_sirname" class="text"> 
-                    </label> 
-             
-                    <label for="reg_institution"> 
-                        Host institution<br> 
-                        <input type="text" value="" tabindex="6" style="width: 21em;" name="institution" id="reg_institution" class="text"> 
-                    </label> 
-             
+                    <label for="reg_email">
+                        Email<br>
+                        <input type="text" value="" tabindex="2" style="width: 21em;" name="email" id="reg_email" class="text">
+                    </label>
+
+                    <label for="reg_password">
+                        Password
+                        <br>
+                        <input type="password" value="" tabindex="3" style="width: 21em;" name="password" id="reg_password" class="text">
+                    </label>
+
+                    <label for="reg_name">
+                        First name<br>
+                        <input type="text" value="" tabindex="4" style="width: 21em;" name="first_name" id="reg_name" class="text">
+                    </label>
+
+                    <label for="reg_sirname">
+                        Last name<br>
+                        <input type="text" value="" tabindex="5" style="width: 21em;" name="sirname" id="reg_sirname" class="text">
+                    </label>
+
+                    <label for="reg_institution">
+                        Host institution<br>
+                        <input type="text" value="" tabindex="6" style="width: 21em;" name="institution" id="reg_institution" class="text">
+                    </label>
+
                     <!--
-                    <label for="reg_lang"> 
-                        What is your main language? 
-                        <br> 
+                    <label for="reg_lang">
+                        What is your main language?
+                        <br>
                         <span class="reg_lang"></span>
-                    </label> 
+                    </label>
                     -->
-             
-                    <label class="submit_btn"> 
-                        <input type="submit" value="Register" tabindex="7" name="commit"> 
-                    </label> 
 
-                    <div class="message_box" style="display: none;">MESSAGE</div> 
+                    <label class="submit_btn">
+                        <input type="submit" value="Register" tabindex="7" name="commit">
+                    </label>
 
-                  </div> 
-                </form>  
+                    <div class="message_box" style="display: none;">MESSAGE</div>
+
+                  </div>
+                </form>
 
             </div><!-- /register -->
             <div class="login login_form" style="display: none;">
 
               <form method="post" id="login_form" action="/session">
-                  <h1>Log in</h1> 
-                  <div class="formbody"> 
-                    
-                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
-                    <div class="error_box" style="display: none;">Incorrect login or password.</div> 
-                    
-                    <label for="log_username"> 
-                        Username<br> 
-                        <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="log_username" class="text"> 
-                    </label> 
-             
-                    <label for="log_password"> 
-                        Password 
-                        <br> 
-                        <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="log_password" class="text"> 
-                    </label> 
-                    <label for="forgot_password"> 
+                  <h1>Log in</h1>
+                  <div class="formbody">
+
+                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div>
+                    <div class="error_box" style="display: none;">Incorrect login or password.</div>
+
+                    <label for="log_username">
+                        Username<br>
+                        <input type="text" value="" tabindex="1" style="width: 21em;" name="username" id="log_username" class="text">
+                    </label>
+
+                    <label for="log_password">
+                        Password
+                        <br>
+                        <input type="password" value="" tabindex="2" style="width: 21em;" name="password" id="log_password" class="text">
+                    </label>
+                    <label for="forgot_password">
                         <a href="/forgot-password">Forgot Password?</a>
                         <br>
                         <br>
-                    </label> 
-             
-                    <label class="submit_btn"> 
-                        <input type="submit" value="Log in" tabindex="3" name="commit"> 
-                    </label> 
-                  </div> 
-                </form>  
+                    </label>
+
+                    <label class="submit_btn">
+                        <input type="submit" value="Log in" tabindex="3" name="commit">
+                    </label>
+                  </div>
+                </form>
             </div><!-- /login -->
 
 	 			<div class="user">
@@ -313,7 +314,7 @@ if(isHome) {
 								<span class="firstName"></span>
 								<span class="lastName"></span>
 								<span class="institution" style="font-style:italic"></span>
-						
+
 <!-- <a href="#" id="edit_profile">Edit Profile</a> -->
 							</div>
                     	</h2>
@@ -342,31 +343,31 @@ if(isHome) {
 	                    </h2>
 						<h3>First Name</h3>
 						<div class="editable" id="name">
-							<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+							<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" />
 							<span></span>
 						</div>
-						
+
 						<h3>Last name</h3>
 						<div class="editable" id="sirname">
-							<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+							<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" />
 							<span></span>
 						</div>
-						
+
 						<h3>Host institution</h3>
 						<div class="editable" id="institution">
-							<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" /> 
+							<input style="display: none;" type="text" value="" tabindex="1" style="width: 21em;" />
 							<span></span>
 						</div>
-						
+
 						<h3>Email</h3>
 						<div id="email"></div>
-	
-	                    <label id="edit_button"> 
+
+	                    <label id="edit_button">
 							<input type="submit" value="Edit" id="edit_button"/></h2>
-	                    </label> 
+	                    </label>
 	            	</div>
 	            </div><!-- edit_user_profile -->
-            
+
 			<div class="users">
                 <h1>Users</h1>
                 <h2 style="display: none">
@@ -380,39 +381,41 @@ if(isHome) {
             <div class="edit_profile login_form" style="display: none;">
 
               <form method="post" action="/edit-profile">
-                  <h1>Edit Profile</h1> 
-                  <div class="formbody"> 
-                    
-                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div> 
-                    <div class="error_box" style="display: none;">Incorrect login or password.</div> 
+                  <h1>Edit Profile</h1>
+                  <div class="formbody">
 
-<!-- 
-                    <label for="reg_lang"> 
-                        What is your main language? 
-                        <br> 
+                    <div class="context-loader" style="display: none; top:0px;">Sending Request...</div>
+                    <div class="error_box" style="display: none;">Incorrect login or password.</div>
+
+<!--
+                    <label for="reg_lang">
+                        What is your main language?
+                        <br>
                         <span class="reg_lang"></span>
-                    </label> 
--->             
-                    <label class="submit_btn"> 
-                        <input type="submit" value="Edit" tabindex="3"> 
-                    </label> 
-                  </div> 
-                </form>  
+                    </label>
+-->
+                    <label class="submit_btn">
+                        <input type="submit" value="Edit" tabindex="3">
+                    </label>
+                  </div>
+                </form>
             </div><!-- /download_onto -->
             <div class="download_onto">
-			  <a href="/report?ontology_id={{ontologyid}}" title="Export the ontology in a formated csv table" class="print-button minibutton btn-watch excel-blob-key"><span>Trait Dictionary</span></a>
+			          <a href="/report?ontology_id={{ontologyid}}" title="Export the ontology in a formated csv table" class="print-button minibutton btn-watch excel-blob-key"><span>Trait Dictionary</span></a>
                 <a href="/ontology/{{ontologyid}}/{{ontologyname}}/nt" title="RDF/N-Triples" class="minibutton btn-watch"><span>RDF N-Triples</span></a>
                 <a href="/obo/{{ontologyid}}" title="OBO" class="minibutton btn-watch obo-blob-key"><span>OBO file</span></a>
 
+                <a href="/report?ontology_id={{ontologyid}}" title="Export the ontology in a formated xls table" class="print-button minibutton btn-watch excel-blob-key"><span>Excel file</span></a>
+
             </div><!-- /download_onto -->
         </div> <!-- /content -->
-        <a href="#" class="close"> 
-            <img src="/images/closelabel.png" title="Close" class="close_image"> 
-        </a> 
- 
-    </div> 
-</div> 
+        <a href="#" class="close">
+            <img src="/images/closelabel.png" title="Close" class="close_image">
+        </a>
 
- 
-</body> 
-</html> 
+    </div>
+</div>
+
+
+</body>
+</html>
