@@ -71,9 +71,16 @@ rdf.prototype.buildTriple = function(term) {
     for(var i in names) {
         var jsonName = JSON.stringify(names[i]);
         if(jsonName != undefined) {
-            jsonName=jsonName.replace(/\\"/g, "");
-            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#label> ' + jsonName + '@' + languages.getIso[i].toLowerCase() + ' .\n';
-            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#prefLabel> ' + jsonName + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+            if(term['id'].indexOf('ROOT') != -1){
+                jsonName=jsonName.replace(/\\"/g, "");
+                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#label> ' + jsonName.slice(0, -1)+ ' trait"' + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#prefLabel> ' + jsonName.slice(0, -1)+ ' trait"' + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+            }else{
+                jsonName=jsonName.replace(/\\"/g, "");
+                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#label> ' + jsonName + '@' + languages.getIso[i].toLowerCase() + ' .\n';
+                this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#prefLabel> ' + jsonName + '@' + languages.getIso[i].toLowerCase() + ' .\n'; 
+            }
+           
 
         }
     }
@@ -396,6 +403,8 @@ rdf.prototype.buildNtriples = function(ontologyId) {
         })
         .sort('id', 'DESC')
         .each(function() {
+            if(this["Variable status"] ==  'deprecated' || this["Trait status"] ==  'deprecated' || this["Variable status"] ==  'deprecated' ||this["Variable status"] ==  'deprecated')
+                return;
             that.buildTriple(this);
             /*
             if(this.relationship) {

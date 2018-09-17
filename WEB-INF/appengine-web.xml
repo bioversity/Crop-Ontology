@@ -8,4 +8,12 @@
     <threadsafe>true</threadsafe>
     <url-stream-handler>urlfetch</url-stream-handler>
     <runtime>java8</runtime>
+  
+    <!-- Commented on pull request #65 -->
+    <!-- 2018-09-11 -->
+    <!--
+    <automatic-scaling>
+    	<max-concurrent-requests>50</max-concurrent-requests>
+  	</automatic-scaling>
+    -->
 </appengine-web-app>
