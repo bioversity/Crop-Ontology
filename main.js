@@ -28,6 +28,8 @@ var apejs = require("apejs.js"),
 
     // commonjs modules
     Mustache = require("./common/mustache.js");
+    // Common functions
+    Common = require("./common/functions.js");
 
 var VERSION = "0.8.26";
     URL = 'http://www.cropontology.org';
@@ -616,8 +618,9 @@ apejs.urls = {
                                     .filter("excel_blob_key", "!=", null)
                                     .limit(1)
                                     .fetch();
-                if(excelBlobKey.length)
-                    excelBlobKey = excelBlobKey[0].getProperty('excel_blob_key')
+                if(excelBlobKey.length) {
+                    excelBlobKey = excelBlobKey[0].getProperty('excel_blob_key');
+				}
 
                 try {
                     var o = JSON.parse(excelBlobKey);
@@ -626,57 +629,63 @@ apejs.urls = {
                         excelBlobKey = o[i];
                         break;
                     }
+                } catch(e){}
+				// case 1: onto = TDv5
+                var variables = googlestore.query("term")
+                              .filter("ontology_id", "=", ontoId)
+                              .filter("relationship", "=", "variable_of")
+                              .fetch();
 
+				var total = variables.length;
+				var ontoType;
 
-                }catch(e){}
-					// case 1: onto = TDv5
-                    var variables = googlestore.query("term")
-                                  .filter("ontology_id", "=", ontoId)
-                                  .filter("relationship", "=", "variable_of")
-                                  .fetch();
-
-					var total = variables.length;
-					var ontoType;
-
-					if(total > 0){
+				if(total > 0){
 					ontoType = "TDv5";
-					} else {
+				} else {
 					// case 2: onto = TDv4
-	                    var traits = googlestore.query("term")
-	                                  .filter("ontology_id", "=", ontoId)
-	                                  .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
-	                                  .fetch();
-						total = traits.length;
-						if (total > 0) {
-							ontoType = "TDv4";
+                    var traits = googlestore.query("term")
+                                  .filter("ontology_id", "=", ontoId)
+                                  .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
+                                  .fetch();
+					total = traits.length;
+					if (total > 0) {
+						ontoType = "TDv4";
+					} else {
+					  //XXX does not work for OBOs
+						// case 3: onto = OBO with variables
+						var cropName = matches[2];
+		                var oboTerms = googlestore.query("term")
+                                .filter("ontology_id", "=", ontoId)
+                                .filter("obo_blob_key", "!=", null)
+            	            	.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms as "namespace: <crop>Variable"
+                                .fetch();
+						total = oboTerms.length;
+						if ( total > 0 ){
+							ontoType = "OBOvar";
 						} else {
-						  //XXX does not work for OBOs
-							// case 3: onto = OBO with variables
-							var cropName = matches[2];
-    		                var oboTerms = googlestore.query("term")
-                                    .filter("ontology_id", "=", ontoId)
-                                    .filter("obo_blob_key", "!=", null)
-	            	            	.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms as "namespace: <crop>Variable"
-                                    .fetch();
-							total = oboTerms.length;
-							if ( total > 0 ){
-								ontoType = "OBOvar";
-							} else {
-								// case 4: onto = any OBO
-								ontoType = "OBO";
-							}
+							// case 4: onto = any OBO
+							ontoType = "OBO";
 						}
 					}
-
+				}
 
                 rootTerms.forEach(function(term) {
                     var name = term.getProperty("name");
                     if(term.getProperty("is_obsolete")) return;
 
+                    // Replace "undefined" key with "english"
+                    // name = Common.object_key_replace("undefined", "", name);
+                    // log("");
+                    // log("");
+                    // log(name);
+                    // log("");
+                    // log("");
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name),
-                        oboBlobKey: ''+term.getProperty('obo_blob_key'),
+                        // "name": ""+(name instanceof Text ? name.getValue() : name),
+						"name": "" + Common.object_key_replace("undefined", "", name),
+                        // oboBlobKey: ''+term.getProperty('obo_blob_key'),
+                        oboBlobKey: "" + Common.object_key_replace("undefined", null, term.getProperty('obo_blob_key')),
                         excelBlobKey: ''+excelBlobKey,
 					    ontologyType: ''+ontoType
                     });
@@ -834,7 +843,8 @@ apejs.urls = {
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        "name": ""+(name instanceof Text ? name.getValue() : name),
+                        // "name": ""+(name instanceof Text ? name.getValue() : name),
+                        "name": "" + Common.object_key_replace("undefined", "", name),
                         "relationship": relationship,
                         "has_children": q.length,
 					    "trait_status": "" + traitStatus,
@@ -2472,9 +2482,9 @@ apejs.urls = {
 					var ontoType;
 
 					if(total > 0){
-					ontoType = "TDv5";
+						ontoType = "TDv5";
 					} else {
-					// case 2: onto = TDv4
+						// case 2: onto = TDv4
 						// let's get the number of traits (number of triplets T-M-S is expensive to get)
 	                    var traits = googlestore.query("term")
 	                                  .filter("ontology_id", "=", onto.getProperty("ontology_id"))
@@ -2946,6 +2956,9 @@ apejs.urls = {
             }
 
             function JSON2XLS(objArray, language) {
+				if(language == "undefined" || language == undefined || language == null) {
+					language = "english";
+				}
                 var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
 
                 var out = excel.createXls(array, language);
@@ -3025,7 +3038,7 @@ apejs.urls = {
                 for(var k in obj)
                     if(obj[k] == 'false') obj[k]='';
             }
-            ////////CSV EXPORT
+            //////CSV EXPORT
             var csvString = JSON2XLS(traits, language);
             response.setContentType("text/csv");
             response.setHeader("Content-Disposition","attachment;filename="+ontoId+".csv");
@@ -3033,22 +3046,25 @@ apejs.urls = {
             response.getWriter().println(csvString);
 
             ///////XLS EXPORT
-            // var blobKey = JSON2XLS(traits);
+            // var blobKey = JSON2XLS(traits, language);
+            var blobKey = ontoId;
 
 
-            //  // get metadata
-            // var blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
-            // response.setHeader("Cache-Control", "max-age=315360000");
-            // response.setContentType(blobInfo.getContentType());
-            // response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
-            // blobstore.blobstoreService.serve(blobKey, response);
+             // get metadata
+            var blobInfo = new BlobInfoFactory().loadBlobInfo(ontoId);
+			log(blobInfo)
+			log("------------------------------------------")
+            response.setHeader("Cache-Control", "max-age=315360000");
+            response.setContentType(blobInfo.getContentType());
+            response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
+            blobstore.blobstoreService.serve(blobKey, response);
         },
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
             /*
-
+zz
             var excels = {
                 'CO_334': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Cassava%2020120524%20EN-Default%20trait%20set%20english.xlsx',
                 'CO_324': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Sorghum%2020130121%20EN%20Trait%20Dicitonary%20ver%204.xls',
