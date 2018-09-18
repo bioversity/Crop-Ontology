@@ -31,7 +31,7 @@ var apejs = require("apejs.js"),
     // Common functions
     Common = require("./common/functions.js");
 
-var VERSION = "0.8.26";
+var VERSION = "0.8.27";
     URL = 'http://www.cropontology.org';
 
 var isblank = function(javaStr) {
