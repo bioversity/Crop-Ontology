@@ -16,16 +16,33 @@ exports.array_clean = function(array, value) {
 };
 
 /**
- * Replace a specific value from a given object
- * @param  array                  array                           The array to clean
+ * Replace a specific key from a given object
+ * @param  string                 search                          The key to search
+ * @param  mixed                  replace                         The string to replace
  * @param  value                  string                          The value to remove
  * @return array                                                  The cleaned array
  **/
 exports.object_key_replace = function(search, replace, object) {
 	var new_obj = {};
 
-	if(object.toString().indexOf("{") > 0) {
-		object = object.getValue();
+	switch(typeof object) {
+		case "string":
+			if(object.indexOf("{") > 0) {
+				object = object.getValue();
+			}
+			break;
+		case "undefined":
+			object = '{"undefined": ""}';
+			break;
+		case "object":
+			if(object == null) {
+				object = '{"undefined": ""}';
+			} else {
+				if(object.indexOf("{") == -1) {
+					object = '"' + object + '"';
+				}
+			}
+			break;
 	}
 
 	var obj = JSON.parse(object);
@@ -36,8 +53,9 @@ exports.object_key_replace = function(search, replace, object) {
 				case "":	obj[languages.default] = obj['undefined'];		break;
 			}
 		}
-   }
-   delete obj['undefined'];
-   log(JSON.stringify(obj));
-   return JSON.stringify(obj);
+	}
+	if(obj["undefined"] !== "undefined" && obj["undefined"] !== undefined) {
+		delete obj["undefined"];
+	}
+	return (typeof obj == "object") ? JSON.stringify(obj) : obj;
 };

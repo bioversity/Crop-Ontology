@@ -13,7 +13,7 @@ var excel = {
         var mySheet = myWorkBook.getSheetAt(1);
 
         // We now need something to iterate through the cells.
-        var rowIter = mySheet.rowIterator(); 
+        var rowIter = mySheet.rowIterator();
 
         var idx = 0,
             rows = 0,
@@ -69,7 +69,7 @@ var excel = {
 
         var url = new java.net.URL("http://www.cropontology.org/TD_template_v5.xls");
         var uc = url.openConnection();
-       
+
         // Create a workbook using the File System
         var myWorkBook = new HSSFWorkbook(uc.getInputStream());
 
@@ -79,11 +79,11 @@ var excel = {
          var mySheet = myWorkBook.getSheetAt(1);
 
          function getval(val){
-            var value = val;
+			 var value = val;
             if(typeof value === 'object'){
                 for( var obj in val){
-                        value = val[obj];
-               }    
+                    value = val[obj];
+               }
             }
 
             if(value+'' == 'undefined'){
@@ -95,19 +95,20 @@ var excel = {
 
 
         ///what file is it?
-        var obo = false;
-         if(data[0]['obo_blob_key']){
-                obo=true;
-         }
-         var tdv5=false;
+        var obo = false,
+			tdv5 = false;
+        if(data[0].obo_blob_key){
+			obo = true;
+		}
+		log(data[0]);
 
         //count the number of line in the file
         var cpt = 1;
         //term info by id
         var obj = [];
-        ///categorocal scale when obo 
+        ///categorocal scale when obo
         var scale = [];
-        
+
         for (var j = 0; j < data.length; j++) {
             if(data[j]["Variable name"] || (data[j]["relationship"] && data[j]["relationship"].indexOf("variable_of") != -1)){
                 tdv5=true;
@@ -117,13 +118,13 @@ var excel = {
             if(data[j]["namespace"] && getval(data[j]["namespace"]).indexOf("Scale")>0 && data[j]["is_a"]){ ///this is a category
                if(scale[data[j]["parent"]]){
                     scale[data[j]["parent"]].push(data[j]);
-                    
+
                }else{
                     scale[data[j]["parent"]]=[];
                     scale[data[j]["parent"]].push(data[j]);
                }
-            }   
-            
+            }
+
         }
 
         if(tdv5 || (tdv5 && obo)){
@@ -193,7 +194,7 @@ var excel = {
 
                             //look for method info now
                             var methodID = data[i]["parent"].split(',')[1].replace(" ", "");
-                            
+
                             var cell = row.createCell(new java.lang.Integer(24));
                             cell.setCellValue(getval(obj[methodID]["id"])+"");
                             var cell = row.createCell(new java.lang.Integer(25));
@@ -209,7 +210,7 @@ var excel = {
 
                             //look for scale info now
                             var scaleID = data[i]["parent"].split(',')[2].replace(" ", "").replace("]", "");
-                            
+
                             var cell = row.createCell(new java.lang.Integer(30));
                             cell.setCellValue(getval(obj[scaleID]["id"])+"");
                             var cell = row.createCell(new java.lang.Integer(31));
@@ -224,7 +225,7 @@ var excel = {
                             cell.setCellValue(getval(obj[scaleID]["Upper limit"])+"");
                             var cell = row.createCell(new java.lang.Integer(36));
                             cell.setCellValue(getval(obj[scaleID]["Scale Xref"])+"");
-                            if(getval(obj[scaleID]["Scale class"]) == 'Nominal' 
+                            if(getval(obj[scaleID]["Scale class"]) == 'Nominal'
                                 || getval(obj[scaleID]["Scale class"]) == 'Ordinal' ){
                                 var catnum = 37;
                                 for(var cat in obj[scaleID]){
@@ -265,7 +266,7 @@ var excel = {
 
                             //look for method info now
                             var methodID = data[i]["parent"].split(',')[1].replace(" ", "");
-                            
+
                             var cell = row.createCell(new java.lang.Integer(24));
                             cell.setCellValue(getval(obj[methodID]["id"])+"");
                             var cell = row.createCell(new java.lang.Integer(25));
@@ -276,7 +277,7 @@ var excel = {
                             cell.setCellValue(getval(obj[methodID]["xref"])+"");
 
                             var scaleID = data[i]["parent"].split(',')[2].replace(" ", "").replace("]", "");
-                            
+
                             var cell = row.createCell(new java.lang.Integer(30));
                             cell.setCellValue(getval(obj[scaleID]["id"])+"");
                             var cell = row.createCell(new java.lang.Integer(31));
@@ -296,18 +297,18 @@ var excel = {
                                             cell.setCellValue(catname);
                                             catnum++;
                                        }
-                                    });   
+                                    });
                                 //}
-                                
+
                             }
                             ///HOW TO GET THE CATEGORIES???
-                           
+
 
                         }
-                        
 
-                        
-                       
+
+
+
                         cpt++;
                     }
                 }
@@ -352,7 +353,7 @@ var excel = {
                         //METHOD
                         //look for method info now
                         var methodID = data[i]["parent"];
-                        
+
                         var cell = row.createCell(new java.lang.Integer(24));
                         cell.setCellValue(getval(obj[methodID]["id"])+"");
                         var cell = row.createCell(new java.lang.Integer(25));
@@ -398,7 +399,7 @@ var excel = {
                         cell.setCellValue(getval(obj[traitID]["Crop"])+"");
                         var cell = row.createCell(new java.lang.Integer(4));
                         cell.setCellValue(getval(obj[traitID]["How is this trait routinely used?"])+"");
-                       
+
 
                          var cell = row.createCell(new java.lang.Integer(8));
                         cell.setCellValue(getval(obj[traitID]["Institution"])+"");
@@ -411,27 +412,27 @@ var excel = {
 
                         cpt++;
 
-                        
+
                     }
                 }
             } else{//obo
                 //SILL NEED TO ADD WHEN A TRAIT DOES NOT HAVE A METHOD OR SCALE
             }
-       
+
             /////CSV
             var data = new StringBuffer();
             var sheet = myWorkBook.getSheetAt(1);
-            
+
             for(var id=0; id<=sheet.getLastRowNum(); id++) { //let's assume that the file has more than 10 rows....poi pb
                 var row = sheet.getRow(id);
                for(var cn=0; cn<row.getLastCellNum(); cn++) {
                    // If the cell is missing from the file, generate a blank one
                    // (Works by specifying a MissingCellPolicy)
                    var cell = row.getCell(cn, Row.CREATE_NULL_AS_BLANK);
-                   
+
                    data.append("\""+cell.toString().trim() + "\""+ ";");
                }
-              data.append("\r\n"); 
+              data.append("\r\n");
             }
 
             return data.toString();
@@ -440,7 +441,7 @@ var excel = {
         // //ByteArrayOutputStream
         // var bos = new ByteArrayOutputStream();
         // myWorkBook.write(bos);
-        
+
         // //byte[]
         // var bytes = bos.toByteArray();
         // bos.close();
@@ -451,9 +452,9 @@ var excel = {
         //  //Get GCS service
         // var gcsService = GcsServiceFactory.createGcsService();
         // //Generate string for my photo
-        // var unique = UUID.randomUUID().toString();    
+        // var unique = UUID.randomUUID().toString();
         // //Open GCS File
-        // var filename = new GcsFilename("cropontology-curationtool", unique+".xls"); 
+        // var filename = new GcsFilename("cropontology-curationtool", unique+".xls");
 
         // //Set Option for that file
         // var options = new GcsFileOptions.Builder()
@@ -496,7 +497,7 @@ var excel = {
        //  //writeChannel.write(bb);
        //  writeChannel.write(bb);
        //  writeChannel.close();
-        
+
        //  // Now finalize
        //  // writeChannel.closeFinally();
        //  BlobstoreService bs = BlobstoreServiceFactory.getBlobstoreService();
