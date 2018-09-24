@@ -329,7 +329,6 @@ apejs.urls = {
 				get: function(request, response, matches) {
 
 						var ontoId = matches[1];
-
 						if(matches[3] && matches[3] == "rss") {
 
 								var ontoComments = commentmodel.getCommentsByOnto(ontoId);
@@ -548,38 +547,99 @@ apejs.urls = {
 								return;
 						}
 
-						var assoc = {
-							"CO_334": render('skins/crop_projects/CO_334_cassava_project.html'),	//cassava
-							"CO_338": render('skins/crop_projects/CO_338_chickpea_project.html'), //chickpea
-							"CO_322": render('skins/crop_projects/CO_322_maize_project.html'), //maize
-							"CO_320": render('skins/crop_projects/CO_320_rice_project.html'), //rice
-							"CO_324": render('skins/crop_projects/CO_324_sorghum_project.html'), //sorghum
-							"CO_323": render('skins/crop_projects/CO_323_barley_project.html'), //barley
-							"CO_325": render('skins/crop_projects/CO_325_banana_project.html'), //banana
-							"POLAPGEN_BARLEY": render('skins/crop_projects/POLAPGEN_BARLEY_barley_project.html'), //barley polapgen
-							"CO_335": render('skins/crop_projects/CO_335_common_bean_project.html'), //common bean
-							"CO_340": render('skins/crop_projects/CO_340_cowpea_project.html'), //cowpea
-							"CO_337": render('skins/crop_projects/CO_337_groundnut_project.html'), //groundnut
-							"CO_339": render('skins/crop_projects/CO_339_lentil_project.html'), //lentil
-							"CO_327": render('skins/crop_projects/CO_327_pearl_millet_project.html'),
-							"CO_341": render('skins/crop_projects/CO_341_pigeon_pea_project.html'),
-							"CO_330": render('skins/crop_projects/CO_330_potato_project.html'),
-							"CO_331": render('skins/crop_projects/CO_331_sweet_potato_project.html'),
-							"CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
-							"CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
-							"CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
-						 	// "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') ,//cacao
-							"CO_345": render('skins/crop_projects/CO_445_brachiaria_project.html') //Brachiaria
-						};
+						var assoc = JSON.parse(render("./public/ontologies_data.json"));
 
-						var cropLogos = assoc[matches[1]] || "";
+						// var assoc = {
+						// 	"CO_334": render('skins/crop_projects/CO_334_cassava_project.html'),	//cassava
+						// 	"CO_338": render('skins/crop_projects/CO_338_chickpea_project.html'), //chickpea
+						// 	"CO_322": render('skins/crop_projects/CO_322_maize_project.html'), //maize
+						// 	"CO_320": render('skins/crop_projects/CO_320_rice_project.html'), //rice
+						// 	"CO_324": render('skins/crop_projects/CO_324_sorghum_project.html'), //sorghum
+						// 	"CO_323": render('skins/crop_projects/CO_323_barley_project.html'), //barley
+						// 	"CO_325": render('skins/crop_projects/CO_325_banana_project.html'), //banana
+						// 	"POLAPGEN_BARLEY": render('skins/crop_projects/POLAPGEN_BARLEY_barley_project.html'), //barley polapgen
+						// 	"CO_335": render('skins/crop_projects/CO_335_common_bean_project.html'), //common bean
+						// 	"CO_340": render('skins/crop_projects/CO_340_cowpea_project.html'), //cowpea
+						// 	"CO_337": render('skins/crop_projects/CO_337_groundnut_project.html'), //groundnut
+						// 	"CO_339": render('skins/crop_projects/CO_339_lentil_project.html'), //lentil
+						// 	"CO_327": render('skins/crop_projects/CO_327_pearl_millet_project.html'),
+						// 	"CO_341": render('skins/crop_projects/CO_341_pigeon_pea_project.html'),
+						// 	"CO_330": render('skins/crop_projects/CO_330_potato_project.html'),
+						// 	"CO_331": render('skins/crop_projects/CO_331_sweet_potato_project.html'),
+						// 	"CO_336": render('skins/crop_projects/CO_336_soybean_project.html'),
+						// 	"CO_343": render('skins/crop_projects/CO_343_yam_project.html'),
+						// 	"CO_321": render('skins/crop_projects/CO_321_wheat_project.html'), //wheat
+						//  	// "CO_345": render('skins/crop_projects/CO_345_cacao_project.html') ,//cacao
+						// 	"CO_345": render('skins/crop_projects/CO_445_brachiaria_project.html') //Brachiaria
+						// };
+
+						var cropLogosBox = "";
+
+						if(assoc[matches[1]]) {
+							cropLogosBox += '<div id="crop_onto_curation">';
+							cropLogosBox += '	<img class="crop_pict" src="' + assoc[matches[1]].ontology_picture + '" />';
+							cropLogosBox += '	<div id="tab_crop_curation">';
+							if(assoc[matches[1]].ontology_title.link != "") {
+								cropLogosBox += '		<h1><a href="' + assoc[matches[1]].ontology_title.link + '">' + assoc[matches[1]].ontology_title.title + '</a></h1>';
+							} else {
+								cropLogosBox += '		<h1>' + assoc[matches[1]].ontology_title.title + '</h1>';
+							}
+							cropLogosBox += '		<table>';
+							cropLogosBox += '			<tr>';
+							cropLogosBox += '				<th>Ontology curators</th>';
+							cropLogosBox += '				<th>Scientists</th>';
+							cropLogosBox += '				<th>Crop Lead Center</th>';
+							cropLogosBox += '				<th>Partners</th>';
+							cropLogosBox += '				<th>CGIAR research program</th>';
+							cropLogosBox += '			</tr>';
+							cropLogosBox += '			<tr>';
+							cropLogosBox += '				<td>';
+							if(assoc[matches[1]].ontology_curators.length > 0 && assoc[matches[1]].ontology_curators[0] !== "") {
+								cropLogosBox += '					<ul><li>' + assoc[matches[1]].ontology_curators.join('</li><li>') + '</li></ul>';
+							} else {
+								cropLogosBox += '';
+							}
+							cropLogosBox += '				</td>';
+							cropLogosBox += '				<td>';
+							if(assoc[matches[1]].scientists.length > 0 && assoc[matches[1]].scientists[0] !== "") {
+								cropLogosBox += '					<ul><li>' + assoc[matches[1]].scientists.join('</li><li>') + '</li></ul>';
+							} else {
+								cropLogosBox += '';
+							}
+							cropLogosBox += '				</td>';
+							cropLogosBox += '				<td>';
+							if(assoc[matches[1]].lead_centers.length > 0) {
+								assoc[matches[1]].lead_centers.forEach(function(center, k) {
+									cropLogosBox += '					<a href="' + center.link + '"><img src="' + center.image + '" /></a>';
+								});
+							}
+							cropLogosBox += '				</td>';
+							cropLogosBox += '				<td>';
+							if(assoc[matches[1]].partners.length > 0) {
+								assoc[matches[1]].partners.forEach(function(partner, k) {
+									cropLogosBox += '					<a href="' + partner.link + '"><img src="' + partner.image + '" /></a>';
+								});
+							}
+							cropLogosBox += '				</td>';
+							cropLogosBox += '				<td>';
+							if(assoc[matches[1]].cgiar_research_program.length > 0) {
+								assoc[matches[1]].cgiar_research_program.forEach(function(program, k) {
+									cropLogosBox += '					<a href="' + program.link + '"><img src="' + program.image + '" /></a>';
+								});
+							}
+							cropLogosBox += '				</td>';
+							cropLogosBox += '			</tr>';
+							cropLogosBox += '		</table>';
+							cropLogosBox += '	</div>';
+							cropLogosBox += '</div>';
+						}
 
 						var html = renderIndex("skins/onto.html", {
 							URL:"http://www.cropontology.org",
 							ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
 							ontologyid: matches[1],
 							ontologyname: matches[2],
-							CROP_LOGOS: cropLogos
+							CROP_LOGOS: cropLogosBox
 						});
 						print(response).text(html);
 				}
@@ -2313,6 +2373,7 @@ apejs.urls = {
 		},
 		"/curruser-ontologies": {
 				get: function(request, response) {
+
 						var currUser = auth.getUser(request);
 						if(!currUser)
 								response.sendError(response.SC_BAD_REQUEST, "Not logged in");
@@ -2332,12 +2393,13 @@ apejs.urls = {
 								if(!category || category.equals(""))
 										category = "";
 
+
 								ret.push({
-										ontology_id: ""+onto.getProperty("ontology_id"),
-										ontology_name: ""+onto.getProperty("ontology_name"),
-										ontology_summary: ""+onto.getProperty("ontology_summary"),
-										category: ""+category,
-										userKey: ''+KeyFactory.keyToString(onto.getProperty('user_key'))
+									ontology_id: ""+onto.getProperty("ontology_id"),
+									ontology_name: ""+onto.getProperty("ontology_name"),
+									ontology_summary: ""+onto.getProperty("ontology_summary"),
+									category: ""+category,
+									userKey: ''+KeyFactory.keyToString(onto.getProperty('user_key'))
 								});
 						});
 
