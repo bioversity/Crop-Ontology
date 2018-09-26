@@ -1,6 +1,6 @@
 {
   "name": "crop-ontology",
-  "version": "0.8.27",
+  "version": "0.8.28",
   "description": "The system is built using the [ApeJS](https://github.com/lmatteis/apejs) framework and is meant to be used with [Google App Engine](http://code.google.com/appengine/).",
   "main": "main.js",
   "scripts": {
