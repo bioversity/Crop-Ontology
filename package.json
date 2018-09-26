@@ -1,0 +1,19 @@
+{
+  "name": "crop-ontology",
+  "version": "0.8.27",
+  "description": "The system is built using the [ApeJS](https://github.com/lmatteis/apejs) framework and is meant to be used with [Google App Engine](http://code.google.com/appengine/).",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bioversity/Crop-Ontology.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bioversity/Crop-Ontology/issues"
+  },
+  "homepage": "http://www.cropontology.org/"
+}
