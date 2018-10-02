@@ -44,18 +44,21 @@ exports.object_key_replace = function(search, replace, object) {
 			}
 			break;
 	}
-
-	var obj = JSON.parse(object);
-	for(var k in obj) {
-		if(k == "undefined") {
-			switch(replace) {
-				case null:	obj = obj['undefined'];							break;
-				case "":	obj[languages.default] = obj['undefined'];		break;
+	if(typeof object !== "string") {
+		var obj = JSON.parse(object);
+		for(var k in obj) {
+			if(k == "undefined") {
+				switch(replace) {
+					case null:	obj = obj['undefined'];							break;
+					case "":	obj[languages.default] = obj['undefined'];		break;
+				}
 			}
 		}
-	}
-	if(obj["undefined"] !== "undefined" && obj["undefined"] !== undefined) {
-		delete obj["undefined"];
+		if(obj["undefined"] !== "undefined" && obj["undefined"] !== undefined) {
+			delete obj["undefined"];
+		}
+	} else {
+		obj = object
 	}
 	return (typeof obj == "object") ? JSON.stringify(obj) : obj;
 };

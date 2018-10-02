@@ -930,118 +930,116 @@ apejs.urls = {
 				}
 		},
 		"/get-variables/(.*)": {
-				get: function(request, response, matches) {
-						request.setCharacterEncoding("utf-8")
-						response.setContentType("text/html; charset=UTF-8");
-						response.setCharacterEncoding("UTF-8");
+			get: function(request, response, matches) {
+				request.setCharacterEncoding("utf-8")
+				response.setContentType("text/html; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
 
-						var id = matches[1];
-						if(!id)
-								return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
-
-			var cropId = id.split(":")[0];
-			var IdRight = id.split(":")[1];
-
-						try {
-
-								var ret = [];
-
-							var termKey = googlestore.createKey("term", id),
-								termEntity = googlestore.get(termKey);
-				if (termEntity.getProperty("obo_blob_key")){
-					// case 1 : we are on an OBO
-
-					// get crop name (used to get the variable namespace)
-					var onto = googlestore.query("ontology")
-									.filter("ontology_id", "=", cropId)
-									.fetch()
-					var cropName = onto[0].getProperty("ontology_name")
-
-					// get the OBO variables
-								var variables = googlestore.query("term")
-																.filter("parent", "=", id)
-															.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms have "namespace: <crop>Variable"
-																.fetch();
-
-								variables.forEach(function(term) {
-										ret.push({
-												"id": ""+term.getProperty("id"),
-												"name": ""+term.getProperty("name")
-										});
-					});
-				} else if ( IdRight == "ROOT" ){
-					// case 2 (TDv5): we are on ROOT -> display all variables of the onto
-									var variables = googlestore.query("term")
-																	.filter("ontology_id", "=", cropId)
-																	.filter("relationship", "=", "variable_of")
-																	.fetch();
-									variables.forEach(function(term) {
-											ret.push({
-													"id": ""+term.getProperty("id"),
-													"name": ""+term.getProperty("Variable name"),
-								"varStatus": ""+term.getProperty("Variable status")
-											});
-									});
-
-				// case 3 (TDv5): a trait class has been loaded -> get the traits of the class and display all variables that are children of the traits
-				} else if ( /^[a-z A-Z]+$/.test(IdRight) ) {
-									var traits = googlestore.query("term")
-																	.filter("parent", "=", id)
-																	.fetch();
-									traits.forEach(function(trait) {
-						var variables = googlestore.query("term")
-																.filter("parent", "=", trait.getProperty("id"))
-																	.filter("relationship", "=", "variable_of")
-																	.fetch();
-
-						variables.forEach(function(variable){
-							ret.push({
-														"id": ""+variable.getProperty("id"),
-														"name": ""+variable.getProperty("Variable name"),
-									"varStatus": ""+variable.getProperty("Variable status")
-							});
-						});
-					});
-
-				} else if ( /^\d+$/.test(IdRight) ) { // a term with a digit ID has been loaded
-					if (termEntity.getProperty("relationship") == "variable_of" ){
-						// case 4 (TDv5): id is a variable
-						ret.push({
-							"id": ""+id,
-							"name": ""+ termEntity.getProperty("Variable name"),
-								"varStatus": ""+termEntity.getProperty("Variable status"),
-							"isVariable": true
-						})
-					} else {
-					// case 5 (TDv5): the id is the id of a trait, a method or a scale -> display all variables that are children of this term
-										var variables = googlestore.query("term")
-																		.filter("parent", "=", id)
-																		.filter("relationship", "=", "variable_of")
-																		.fetch();
-										variables.forEach(function(term) {
-												ret.push({
-														"id": ""+term.getProperty("id"),
-														"name": ""+term.getProperty("Variable name"),
-									"varStatus": ""+term.getProperty("Variable status")
-												});
-										});
-					}
+				var id = matches[1];
+				if(!id) {
+					return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
 				}
 
-								// sort results by name
-								ret.sort(function (a,b) {
-									if (a.name < b.name)
-										 return -1;
-									if (a.name > b.name)
-										return 1;
-									return 0;
+				var cropId = id.split(":")[0];
+				var IdRight = id.split(":")[1];
+
+				try {
+					var ret = [];
+					var termKey = googlestore.createKey("term", id),
+						termEntity = googlestore.get(termKey);
+					if (termEntity.getProperty("obo_blob_key")){
+						// case 1 : we are on an OBO
+
+						// get crop name (used to get the variable namespace)
+						var onto = googlestore.query("ontology")
+											  .filter("ontology_id", "=", cropId)
+											  .fetch()
+						var cropName = onto[0].getProperty("ontology_name")
+
+						// get the OBO variables
+						var variables = googlestore.query("term")
+												   .filter("parent", "=", id)
+												   .filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms have "namespace: <crop>Variable"
+												   .fetch();
+
+						variables.forEach(function(term) {
+							log(term)
+							ret.push({
+								"id": "" + term.getProperty("id"),
+								"name": "" + Common.object_key_replace("undefined", null, term.getProperty("name")),
+								"varStatus": null
+							});
+						});
+					} else if ( IdRight == "ROOT" ){
+						// case 2 (TDv5): we are on ROOT -> display all variables of the onto
+						var variables = googlestore.query("term")
+												   .filter("ontology_id", "=", cropId)
+												   .filter("relationship", "=", "variable_of")
+												   .fetch();
+						variables.forEach(function(term) {
+							ret.push({
+								"id": "" + term.getProperty("id"),
+								"name": "" + Common.object_key_replace("undefined", null, term.getProperty("Variable name")),
+								"varStatus": "" + term.getProperty("Variable status")
+							});
+						});
+					// case 3 (TDv5): a trait class has been loaded -> get the traits of the class and display all variables that are children of the traits
+					} else if ( /^[a-z A-Z]+$/.test(IdRight) ) {
+						var traits = googlestore.query("term")
+												.filter("parent", "=", id)
+												.fetch();
+						traits.forEach(function(trait) {
+							var variables = googlestore.query("term")
+													   .filter("parent", "=", trait.getProperty("id"))
+													   .filter("relationship", "=", "variable_of")
+													   .fetch();
+							variables.forEach(function(variable){
+								ret.push({
+									"id": "" + variable.getProperty("id"),
+									"name": "" + Common.object_key_replace("undefined", null, variable.getProperty("Variable name")),
+									"varStatus": "" + variable.getProperty("Variable status")
 								});
-								print(response).json(ret, request.getParameter("callback"));
-						} catch (e) {
-								response.sendError(response.SC_BAD_REQUEST, e);
+							});
+						});
+					} else if ( /^\d+$/.test(IdRight) ) { // a term with a digit ID has been loaded
+						if (termEntity.getProperty("relationship") == "variable_of" ){
+							// case 4 (TDv5): id is a variable
+							ret.push({
+								"id": "" + id,
+								"name": "" + Common.object_key_replace("undefined", null, termEntity.getProperty("Variable name")),
+								"varStatus": "" + termEntity.getProperty("Variable status"),
+								"isVariable": true
+							})
+						} else {
+							// case 5 (TDv5): the id is the id of a trait, a method or a scale -> display all variables that are children of this term
+							var variables = googlestore.query("term")
+													   .filter("parent", "=", id)
+													   .filter("relationship", "=", "variable_of")
+													   .fetch();
+							variables.forEach(function(term) {
+								ret.push({
+									"id": "" + term.getProperty("id"),
+									"name": "" + Common.object_key_replace("undefined", null, term.getProperty("Variable name")),
+									"varStatus": "" + term.getProperty("Variable status")
+								});
+							});
 						}
-		}
-	},
+					}
+
+					// sort results by name
+					ret.sort(function (a,b) {
+						if (a.name < b.name)
+							 return -1;
+						if (a.name > b.name)
+							return 1;
+						return 0;
+					});
+					print(response).json(ret, request.getParameter("callback"));
+				} catch (e) {
+					response.sendError(response.SC_BAD_REQUEST, e);
+				}
+			}
+		},
 		"/get-attributes/([^/]*)/jsonrdf": {
 				get: function(request, response, matches) {
 						request.setCharacterEncoding("utf-8")
@@ -2408,86 +2406,86 @@ apejs.urls = {
 				}
 		},
 		"/get-term-parents/(.*)": {
-				get: function(request, response, matches) {
-						request.setCharacterEncoding("utf-8");
-						response.setContentType("application/json; charset=UTF-8");
-						response.setCharacterEncoding("UTF-8");
+			get: function(request, response, matches) {
+				request.setCharacterEncoding("utf-8");
+				response.setContentType("application/json; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
 
-						function getParent(arr, untouched, branch, termId) {
-								var termKey = googlestore.createKey("term", termId),
-										termEntity = googlestore.get(termKey);
+				function getParent(arr, untouched, branch, termId) {
+					var termKey = googlestore.createKey("term", termId),
+						termEntity = googlestore.get(termKey);
 
-								var parentList = termEntity.getProperty("parent");
+					var parentList = termEntity.getProperty("parent");
 
-								if(!parentList) { // reached a root term, stop
-										return;
-								}
+					if(!parentList) { // reached a root term, stop
+						return;
+					}
 
-								if(!(parentList instanceof java.util.List)) { // if it's not a list? make it
-										parentList = java.util.Arrays.asList(parentList);
-								}
+					if(!(parentList instanceof java.util.List)) { // if it's not a list? make it
+						parentList = java.util.Arrays.asList(parentList);
+					}
 
-								for(var i=0; i<parentList.size(); i++) {
-									// we have parent. get parent information
-									var parentId = parentList.get(i);
-									var parentKey = googlestore.createKey("term", parentId),
-											parentEntity = googlestore.get(parentKey);
+					for(var i=0; i<parentList.size(); i++) {
+						// we have parent. get parent information
+						var parentId = parentList.get(i);
+						var parentKey = googlestore.createKey("term", parentId),
+							parentEntity = googlestore.get(parentKey);
 
-									var id = ""+parentEntity.getProperty("id"),
-											name = parentEntity.getProperty("name");
-									var o = {
-											id: id,
-											name: ""+(name instanceof Text ? name.getValue() : name),
-											relationship: defaultRelationship(parentEntity.getProperty("relationship"))
-									};
-									if(i === 0) {
-										if(parentList.size() > 0) { // has parents
-											untouched = branch.slice(0);
-										}
-										branch.push(o);
-									} else if(i > 0) {
-										// copy all stuff from current branch
-										// slice(0) seems to make me clone the array somehow! no idea why
-										var newBranch = untouched.slice(0);
-										newBranch.push(o);
-										arr.push(newBranch);
-										branch = newBranch;
-									}
-
-									// now look for parents of this parent
-									getParent(arr, untouched, branch, id);
-								}
-						}
-
-						//var termId = matches[1].split("/")[0];
-						var termId = matches[1];
-						// start the array with the current term
-						var termKey = googlestore.createKey("term", termId),
-								termEntity = googlestore.get(termKey);
-
-						var name = termEntity.getProperty("name");
+						var id = "" + parentEntity.getProperty("id"),
+							name = Common.object_key_replace("undefined", null, parentEntity.getProperty("name"));
 						var o = {
-								id: ""+termEntity.getProperty("id"),
-								name: ""+(name instanceof Text ? name.getValue() : name),
-								relationship: defaultRelationship(termEntity.getProperty("relationship"))
+							id: id,
+							name: "" + Common.object_key_replace("undefined", null, (name instanceof Text ? name.getValue() : name)),
+							relationship: defaultRelationship(parentEntity.getProperty("relationship"))
 						};
-						var arr = [];
-						var branch = [];
-						branch.push(o);
-
-						arr.push(branch);
-
-						var untouched = branch.slice(0);
-
-						getParent(arr, untouched, branch, termId);
-
-						// reverse() so the forst element is actually the first parent (root)
-						for(var i=0; i<arr.length; i++) {
-							arr[i] = arr[i].reverse();
+						if(i === 0) {
+							if(parentList.size() > 0) { // has parents
+								untouched = branch.slice(0);
+							}
+							branch.push(o);
+						} else if(i > 0) {
+							// copy all stuff from current branch
+							// slice(0) seems to make me clone the array somehow! no idea why
+							var newBranch = untouched.slice(0);
+							newBranch.push(o);
+							arr.push(newBranch);
+							branch = newBranch;
 						}
-						print(response).json(arr, request.getParameter("callback"));
-						return arr;
+
+						// now look for parents of this parent
+						getParent(arr, untouched, branch, id);
+					}
 				}
+
+				//var termId = matches[1].split("/")[0];
+				var termId = matches[1];
+				// start the array with the current term
+				var termKey = googlestore.createKey("term", termId),
+					termEntity = googlestore.get(termKey);
+
+				var name = termEntity.getProperty("name");
+				var o = {
+					id: "" + termEntity.getProperty("id"),
+					name: "" + Common.object_key_replace("undefined", null, (name instanceof Text ? name.getValue() : name)),
+					relationship: defaultRelationship(termEntity.getProperty("relationship"))
+				};
+				var arr = [];
+				var branch = [];
+				branch.push(o);
+
+				arr.push(branch);
+
+				var untouched = branch.slice(0);
+
+				getParent(arr, untouched, branch, termId);
+
+				// reverse() so the forst element is actually the first parent (root)
+				for(var i=0; i<arr.length; i++) {
+					arr[i] = arr[i].reverse();
+				}
+				print(response).json(arr, request.getParameter("callback"));
+				return arr;
+			}
 		},
 		"/get-categories": {
 				get: function(request, response) {

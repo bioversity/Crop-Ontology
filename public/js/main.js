@@ -147,7 +147,7 @@ function findTranslation(lang, obj) {
     }
   }
   return {lang: lang, translation: translation};
-}
+};
 translate = function(currUser, value) {
   try {
     var obj = $.parseJSON(value);
@@ -159,6 +159,9 @@ translate = function(currUser, value) {
       lang = DEFAULT_LANGUAGE;
     }
     var t = findTranslation(lang, obj);
+	if(t.lang == undefined || t.lang == "undefined") {
+		t.lang = DEFAULT_LANGUAGE;
+	}
 
     return {lang: t.lang, translation: t.translation};
   } catch(e) {
@@ -1956,7 +1959,7 @@ function get_variables(id){
 	// first, remove all the variables that are displayed, if any
 	$( ".browser-content .cont .variables" ).text("");
 
-    $.getJSON("/get-variables/"+id, function(variables) {
+    $.getJSON("/get-variables/" + id, function(variables) {
 		if ( variables.length > 0 ){
 			$( ".browser-variables" ).show();
 			$( ".browser-content .cont .variables" ).show();
@@ -1966,10 +1969,10 @@ function get_variables(id){
 				$( ".browser-content .cont .variables " ).append( varButton );
 				$( ".browser-content .cont .variables .minibutton" ).addClass("selected");
 			} else {
-			  var var_button = $(".variables-button").text();
-			  if ( var_button == "show obsolete terms") { // display only non-obsolete terms
+				var var_button = $(".variables-button").text();
+				if ( var_button == "show obsolete terms") { // display only non-obsolete terms
 					for ( i in variables ){
-					  	if ( translate("EN", variables[i].varStatus).translation.toLowerCase() != "obsolete" && translate("EN", variables[i].varStatus).translation.toLowerCase() != "deprecated"){
+						if (variables[i].varStatus == null || translate("EN", variables[i].varStatus).translation.toLowerCase() != "obsolete" && translate("EN", variables[i].varStatus).translation.toLowerCase() != "deprecated"){
 							var variableName = translate(currUser, variables[i].name).translation;
 							var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
 							$( ".browser-content .cont .variables " ).append( varButton );
@@ -1977,18 +1980,17 @@ function get_variables(id){
 					}
 				} else { // display all variables
 					for ( i in variables ){
-					  var stat = translate("EN", variables[i].varStatus).translation.toLowerCase();
+						var stat = translate("EN", variables[i].varStatus).translation.toLowerCase();
 						var variableName = translate(currUser, variables[i].name).translation;
 						var varButton = "<a class='minibutton' title='"+variables[i].id+"'><span>"+ variableName +"</span></a>";
 						$( ".browser-content .cont .variables " ).append( varButton );
 					}
 				}
-			  }
-
+			}
 		}
-	// set function to get variable information
-	$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);
-    });
+		// set function to get variable information
+		$( ".browser-content .cont .variables a.minibutton" ).click(load_variable);
+	});
 };
 
 var load_variable = (function(){
