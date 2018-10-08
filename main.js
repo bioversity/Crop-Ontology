@@ -963,7 +963,7 @@ apejs.urls = {
 												   .fetch();
 
 						variables.forEach(function(term) {
-							log(term)
+							// log(term)
 							ret.push({
 								"id": "" + term.getProperty("id"),
 								"name": "" + Common.object_key_replace("undefined", null, term.getProperty("name")),
@@ -1293,36 +1293,35 @@ apejs.urls = {
 				}
 		},
 		"/remove-attribute": {
-				post: function(request, response) {
-						function err(msg) {
-								response.sendError(response.SC_BAD_REQUEST, msg);
-						}
-						// only if logged in
-						var currUser = auth.getUser(request);
-						if(!currUser)
-								return err("Not logged in");
-
-						var key = request.getParameter("key"),
-								term_id = request.getParameter("term_id");
-						if(key == "" || !key || !term_id || term_id == "")
-								return err("Missing parameters");
-
-						// get this term from it's id
-						var termKey = googlestore.createKey("term", term_id),
-								termEntity = googlestore.get(termKey);
-
-						// check if we own this term only if we're not admins
-						if(!auth.isAdmin(currUser)) {
-								var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
-										ontoEntity = googlestore.get(ontoKey);
-								if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
-										return err("You don't have the permissions to remove this attribute");
-						}
-
-						termEntity.removeProperty(key);
-						googlestore.put(termEntity);
-
+			post: function(request, response) {
+				function err(msg) {
+					response.sendError(response.SC_BAD_REQUEST, msg);
 				}
+				// only if logged in
+				var currUser = auth.getUser(request);
+				if(!currUser)
+					return err("Not logged in");
+
+				var key = request.getParameter("key"),
+						term_id = request.getParameter("term_id");
+				if(key == "" || !key || !term_id || term_id == "")
+						return err("Missing parameters");
+
+				// get this term from it's id
+				var termKey = googlestore.createKey("term", term_id),
+						termEntity = googlestore.get(termKey);
+
+				// check if we own this term only if we're not admins
+				if(!auth.isAdmin(currUser)) {
+						var ontoKey = googlestore.createKey("ontology", termEntity.getProperty("ontology_id")),
+								ontoEntity = googlestore.get(ontoKey);
+						if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+								return err("You don't have the permissions to remove this attribute");
+				}
+
+				termEntity.removeProperty(key);
+				googlestore.put(termEntity);
+			}
 		},
 		"/obo/([^/]*)": {
 				get: function(request, response, matches) {
@@ -1743,7 +1742,7 @@ apejs.urls = {
 						//response.getWriter().println('{"username":"'+username+'"}');
 				},
 
-		// check that user has been activated
+				// check that user has been activated
 				post: function(request, response) {
 						var username = request.getParameter("username"),
 								password = request.getParameter("password");
@@ -1766,78 +1765,78 @@ apejs.urls = {
 				}
 		},
 		"/register": {
-				post: function(request, response) {
-						var user = {
-								created: new java.util.Date(),
-								username: request.getParameter("username"),
-								email: request.getParameter("email"),
-								password: request.getParameter("password"),
-								name: request.getParameter("name"),
-								sirname: request.getParameter("sirname"),
-								institution: request.getParameter("institution"),
-								language: request.getParameter("language")
-						}, o = {}, error = false;
+			post: function(request, response) {
+				var user = {
+						created: new java.util.Date(),
+						username: request.getParameter("username"),
+						email: request.getParameter("email"),
+						password: request.getParameter("password"),
+						name: request.getParameter("name"),
+						sirname: request.getParameter("sirname"),
+						institution: request.getParameter("institution"),
+						language: request.getParameter("language")
+				}, o = {}, error = false;
 
-						for(var i in user)
-								if(user[i] == "") error = "Please, complete the entire form";
+				for(var i in user)
+						if(user[i] == "") error = "Please, complete the entire form";
 
-			// the user is not an admin, by default
-						user.admin = false;
-			// the user is not activated (only admin can do that using /users_admin
+				// the user is not an admin, by default
+				user.admin = false;
+				// the user is not activated (only admin can do that using /users_admin
 				user.active = false;
 
-						if(usermodel.emailExists(user.email))
-								error = "This email already exists";
+				if(usermodel.emailExists(user.email))
+						error = "This email already exists";
 
-						// check email format
-						if(!usermodel.validateEmail(user.email))
-								error = "Email is formatted incorrectly";
+				// check email format
+				if(!usermodel.validateEmail(user.email))
+						error = "Email is formatted incorrectly";
 
-						if(usermodel.usernameExists(user.username))
-								error = "This username already exists";
+				if(usermodel.usernameExists(user.username))
+						error = "This username already exists";
 
-						if(!usermodel.validUsername(user.username))
-								error = "The username is not of valid format";
+				if(!usermodel.validUsername(user.username))
+						error = "The username is not of valid format";
 
-						if(error) {
-								response.getWriter().println('{"error":"'+error+'"}');
-						} else {
-								// sha1 the password
-								user.password = usermodel.sha1(user.password);
+				if(error) {
+						response.getWriter().println('{"error":"'+error+'"}');
+				} else {
+						// sha1 the password
+						user.password = usermodel.sha1(user.password);
 
-				// store user in DB
-								var entity = googlestore.entity("user", user);
-								var userKey = googlestore.put(entity);
+						// store user in DB
+						var entity = googlestore.entity("user", user);
+						var userKey = googlestore.put(entity);
 
-				// get user id
-				var userDB = usermodel.out(entity);
-				var userid = userDB.userid;
+					// get user id
+					var userDB = usermodel.out(entity);
+					var userid = userDB.userid;
 
-				// does not log in the user until it has been activated by admin
-//				auth.login(response, user.username, user.password);
+					// does not log in the user until it has been activated by admin
+					// auth.login(response, user.username, user.password);
 
-				// send email to admin / moderator for confirmation
-				var bodyMessage	= "New user has register on " + URL + " on " + user.created  + "\n\n - Username: " + user.username  + "\n - First name: " + user.name + "\n - Last name: " + user.sirname + "\n - Host institution: " + user.institution + "\n - email: " + user.email + "\n \n Link to accept this request: " + URL + "/users_admin#" + userid
-				var from = {
-								address: "admin@cropontology-curationtool.org",
-								personal: "Crop Ontology Curation Tool"
-						};
+					// send email to admin / moderator for confirmation
+					var bodyMessage	= "New user has register on " + URL + " on " + user.created  + "\n\n - Username: " + user.username  + "\n - First name: " + user.name + "\n - Last name: " + user.sirname + "\n - Host institution: " + user.institution + "\n - email: " + user.email + "\n \n Link to accept this request: " + URL + "/users_admin#" + userid
+					var from = {
+							address: "admin@cropontology-curationtool.org",
+							personal: "Crop Ontology Curation Tool"
+					};
 
-				var to1 = {
-							address: "m.a.laporte@cgiar.org",
-								personal: "M.A Laporte"
-						};
-				var to2 = {
-							address: "e.arnaud@cgiar.org",
-								personal: "E. Arnaud"
-						};
-				email.send(from, to1, "New registration on cropontology.org", bodyMessage);
-				email.send(from, to2, "New registration on cropontology.org", bodyMessage);
+					var to1 = {
+						address: "m.a.laporte@cgiar.org",
+						personal: "M.A Laporte"
+					};
+					var to2 = {
+						address: "e.arnaud@cgiar.org",
+						personal: "E. Arnaud"
+					};
+					email.send(from, to1, "New registration on cropontology.org", bodyMessage);
+					email.send(from, to2, "New registration on cropontology.org", bodyMessage);
 
-								var message = "Thank you! <br/> You will be notified by email that your registration request has been approved by the website administrator. <br/><br/> For any enquiry, please contact admin(at)cropontology-curationtool(dot)org";
-								response.getWriter().println('{"message":"'+message+'"}');
-						}
+					var message = "Thank you! <br/> You will be notified by email that your registration request has been approved by the website administrator. <br/><br/> For any enquiry, please contact admin(at)cropontology-curationtool(dot)org";
+					response.getWriter().println('{"message":"'+message+'"}');
 				}
+			}
 		},
 		"/add-comment" : {
 				post: function(request, response) {
@@ -2074,117 +2073,130 @@ apejs.urls = {
 						blobstore.blobstoreService.serve(blobKey, response);
 				}
 		},
-		"/obo-upload" : {
-				post: function(request, response) {
-
-						function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
-
-						var currUser = auth.getUser(request);
-						if(!currUser)
-								return err("Not logged in");
-
-						var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
-								oboBlobKey = blobs.get("obofile");
-
-						if(oboBlobKey == null) {
-								return err("Something is missing. Did you fill out all the fields?");
-						}
-						try {
-								var ontologyName = request.getParameter("ontology_name"),
-										ontologySummary = request.getParameter("ontology_summary");
-
-								if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
-										return err("Something is missing. Did you fill out all the fields?");
-
-
-								// let's use BlobstoreInputStream to read more than 1mb at a time.
-								// we read and parse line by line because we don't want to allocate
-								// memory - keeping it light
-								var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
-										ontologyNameString = ""+ontologyName;
-
-								try {
-										oboBlobKeyString = JSON.parse(oboBlobKeyString);
-										for(var i in oboBlobKeyString) {
-												oboBlobKeyString = oboBlobKeyString[i];
-										}
-								} catch(e) {}
-
-								// if(typeof oboBlobKeyString === 'object'){
-								//     oboBlobKeyString = ""+oboBlobKeyString[Object.keys(oboBlobKeyString)[0]];
-								// }
-
-								var first = true,
-										ontologyId = 0,
-										stop = false;
-								blobstore.readLine(oboBlobKey, function(line) {
-										if(stop) return;
-										jsonobo.findTerm(line, function(term) { // the callback is called when a complete Term is found
-												// let's safely assume the first term we find contains
-												// the ontology id
-												if(first) {
-														var split = term.id.split(":");
-														ontologyId = split[0];
-
-														first = false;
-
-														// check if this ontoId already exists
-														// (of course only runs the first time)
-														try {
-																var ontoKey = googlestore.createKey("ontology", ontologyId);
-																var ontoEntity = googlestore.get(ontoKey);
-																stop = true;
-														} catch (e) {
-																// if we get here, ontology doesn't exist
-																stop = false;
-														}
-												}
-
-												if(stop) return;
-
-												// need a reference to the obo we just created
-												term.obo_blob_key = oboBlobKeyString;
-												// also need reference to the ontology
-												term.ontology_name = ontologyNameString;
-
-												// use this terms ontology ID, if it's different from the rest
-												// it will not show up - it's the OBO's fault
-												term.ontology_id = ontologyId;
-
-												if(!term.parent) term.parent = null;
-
-
-												// we found a term, let's save it in datastore.
-												// XXX, the .put() in here is expensive - takes more than 30secs
-												// spawn a Task or something else
-												// pass the data as a JSON string
-												taskqueue.createTask("/create-term", JSON.stringify(term));
-										});
-								});
-
-								if(stop) {
-										return err("Ontology ID already exists");
-								}
-
-								// create the ontology
-								var ontoEntity = googlestore.entity("ontology", ontologyId, {
-										created_at: new java.util.Date(),
-										user_key: currUser.getKey(),
-										ontology_id: ontologyId,
-										ontology_name: ontologyName,
-										ontology_summary: ontologySummary,
-										category: request.getParameter("category")
-								});
-
-								googlestore.put(ontoEntity);
-								memcache.clearAll();
-
-								return err("");
-						} catch(e) {
-								return err(e );
-						}
-
+		"/tasks": {
+			get: function(request, response) {
+				if(memcache.get("tasks") !== null) {
+					response.getWriter().println(taskqueue.getTasks());
+				} else {
+					response.getWriter().println("0");
 				}
+			}
+		},
+		"/obo-upload" : {
+			post: function(request, response) {
+				function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
+
+				var currUser = auth.getUser(request);
+				if(!currUser)
+					return err("Not logged in");
+
+				var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+					oboBlobKey = blobs.get("obofile");
+
+				if(oboBlobKey == null) {
+					return err("Something is missing. Did you fill out all the fields?");
+				}
+				try {
+					var ontologyName = request.getParameter("ontology_name"),
+						ontologySummary = request.getParameter("ontology_summary");
+
+					if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
+						return err("Something is missing. Did you fill out all the fields?");
+
+					// let's use BlobstoreInputStream to read more than 1mb at a time.
+					// we read and parse line by line because we don't want to allocate
+					// memory - keeping it light
+					var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
+						ontologyNameString = ""+ontologyName;
+
+					try {
+						oboBlobKeyString = JSON.parse(oboBlobKeyString);
+						for(var i in oboBlobKeyString) {
+							oboBlobKeyString = oboBlobKeyString[i];
+						}
+					} catch(e) {}
+
+					// if(typeof oboBlobKeyString === 'object'){
+					//     oboBlobKeyString = ""+oboBlobKeyString[Object.keys(oboBlobKeyString)[0]];
+					// }
+
+					var first = true,
+						ontologyId = 0,
+						stop = false,
+						tasks = memcache.get("tasks"); // the resource is an object and parseInt() returns NaN!
+
+					blobstore.readLine(oboBlobKey, function(line) {
+						if(stop) return;
+						jsonobo.findTerm(line, function(term) {
+							// the callback is called when a complete Term is found
+							// let's safely assume the first term we find contains
+							// the ontology id
+							if(first) {
+								var split = term.id.split(":");
+								ontologyId = split[0];
+								first = false;
+
+								// check if this ontoId already exists
+								// (of course only runs the first time)
+								try {
+									var ontoKey = googlestore.createKey("ontology", ontologyId);
+									var ontoEntity = googlestore.get(ontoKey);
+									stop = true;
+								} catch (e) {
+									// if we get here, ontology doesn't exist
+									stop = false;
+								}
+							}
+
+							if(stop) return;
+
+							// need a reference to the obo we just created
+							term.obo_blob_key = oboBlobKeyString;
+							// also need reference to the ontology
+							term.ontology_name = ontologyNameString;
+
+							// use this terms ontology ID, if it's different from the rest
+							// it will not show up - it's the OBO's fault
+							term.ontology_id = ontologyId;
+
+							if(!term.parent) term.parent = null;
+
+							// we found a term, let's save it in datastore.
+							// XXX, the .put() in here is expensive - takes more than 30secs
+							// spawn a Task or something else
+							// pass the data as a JSON string
+							taskqueue.createTask("/create-term", JSON.stringify(term));
+							log("---------------------------------------")
+							log(tasks);
+							log(typeof tasks); // Object?!
+							// tasks--;
+							// log(tasks);
+							// memcache.put("tasks", tasks);
+						});
+					});
+
+					if(stop) {
+						return err("Ontology ID already exists");
+					}
+
+					// create the ontology
+					var ontoEntity = googlestore.entity("ontology", ontologyId, {
+							created_at: new java.util.Date(),
+							user_key: currUser.getKey(),
+							ontology_id: ontologyId,
+							ontology_name: ontologyName,
+							ontology_summary: ontologySummary,
+							category: request.getParameter("category")
+					});
+
+					googlestore.put(ontoEntity);
+					// memcache.clearAll();
+
+					return err("");
+				} catch(e) {
+					return err(e );
+				}
+			}
 		},
 		"/obo-upload-url": {
 				get: function(request, response) {
@@ -2593,47 +2605,47 @@ apejs.urls = {
 				}
 		},
 		"/edit_profile": {
-				post: function(request, response) {
-			//currUser : user from DB (google format)
-						var currUser = auth.getUser(request);
-			if(!currUser){
-								return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-				} else {
-				//user : user from DB (json)
-				var user = usermodel.outEdit(currUser);
-				// userEdit : user sent from edit profile (json)
-				var userEdit = {
-					name: request.getParameter("name"),
-					sirname: request.getParameter("sirname"),
-					institution: request.getParameter("institution")
-				}
-				for (var i in userEdit) {
-					if (userEdit[i] != null && userEdit[i] != user[i]){
-						// let's edit the profile
-									currUser.setProperty(i, userEdit[i]);
-									googlestore.put(currUser);
-						// let's refresh
-						var user = usermodel.outEdit(currUser);
+			post: function(request, response) {
+				//currUser : user from DB (google format)
+							var currUser = auth.getUser(request);
+				if(!currUser){
+									return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+					} else {
+					//user : user from DB (json)
+					var user = usermodel.outEdit(currUser);
+					// userEdit : user sent from edit profile (json)
+					var userEdit = {
+						name: request.getParameter("name"),
+						sirname: request.getParameter("sirname"),
+						institution: request.getParameter("institution")
 					}
-				}
-				print(response).json(user);
-				}
-		}
+					for (var i in userEdit) {
+						if (userEdit[i] != null && userEdit[i] != user[i]){
+							// let's edit the profile
+										currUser.setProperty(i, userEdit[i]);
+										googlestore.put(currUser);
+							// let's refresh
+							var user = usermodel.outEdit(currUser);
+						}
+					}
+					print(response).json(user);
+					}
+			}
 		},
 		"/users_admin": {
-				get: function(request, response) {
-	// only admin can access this page
-						var currUser = auth.getUser(request);
-						if(!currUser){
-								return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-			}else if (currUser.getProperty("admin") == false){
+			get: function(request, response) {
+				// only admin can access this page
+				var currUser = auth.getUser(request);
+				if(!currUser){
+					return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+				}else if (currUser.getProperty("admin") == false){
 					return response.sendError(response.SC_BAD_REQUEST, "not admin");
-			} else {
-							var html = renderIndex("skins/users_admin.html");
-							print(response).text(html);
-			}
-				},
-				post: function(request, response) {
+				} else {
+					var html = renderIndex("skins/users_admin.html");
+					print(response).text(html);
+				}
+			},
+			post: function(request, response) {
 						try {
 								var users = googlestore.query("user")
 														.sort("username", "ASC")
@@ -2653,90 +2665,90 @@ apejs.urls = {
 				}
 		},
 		"/activate_user": {
-		post: function(request, response){
-			// only admin can activate users
-					var currUser = auth.getUser(request);
-					if(!currUser){
-						return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-			}else if (currUser.getProperty("admin") == false){
-				return response.sendError(response.SC_BAD_REQUEST, "not admin");
-			} else {
-					var userid = request.getParameter("userId");
-					var key = googlestore.createKey("user", parseInt(userid, 10));
-					var user = googlestore.get(key);
-
-					var activate = "" + request.getParameter("doActivate");
-					var sendEmail = "" + request.getParameter("sendEmail");
-			if ( activate == "true" ) {
-					user.setProperty("active", true);
-				googlestore.put(user);
-
-				// get user info
-				var userjson = usermodel.outadmin(user);
-
-				// Send email to tell user that he has been activated
-				if ( sendEmail == "true" ){
-					var from = {
-											address: "admin@cropontology-curationtool.org",
-											personal: "Crop Ontology Curation Tool"
-									};
-					var to = {
-											address: "" + userjson.email,
-											personal: "" + userjson.name + " " + userjson.sirname
-									};
-
-					email.send(from, to, "Welcome to "+ URL , "Dear " + userjson.name + ",\n\nFollowing on from your registration on " + URL + " (" + userjson.created + "), we are happy to welcome you in the Crop Ontology community. Your profile has been approved and you can now log in.\n\nYour details are: \n - Username: " + userjson.username + "\n - First name: " + userjson.name + "\n - Last name: " + userjson.sirname + "\n - Host institution: " + userjson.institution +"\n\nBest Regards,\nThe "+ URL + " administrator");
-				}
-
-			} else {
-					user.setProperty("active", false);
-				googlestore.put(user);
-			}
-
-			// refreshes the users' properties
-			var userAfter = usermodel.outadmin(user);
-
-			// passes new active status to client to change to update the table
-				print(response).json({
-				activeStatus: userAfter.active
-			});
-
-			}
-		}
-		},
-	"/delete_user": {
-		post: function(request, response){
-			// only admin can activate users
-					var currUser = auth.getUser(request);
-					if(!currUser){
-						return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-			}else if (currUser.getProperty("admin") == false){
-				return response.sendError(response.SC_BAD_REQUEST, "not admin");
-			} else {
+			post: function(request, response){
+				// only admin can activate users
+						var currUser = auth.getUser(request);
+						if(!currUser){
+							return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+				}else if (currUser.getProperty("admin") == false){
+					return response.sendError(response.SC_BAD_REQUEST, "not admin");
+				} else {
 						var userid = request.getParameter("userId");
 						var key = googlestore.createKey("user", parseInt(userid, 10));
 						var user = googlestore.get(key);
-				var userConfirm = usermodel.outadmin(user);
 
-				// To prevent from accidently deleting a user, users that are active cannot be deleted
-				if (userConfirm.active == "true" ){
-						print(response).json({
-						doDelete: "false",
-						username: userConfirm.username
-					});
+						var activate = "" + request.getParameter("doActivate");
+						var sendEmail = "" + request.getParameter("sendEmail");
+				if ( activate == "true" ) {
+						user.setProperty("active", true);
+					googlestore.put(user);
+
+					// get user info
+					var userjson = usermodel.outadmin(user);
+
+					// Send email to tell user that he has been activated
+					if ( sendEmail == "true" ){
+						var from = {
+												address: "admin@cropontology-curationtool.org",
+												personal: "Crop Ontology Curation Tool"
+										};
+						var to = {
+												address: "" + userjson.email,
+												personal: "" + userjson.name + " " + userjson.sirname
+										};
+
+						email.send(from, to, "Welcome to "+ URL , "Dear " + userjson.name + ",\n\nFollowing on from your registration on " + URL + " (" + userjson.created + "), we are happy to welcome you in the Crop Ontology community. Your profile has been approved and you can now log in.\n\nYour details are: \n - Username: " + userjson.username + "\n - First name: " + userjson.name + "\n - Last name: " + userjson.sirname + "\n - Host institution: " + userjson.institution +"\n\nBest Regards,\nThe "+ URL + " administrator");
+					}
+
 				} else {
-					// deletes the user
-								googlestore.del(key);
+						user.setProperty("active", false);
+					googlestore.put(user);
+				}
 
-					// sends back info bout the deleted user
-						print(response).json({
-						userid: userConfirm.userid,
-						username: userConfirm.username
-					});
+				// refreshes the users' properties
+				var userAfter = usermodel.outadmin(user);
+
+				// passes new active status to client to change to update the table
+					print(response).json({
+					activeStatus: userAfter.active
+				});
+
 				}
 			}
-		}
-	},
+		},
+		"/delete_user": {
+			post: function(request, response){
+				// only admin can activate users
+						var currUser = auth.getUser(request);
+						if(!currUser){
+							return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+				}else if (currUser.getProperty("admin") == false){
+					return response.sendError(response.SC_BAD_REQUEST, "not admin");
+				} else {
+							var userid = request.getParameter("userId");
+							var key = googlestore.createKey("user", parseInt(userid, 10));
+							var user = googlestore.get(key);
+					var userConfirm = usermodel.outadmin(user);
+
+					// To prevent from accidently deleting a user, users that are active cannot be deleted
+					if (userConfirm.active == "true" ){
+							print(response).json({
+							doDelete: "false",
+							username: userConfirm.username
+						});
+					} else {
+						// deletes the user
+									googlestore.del(key);
+
+						// sends back info bout the deleted user
+							print(response).json({
+							userid: userConfirm.userid,
+							username: userConfirm.username
+						});
+					}
+				}
+			}
+		},
 		"/users": {
 				get: function(request, response) {
 						try {
@@ -3144,7 +3156,6 @@ apejs.urls = {
 						if(isblank(ontoId)) return error(response, "Invalid parameter");
 
 						/*
-zz
 						var excels = {
 								'CO_334': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Cassava%2020120524%20EN-Default%20trait%20set%20english.xlsx',
 								'CO_324': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Sorghum%2020130121%20EN%20Trait%20Dicitonary%20ver%204.xls',
@@ -3778,442 +3789,443 @@ zz
 		}
 	},
 	"/brapi/v1/ontologies":{
-				get: function(request, response) {
-						if(request.getParameter("page")){
-								var filterPage = request.getParameter("page");
-						}else{
-								var filterPage = 0;
-						}
-						if(request.getParameter("pageSize")){
-								var filterPageSize = request.getParameter("pageSize");
-						}else{
-								var filterPageSize = 10;
-						}
-
-						var offset = filterPage * filterPageSize;
-						var limit = filterPageSize;
-
-						var offset = filterPage * filterPageSize;
-						var limit = filterPageSize;
-
-						var ontologyTot = googlestore.query("ontology")
-																.filter("category", "=", "300-499 Phenotype and Trait Ontology")
-																.fetch();
-						var ontologies = googlestore.query("ontology")
-																.filter("category", "=", "300-499 Phenotype and Trait Ontology")
-																.offset(offset)
-																.fetch(limit);
-
-						// prepare output object
-						var ret={};
-						ret["metadata"] = {
-								"pagination":{
-										 "pageSize": parseInt(filterPageSize),
-										 "currentPage": parseInt(filterPage),
-										 "totalCount": ontologyTot.length,
-										 "totalPages": parseInt(ontologyTot.length/filterPageSize)+1
-								},
-								"status": [],
-									 "datafiles": []
-						};
-						ret["result"] = {"data" : []};
-
-						ontologies.forEach(function(ontology){
-								// userId = ontology.getProperty("user_key");
-								// var regExp = /\(([^)]+)\)/;
-								// var matches = regExp.exec(userId);
-								// var user = googlestore.query("user")
-								//                 .filter("ID/Name", "=", matches[0].replace("(", "").replace(")", ""))
-								//                 .fetch();
-								var obj = {
-										"ontologyDbId": ontology.getProperty("ontology_id")+'',
-										"ontologyName": ontology.getProperty("ontology_name")+'',
-										"authors": null,
-										"version": ""+ontology.getProperty("created_at"),
-										"description": ontology.getProperty("ontology_summary")+'',
-										"copyright": null,
-										"licence": "CC BY-SA 4.0"
-								};
-								ret["result"]["data"].push(obj);
-
-						});
-
-						print(response).json(ret);
-
-				}
-		},
-		"/brapi/v1/variables-search":{
-				post: function(request, response) {
-							var jb = new StringBuffer();
-							var line = null;
-							try {
-								var reader = request.getReader();
-								while ((line = reader.readLine()) != null)
-									jb.append(line);
-							} catch (e) { /*report an error*/ }
-
-							try {
-								var obj = JSON.parse(jb);
-							} catch (e) {
-								// crash and burn
-								throw "Error parsing JSON request string";
-							}
-
-
-						if(request.getParameter("page") || obj.page ){
-								var filterPage = request.getParameter("page") || obj.page;
-						}else{
-								var filterPage = 0;
-						}
-						if(request.getParameter("pageSize") || obj.pageSize){
-								var filterPageSize = request.getParameter("pageSize") || obj.pageSize;
-						}else{
-								var filterPageSize = 10;
-						}
-
-						var offset = filterPage * filterPageSize;
-						var limit = filterPageSize;
-
-						var offset = filterPage * filterPageSize;
-						var limit = filterPageSize;
-
-							var ret={};
-								ret["metadata"] = {
-										"pagination":{
-												 "pageSize": parseInt(filterPageSize),
-												 "currentPage": parseInt(filterPage),
-												 "totalCount": 0,
-												 "totalPages": 1
-										},
-										"status": [],
-											 "datafiles": []
-								};
-								ret["result"] = {"data" : []};
-
-							print(response).json(ret);
-
-				}
-		},
-		"/brapi/v1/calls":{
-				get: function(request, response) {
-						if(request.getParameter("page")){
-								var filterPage = request.getParameter("page");
-						}else{
-								var filterPage = 0;
-						}
-						if(request.getParameter("pageSize")){
-								var filterPageSize = request.getParameter("pageSize");
-						}else{
-								var filterPageSize = 10;
-						}
-
-						var offset = filterPage * filterPageSize;
-						var limit = filterPageSize;
-
-						var offset = filterPage * filterPageSize;
-						var limit = filterPageSize;
-
-						var totCall = 6;
-
-						// prepare output object
-						var ret={};
-						ret["metadata"] = {
-								"pagination":{
-										 "pageSize": parseInt(filterPageSize),
-										 "currentPage": parseInt(filterPage),
-										 "totalCount": parseInt(totCall),
-										 "totalPages": parseInt(totCall/filterPageSize)+1
-								},
-								"status": [],
-									 "datafiles": []
-						};
-						ret["result"] = {"data" : []};
-						ret["result"]["data"] = [
-							{ "call": "traits", "datatypes" : ["json"], "methods" : ["GET"] },
-							{ "call": "traits/{traitDbId}" , "datatypes" : ["json"], "methods" : ["GET"] },
-							{ "call": "variables/datatypes", "datatypes": ["json"], "methods": ["GET"] },
-							{ "call": "variables", "datatypes" : ["json"], "methods" : ["GET"] },
-							{ "call": "variables/{observationVariableDbId}", "datatypes" : ["json"], "methods" : ["GET"] },
-							{ "call": "ontologies", "datatypes" : [ "json" ], "methods" : ["GET"] }
-						];
-
-
-						print(response).json(ret);
-
-				}
-		},
-		"/ontos_stats":{
-				get: function(request, response) {
-						request.setCharacterEncoding("utf-8");
-						response.setContentType("application/json; charset=UTF-8");
-						response.setCharacterEncoding("UTF-8");
-
-			var ret = [];
-			var onto_type;
-
-			var ontologies = googlestore.query("ontology")
-																.filter("category", "=", "300-499 Phenotype and Trait Ontology")
-									.fetch();
-			ontologies.forEach(function(ontology){
-
-				// GET onto name
-				var onto_id = ontology.getProperty("ontology_id");
-				var onto_name = ontology.getProperty("ontology_name");
-
-				// GET total number of terms
-							var terms = googlestore.query("term")
-																		.filter("ontology_id", "=", onto_id)
-																		.fetch();
-				var count_terms=0;
-				var count_vars=0;
-				var count_traits=0;
-				var count_methods=0;
-				var count_scales=0;
-				terms.forEach(function(term){
-					count_terms++;
-					if (term.getProperty("relationship") == "variable_of" || //TD5
-									term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Variable\"}"){// OBOvar (variable terms have the namespace: <crop>Variable)
-						// COUNT VARIABLES
-						count_vars++;
-					} else if (term.getProperty("Trait ID") || //TD5
-								term.getProperty("Trait ID for modification, Blank for New") || //TD4
-											term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Trait\"}"){// OBOvar. (trait terms have the namespace: <crop>Trait)
-						// COUNT TRAITS
-						count_traits++;
-					} else if (term.getProperty("Method ID") || //TD5
-								term.getProperty("Method ID for modification, Blank for New") || //TD4
-											term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Method\"}"){// OBOvar. (method terms have the namespace: <crop>Method)
-						// COUNT METHODS
-						count_methods++;
-					} else if (term.getProperty("Scale ID") || //TD5
-								term.getProperty("Scale ID for modification, Blank for New") || //TD4
-											term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Scale\"}"){// OBOvar. (scale terms have the namespace: <crop>Scale)
-						// COUNT SCALES
-						count_scales++;
-					}
-				});
-				// GET the type of ontology
-				var onto_type;
-				var vars_TD5 = googlestore.query("term")
-															.filter("ontology_id", "=", onto_id)
-															.filter("relationship", "=", "variable_of")
-															.fetch(1);
-				if(vars_TD5.length > 0){
-						// TDv5
-					onto_type = "TDv5";
+		get: function(request, response) {
+				if(request.getParameter("page")){
+						var filterPage = request.getParameter("page");
 				}else{
-								var traits_TD4 = googlestore.query("term")
-																.filter("ontology_id", "=", onto_id)
-																.filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
-																.fetch(1);
-					if (traits_TD4.length > 0) {
-//						//TDv4
-						onto_type = "TDv4";
-					} else {
-								var vars_OBO = googlestore.query("term")
-														.filter("ontology_id", "=", onto_id)
-														.filter("obo_blob_key", "!=", null)
-												.filter("namespace", "=", "{\"undefined\":\""+ onto_name + "Variable\"}")// NB the OBOs that have variables store the variable terms with the "namespace: <crop>Variable"
-														.fetch(1);
-						if (vars_OBO.length>0){
-							//OBO with var
-							onto_type = "OBOvar"
-						} else {
-								// OBO (any OBO)
-							onto_type = "OBO";
-						}
-					}
+						var filterPage = 0;
 				}
-							ret.push({
-						"Ontology ID":""+onto_id,
-					"Ontology name":""+onto_name,
-					"Ontology file": onto_type,
-					"Number of terms": ""+count_terms,
-					"Number of variables": ""+count_vars,
-						"Number of traits": ""+count_traits,
-						"Number of methods": ""+count_methods,
-						"Number of scales": ""+count_scales
+				if(request.getParameter("pageSize")){
+						var filterPageSize = request.getParameter("pageSize");
+				}else{
+						var filterPageSize = 10;
+				}
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
+
+				var ontologyTot = googlestore.query("ontology")
+														.filter("category", "=", "300-499 Phenotype and Trait Ontology")
+														.fetch();
+				var ontologies = googlestore.query("ontology")
+														.filter("category", "=", "300-499 Phenotype and Trait Ontology")
+														.offset(offset)
+														.fetch(limit);
+
+				// prepare output object
+				var ret={};
+				ret["metadata"] = {
+						"pagination":{
+								 "pageSize": parseInt(filterPageSize),
+								 "currentPage": parseInt(filterPage),
+								 "totalCount": ontologyTot.length,
+								 "totalPages": parseInt(ontologyTot.length/filterPageSize)+1
+						},
+						"status": [],
+							 "datafiles": []
+				};
+				ret["result"] = {"data" : []};
+
+				ontologies.forEach(function(ontology){
+						// userId = ontology.getProperty("user_key");
+						// var regExp = /\(([^)]+)\)/;
+						// var matches = regExp.exec(userId);
+						// var user = googlestore.query("user")
+						//                 .filter("ID/Name", "=", matches[0].replace("(", "").replace(")", ""))
+						//                 .fetch();
+						var obj = {
+								"ontologyDbId": ontology.getProperty("ontology_id")+'',
+								"ontologyName": ontology.getProperty("ontology_name")+'',
+								"authors": null,
+								"version": ""+ontology.getProperty("created_at"),
+								"description": ontology.getProperty("ontology_summary")+'',
+								"copyright": null,
+								"licence": "CC BY-SA 4.0"
+						};
+						ret["result"]["data"].push(obj);
+
 				});
-			});
 
-			// SUMMARY ALL CROPS
-			var sum_all_crops = [];
-			var terms_tot=vars_tot=traits_tot=methods_tot=scales_tot=0;
-			var CO_terms_tot=CO_vars_tot=CO_traits_tot=CO_methods_tot=CO_scales_tot=0;
-			var nonCO_terms_tot=nonCO_vars_tot=nonCO_traits_tot=nonCO_methods_tot=nonCO_scales_tot=0;
-			var crop_list=[];
-			var CO_crop_list=[];
-			var nonCO_crop_list=[];
-			var files = [];
-			var files_CO = [];
+				print(response).json(ret);
 
-			var i = i_CO = 0;
-			while (i<ret.length ){
-
-					// Stats all crops
-				crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
-				terms_tot = terms_tot + parseInt(ret[i]["Number of terms"]);
-				vars_tot = vars_tot + parseInt(ret[i]["Number of variables"]);
-				traits_tot = traits_tot + parseInt(ret[i]["Number of traits"]);
-				methods_tot = methods_tot + parseInt(ret[i]["Number of methods"]);
-				scales_tot = methods_tot + parseInt(ret[i]["Number of scales"]);
-				files.push(ret[i]["Ontology file"]);
-
-				if ( ret[i]["Ontology ID"].indexOf("CO_") != -1) {
-
-					// Stats CO ontologies
-						CO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
-					CO_terms_tot = CO_terms_tot + parseInt(ret[i]["Number of terms"]);
-					CO_vars_tot = CO_vars_tot + parseInt(ret[i]["Number of variables"]);
-					CO_traits_tot = CO_traits_tot + parseInt(ret[i]["Number of traits"]);
-					CO_methods_tot = CO_methods_tot + parseInt(ret[i]["Number of methods"]);
-					CO_scales_tot = CO_methods_tot + parseInt(ret[i]["Number of scales"]);
-					files_CO.push(ret[i]["Ontology file"]);
-					i_CO++;
-
-				} else {
-
-					// Stats non CO ontologies
-						nonCO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
-					nonCO_terms_tot = nonCO_terms_tot + parseInt(ret[i]["Number of terms"]);
-					nonCO_vars_tot = nonCO_vars_tot + parseInt(ret[i]["Number of variables"]);
-					nonCO_traits_tot = nonCO_traits_tot + parseInt(ret[i]["Number of traits"]);
-					nonCO_methods_tot = nonCO_methods_tot + parseInt(ret[i]["Number of methods"]);
-					nonCO_scales_tot = nonCO_methods_tot + parseInt(ret[i]["Number of scales"]);
-				}
-				i++;
-				}
-
-			// export
-			var sum_all_crops = {
-				"Total number of terms":""+terms_tot,
-				"Total number of variables":""+vars_tot,
-				"Total number of traits":""+traits_tot,
-				"Total number of methods":""+methods_tot,
-				"Total number of scales":""+scales_tot,
-				"Crops":crop_list,
-				"Number of ontologies": ""+i,
-				"Files":{
-				"TDv4": "" + (files.toString().match(/TDv4/g) || []).length,
-				"TDv5": "" + (files.toString().match(/TDv5/g) || []).length,
-				"OBOvar": "" + (files.toString().match(/OBOvar/g) || []).length,
-				"OBO": "" + (files.toString().match(/\bOBO\b/g) || []).length
-				}
-			};
-			var sum_CO_crops = {
-				"Total number of terms":""+CO_terms_tot,
-				"Total number of variables":""+CO_vars_tot,
-				"Total number of traits":""+CO_traits_tot,
-				"Total number of methods":""+CO_methods_tot,
-				"Total number of scales":""+CO_scales_tot,
-				"Crops":CO_crop_list,
-				"Number of ontologies":""+i_CO,
-				"Files":{
-				"TDv4": "" + (files_CO.toString().match(/TDv4/g) || []).length,
-				"TDv5": "" + (files_CO.toString().match(/TDv5/g) || []).length,
-				"OBOvar": "" + (files_CO.toString().match(/OBOvar/g) || []).length,
-				"OBO": "" + (files_CO.toString().match(/\bOBO\b/g) || []).length
-				}
-			};
-			var sum_non_CO_crops = {
-				"Total number of terms":""+nonCO_terms_tot,
-				"Total number of variables":""+nonCO_vars_tot,
-				"Total number of traits":""+nonCO_traits_tot,
-				"Total number of methods":""+nonCO_methods_tot,
-				"Total number of scales":""+nonCO_scales_tot,
-				"Crops":nonCO_crop_list,
-				"Number of ontologies":""+ i - i_CO,
-				"Files":{
-				"TDv4":""+sum_all_crops["Files"]["TDv4"] - sum_CO_crops["Files"]["TDv4"],
-				"TDv5":""+sum_all_crops["Files"]["TDv5"] - sum_CO_crops["Files"]["TDv5"],
-				"OBOvar":""+sum_all_crops["Files"]["OBOvar"] - sum_CO_crops["Files"]["OBOvar"],
-				"OBO":""+sum_all_crops["Files"]["OBO"] - sum_CO_crops["Files"]["OBO"]
-				}
-			};
-
-			var out = {
-				"summary CO crops": sum_CO_crops,
-				"summary non CO crops": sum_non_CO_crops,
-				"summary all crops": sum_all_crops,
-				"summary per crop":ret
-			};
-						print(response).json(out, request.getParameter("callback"));
 		}
 	},
+	"/brapi/v1/variables-search":{
+		post: function(request, response) {
+					var jb = new StringBuffer();
+					var line = null;
+					try {
+						var reader = request.getReader();
+						while ((line = reader.readLine()) != null)
+							jb.append(line);
+					} catch (e) { /*report an error*/ }
+
+					try {
+						var obj = JSON.parse(jb);
+					} catch (e) {
+						// crash and burn
+						throw "Error parsing JSON request string";
+					}
+
+
+				if(request.getParameter("page") || obj.page ){
+						var filterPage = request.getParameter("page") || obj.page;
+				}else{
+						var filterPage = 0;
+				}
+				if(request.getParameter("pageSize") || obj.pageSize){
+						var filterPageSize = request.getParameter("pageSize") || obj.pageSize;
+				}else{
+						var filterPageSize = 10;
+				}
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
+
+					var ret={};
+						ret["metadata"] = {
+								"pagination":{
+										 "pageSize": parseInt(filterPageSize),
+										 "currentPage": parseInt(filterPage),
+										 "totalCount": 0,
+										 "totalPages": 1
+								},
+								"status": [],
+									 "datafiles": []
+						};
+						ret["result"] = {"data" : []};
+
+					print(response).json(ret);
+
+		}
+	},
+	"/brapi/v1/calls":{
+		get: function(request, response) {
+				if(request.getParameter("page")){
+						var filterPage = request.getParameter("page");
+				}else{
+						var filterPage = 0;
+				}
+				if(request.getParameter("pageSize")){
+						var filterPageSize = request.getParameter("pageSize");
+				}else{
+						var filterPageSize = 10;
+				}
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
+
+				var offset = filterPage * filterPageSize;
+				var limit = filterPageSize;
+
+				var totCall = 6;
+
+				// prepare output object
+				var ret={};
+				ret["metadata"] = {
+						"pagination":{
+								 "pageSize": parseInt(filterPageSize),
+								 "currentPage": parseInt(filterPage),
+								 "totalCount": parseInt(totCall),
+								 "totalPages": parseInt(totCall/filterPageSize)+1
+						},
+						"status": [],
+							 "datafiles": []
+				};
+				ret["result"] = {"data" : []};
+				ret["result"]["data"] = [
+					{ "call": "traits", "datatypes" : ["json"], "methods" : ["GET"] },
+					{ "call": "traits/{traitDbId}" , "datatypes" : ["json"], "methods" : ["GET"] },
+					{ "call": "variables/datatypes", "datatypes": ["json"], "methods": ["GET"] },
+					{ "call": "variables", "datatypes" : ["json"], "methods" : ["GET"] },
+					{ "call": "variables/{observationVariableDbId}", "datatypes" : ["json"], "methods" : ["GET"] },
+					{ "call": "ontologies", "datatypes" : [ "json" ], "methods" : ["GET"] }
+				];
+
+
+				print(response).json(ret);
+
+		}
+	},
+
+		"/ontos_stats":{
+			get: function(request, response) {
+				request.setCharacterEncoding("utf-8");
+				response.setContentType("application/json; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+
+				var ret = [];
+				var onto_type;
+
+				var ontologies = googlestore.query("ontology")
+																	.filter("category", "=", "300-499 Phenotype and Trait Ontology")
+										.fetch();
+				ontologies.forEach(function(ontology){
+
+					// GET onto name
+					var onto_id = ontology.getProperty("ontology_id");
+					var onto_name = ontology.getProperty("ontology_name");
+
+					// GET total number of terms
+								var terms = googlestore.query("term")
+																			.filter("ontology_id", "=", onto_id)
+																			.fetch();
+					var count_terms=0;
+					var count_vars=0;
+					var count_traits=0;
+					var count_methods=0;
+					var count_scales=0;
+					terms.forEach(function(term){
+						count_terms++;
+						if (term.getProperty("relationship") == "variable_of" || //TD5
+										term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Variable\"}"){// OBOvar (variable terms have the namespace: <crop>Variable)
+							// COUNT VARIABLES
+							count_vars++;
+						} else if (term.getProperty("Trait ID") || //TD5
+									term.getProperty("Trait ID for modification, Blank for New") || //TD4
+												term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Trait\"}"){// OBOvar. (trait terms have the namespace: <crop>Trait)
+							// COUNT TRAITS
+							count_traits++;
+						} else if (term.getProperty("Method ID") || //TD5
+									term.getProperty("Method ID for modification, Blank for New") || //TD4
+												term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Method\"}"){// OBOvar. (method terms have the namespace: <crop>Method)
+							// COUNT METHODS
+							count_methods++;
+						} else if (term.getProperty("Scale ID") || //TD5
+									term.getProperty("Scale ID for modification, Blank for New") || //TD4
+												term.getProperty("namespace") == "{\"undefined\":\""+ onto_name + "Scale\"}"){// OBOvar. (scale terms have the namespace: <crop>Scale)
+							// COUNT SCALES
+							count_scales++;
+						}
+					});
+					// GET the type of ontology
+					var onto_type;
+					var vars_TD5 = googlestore.query("term")
+																.filter("ontology_id", "=", onto_id)
+																.filter("relationship", "=", "variable_of")
+																.fetch(1);
+					if(vars_TD5.length > 0){
+							// TDv5
+						onto_type = "TDv5";
+					}else{
+									var traits_TD4 = googlestore.query("term")
+																	.filter("ontology_id", "=", onto_id)
+																	.filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
+																	.fetch(1);
+						if (traits_TD4.length > 0) {
+							//TDv4
+							onto_type = "TDv4";
+						} else {
+									var vars_OBO = googlestore.query("term")
+															.filter("ontology_id", "=", onto_id)
+															.filter("obo_blob_key", "!=", null)
+													.filter("namespace", "=", "{\"undefined\":\""+ onto_name + "Variable\"}")// NB the OBOs that have variables store the variable terms with the "namespace: <crop>Variable"
+															.fetch(1);
+							if (vars_OBO.length>0){
+								//OBO with var
+								onto_type = "OBOvar"
+							} else {
+									// OBO (any OBO)
+								onto_type = "OBO";
+							}
+						}
+					}
+								ret.push({
+							"Ontology ID":""+onto_id,
+						"Ontology name":""+onto_name,
+						"Ontology file": onto_type,
+						"Number of terms": ""+count_terms,
+						"Number of variables": ""+count_vars,
+							"Number of traits": ""+count_traits,
+							"Number of methods": ""+count_methods,
+							"Number of scales": ""+count_scales
+					});
+				});
+
+				// SUMMARY ALL CROPS
+				var sum_all_crops = [];
+				var terms_tot=vars_tot=traits_tot=methods_tot=scales_tot=0;
+				var CO_terms_tot=CO_vars_tot=CO_traits_tot=CO_methods_tot=CO_scales_tot=0;
+				var nonCO_terms_tot=nonCO_vars_tot=nonCO_traits_tot=nonCO_methods_tot=nonCO_scales_tot=0;
+				var crop_list=[];
+				var CO_crop_list=[];
+				var nonCO_crop_list=[];
+				var files = [];
+				var files_CO = [];
+
+				var i = i_CO = 0;
+				while (i<ret.length ){
+
+						// Stats all crops
+					crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
+					terms_tot = terms_tot + parseInt(ret[i]["Number of terms"]);
+					vars_tot = vars_tot + parseInt(ret[i]["Number of variables"]);
+					traits_tot = traits_tot + parseInt(ret[i]["Number of traits"]);
+					methods_tot = methods_tot + parseInt(ret[i]["Number of methods"]);
+					scales_tot = methods_tot + parseInt(ret[i]["Number of scales"]);
+					files.push(ret[i]["Ontology file"]);
+
+					if ( ret[i]["Ontology ID"].indexOf("CO_") != -1) {
+
+						// Stats CO ontologies
+							CO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
+						CO_terms_tot = CO_terms_tot + parseInt(ret[i]["Number of terms"]);
+						CO_vars_tot = CO_vars_tot + parseInt(ret[i]["Number of variables"]);
+						CO_traits_tot = CO_traits_tot + parseInt(ret[i]["Number of traits"]);
+						CO_methods_tot = CO_methods_tot + parseInt(ret[i]["Number of methods"]);
+						CO_scales_tot = CO_methods_tot + parseInt(ret[i]["Number of scales"]);
+						files_CO.push(ret[i]["Ontology file"]);
+						i_CO++;
+
+					} else {
+
+						// Stats non CO ontologies
+							nonCO_crop_list.push(ret[i]["Ontology ID"] + " " + ret[i]["Ontology name"]);
+						nonCO_terms_tot = nonCO_terms_tot + parseInt(ret[i]["Number of terms"]);
+						nonCO_vars_tot = nonCO_vars_tot + parseInt(ret[i]["Number of variables"]);
+						nonCO_traits_tot = nonCO_traits_tot + parseInt(ret[i]["Number of traits"]);
+						nonCO_methods_tot = nonCO_methods_tot + parseInt(ret[i]["Number of methods"]);
+						nonCO_scales_tot = nonCO_methods_tot + parseInt(ret[i]["Number of scales"]);
+					}
+					i++;
+					}
+
+				// export
+				var sum_all_crops = {
+					"Total number of terms":""+terms_tot,
+					"Total number of variables":""+vars_tot,
+					"Total number of traits":""+traits_tot,
+					"Total number of methods":""+methods_tot,
+					"Total number of scales":""+scales_tot,
+					"Crops":crop_list,
+					"Number of ontologies": ""+i,
+					"Files":{
+					"TDv4": "" + (files.toString().match(/TDv4/g) || []).length,
+					"TDv5": "" + (files.toString().match(/TDv5/g) || []).length,
+					"OBOvar": "" + (files.toString().match(/OBOvar/g) || []).length,
+					"OBO": "" + (files.toString().match(/\bOBO\b/g) || []).length
+					}
+				};
+				var sum_CO_crops = {
+					"Total number of terms":""+CO_terms_tot,
+					"Total number of variables":""+CO_vars_tot,
+					"Total number of traits":""+CO_traits_tot,
+					"Total number of methods":""+CO_methods_tot,
+					"Total number of scales":""+CO_scales_tot,
+					"Crops":CO_crop_list,
+					"Number of ontologies":""+i_CO,
+					"Files":{
+					"TDv4": "" + (files_CO.toString().match(/TDv4/g) || []).length,
+					"TDv5": "" + (files_CO.toString().match(/TDv5/g) || []).length,
+					"OBOvar": "" + (files_CO.toString().match(/OBOvar/g) || []).length,
+					"OBO": "" + (files_CO.toString().match(/\bOBO\b/g) || []).length
+					}
+				};
+				var sum_non_CO_crops = {
+					"Total number of terms":""+nonCO_terms_tot,
+					"Total number of variables":""+nonCO_vars_tot,
+					"Total number of traits":""+nonCO_traits_tot,
+					"Total number of methods":""+nonCO_methods_tot,
+					"Total number of scales":""+nonCO_scales_tot,
+					"Crops":nonCO_crop_list,
+					"Number of ontologies":""+ i - i_CO,
+					"Files":{
+					"TDv4":""+sum_all_crops["Files"]["TDv4"] - sum_CO_crops["Files"]["TDv4"],
+					"TDv5":""+sum_all_crops["Files"]["TDv5"] - sum_CO_crops["Files"]["TDv5"],
+					"OBOvar":""+sum_all_crops["Files"]["OBOvar"] - sum_CO_crops["Files"]["OBOvar"],
+					"OBO":""+sum_all_crops["Files"]["OBO"] - sum_CO_crops["Files"]["OBO"]
+					}
+				};
+
+				var out = {
+					"summary CO crops": sum_CO_crops,
+					"summary non CO crops": sum_non_CO_crops,
+					"summary all crops": sum_all_crops,
+					"summary per crop":ret
+				};
+							print(response).json(out, request.getParameter("callback"));
+			}
+		},
 		"/ontos_stats_make_csv": {
 				get: function(request, response) {
 					try {
 						var url = 'http://localhost:8080/ontos_stats.json';
-								var result = httpget(url);
-								var j = JSON.parse(result);
-								if(j.error) throw "ERROR";
+						var result = httpget(url);
+						var j = JSON.parse(result);
+						if(j.error) throw "ERROR";
 
-				var out = "ID;Crop;Onto file;NTerms;NVariable;NTrait;NMethod;NScale";
-				j["summary per crop"].forEach(function(crop){
-					if ( crop["Ontology ID"].indexOf("CO_") != -1) {
-						out = out +
-						"\n"+crop["Ontology ID"] +
-							";"+crop["Ontology name"] +
-							";"+crop["Ontology file"] +
-							";"+crop["Number of terms"] +
-							";"+crop["Number of variables"] +
-							";"+crop["Number of traits"] +
-							";"+crop["Number of methods"] +
-							";"+crop["Number of scales"];
-					}
-				});
+						var out = "ID;Crop;Onto file;NTerms;NVariable;NTrait;NMethod;NScale";
+						j["summary per crop"].forEach(function(crop){
+							if ( crop["Ontology ID"].indexOf("CO_") != -1) {
+								out = out +
+								"\n"+crop["Ontology ID"] +
+									";"+crop["Ontology name"] +
+									";"+crop["Ontology file"] +
+									";"+crop["Number of terms"] +
+									";"+crop["Number of variables"] +
+									";"+crop["Number of traits"] +
+									";"+crop["Number of methods"] +
+									";"+crop["Number of scales"];
+							}
+						});
 
-								print(response).textPlain(out);
+						print(response).textPlain(out);
 					 } catch(e) {
 					 }
 				}
 		},
-		 "/metadata": {
-				get: function(request, response) {
-						request.setCharacterEncoding("utf-8");
-						response.setContentType("application/x-yaml; charset=UTF-8");
-						response.setCharacterEncoding("UTF-8");
+		"/metadata": {
+			get: function(request, response) {
+					request.setCharacterEncoding("utf-8");
+					response.setContentType("application/x-yaml; charset=UTF-8");
+					response.setCharacterEncoding("UTF-8");
 
-						var ret = "\"@context\":\nontologies:\n";
-						var onto_type;
+					var ret = "\"@context\":\nontologies:\n";
+					var onto_type;
 
-						var ontologies = googlestore.query("ontology")
-																.filter("category", "=", "300-499 Phenotype and Trait Ontology")
-																.fetch();
-						ontologies.forEach(function(ontology){
-								// GET onto name
-								var onto_id = ontology.getProperty("ontology_id");
-								var onto_name = ontology.getProperty("ontology_name");
-								var onto_description = ontology.getProperty("ontology_summary");
+					var ontologies = googlestore.query("ontology")
+															.filter("category", "=", "300-499 Phenotype and Trait Ontology")
+															.fetch();
+					ontologies.forEach(function(ontology){
+							// GET onto name
+							var onto_id = ontology.getProperty("ontology_id");
+							var onto_name = ontology.getProperty("ontology_name");
+							var onto_description = ontology.getProperty("ontology_summary");
 
-								if(!onto_id.startsWith("CO_"))
-										return;
+							if(!onto_id.startsWith("CO_"))
+									return;
 
-								ret += "  - id: "+onto_id+"\n";
-								ret += "    title: "+ onto_name+" ontology\n";
-								ret += "    uri: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
-								ret += "    description: \""+onto_description+"\""+"\n";
-								ret += "    homepage: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
-								ret += "    mailing_list: helpdesk@cropontology-curationtool.org\n";
-								ret += "    definition_property:\n";
-								ret += "      - http://www.w3.org/2004/02/skos/core#definition\n";
-								ret += "    synonym_property:\n";
-								ret += "      - http://www.w3.org/2004/02/skos/core#altLabel\n";
-								ret += "      - http://www.cropontology.org/rdf/acronym\n";
-								ret += "    hierarchical_property:\n";
-								ret += "      - http://www.cropontology.org/rdf/method_of\n";
-								ret += "      - http://www.cropontology.org/rdf/scale_of\n";
-								ret += "    base_uri:\n";
-								ret += "      - http://www.cropontology.org/rdf/"+onto_id+"\n";
-								ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"/owl\n";
+							ret += "  - id: "+onto_id+"\n";
+							ret += "    title: "+ onto_name+" ontology\n";
+							ret += "    uri: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
+							ret += "    description: \""+onto_description+"\""+"\n";
+							ret += "    homepage: http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"\n";
+							ret += "    mailing_list: helpdesk@cropontology-curationtool.org\n";
+							ret += "    definition_property:\n";
+							ret += "      - http://www.w3.org/2004/02/skos/core#definition\n";
+							ret += "    synonym_property:\n";
+							ret += "      - http://www.w3.org/2004/02/skos/core#altLabel\n";
+							ret += "      - http://www.cropontology.org/rdf/acronym\n";
+							ret += "    hierarchical_property:\n";
+							ret += "      - http://www.cropontology.org/rdf/method_of\n";
+							ret += "      - http://www.cropontology.org/rdf/scale_of\n";
+							ret += "    base_uri:\n";
+							ret += "      - http://www.cropontology.org/rdf/"+onto_id+"\n";
+							ret += "    ontology_purl : http://www.cropontology.org/ontology/"+onto_id+"/"+encodeURIComponent(onto_name)+"/owl\n";
 
-						});
+					});
 
-						var out = ret;
+					var out = ret;
 
-						print(response).textPlain(out);
+					print(response).textPlain(out);
 
-				}
+			}
 		},
 		"/webhook": {
 				post: function(request, response) {
