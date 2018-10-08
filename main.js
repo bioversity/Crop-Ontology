@@ -2844,114 +2844,117 @@ apejs.urls = {
 				}
 		},
 		"/excel-template-upload": {
-				get: function(request, response) {
-						var UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
-						var skin = "<form method='post' enctype='multipart/form-data' action='"+UPLOAD_URL+"'><input type='file' name='excelfile' /><input type='submit' /></form>";
-						response.getWriter().println(skin);
-				},
-				post: function(request, response) {
-						function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
-
-						var currUser = auth.getUser(request);
-						if(!currUser)
-								return err("Not logged in");
-
-						function getTrait(row) {
-								var obj = {};
-								for(var i in row) {
-										obj[i] = row[i];
-										if(obj[i] == "") delete obj[i];
-										if(i == 'Trait Class') break;
-								}
-								if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
-								return obj;
-						}
-
-						function getMethod(row) {
-								var obj = {};
-								var startCopy = false;
-								for(var i in row) {
-										if(startCopy) {
-												obj[i] = row[i];
-												if(obj[i] == "") delete obj[i];
-										}
-										if(i == 'Comments') break;
-										if(i == 'Trait Class') startCopy = true;
-								}
-								delete obj['ibfieldbook'];
-								return obj;
-						}
-						function getScale(row) {
-								var obj = {};
-								var startCopy = false;
-								for(var i in row) {
-										if(startCopy) {
-												obj[i] = row[i];
-												if(obj[i] == "") delete obj[i];
-										}
-										if(i == 'Comments') startCopy = true;
-								}
-								delete obj['ibfieldbook'];
-								return obj;
-						}
-
-						function getCol(obj, col) {
-								var count = 0;
-								for(var i in obj) {
-										count++;
-										if(count == col) return obj[i];
-								}
-						}
-						function isEmpty(obj) {
-								for(var prop in obj) {
-										if(obj.hasOwnProperty(prop))
-												return false;
-								}
-
-								return true;
-						}
-
-
-						var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
-								blobKey = blobs.get("excelfile"),
-								ontologyName = request.getParameter("ontology_name"),
-								ontologyId = request.getParameter("ontology_id"),
-								ontologySummary = request.getParameter("ontology_summary"),
-								category = request.getParameter("category");
-
-						if(blobKey == null || isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || isblank(category)) {
-								return err("Something is missing. Did you fill out all the fields?");
-						}
-
-						var blobKeyString = blobKey.getKeyString();
-
-						try {
-								// check wheter ontologyId already exists
-								var ontoEntity = ontologymodel.getById(ontologyId);
-								if(ontoEntity) {
-										// check that we own this ontology
-										if(!auth.isAdmin(currUser)) { // if we're not admins check that we own this ontology
-												if(!ontologymodel.owns(currUser, ontoEntity)) {
-														return err("Ontology with this ID already exists, and you don't own it");
-												}
-										}
-								}
-
-								// this has all the logics for parsing the template
-								// and creating terms
-								new template(blobKey, ontologyId, ontologyName)
-
-								taskqueue.createTask("/memcache-clear", "");
-
-								// create the ontology
-								if(!ontoEntity) {
-										ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
-								}
-								return err("");
-						} catch(e) {
-								return err(e);
-						}
+			get: function(request, response) {
+				var UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
+				var skin = "<form method='post' enctype='multipart/form-data' action='"+UPLOAD_URL+"'><input type='file' name='excelfile' /><input type='submit' /></form>";
+				response.getWriter().println(skin);
+			},
+			post: function(request, response) {
+				function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
+				function getTrait(row) {
+					var obj = {};
+					for(var i in row) {
+						obj[i] = row[i];
+					if(obj[i] == "") delete obj[i];
+					if(i == 'Trait Class') break;
 				}
+				if(row['ibfieldbook']) obj['ibfieldbook'] = row['ibfieldbook'];
+					return obj;
+				}
+				function getMethod(row) {
+					var obj = {};
+					var startCopy = false;
+					for(var i in row) {
+						if(startCopy) {
+							obj[i] = row[i];
+							if(obj[i] == "") delete obj[i];
+						}
+						if(i == 'Comments') break;
+						if(i == 'Trait Class') startCopy = true;
+					}
+					delete obj['ibfieldbook'];
+					return obj;
+				}
+				function getScale(row) {
+					var obj = {};
+					var startCopy = false;
+					for(var i in row) {
+						if(startCopy) {
+							obj[i] = row[i];
+							if(obj[i] == "") delete obj[i];
+						}
+						if(i == 'Comments') startCopy = true;
+					}
+					delete obj['ibfieldbook'];
+					return obj;
+				}
+				function getCol(obj, col) {
+					var count = 0;
+					for(var i in obj) {
+						count++;
+						if(count == col) return obj[i];
+					}
+				}
+				function isEmpty(obj) {
+					for(var prop in obj) {
+						if(obj.hasOwnProperty(prop))
+						return false;
+					}
+					return true;
+				}
+
+				var currUser = auth.getUser(request);
+				if(!currUser)
+					return err("Not logged in");
+
+				var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+					blobKey = blobs.get("excelfile"),
+					ontologyName = request.getParameter("ontology_name"),
+					ontologyId = request.getParameter("ontology_id"),
+					ontologySummary = request.getParameter("ontology_summary"),
+					category = request.getParameter("category"),
+					stop = false;
+
+				if(blobKey == null || isblank(ontologyId) || isblank(ontologyName) || isblank(ontologySummary) || isblank(category)) {
+					return err("Something is missing. Did you fill out all the fields?");
+				}
+
+				var blobKeyString = blobKey.getKeyString();
+
+				// check wheter ontologyId already exists
+				var ontoEntity = ontologymodel.getById(ontologyId);
+				if(ontoEntity) {
+					stop = true;
+				} else {
+					// if we get here, ontology doesn't exist
+					stop = false;
+				}
+
+				if(ontoEntity) {
+					// check that we own this ontology
+					if(!auth.isAdmin(currUser)) { // if we're not admins check that we own this ontology
+						if(!ontologymodel.owns(currUser, ontoEntity)) {
+							return err("Ontology with this ID already exists, and you don't own it");
+						}
+					}
+				}
+
+				if(stop) {
+					return err("Ontology ID already exists");
+				}
+
+				// this has all the logics for parsing the template
+				// and creating terms
+				new template(blobKey, ontologyId, ontologyName)
+
+				taskqueue.createTask("/memcache-clear", "");
+
+				// create the ontology
+				if(!ontoEntity) {
+					ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
+				}
+				return err("");
+			}
 		},
 		"/backup": {
 				get: function(request, response) {
