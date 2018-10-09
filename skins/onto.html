@@ -1,6 +1,6 @@
 			<div class="left">
 				<h2>Traits, methods and scales</h2>
-				<div class="browser-content"> 
+				<div class="browser-content">
             	    <a href="#" class="print-button rounded-button download-button">DOWNLOAD</a>
             	    <a href="#!/ibfieldbook" class="ibfieldbook-button rounded-button" style="display:none">Show IBFieldbook list</a>
             	    <a href="#" class="variables-button rounded-button" style="display:none"></a>
@@ -15,134 +15,138 @@
             	    <div class="languages_refresh" style="float:right"></div>
             	    <div class="edit_box" style="display: none;">
             	        <p>
-            	        <label>Category</label><br>
-            	        {{{ONTOLOGY_CATEGORIES}}}
+	            	        <label>Category</label><br>
+	            	        {{{ONTOLOGY_CATEGORIES}}}
             	        </p>
             	        <p>
-            	        <label>Owner</label><br>
-            	        <select class="users">
+	            	        <label>Owner</label><br>
+	            	        <select class="users">
 
-            	        </select>
+	            	        </select>
+            	        </p>
+						<p>
+							<label>Ontology version</label><br>
+							<input name="ontology_version" type="number" min="1" size="5" value="{{ONTOLOGY_VERSION}}" placeholder="Ontology version" />
+						</p>
+            	        <p>
+	            	        <label>Ontology Name</label><br>
+	            	        <input type="text" name="ontology_name" placeholder="Ontology Name" />
             	        </p>
             	        <p>
-            	        <label>Ontology Name</label><br>
-            	        <input type="text" name="ontology_name" placeholder="Ontology Name" /> 
+	            	        <label>Ontology Summary</label><br>
+	            	        <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
             	        </p>
             	        <p>
-            	        <label>Ontology Summary</label><br>
-            	        <textarea name="ontology_summary" placeholder="Ontology Summary"></textarea>
-            	        </p>
-            	        <p>
-            	        <a href="#" class="minibutton"><span>Save</span></a>
-            	        <a class="cancel" href="#">Cancel</a>
+	            	        <a href="#" class="minibutton"><span>Save</span></a>
+	            	        <a class="cancel" href="#">Cancel</a>
             	        </p>
             	        <p>
             	            <a href="#" class="delete_ontology rounded-button">Delete Ontology</a>
             	        </p>
             	    </div>
-            	    <div class="cont" style="height:420px;"> 
+            	    <div class="cont" style="height:420px;">
             	        <a title="Add" class="editable_root minibutton btn-watch" style="display: none;"><span>+</span></a>
             	        <!--<div class="filterbox">
             	              <input type="search" placeholder="Find a term">
-            	        </div>--> 
- 
-            	        <ul class="treeview" id="root"> 
- 
-            	        </ul> 
-            		</div> 
+            	        </div>-->
+
+            	        <ul class="treeview" id="root">
+
+            	        </ul>
+            		</div>
 				</div>
 				<div class="browser-variables" style="display: none;">
 					<h2>Variables</h2>
-					<div class="browser-content"> 
+					<div class="browser-content">
 	                	<div class="cont" style="height:200px;">
 							<div class="variables">
-	            			</div> 
-	            		</div> 
-	            	</div> 
+	            			</div>
+	            		</div>
+	            	</div>
 				</div>
-            </div><!-- end left --> 
-<div class="right"> 
- 
-<h2>Term information</h2>
-<div class="browser-content browser" style="margin:0;"> 
-  <div class="filterbar"> 
-    <ul class="filters"> 
-        <span id="term_id" style="display: none;"></span>
-      <li data-filter="read" ><a target="_blank" href="#" class="term_id">Name</a></li> 
-    </ul> 
- 
-    <ul class="sorts"> 
-      <li data-sort="created" id="download"><a target="_blank" href="#" id="static-html">Permalink</a></li> 
-      <li data-sort="created" class="desc" id="general">General</li> 
-      <li data-sort="popularity" id="new-comments">Comments</li> 
-    </ul> 
-  </div> 
-  <div style="display: none; color: #990000;" class="context-loader">Sending Request...</div> 
-  <div class="none" style="display: none; opacity: 1;"> 
-    <p>No pull requests to show</p> 
-  </div> 
-  <div style="display: none;" class="error"> 
-    <p>There was an error with the request</p> 
-  </div> 
-<div id="pages"> 
- 
-    <div class="new-comments" style="margin: 0px 10px; display: none;"> 
- 
-    <div class="comment-list"> 
-        <div class="comment normal-comment" id="issuecomment-711523"> 
-          <div class="cmeta"> 
-            <p class="author" style="width: 250px;"> 
-              <span class="gravatar"><img width="20" height="20" alt="" src=""></span> 
-              <strong class="author"><a href="/paulirish">paulirish</a></strong> 
-              <em class="action-text"> 
-                <a href="#issuecomment-711523"> 
-                commented
-                </a> 
-              </em> 
-              
-            </p> 
-            <p class="info"> 
-              <em class="date"><abbr title="2011-01-26 15:47:04" class="relatize relatized">about 8 hours ago</abbr></em> 
-              <span class="icon"></span> 
-            </p> 
-          </div> 
- 
-          
- 
-          <div class="body"> 
-            
-            <div class="formatted-content"> 
-              
-              
-              <div class="content-body wikistyle"> 
-                <p>Does this patch change <code>foo/stuff.html</code> to <code>foo/stuff.html/</code> ?</p> 
-              </div> 
-            </div> 
-            
-          </div> 
-        </div><!-- /comment --> 
-    </div><!-- /comment-list --> 
- 
- 
-    <h3>Comment</h3> 
-    <div class="comment-form previewable-comment-form"> 
-        
-        <textarea id="comment_body_430" tabindex="1" name="comment[body]"></textarea> 
- 
-    </div><!-- /comment-form --> 
-    <div class="form-actions"> 
-        <button tabindex="2" class="classy" type="submit"><span>Comment</span></button> 
-    </div> 
-    <br> 
- 
- 
-    </div><!-- end new-comments --> 
- 
-    <div class="general description" > 
-    </div><!-- end general --> 
+            </div><!-- end left -->
+<div class="right">
 
-</div><!-- /pages --> 
-</div><!-- /browser-content --> 
+<h2>Term information</h2>
+<div class="browser-content browser" style="margin:0;">
+  <div class="filterbar">
+    <ul class="filters">
+        <span id="term_id" style="display: none;"></span>
+      <li data-filter="read" ><a target="_blank" href="#" class="term_id">Name</a></li>
+    </ul>
+
+    <ul class="sorts">
+      <li data-sort="created" id="download"><a target="_blank" href="#" id="static-html">Permalink</a></li>
+      <li data-sort="created" class="desc" id="general">General</li>
+      <li data-sort="popularity" id="new-comments">Comments</li>
+    </ul>
+  </div>
+  <div style="display: none; color: #990000;" class="context-loader">Sending Request...</div>
+  <div class="none" style="display: none; opacity: 1;">
+    <p>No pull requests to show</p>
+  </div>
+  <div style="display: none;" class="error">
+    <p>There was an error with the request</p>
+  </div>
+<div id="pages">
+
+    <div class="new-comments" style="margin: 0px 10px; display: none;">
+
+    <div class="comment-list">
+        <div class="comment normal-comment" id="issuecomment-711523">
+          <div class="cmeta">
+            <p class="author" style="width: 250px;">
+              <span class="gravatar"><img width="20" height="20" alt="" src=""></span>
+              <strong class="author"><a href="/paulirish">paulirish</a></strong>
+              <em class="action-text">
+                <a href="#issuecomment-711523">
+                commented
+                </a>
+              </em>
+
+            </p>
+            <p class="info">
+              <em class="date"><abbr title="2011-01-26 15:47:04" class="relatize relatized">about 8 hours ago</abbr></em>
+              <span class="icon"></span>
+            </p>
+          </div>
+
+
+
+          <div class="body">
+
+            <div class="formatted-content">
+
+
+              <div class="content-body wikistyle">
+                <p>Does this patch change <code>foo/stuff.html</code> to <code>foo/stuff.html/</code> ?</p>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /comment -->
+    </div><!-- /comment-list -->
+
+
+    <h3>Comment</h3>
+    <div class="comment-form previewable-comment-form">
+
+        <textarea id="comment_body_430" tabindex="1" name="comment[body]"></textarea>
+
+    </div><!-- /comment-form -->
+    <div class="form-actions">
+        <button tabindex="2" class="classy" type="submit"><span>Comment</span></button>
+    </div>
+    <br>
+
+
+    </div><!-- end new-comments -->
+
+    <div class="general description" >
+    </div><!-- end general -->
+
+</div><!-- /pages -->
+</div><!-- /browser-content -->
 
 
 <!--  The Raphael JavaScript library for vector graphics display  -->
@@ -155,10 +159,10 @@
 <script type="text/javascript" src="/js/dracula_algorithms.js"></script>
 
 
-<div class="browser-content browser" id="graph" style="display: none;margin-top: 20px;"> 
+<div class="browser-content browser" id="graph" style="display: none;margin-top: 20px;">
 </div> <!-- /graph -->
-   
-<!-- /pages --> 
+
+<!-- /pages -->
 </div>
-</div><!-- end right --> 
+</div><!-- end right -->
 <iframe name="upload_iframe" style="display: none;"></iframe>

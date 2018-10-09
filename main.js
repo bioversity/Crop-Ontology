@@ -40,7 +40,6 @@ var isblank = function(javaStr) {
 				return true;
 		return false;
 };
-
 var print = function(response) {
 		response.setCharacterEncoding("UTF-8");
 		return {
@@ -78,7 +77,6 @@ var print = function(response) {
 				}
 		};
 };
-
 function translate(jsonStr, isoLang) {
 		var isoLang = isoLang;
 		if(!isoLang) isoLang = 'EN';
@@ -99,18 +97,17 @@ function translate(jsonStr, isoLang) {
 		return jsonStr;
 
 }
-
 var error = function(response, msg) {
 		response.sendError(response.SC_BAD_REQUEST, msg);
 };
-
 function defaultRelationship(relationship) {
-		if(!relationship) relationship = 'is_a';
+	if(!relationship) relationship = 'is_a';
 	// relationship could be an array
-	if(relationship && (relationship instanceof java.util.List))
-			relationship = relationship.get(0);
+	if(relationship && (relationship instanceof java.util.List)) {
+		relationship = relationship.get(0);
+	}
 
-/*
+	/*
 	if(relationship.length)
 		relationship = relationship[0];
 		*/
@@ -129,7 +126,6 @@ function defaultRelationship(relationship) {
 	}
 	return relationship;
 }
-
 function defaultParent(parent) {
 		if(!parent) parent = 0;
 		if(parent === 'null') parent = 0;
@@ -141,7 +137,6 @@ function defaultParent(parent) {
 
 		return parent;
 }
-
 function renderIndex(htmlFile, data) {
 	if(!data) data = {};
 	var partials = {
@@ -323,11 +318,10 @@ apejs.urls = {
 		// haha nice REGEX!
 		"/ontology(?:/([^/]*)(?:/([^/]*)(?:/([^/]*))?)?)?": {
 				head: function(request, response) {
-						print(response);
-						return;
+					print(response);
+					return;
 				},
 				get: function(request, response, matches) {
-
 						var ontoId = matches[1];
 						if(matches[3] && matches[3] == "rss") {
 
@@ -637,6 +631,7 @@ apejs.urls = {
 						var html = renderIndex("skins/onto.html", {
 							URL:"http://www.cropontology.org",
 							ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
+							ONTOLOGY_VERSION: ontologymodel.getVersion(matches[1]),
 							ontologyid: matches[1],
 							ontologyname: matches[2],
 							CROP_LOGOS: cropLogosBox
@@ -1957,113 +1952,120 @@ apejs.urls = {
 				}
 		},
 		"/add-ontology" : {
-				get: function(request, response) {
+			get: function(request, response) {
+				var ontology_categories = ontologymodel.catsSelectHtml(),
+					upload_url = blobstore.createUploadUrl("/obo-upload"),
+					excel_upload_url = blobstore.createUploadUrl("/excel-template-upload"),
+					ontology_version = ontologymodel.getVersion();
 
-						var UPLOAD_URL = blobstore.createUploadUrl("/obo-upload");
-						var EXCEL_UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
+				var html = renderIndex("skins/add-ontology.html", {
+					ONTOLOGY_CATEGORIES: ontology_categories,
+					UPLOAD_URL: upload_url,
+					EXCEL_UPLOAD_URL: excel_upload_url,
+					ONTOLOGY_VERSION: ontology_version
+				});
+				response.getWriter().println(html);
+			},
+			post: function(request, response) {
+				var currUser = auth.getUser(request),
+					json = request.getParameter("json");
 
-						var html = renderIndex("skins/add-ontology.html", {
-								ONTOLOGY_CATEGORIES: ontologymodel.catsSelectHtml(),
-								UPLOAD_URL: UPLOAD_URL,
-								EXCEL_UPLOAD_URL: EXCEL_UPLOAD_URL
-						});
-						response.getWriter().println(html);
-				},
-				post: function(request, response) {
-						var currUser = auth.getUser(request);
-						if(!currUser)
-								return response.sendError(response.SC_BAD_REQUEST, "not logged in");
-
-						var json = request.getParameter("json");
-
-						try {
-								// let's parse it so we know it's fine
-								// maybe it can be a CSV of JSON objects
-								// that would be very memory friendly
-								var arr = JSON.parse(json);
-
-								var ontologyName = request.getParameter("ontology_name"),
-										ontologyId = request.getParameter("ontology_id"),
-										ontologySummary = request.getParameter("ontology_summary");
-
-								if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "")
-										return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
-
-								// create ontology
-								var ontoEntity = googlestore.entity("ontology", ontologyId, {
-										created_at: new java.util.Date(),
-										user_key: currUser.getKey(),
-										ontology_id: ontologyId,
-										ontology_name: ontologyName,
-										ontology_summary: ontologySummary,
-										category: request.getParameter("category")
-								});
-
-								googlestore.put(ontoEntity);
-
-								memcache.clearAll();
-
-								// now create the terms.
-								// a term is each item in the JSON array
-								for(var i=0,len=arr.length; i<len; i++) {
-										var term = arr[i];
-										term.ontology_id = ontologyId;
-										term.ontology_name = ontologyName;
-										// XXX someone posting a term with an already existing ID might edit it
-										termmodel.createTerm(term);
-								}
-
-						} catch(e) {
-								return response.sendError(response.SC_BAD_REQUEST, e);
-						}
-
+				if(!currUser) {
+					return response.sendError(response.SC_BAD_REQUEST, "not logged in");
 				}
+
+				try {
+					// let's parse it so we know it's fine
+					// maybe it can be a CSV of JSON objects
+					// that would be very memory friendly
+					var arr = JSON.parse(json);
+
+					var ontologyName = request.getParameter("ontology_name"),
+						ontologyId = request.getParameter("ontology_id"),
+						ontologySummary = request.getParameter("ontology_summary"),
+						ontologyVersion = request.getParameter("ontology_version");
+
+					if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "") {
+						return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+					}
+
+					// create ontology
+					var ontoEntity = googlestore.entity("ontology", ontologyId, {
+						created_at: new java.util.Date(),
+						user_key: currUser.getKey(),
+						ontology_id: ontologyId,
+						ontology_name: ontologyName,
+						ontology_summary: ontologySummary,
+						ontology_version: ontologyVersion,
+						category: request.getParameter("category")
+					});
+
+					googlestore.put(ontoEntity);
+
+					memcache.clearAll();
+
+					// now create the terms.
+					// a term is each item in the JSON array
+					for(var i=0,len=arr.length; i<len; i++) {
+						var term = arr[i];
+						term.ontology_id = ontologyId;
+						term.ontology_name = ontologyName;
+						// XXX someone posting a term with an already existing ID might edit it
+						termmodel.createTerm(term);
+					}
+				} catch(e) {
+					return response.sendError(response.SC_BAD_REQUEST, e);
+				}
+			}
 		},
 		"/edit-ontology" : {
-				get: function(request, response) {
-						var html = render("./skins/add-ontology.html")
-												.replace(/{{VERSION}}/g, VERSION);
-						response.getWriter().println(html);
-				},
-				post: function(request, response) {
-						var currUser = auth.getUser(request);
-						if(!currUser)
-								return response.sendError(response.SC_BAD_REQUEST, "not logged in");
+			get: function(request, response) {
+				var ontology_version = ontologymodel.getVersion(request.getParameter("ontology_id"));
+				var html = render("./skins/add-ontology.html")
+								.replace(/{{VERSION}}/g, VERSION)
+								.replace(/{{ONTOLOGY_VERSION}}/g, ontology_version);
+				response.getWriter().println(html);
+			},
+			post: function(request, response) {
+				var currUser = auth.getUser(request);
+				if(!currUser)
+						return response.sendError(response.SC_BAD_REQUEST, "not logged in");
 
-						try {
-								var ontologyId = request.getParameter("ontology_id");
-								var ontoKey = googlestore.createKey("ontology", ontologyId),
-										ontoEntity = googlestore.get(ontoKey);
+				try {
+					var ontologyId = request.getParameter("ontology_id"),
+						ontoKey = googlestore.createKey("ontology", ontologyId),
+						ontoEntity = googlestore.get(ontoKey);
 
-								// check that we own this ontology only if we're not admins
-								if(!auth.isAdmin(currUser)) {
-										if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
-												return response.sendError(response.SC_BAD_REQUEST, "you can't edit this ontology");
-								}
+					// check that we own this ontology only if we're not admins
+					if(!auth.isAdmin(currUser)) {
+							if(!ontoEntity.getProperty("user_key").equals(currUser.getKey()))
+									return response.sendError(response.SC_BAD_REQUEST, "you can't edit this ontology");
+					}
 
-								// now edit it
-								var ontologyName = request.getParameter("ontology_name"),
-										ontologySummary = request.getParameter("ontology_summary"),
-										category = request.getParameter("category"),
-										userKey = request.getParameter('userKey');
+					// now edit it
+					var ontologyName = request.getParameter("ontology_name"),
+						ontologySummary = request.getParameter("ontology_summary"),
+						category = request.getParameter("category"),
+						userKey = request.getParameter("userKey"),
+						version = request.getParameter("ontology_version");
 
-								if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "" || !category || category == "")
-										return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
+					if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "" || !category || category == "") {
+						return response.sendError(response.SC_BAD_REQUEST, "missing parameters");
+					}
 
-								googlestore.set(ontoEntity, {
-										ontology_name: ontologyName,
-										ontology_summary: ontologySummary,
-										category: category,
-										user_key: KeyFactory.stringToKey(userKey),
-								});
-								googlestore.put(ontoEntity);
-								memcache.clearAll();
-
-						} catch(e) {
-								return response.sendError(response.SC_BAD_REQUEST, e);
-						}
-
+					googlestore.set(ontoEntity, {
+						ontology_name: ontologyName,
+						ontology_summary: ontologySummary,
+						category: category,
+						user_key: KeyFactory.stringToKey(userKey),
+						ontology_version: version
+					});
+					googlestore.put(ontoEntity);
+					memcache.clearAll();
+				} catch(e) {
+					return response.sendError(response.SC_BAD_REQUEST, e);
 				}
+			}
 		},
 		"/serve" : {
 

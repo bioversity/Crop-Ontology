@@ -2162,6 +2162,7 @@ var Editable = (function(){
             ontology_id: ontologyid,
             ontology_name: $editbox.find("[name=ontology_name]").val(),
             ontology_summary: $editbox.find("[name=ontology_summary]").val(),
+            ontology_version: $editbox.find("[name=ontology_version]").val(),
             category: $editbox.find("[name=category]").val(),
             userKey: $editbox.find("select.users").val()
 
@@ -2208,13 +2209,14 @@ var Editable = (function(){
     }
 
     function editBox(ontology) {
-
         var $editbox = $(".edit_box");
-        if(!ontology)
+        if(!ontology) {
             return $editbox.hide();
+		}
 
         $editbox.show();
 
+        $editbox.find("[name=ontology_version]").val(ontology.version);
         $editbox.find("[name=category]").val(ontology.category);
 
         $editbox.find("[name=ontology_name]").val(ontology.ontology_name);
@@ -2279,6 +2281,7 @@ var Editable = (function(){
 
             $.each(data, function(){
                 if(this.ontology_id == ontologyId) {
+					this.version = (this.version == undefined || this.version == "") ? 1 : this.version;
                     // we own this ontology
                     showUi(this);
 

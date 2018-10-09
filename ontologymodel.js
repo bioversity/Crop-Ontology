@@ -11,6 +11,24 @@ var ontologymodel = (function() {
         "900-999 Other (Sub-domain or Site-Specific) Ontology"
     ];
 
+	/**
+	 * Get or create the ontology version number
+	 * @param  string						ontologyId							The ontology ID
+	 * @return integer															The ontology version number
+	 */
+	function getVersion(ontologyId) {
+		if(ontologyId == undefined || ontologyId == "") {
+			return 1;
+		} else {
+			var current_version = this.getById(ontologyId).getProperty("version");
+			if(current_version == undefined || current_version == "") {
+				return 1;
+			} else {
+				return current_version+1;
+			}
+		}
+	}
+
     function catsSelectHtml() {
         var options = "<select name='category'>";
         for(var i=0; i<categories.length; i++) {
@@ -38,6 +56,7 @@ var ontologymodel = (function() {
         googlestore.put(ontoEntity);
         memcache.clearAll();
     }
+
     function getById(ontologyId) {
         // check if this ontoId already exists
         try {
@@ -59,6 +78,7 @@ var ontologymodel = (function() {
     }
 
     return {
+		getVersion: getVersion,
         catsSelectHtml: catsSelectHtml,
         create: create,
         getById: getById,
