@@ -729,6 +729,7 @@ apejs.urls = {
 						var
 							name = (term.hasProperty("name")) ? term.getProperty("name") : null,
 							ontology_name = (term.hasProperty("ontology_name")) ? term.getProperty("ontology_name") : null,
+							ontology_version = (term.hasProperty("ontology_version")) ? parseInt(term.getProperty("ontology_version")) : 1,
 							language = (term.hasProperty("language")) ? term.getProperty("language") : null,
 							ontology_id = (term.hasProperty("ontology_id")) ? term.getProperty("ontology_id") : null,
 							oboBlobKey = (term.hasProperty("obo_blob_key")) ? term.getProperty("obo_blob_key") : null
@@ -741,6 +742,7 @@ apejs.urls = {
 							"ontology_id": Common.object_key_replace("undefined", "", ontology_id),
 							"name": Common.object_key_replace("undefined", "", name),
 							"ontology_name": Common.object_key_replace("undefined", "", ontology_name),
+							"ontology_version": ontology_version,
 							"language": Common.object_key_replace("undefined", "", language),
 							"oboBlobKey": Common.object_key_replace("undefined", null, oboBlobKey),
 							"excelBlobKey": Common.object_key_replace("undefined", "", excelBlobKey),
@@ -2100,7 +2102,8 @@ apejs.urls = {
 				}
 				try {
 					var ontologyName = request.getParameter("ontology_name"),
-						ontologySummary = request.getParameter("ontology_summary");
+						ontologySummary = request.getParameter("ontology_summary"),
+						ontologyVersion = parseInt(request.getParameter("ontology_version")) + 1;
 
 					if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
 						return err("Something is missing. Did you fill out all the fields?");
@@ -2156,6 +2159,7 @@ apejs.urls = {
 							term.obo_blob_key = oboBlobKeyString;
 							// also need reference to the ontology
 							term.ontology_name = ontologyNameString;
+							term.ontology_version = ontologyVersion;
 
 							// use this terms ontology ID, if it's different from the rest
 							// it will not show up - it's the OBO's fault
@@ -2168,27 +2172,24 @@ apejs.urls = {
 							// spawn a Task or something else
 							// pass the data as a JSON string
 							taskqueue.createTask("/create-term", JSON.stringify(term));
-							log("---------------------------------------")
-							log(tasks);
-							log(typeof tasks); // Object?!
-							// tasks--;
-							// log(tasks);
-							// memcache.put("tasks", tasks);
 						});
 					});
 
+					// log(ontologyVersion)
 					if(stop) {
 						return err("Ontology ID already exists");
 					}
 
 					// create the ontology
-					var ontoEntity = googlestore.entity("ontology", ontologyId, {
-							created_at: new java.util.Date(),
-							user_key: currUser.getKey(),
-							ontology_id: ontologyId,
-							ontology_name: ontologyName,
-							ontology_summary: ontologySummary,
-							category: request.getParameter("category")
+					// var ontoEntity = googlestore.entity("ontology", ontologyId, {
+					var ontoEntity = googlestore.entity("ontology", {
+						created_at: new java.util.Date(),
+						user_key: currUser.getKey(),
+						ontology_id: ontologyId,
+						ontology_name: ontologyName,
+						ontology_summary: ontologySummary,
+						ontology_version: ontologyVersion,
+						category: request.getParameter("category")
 					});
 
 					googlestore.put(ontoEntity);

@@ -1,7 +1,7 @@
 function err(msg) {
     var $error = $("#error");
 
-    $error.show(); 
+    $error.show();
     $error.text(msg);
 
     /*
@@ -50,13 +50,13 @@ function getPars(o, $cont, parent) {
             name: name,
             parent: parent
         };
-        
+
         o.push(term);
     }
 
     // children() returns only the top most elements
     $cont.find("li:first").children("ul").each(function(){
-        getPars(o, $(this), term.id || null); 
+        getPars(o, $(this), term.id || null);
     });
 
 }
@@ -66,6 +66,20 @@ function getPars(o, $cont, parent) {
  */
 var bindEvents = function() {
     var $cont = $("#cont");
+
+	/**
+	 * Set the new ontology version
+	 */
+	$("#ontology_id_et").blur(function(e) {
+		$.getJSON("./get-ontology-roots/" + $(this).val(), function(data) {
+			$("#ontology_version_et").val(data[0].ontology_version + 1);
+		})
+	});
+	$("#ontology_id_co").blur(function(e) {
+		$.getJSON("./get-ontology-roots/" + $(this).val(), function(data) {
+			$("#ontology_version_co").val(data[0].ontology_version + 1);
+		})
+	});
 
     // for each "plus" elements bind a click event
     // that triggers the addition of a child DOM element
@@ -126,7 +140,7 @@ var bindEvents = function() {
             err(responseText);
             $this.show();
         });
-        
+
         e.preventDefault();
         e.stopPropagation();
     });
@@ -134,6 +148,7 @@ var bindEvents = function() {
 
 
     $("[target=obo_upload_iframe], [target=excel_upload_iframe]").submit(function() {
+
         var $this = $(this);
 
         var submitBtn = $this.find("[type=submit]");
@@ -147,7 +162,7 @@ var bindEvents = function() {
  * Main entry
  */
 $(function() {
-    bindEvents();    
+    bindEvents();
 
 });
 
