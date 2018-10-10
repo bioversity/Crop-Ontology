@@ -39,7 +39,7 @@ var VERSION = "0.8.28",
 apejs.urls = {
 	"/": {
 		get: function(request, response) {
-			var html = Common.Common.renderIndex("skins/list-ontologies.html", {isHome: true});
+			var html = Common.renderIndex("skins/list-ontologies.html", {isHome: true});
 			Common.print(response).text(html);
 
 			var token = request.getParameter("token");
