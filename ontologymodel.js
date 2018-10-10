@@ -20,11 +20,11 @@ var ontologymodel = (function() {
 		if(ontologyId == undefined || ontologyId == "") {
 			return 1;
 		} else {
-			var current_version = this.getById(ontologyId).getProperty("version");
+			var current_version = this.getById(ontologyId).getProperty("ontology_version");
 			if(current_version == undefined || current_version == "") {
 				return 1;
 			} else {
-				return current_version+1;
+				return parseInt(current_version);
 			}
 		}
 	}

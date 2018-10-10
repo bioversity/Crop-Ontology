@@ -28,7 +28,7 @@ var apejs = require("apejs.js"),
 	brapi = require('./brapi.js'),
 
 	// commonjs modules
-	Mustache = require("./common/mustache.js");
+	Mustache = require("./common/mustache.js"),
 	// Common functions
 	Common = require("./common/functions.js");
 
@@ -1983,8 +1983,7 @@ apejs.urls = {
 			}
 			try {
 				var ontologyName = request.getParameter("ontology_name"),
-					ontologySummary = request.getParameter("ontology_summary"),
-					ontologyVersion = parseInt(request.getParameter("ontology_version")) + 1;
+					ontologySummary = request.getParameter("ontology_summary");
 
 				if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
 					return err("Something is missing. Did you fill out all the fields?");
@@ -2008,6 +2007,7 @@ apejs.urls = {
 
 				var first = true,
 					ontologyId = 0,
+					ontologyVersion = 1;
 					stop = false,
 					tasks = memcache.get("tasks"); // the resource is an object and parseInt() returns NaN!
 
@@ -2019,14 +2019,20 @@ apejs.urls = {
 						// the ontology id
 						if(first) {
 							var split = term.id.split(":");
-							ontologyId = split[0];
+
 							first = false;
+							ontologyId = split[0];
+							ontologyVersion = ontologymodel.getVersion(ontologyId);
+							if(ontologyVersion > 1) {
+								ontologyVersion += 1;
+							}
 
 							// check if this ontoId already exists
 							// (of course only runs the first time)
 							try {
 								var ontoKey = googlestore.createKey("ontology", ontologyId);
 								var ontoEntity = googlestore.get(ontoKey);
+
 								stop = true;
 							} catch (e) {
 								// if we get here, ontology doesn't exist
@@ -2057,9 +2063,9 @@ apejs.urls = {
 				});
 
 				// log(ontologyVersion)
-				if(stop) {
-					return err("Ontology ID already exists");
-				}
+				// if(stop) {
+				// 	return err("Ontology ID already exists");
+				// }
 
 				// create the ontology
 				// var ontoEntity = googlestore.entity("ontology", ontologyId, {
@@ -2405,88 +2411,128 @@ apejs.urls = {
 			}
 	},
 	"/get-ontologies": {
-			get: function(request, response) {
-					var cacheKey = "/get-ontologies";
-					var data = memcache.get(cacheKey);
-					if(data) return Common.print(response).json(JSON.parse(data), request.getParameter("callback"));
+		get: function(request, response) {
+			var cacheKey = "/get-ontologies";
+			/**
+			 * MEMECACHE DISABLED FOR NOW
+			 */
+			// var data = memcache.get(cacheKey);
+			// if(data) return Common.print(response).json(JSON.parse(data), request.getParameter("callback"));
+			/**
+			 * -----------------------------------------------------------------
+			 */
 
-					var ontologies = googlestore.query("ontology")
-													.sort("ontology_name", "ASC")
-													.fetch();
+			var ontologies = googlestore.query("ontology")
+										.sort("ontology_name", "ASC")
+										.sort("created_at", "DESC")
+										.fetch();
 
-					var categories = {}; // use an object so keys are unique :D
-					ontologies.forEach(function(onto){
-							if(onto.getProperty("category")) {
-									var key = ""+onto.getProperty("category");
-									if(!categories[key]) categories[key] = [];
-									// convert this ontology into something JSON can read
-									var username = "",
-											userid = "";
-									if(onto.getProperty("user_key")) {
-											var user = googlestore.get(onto.getProperty("user_key"));
-											username = user.getProperty("username");
-											userid = user.getKey().getId();
-									}
-				// get crop name (used to get the variable namespace)
-				cropName = onto.getProperty("ontology_name")
-				// case 1: onto = TDv5
-				// get all the variables for this ontology
-									var variables = googlestore.query("term")
-																.filter("ontology_id", "=", onto.getProperty("ontology_id"))
-																.filter("relationship", "=", "variable_of")
-																.fetch();
+			var categories = {}, // use an object so keys are unique :D
+				version_filter = {};
+			ontologies.forEach(function(onto){
+				if(onto.getProperty("category")) {
+					var key = "" + onto.getProperty("category");
+					if(!categories[key]) categories[key] = [];
+					// convert this ontology into something JSON can read
+					var username = "",
+						userid = "";
 
-				var total = variables.length;
-				var ontoType;
+					if(onto.getProperty("user_key")) {
+						var user = googlestore.get(onto.getProperty("user_key"));
+						username = user.getProperty("username");
+						userid = user.getKey().getId();
+					}
+					// get crop name (used to get the variable namespace)
+					cropName = onto.getProperty("ontology_name")
+					// case 1: onto = TDv5
+					// get all the variables for this ontology
+					var variables = googlestore.query("term")
+												.filter("ontology_id", "=", onto.getProperty("ontology_id"))
+												.filter("relationship", "=", "variable_of")
+												.fetch();
+					var total = variables.length;
+					var ontoType;
 
-				if(total > 0){
-					ontoType = "TDv5";
-				} else {
-					// case 2: onto = TDv4
-					// let's get the number of traits (number of triplets T-M-S is expensive to get)
-										var traits = googlestore.query("term")
-																	.filter("ontology_id", "=", onto.getProperty("ontology_id"))
-																	.filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
-																	.fetch();
-					total = traits.length;
-					if (total > 0) {
-						ontoType = "TDv4";
+					if(total > 0){
+						ontoType = "TDv5";
 					} else {
-						// case 3: onto = OBO with variables
-											// get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
-											var oboTerms = googlestore.query("term")
-																	.filter("ontology_id", "=", onto.getProperty("ontology_id"))
-																	.filter("obo_blob_key", "!=", null)
-														.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms have "namespace: <crop>Variable"
-																	.fetch();
-						total = oboTerms.length;
-						if ( total > 0 ){
-							ontoType = "OBOvar";
+						// case 2: onto = TDv4
+						// let's get the number of traits (number of triplets T-M-S is expensive to get)
+						var traits = googlestore.query("term")
+												.filter("ontology_id", "=", onto.getProperty("ontology_id"))
+												.filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
+												.fetch();
+						total = traits.length;
+						if (total > 0) {
+							ontoType = "TDv4";
 						} else {
-							// case 4: onto = any OBO
-												var oboTerms = googlestore.query("term")
-																			.filter("ontology_id", "=", onto.getProperty("ontology_id"))
-																			.filter("obo_blob_key", "!=", null)
-																			.fetch();
+							// case 3: onto = OBO with variables
+							// get the terms and filter on 'obo_blob_key' to tell if it has an obo, otherwise it's template
+							var oboTerms = googlestore.query("term")
+													.filter("ontology_id", "=", onto.getProperty("ontology_id"))
+													.filter("obo_blob_key", "!=", null)
+													.filter("namespace", "=", "{\"undefined\":\""+ cropName + "Variable\"}")// NB the OBOs that have variables store the variable terms have "namespace: <crop>Variable"
+													.fetch();
 							total = oboTerms.length;
-							ontoType = "OBO";
+							if ( total > 0 ){
+								ontoType = "OBOvar";
+							} else {
+								// case 4: onto = any OBO
+								var oboTerms = googlestore.query("term")
+														.filter("ontology_id", "=", onto.getProperty("ontology_id"))
+														.filter("obo_blob_key", "!=", null)
+														.fetch();
+								total = oboTerms.length;
+								ontoType = "OBO";
+							}
 						}
 					}
-				}
-									categories[key].push({
-											ontology_id: ""+onto.getProperty("ontology_id"),
-											ontology_name: ""+onto.getProperty("ontology_name"),
-											ontology_summary: ""+onto.getProperty("ontology_summary"),
-											username: ""+username,
-											userid: ""+userid,
-											tot: ""+total,
-					onto_type: ontoType
-									});
-							}
+
+					var filter_id = "" + onto.getProperty("ontology_id");
+					if(!version_filter[filter_id]) {
+						version_filter[filter_id] = [];
+					}
+
+					version_filter[filter_id].push({
+						id: "" + ((onto.getKey().getName() !== null) ? onto.getKey().getName() : onto.getKey().getId()),
+						ontology_id: "" + onto.getProperty("ontology_id"),
+						ontology_name: "" + onto.getProperty("ontology_name"),
+						ontology_summary: "" + onto.getProperty("ontology_summary"),
+						ontology_version: parseInt(onto.getProperty("ontology_version")),
+						username: "" + username,
+						userid: "" + userid,
+						tot: "" + total,
+						onto_type: ontoType,
+						previous_versions: null
 					});
-					memcache.put(cacheKey, JSON.stringify(categories));
-					Common.print(response).json(categories, request.getParameter("callback"));
-			}
+
+					if(version_filter[filter_id].length > 1) {
+						version_filter[filter_id][0].previous_versions = [];
+						version_filter[filter_id][0].previous_versions.push({
+							id: "" + ((onto.getKey().getName() !== null) ? onto.getKey().getName() : onto.getKey().getId()),
+							ontology_id: "" + onto.getProperty("ontology_id"),
+							ontology_name: "" + onto.getProperty("ontology_name"),
+							ontology_summary: "" + onto.getProperty("ontology_summary"),
+							ontology_version: parseInt(onto.getProperty("ontology_version")),
+							username: "" + username,
+							userid: "" + userid,
+							tot: "" + total,
+							onto_type: ontoType,
+						});
+					} else {
+						categories[key].push(version_filter[filter_id][0]);
+					}
+				}
+			});
+			/**
+			 * MEMECACHE DISABLED FOR NOW
+			 */
+			// memcache.put(cacheKey, JSON.stringify(categories));
+			/**
+			 * -----------------------------------------------------------------
+			 */
+			Common.print(response).json(categories, request.getParameter("callback"));
+		}
 	},
 	"/edit_profile": {
 		post: function(request, response) {
