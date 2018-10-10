@@ -21,7 +21,7 @@ function array_clean(array, value) {
  * @return array                                                  The cleaned array
  **/
 function object_key_replace(search, replace, object) {
-    for(k in object) {
+    for(var k in object) {
         log(k);
     }
     // $.each(object, (k, v) {

@@ -1,3 +1,4 @@
+
 /**
  * Common functions
  **/
@@ -9,56 +10,188 @@ var languages = require("./languages.js");
  * @param  value                  string                          The value to remove
  * @return array                                                  The cleaned array
  **/
-exports.array_clean = function(array, value) {
-	return jQuery.grep(array, function(val) {
-		return val != value;
-	});
-};
+exports = {
+	array_clean: function(array, value) {
+		return jQuery.grep(array, function(val) {
+			return val != value;
+		});
+	},
 
-/**
- * Replace a specific key from a given object
- * @param  string                 search                          The key to search
- * @param  mixed                  replace                         The string to replace
- * @param  value                  string                          The value to remove
- * @return array                                                  The cleaned array
- **/
-exports.object_key_replace = function(search, replace, object) {
-	var new_obj = {};
+	/**
+	 * Replace a specific key from a given object
+	 * @param  string                 search                          The key to search
+	 * @param  mixed                  replace                         The string to replace
+	 * @param  value                  string                          The value to remove
+	 * @return array                                                  The cleaned array
+	 **/
+	object_key_replace: function(search, replace, object) {
+		var new_obj = {};
 
-	switch(typeof object) {
-		case "string":
-			if(object.indexOf("{") > 0) {
-				object = object.getValue();
-			}
-			break;
-		case "undefined":
-			object = '{"undefined": ""}';
-			break;
-		case "object":
-			if(object == null) {
+		switch(typeof object) {
+			case "string":
+				if(object.indexOf("{") > 0) {
+					object = object.getValue();
+				}
+				break;
+			case "undefined":
 				object = '{"undefined": ""}';
+				break;
+			case "object":
+				if(object == null) {
+					object = '{"undefined": ""}';
+				} else {
+					if(object.indexOf("{") == -1) {
+						object = '"' + object + '"';
+					}
+				}
+				break;
+		}
+		if(typeof object !== "string") {
+			var obj = JSON.parse(object);
+			for(var k in obj) {
+				if(k == "undefined") {
+					switch(replace) {
+						case null:	obj = obj['undefined'];							break;
+						case "":	obj[languages.default] = obj['undefined'];		break;
+					}
+				}
+			}
+			if(obj["undefined"] !== "undefined" && obj["undefined"] !== undefined) {
+				delete obj["undefined"];
+			}
+		} else {
+			obj = object
+		}
+		return (typeof obj == "object") ? JSON.stringify(obj) : obj;
+	},
+
+	renderIndex: function(htmlFile, data) {
+		if(!data) data = {};
+		var partials = {
+			CONTENT: render(htmlFile),
+			VERSION: VERSION,
+			languages: JSON.stringify(languages.all)
+		};
+		var html = Mustache.to_html(render("skins/index.html"), data, partials);
+		return html;
+	},
+
+	isblank: function(javaStr) {
+		if(javaStr == null || javaStr.equals("")) {
+			return true;
+		}
+		return false;
+	},
+
+	print: function(response) {
+		response.setCharacterEncoding("UTF-8");
+		return {
+			// callback is a Java string that contains the name
+			// of the callback, so we can run JSONP if it exists
+			json: function(j, callback) {
+				if(response == null) return;
+				var jsonString = JSON.stringify(j, null, 2);
+
+				if(!Common.isblank(callback)) { // JSONP
+					jsonString = "" + callback + "(" + jsonString + ");";
+				}
+
+				response.setContentType("application/json");
+				response.getWriter().println(jsonString);
+				return jsonString;
+			},
+			text: function(text) {
+				if(response == null) return;
+				response.getWriter().println(text);
+			},
+			textPlain: function(text) {
+				if(response == null) return;
+				response.setContentType("text/plain");
+				response.getWriter().println(text);
+			},
+			html: function(html) {
+				if(response == null) return;
+				response.setContentType("text/html");
+				response.getWriter().println(html);
+			},
+			rss: function(title, arr) {
+				if(response == null) return;
+				response.getWriter().println(rss(title, arr));
+			}
+		};
+	},
+
+	translate: function(jsonStr, isoLang) {
+		var isoLang = isoLang;
+		if(!isoLang) isoLang = 'EN';
+		try {
+			var obj = JSON.parse(jsonStr);
+			var lang = languages.iso[isoLang];
+			if(obj[lang]) {
+				return obj[lang];
+			} else if (obj['undefined']){
+				return obj['undefined'];
 			} else {
-				if(object.indexOf("{") == -1) {
-					object = '"' + object + '"';
-				}
+				return jsonStr;
 			}
-			break;
-	}
-	if(typeof object !== "string") {
-		var obj = JSON.parse(object);
-		for(var k in obj) {
-			if(k == "undefined") {
-				switch(replace) {
-					case null:	obj = obj['undefined'];							break;
-					case "":	obj[languages.default] = obj['undefined'];		break;
-				}
-			}
+		} catch(e) {
+			return jsonStr;
 		}
-		if(obj["undefined"] !== "undefined" && obj["undefined"] !== undefined) {
-			delete obj["undefined"];
+
+		return jsonStr;
+	},
+
+	error: function(response, msg) {
+		response.sendError(response.SC_BAD_REQUEST, msg);
+	},
+
+	defaultRelationship: function(relationship) {
+		if(!relationship) relationship = 'is_a';
+		// relationship could be an array
+		if(relationship && (relationship instanceof java.util.List)) {
+			relationship = relationship.get(0);
 		}
-	} else {
-		obj = object
+
+		/*
+		if(relationship.length)
+		relationship = relationship[0];
+		*/
+
+		if(relationship instanceof Text) {
+			relationship = relationship.getValue();
+		}
+
+		if(!(relationship instanceof java.lang.String)) {
+			relationship = new java.lang.String(relationship);
+		}
+
+		if(!relationship || relationship.equals("")) {
+			relationship = "is_a";
+		} else {
+			relationship = ""+relationship.trim().split(" ")[0];
+		}
+		return relationship;
+	},
+
+	defaultParent: function(parent) {
+		if(!parent) parent = 0;
+		if(parent === 'null') parent = 0;
+		if(typeof parent === 'string') {
+			return parent;
+		}
+
+		if(parent.length) {
+			parent = parent[0];
+		}
+
+		return parent;
+	},
+
+	pad: function(number, length) {
+		var str = '' + number;
+		while (str.length < length) {
+				str = '0' + str;
+		}
+		return str;
 	}
-	return (typeof obj == "object") ? JSON.stringify(obj) : obj;
 };
