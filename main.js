@@ -2022,10 +2022,6 @@ apejs.urls = {
 
 							first = false;
 							ontologyId = split[0];
-							ontologyVersion = ontologymodel.getVersion(ontologyId);
-							if(ontologyVersion > 1) {
-								ontologyVersion += 1;
-							}
 
 							// check if this ontoId already exists
 							// (of course only runs the first time)
@@ -2062,14 +2058,25 @@ apejs.urls = {
 					});
 				});
 
+				// Backup the previous version ontology
+				var OntoKeyBackup = googlestore.createKey("ontology", ontologyId),
+					OntoEntityBackup = googlestore.get(OntoKeyBackup),
+					ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(OntoEntityBackup));
+				googlestore.put(ontoEntityBackup);
+
+
+				ontologyVersion = ontologymodel.getVersion(ontologyId);
+				if(ontologyVersion >= 1) {
+					ontologyVersion += 1;
+				}
 				// log(ontologyVersion)
 				// if(stop) {
 				// 	return err("Ontology ID already exists");
 				// }
 
 				// create the ontology
-				// var ontoEntity = googlestore.entity("ontology", ontologyId, {
-				var ontoEntity = googlestore.entity("ontology", {
+				var ontoEntity = googlestore.entity("ontology", ontologyId, {
+				// var ontoEntity = googlestore.entity("ontology", {
 					created_at: new java.util.Date(),
 					user_key: currUser.getKey(),
 					ontology_id: ontologyId,
@@ -2503,25 +2510,23 @@ apejs.urls = {
 						userid: "" + userid,
 						tot: "" + total,
 						onto_type: ontoType,
-						previous_versions: null
+						previous_versions: function() {
+							var ontology_versions = googlestore.query("ontology_versions")
+																.filter("ontology_id", "=", onto.getProperty("ontology_id"))
+																.fetch();
+							if(ontology_versions.length > 0) {
+								var arr = [];
+								for(var i=0; i < ontology_versions.length; i++) {
+									arr.push(googlestore.toJS(ontology_versions[i]));
+								}
+								return arr;
+							} else {
+								return null
+							}
+						}()
 					});
 
-					if(version_filter[filter_id].length > 1) {
-						version_filter[filter_id][0].previous_versions = [];
-						version_filter[filter_id][0].previous_versions.push({
-							id: "" + ((onto.getKey().getName() !== null) ? onto.getKey().getName() : onto.getKey().getId()),
-							ontology_id: "" + onto.getProperty("ontology_id"),
-							ontology_name: "" + onto.getProperty("ontology_name"),
-							ontology_summary: "" + onto.getProperty("ontology_summary"),
-							ontology_version: parseInt(onto.getProperty("ontology_version")),
-							username: "" + username,
-							userid: "" + userid,
-							tot: "" + total,
-							onto_type: ontoType,
-						});
-					} else {
-						categories[key].push(version_filter[filter_id][0]);
-					}
+					categories[key].push(version_filter[filter_id][0]);
 				}
 			});
 			/**
