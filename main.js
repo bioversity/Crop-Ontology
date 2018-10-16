@@ -2058,25 +2058,23 @@ apejs.urls = {
 					});
 				});
 
+				// if(stop) {
+				// 	return err("Ontology ID already exists");
+				// }
+
 				// Backup the previous version ontology
 				var OntoKeyBackup = googlestore.createKey("ontology", ontologyId),
 					OntoEntityBackup = googlestore.get(OntoKeyBackup),
 					ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(OntoEntityBackup));
 				googlestore.put(ontoEntityBackup);
 
-
 				ontologyVersion = ontologymodel.getVersion(ontologyId);
 				if(ontologyVersion >= 1) {
 					ontologyVersion += 1;
 				}
-				// log(ontologyVersion)
-				// if(stop) {
-				// 	return err("Ontology ID already exists");
-				// }
 
 				// create the ontology
 				var ontoEntity = googlestore.entity("ontology", ontologyId, {
-				// var ontoEntity = googlestore.entity("ontology", {
 					created_at: new java.util.Date(),
 					user_key: currUser.getKey(),
 					ontology_id: ontologyId,
@@ -2513,11 +2511,23 @@ apejs.urls = {
 						previous_versions: function() {
 							var ontology_versions = googlestore.query("ontology_versions")
 																.filter("ontology_id", "=", onto.getProperty("ontology_id"))
+																.sort("ontology_version", "DESC")
 																.fetch();
 							if(ontology_versions.length > 0) {
 								var arr = [];
 								for(var i=0; i < ontology_versions.length; i++) {
-									arr.push(googlestore.toJS(ontology_versions[i]));
+									arr.push({
+										id: "" + ((ontology_versions[i].getKey().getName() !== null) ? ontology_versions[i].getKey().getName() : ontology_versions[i].getKey().getId()),
+										ontology_id: "" + ontology_versions[i].getProperty("ontology_id"),
+										ontology_name: "" + ontology_versions[i].getProperty("ontology_name"),
+										ontology_summary: "" +  ontology_versions[i].getProperty("ontology_summary"),
+										ontology_version: parseInt(ontology_versions[i].getProperty("ontology_version")),
+										username: "" + username,
+										userid: "" + userid,
+										tot: "" + total,
+										onto_type: ontoType,
+									})
+									// googlestore.toJS(ontology_versions[i]));
 								}
 								return arr;
 							} else {
@@ -2875,12 +2885,21 @@ apejs.urls = {
 			}
 
 			if(stop) {
-				return err("Ontology ID already exists");
+				// return err("Ontology ID already exists");
+
+				// Backup the previous version ontology
+				var ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(ontoEntity));
+				googlestore.put(ontoEntityBackup);
+
+				ontologyVersion = ontologymodel.getVersion(ontologyId);
+				if(ontologyVersion >= 1) {
+					ontologyVersion += 1;
+				}
 			}
 
 			// this has all the logics for parsing the template
 			// and creating terms
-			new template(blobKey, ontologyId, ontologyName)
+			new template(blobKey, ontologyId, ontologyName, ontologyVersion)
 
 			taskqueue.createTask("/memcache-clear", "");
 

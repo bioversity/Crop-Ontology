@@ -5,10 +5,14 @@ var mod = "Trait ID for modification, Blank for New",
     methodMod = "Method ID for modification, Blank for New",
     scaleMod = "Scale ID for modification, Blank for New";
 
-exports = t = function(blobKey, ontologyId, ontologyName) {
+exports = t = function(blobKey, ontologyId, ontologyName, ontologyVersion) {
+	if (ontologyVersion == undefined || ontologyVersion == "undefined" || ontologyVersion == null) {
+		ontologyVersion = 1;
+	}
     this.blobKey = blobKey
     this.ontologyId = ontologyId
     this.ontologyName = ontologyName
+    this.ontologyVersion = ontologyVersion
     this.rootId = this.ontologyId + ':ROOT'
 
     this.terms = []
@@ -20,9 +24,10 @@ exports = t = function(blobKey, ontologyId, ontologyName) {
 t.prototype.createRoot = function() {
     taskqueue.createTask("/create-term", JSON.stringify({
         id: this.rootId,
-        ontology_name: ""+this.ontologyName,
-        ontology_id: ""+this.ontologyId,
-        name: ""+this.ontologyName,
+        ontology_name: "" + this.ontologyName,
+		ontology_version: "" + this.ontologyVersion,
+        ontology_id: "" + this.ontologyId,
+        name: "" + this.ontologyName,
         language: this.terms[0][langKey] || this.terms[0]["language"],
         parent: null
     }));
@@ -33,9 +38,9 @@ t.prototype.createTraitClass = function(term) {
     } else{
         var parent = this.ontologyId + ":" + term["Trait class"];
     }
-    
-    if(term[mod] || term["Trait ID"]) { 
-        // if this trait exists in db, 
+
+    if(term[mod] || term["Trait ID"]) {
+        // if this trait exists in db,
         // use its parentId as current parent instead of 'Trait Class'
         try {
             var termKey = googlestore.createKey("term", term.id),
@@ -50,8 +55,9 @@ t.prototype.createTraitClass = function(term) {
     // creates or modifies a Trait Class based on its id
     taskqueue.createTask("/create-term", JSON.stringify({
         id: parent,
-        ontology_name: ""+this.ontologyName,
-        ontology_id: ""+this.ontologyId,
+        ontology_name: "" + this.ontologyName,
+		ontology_version: "" + this.ontologyVersion,
+        ontology_id: "" + this.ontologyId,
         name: term["Trait Class"] || term["Trait class"],
         language: term[langKey] || term["language"],
         parent: this.rootId
@@ -64,8 +70,8 @@ t.prototype.getTrait = function(row) {
     for(var i in row) {
         if(i == 'Trait ID' || i == 'ibfieldbook') startCopy = true;
         if(startCopy) {
-            obj[i] = row[i]; 
-            if(obj[i] == "") delete obj[i]; 
+            obj[i] = row[i];
+            if(obj[i] == "") delete obj[i];
         }
         if(i == 'Trait Xref' || i == 'Trait Class') break;
     }
@@ -78,8 +84,9 @@ t.prototype.getTrait = function(row) {
     if(!obj.name) {
         obj.name = 'No trait name found'
     }
-    obj.ontology_name = ""+this.ontologyName;
-    obj.ontology_id = ""+this.ontologyId;
+    obj.ontology_name = "" + this.ontologyName;
+	obj.ontology_version = "" + this.ontologyVersion;
+    obj.ontology_id = "" + this.ontologyId;
 
     return obj;
 }
@@ -88,7 +95,7 @@ t.prototype.getMethod = function(row) {
     var startCopy = false;
     for(var i in row) {
         if(startCopy) {
-            obj[i] = row[i]; 
+            obj[i] = row[i];
             if(obj[i] == "") delete obj[i];
         }
         if(i == 'Method reference' || i == 'Comments') break;
@@ -100,11 +107,12 @@ t.prototype.getMethod = function(row) {
 
     obj.name = obj["Name of method"] || obj["Method name"];
 
-    if(!obj.name) { 
+    if(!obj.name) {
         obj.name = 'No method name found';
     }
-    obj.ontology_name = ""+this.ontologyName;
-    obj.ontology_id = ""+this.ontologyId;
+    obj.ontology_name = "" + this.ontologyName;
+	obj.ontology_version = "" + this.ontologyVersion;
+    obj.ontology_id = "" + this.ontologyId;
     obj.relationship = "method_of";
     return obj;
 }
@@ -116,7 +124,7 @@ t.prototype.getScale = function(row) {
         ///the line after the categories in the TD v4 won't be added to the database.....
         if(startCopyCat && i.indexOf('Category') < 0) break;
         if(startCopy) {
-            obj[i] = row[i]; 
+            obj[i] = row[i];
             if(obj[i] == "") delete obj[i];
         }
         if(i == 'Comments' || i== 'Method reference') startCopy = true;
@@ -131,8 +139,9 @@ t.prototype.getScale = function(row) {
     if(!obj.name) { // look in the 22nd column
         obj.name = 'No scale name found';
     }
-    obj.ontology_name = ""+this.ontologyName;
-    obj.ontology_id = ""+this.ontologyId;
+    obj.ontology_name = "" + this.ontologyName;
+	obj.ontology_version = "" + this.ontologyVersion;
+    obj.ontology_id = "" + this.ontologyId;
     obj.relationship = "scale_of";
     return obj;
 }
@@ -141,8 +150,8 @@ t.prototype.getVariable = function(row) {
     var obj = {};
     for(var i in row) {
         if(i == 'Trait ID' || i == 'Trait ID for modification, Blank for New') break;
-        obj[i] = row[i]; 
-        if(obj[i] == "") delete obj[i];     
+        obj[i] = row[i];
+        if(obj[i] == "") delete obj[i];
     }
     delete obj['ibfieldbook'];
     // always need a reference to its language
@@ -152,8 +161,9 @@ t.prototype.getVariable = function(row) {
     if(!obj.name) { // look in the 22nd column
         obj.name = 'No variable name found';
     }
-    obj.ontology_name = ""+this.ontologyName;
-    obj.ontology_id = ""+this.ontologyId;
+    obj.ontology_name = this.ontologyName;
+	obj.ontology_version = "" + this.ontologyVersion;
+    obj.ontology_id = "" + this.ontologyId;
     obj.relationship = "variable_of";
     return obj;
 }
@@ -208,20 +218,20 @@ t.prototype.parseTerm = function(term) {
         this.editedIds.push(term["Trait ID"]);
     } else if(term[mod]) {
         this.editedIds.push(term[mod]);
-    }  
+    }
     if (term["Method ID"]) {
         this.editedIds.push(term["Method ID"]);
     } else if(term[methodMod]) {
         this.editedIds.push(term[methodMod]);
-    }  
+    }
     if(term["Scale ID"]){
         this.editedIds.push(term["Scale ID"]);
     }else if(term[scaleMod]) {
         this.editedIds.push(term[scaleMod]);
-    }  
+    }
     if(term["Variable ID"]){
         this.editedIds.push(term["Variable ID"]);
-    } 
+    }
 
     delete term[""]; // WTF DUDE OMG
 
@@ -261,7 +271,7 @@ t.prototype.processTerms = function() {
     // handle same ids
     var methodIds = {};
     var scaleIds = {};
-    
+
     // MAIN LOOP
     for(var i in this.terms) {
         // TRAIT
@@ -304,7 +314,7 @@ t.prototype.processTerms = function() {
             }else{
                 method.parent = trait.id;
             }
-            
+
         }
 
         // SCALE
@@ -332,7 +342,7 @@ t.prototype.processTerms = function() {
                 }
             }else{
                 scale.parent = method.id;
-            }   
+            }
         }
 
         // VARIABLE
@@ -355,6 +365,9 @@ t.prototype.processTerms = function() {
 
         // add variable
         if(variable && variable.name.indexOf("No variable name found") < 0 ) {
+			log(variable.parent)
+			// log(JSON.stringify(variable))
+			log("------------------------------------")
             //langKey = "Language of submission";
             taskqueue.createTask("/create-term", JSON.stringify(variable));
         }
@@ -375,8 +388,6 @@ t.prototype.processTerms = function() {
         // add trait
         delete trait['variable'];
         delete trait['method'];
-        taskqueue.createTask("/create-term", JSON.stringify(trait));   
+        taskqueue.createTask("/create-term", JSON.stringify(trait));
     }
 }
-
-
