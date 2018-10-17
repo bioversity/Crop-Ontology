@@ -1059,6 +1059,7 @@ apejs.urls = {
 					delete attrObj.relationship;
 					delete attrObj.obo_blob_key;
 					delete attrObj.excel_blob_key;
+					delete attrObj.version;
 					delete attrObj.Trait;
 					delete attrObj["Curation LV 16/07/15"];
 					delete attrObj["Trait ID"];
@@ -1898,7 +1899,7 @@ apejs.urls = {
 					term.ontology_name = ontologyName;
 					term.ontology_version = ontologyVersion;
 					// XXX someone posting a term with an already existing ID might edit it
-					term.version = termmodel.createTerm(term);
+					term.term_version = termmodel.createTerm(term);
 				}
 			} catch(e) {
 				return response.sendError(response.SC_BAD_REQUEST, e);

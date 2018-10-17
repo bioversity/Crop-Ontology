@@ -55,7 +55,7 @@ var termmodel = (function(){
 			term.def = new Text(term.def);
 		}
 		// Backup current version
-		term.version = ontologymodel.backup_previous_version("term", term.id, "term_versions");
+		term.term_version = ontologymodel.backup_previous_version("term", term.id, "term_versions");
 
 		// XXX a bit hacky - make it faster
 		for(var i in term) {
@@ -76,7 +76,7 @@ var termmodel = (function(){
 		}
 
 		googlestore.put(termEntity);
-		return term.version;
+		return term.term_version;
 	}
 
 	function translate(term, languages) {
