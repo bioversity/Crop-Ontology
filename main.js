@@ -1840,7 +1840,6 @@ apejs.urls = {
 				upload_url = blobstore.createUploadUrl("/obo-upload"),
 				excel_upload_url = blobstore.createUploadUrl("/excel-template-upload"),
 				ontology_version = ontologymodel.getVersion();
-				log(ontology_version);
 
 			var html = Common.renderIndex("skins/add-ontology.html", {
 				ONTOLOGY_CATEGORIES: ontology_categories,
@@ -1862,7 +1861,8 @@ apejs.urls = {
 				// let's parse it so we know it's fine
 				// maybe it can be a CSV of JSON objects
 				// that would be very memory friendly
-				var arr = JSON.parse(json);
+				var arr = JSON.parse(json),
+					term_version;
 
 				var ontologyName = request.getParameter("ontology_name"),
 					ontologyId = request.getParameter("ontology_id"),
@@ -1872,7 +1872,6 @@ apejs.urls = {
 				if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "") {
 					return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 				}
-
 				// Backup current version
 				ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
 
@@ -1897,8 +1896,9 @@ apejs.urls = {
 					var term = arr[i];
 					term.ontology_id = ontologyId;
 					term.ontology_name = ontologyName;
+					term.ontology_version = ontologyVersion;
 					// XXX someone posting a term with an already existing ID might edit it
-					termmodel.createTerm(term);
+					term.version = termmodel.createTerm(term);
 				}
 			} catch(e) {
 				return response.sendError(response.SC_BAD_REQUEST, e);
