@@ -1840,6 +1840,7 @@ apejs.urls = {
 				upload_url = blobstore.createUploadUrl("/obo-upload"),
 				excel_upload_url = blobstore.createUploadUrl("/excel-template-upload"),
 				ontology_version = ontologymodel.getVersion();
+				log(ontology_version);
 
 			var html = Common.renderIndex("skins/add-ontology.html", {
 				ONTOLOGY_CATEGORIES: ontology_categories,
@@ -1870,6 +1871,20 @@ apejs.urls = {
 
 				if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "") {
 					return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
+				}
+
+				// Backup
+				var OntoKeyBackup = googlestore.createKey("ontology", ontologyId);
+				if(OntoKeyBackup) {
+					var OntoEntityBackup = googlestore.get(OntoKeyBackup),
+						ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(OntoEntityBackup));
+
+					googlestore.put(ontoEntityBackup);
+				}
+
+				ontologyVersion = ontologymodel.getVersion(ontologyId);
+				if(ontologyVersion >= 1) {
+					ontologyVersion += 1;
 				}
 
 				// create ontology
@@ -2058,20 +2073,21 @@ apejs.urls = {
 					});
 				});
 
-				// if(stop) {
-				// 	return err("Ontology ID already exists");
-				// }
+				if(stop) {
+					// 	return err("Ontology ID already exists");
 
-				// Backup the previous version ontology
-				var OntoKeyBackup = googlestore.createKey("ontology", ontologyId),
+					// Backup the previous version ontology
+					var OntoKeyBackup = googlestore.createKey("ontology", ontologyId),
 					OntoEntityBackup = googlestore.get(OntoKeyBackup),
 					ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(OntoEntityBackup));
-				googlestore.put(ontoEntityBackup);
+					googlestore.put(ontoEntityBackup);
 
-				ontologyVersion = ontologymodel.getVersion(ontologyId);
-				if(ontologyVersion >= 1) {
-					ontologyVersion += 1;
+					ontologyVersion = ontologymodel.getVersion(ontologyId);
+					if(ontologyVersion >= 1) {
+						ontologyVersion += 1;
+					}
 				}
+
 
 				// create the ontology
 				var ontoEntity = googlestore.entity("ontology", ontologyId, {

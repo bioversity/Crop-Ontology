@@ -70,16 +70,20 @@ var bindEvents = function() {
 	/**
 	 * Set the new ontology version
 	 */
-	$("#ontology_id_et").blur(function(e) {
-		$.getJSON("./get-ontology-roots/" + $(this).val(), function(data) {
-			$("#ontology_version_et").val(data[0].ontology_version + 1);
-		})
-	});
-	$("#ontology_id_co").blur(function(e) {
-		$.getJSON("./get-ontology-roots/" + $(this).val(), function(data) {
-			$("#ontology_version_co").val(data[0].ontology_version + 1);
-		})
-	});
+	if($("#ontology_id_et").length > 0) {
+		$("#ontology_id_et").blur(function(e) {
+			$.getJSON("./get-ontology-roots/" + $(this).val(), function(data) {
+				$("#ontology_version_et").val(data[0].ontology_version + 1);
+			})
+		});
+	}
+	if($("#ontology_id_co").length > 0) {
+		$("#ontology_id_co").blur(function(e) {
+			$.getJSON("./get-ontology-roots/" + $(this).val(), function(data) {
+				$("#ontology_version_co").val(data[0].ontology_version + 1);
+			})
+		});
+	}
 
     // for each "plus" elements bind a click event
     // that triggers the addition of a child DOM element
@@ -118,19 +122,20 @@ var bindEvents = function() {
         // relation logic
         var pars = {
             ontology_name: $("#ontology_name").val(),
-            ontology_id: $("#ontology_id").val(),
+            ontology_version: parseInt($("#ontology_version_co").val()),
+            ontology_id: $("#ontology_id_co").val(),
             ontology_summary: $("#ontology_summary").val(),
             category: $("#create_ontology_cont select[name=category]").val(),
             json: JSON.stringify(ret)
         };
 
-        if(!pars.ontology_name || !pars.ontology_id)
+        if($.trim(pars.ontology_name) == "" || pars.ontology_name == undefined || $.trim(pars.ontology_id) == "" || pars.ontology_id == undefined) {
             return err("Must insert the name of ontology and its ID");
+		}
 
         var $this = $(this);
         $this.hide();
         $.post("/add-ontology", pars, function(data) {
-
             $this.show();
 
             window.location.href = "/";
