@@ -1873,19 +1873,8 @@ apejs.urls = {
 					return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 				}
 
-				// Backup
-				var OntoKeyBackup = googlestore.createKey("ontology", ontologyId);
-				if(OntoKeyBackup) {
-					var OntoEntityBackup = googlestore.get(OntoKeyBackup),
-						ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(OntoEntityBackup));
-
-					googlestore.put(ontoEntityBackup);
-				}
-
-				ontologyVersion = ontologymodel.getVersion(ontologyId);
-				if(ontologyVersion >= 1) {
-					ontologyVersion += 1;
-				}
+				// Backup current version
+				ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
 
 				// create ontology
 				var ontoEntity = googlestore.entity("ontology", ontologyId, {
@@ -2075,18 +2064,9 @@ apejs.urls = {
 
 				if(stop) {
 					// 	return err("Ontology ID already exists");
-
-					// Backup the previous version ontology
-					var OntoKeyBackup = googlestore.createKey("ontology", ontologyId),
-					OntoEntityBackup = googlestore.get(OntoKeyBackup),
-					ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(OntoEntityBackup));
-					googlestore.put(ontoEntityBackup);
-
-					ontologyVersion = ontologymodel.getVersion(ontologyId);
-					if(ontologyVersion >= 1) {
-						ontologyVersion += 1;
-					}
 				}
+				// Backup current version
+				ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
 
 
 				// create the ontology
@@ -2884,10 +2864,6 @@ apejs.urls = {
 
 			// check wheter ontologyId already exists
 			var ontoEntity = ontologymodel.getById(ontologyId);
-			var ontologyVersion = ontologymodel.getVersion(ontologyId);
-			if(ontologyVersion >= 1) {
-				ontologyVersion += 1;
-			}
 
 			if(ontoEntity) {
 				stop = true;
@@ -2908,17 +2884,14 @@ apejs.urls = {
 			if(stop) {
 				// return err("Ontology ID already exists");
 			}
+			// Backup current version
+			ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
 
 			// this has all the logics for parsing the template
 			// and creating terms
 			new template(blobKey, ontologyId, ontologyName, ontologyVersion)
 
 			taskqueue.createTask("/memcache-clear", "");
-
-
-			// Backup the previous ontology version
-			var ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(ontoEntity));
-			googlestore.put(ontoEntityBackup);
 
 			// create the ontology
 			// if(!ontoEntity) {

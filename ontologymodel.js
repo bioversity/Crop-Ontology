@@ -29,6 +29,29 @@ var ontologymodel = (function() {
 		}
 	}
 
+	/**
+	 * Save the current ontology version to a separate collection
+	 * @param  string 						ontology_name						The target ontology entity name
+	 * @param  string 						ontology_id							The target ontology ID
+	 * @param  string 						backup_ontology_name				The backup ontology entity name
+	 * @return integer															The ID incremented by 1
+	 */
+	function backup_previous_version(ontology_name, ontology_id, backup_ontology_name) {
+		var ontology_backup_key = googlestore.createKey(ontology_name, ontology_id),
+			ontology_version = this.getVersion(ontology_id);
+
+		if(ontology_backup_key) {
+			var ontology_backup_entity = googlestore.get(ontology_backup_key),
+				current_version = googlestore.entity(backup_ontology_name, googlestore.toJS(ontology_backup_entity));
+
+			googlestore.put(current_version);
+		}
+		if(ontology_version >= 1) {
+			ontology_version += 1;
+		}
+		return ontology_version;
+	}
+
     function catsSelectHtml() {
         var options = "<select name='category'>";
         for(var i=0; i<categories.length; i++) {
@@ -80,6 +103,7 @@ var ontologymodel = (function() {
 
     return {
 		getVersion: getVersion,
+		backup_previous_version: backup_previous_version,
         catsSelectHtml: catsSelectHtml,
         create: create,
         getById: getById,
