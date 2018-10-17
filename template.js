@@ -9,6 +9,7 @@ exports = t = function(blobKey, ontologyId, ontologyName, ontologyVersion) {
 	if (ontologyVersion == undefined || ontologyVersion == "undefined" || ontologyVersion == null) {
 		ontologyVersion = 1;
 	}
+
     this.blobKey = blobKey
     this.ontologyId = ontologyId
     this.ontologyName = ontologyName
@@ -24,10 +25,10 @@ exports = t = function(blobKey, ontologyId, ontologyName, ontologyVersion) {
 t.prototype.createRoot = function() {
     taskqueue.createTask("/create-term", JSON.stringify({
         id: this.rootId,
-        ontology_name: "" + this.ontologyName,
-		ontology_version: "" + this.ontologyVersion,
-        ontology_id: "" + this.ontologyId,
-        name: "" + this.ontologyName,
+        ontology_name: ""+this.ontologyName,
+        ontology_id: ""+this.ontologyId,
+        name: ""+this.ontologyName,
+        version: ""+this.ontologyVersion,
         language: this.terms[0][langKey] || this.terms[0]["language"],
         parent: null
     }));
@@ -55,9 +56,9 @@ t.prototype.createTraitClass = function(term) {
     // creates or modifies a Trait Class based on its id
     taskqueue.createTask("/create-term", JSON.stringify({
         id: parent,
-        ontology_name: "" + this.ontologyName,
-		ontology_version: "" + this.ontologyVersion,
-        ontology_id: "" + this.ontologyId,
+        ontology_name: ""+this.ontologyName,
+        ontology_version: ""+this.ontologyVersion,
+        ontology_id: ""+this.ontologyId,
         name: term["Trait Class"] || term["Trait class"],
         language: term[langKey] || term["language"],
         parent: this.rootId
@@ -84,9 +85,9 @@ t.prototype.getTrait = function(row) {
     if(!obj.name) {
         obj.name = 'No trait name found'
     }
-    obj.ontology_name = "" + this.ontologyName;
-	obj.ontology_version = "" + this.ontologyVersion;
-    obj.ontology_id = "" + this.ontologyId;
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_version = ""+this.ontologyVersion;
+    obj.ontology_id = ""+this.ontologyId;
 
     return obj;
 }
@@ -110,9 +111,9 @@ t.prototype.getMethod = function(row) {
     if(!obj.name) {
         obj.name = 'No method name found';
     }
-    obj.ontology_name = "" + this.ontologyName;
-	obj.ontology_version = "" + this.ontologyVersion;
-    obj.ontology_id = "" + this.ontologyId;
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_version = ""+this.ontologyVersion;
+    obj.ontology_id = ""+this.ontologyId;
     obj.relationship = "method_of";
     return obj;
 }
@@ -139,9 +140,9 @@ t.prototype.getScale = function(row) {
     if(!obj.name) { // look in the 22nd column
         obj.name = 'No scale name found';
     }
-    obj.ontology_name = "" + this.ontologyName;
-	obj.ontology_version = "" + this.ontologyVersion;
-    obj.ontology_id = "" + this.ontologyId;
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_version = ""+this.ontologyVersion;
+    obj.ontology_id = ""+this.ontologyId;
     obj.relationship = "scale_of";
     return obj;
 }
@@ -161,9 +162,8 @@ t.prototype.getVariable = function(row) {
     if(!obj.name) { // look in the 22nd column
         obj.name = 'No variable name found';
     }
-    obj.ontology_name = this.ontologyName;
-	obj.ontology_version = "" + this.ontologyVersion;
-    obj.ontology_id = "" + this.ontologyId;
+    obj.ontology_name = ""+this.ontologyName;
+    obj.ontology_id = ""+this.ontologyId;
     obj.relationship = "variable_of";
     return obj;
 }
@@ -365,9 +365,6 @@ t.prototype.processTerms = function() {
 
         // add variable
         if(variable && variable.name.indexOf("No variable name found") < 0 ) {
-			log(variable.parent)
-			// log(JSON.stringify(variable))
-			log("------------------------------------")
             //langKey = "Language of submission";
             taskqueue.createTask("/create-term", JSON.stringify(variable));
         }

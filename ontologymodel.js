@@ -42,13 +42,14 @@ var ontologymodel = (function() {
         return options;
     }
 
-    function create(currUser, ontologyId, ontologyName, ontologySummary, category) {
+    function create(currUser, ontologyId, ontologyName, ontologyVersion, ontologySummary, category) {
         // create the ontology
         var ontoEntity = googlestore.entity("ontology", ontologyId, {
             created_at: new java.util.Date(),
             user_key: currUser.getKey(),
             ontology_id: ontologyId,
             ontology_name: ontologyName,
+            ontology_version: ontologyVersion,
             ontology_summary: ontologySummary,
             category: category
         });

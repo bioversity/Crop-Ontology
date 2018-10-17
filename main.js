@@ -2126,7 +2126,7 @@ apejs.urls = {
 					// into JSON - to represent both languages
 
 					// every term should have a langauge
-					var term = termmodel.Common.translate(term, languages);
+					var term = termmodel.translate(term, languages);
 
 					// add it to datastore
 					termmodel.createTerm(term);
@@ -2868,6 +2868,11 @@ apejs.urls = {
 
 			// check wheter ontologyId already exists
 			var ontoEntity = ontologymodel.getById(ontologyId);
+			var ontologyVersion = ontologymodel.getVersion(ontologyId);
+			if(ontologyVersion >= 1) {
+				ontologyVersion += 1;
+			}
+
 			if(ontoEntity) {
 				stop = true;
 			} else {
@@ -2886,15 +2891,6 @@ apejs.urls = {
 
 			if(stop) {
 				// return err("Ontology ID already exists");
-
-				// Backup the previous version ontology
-				var ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(ontoEntity));
-				googlestore.put(ontoEntityBackup);
-
-				ontologyVersion = ontologymodel.getVersion(ontologyId);
-				if(ontologyVersion >= 1) {
-					ontologyVersion += 1;
-				}
 			}
 
 			// this has all the logics for parsing the template
@@ -2903,10 +2899,15 @@ apejs.urls = {
 
 			taskqueue.createTask("/memcache-clear", "");
 
+
+			// Backup the previous ontology version
+			var ontoEntityBackup = googlestore.entity("ontology_versions", googlestore.toJS(ontoEntity));
+			googlestore.put(ontoEntityBackup);
+
 			// create the ontology
-			if(!ontoEntity) {
-				ontologymodel.create(currUser, ontologyId, ontologyName, ontologySummary, category);
-			}
+			// if(!ontoEntity) {
+				ontologymodel.create(currUser, ontologyId, ontologyName, ontologyVersion, ontologySummary, category);
+			// }
 			return err("");
 		}
 	},
