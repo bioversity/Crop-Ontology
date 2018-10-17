@@ -143,7 +143,7 @@ var bindEvents = function() {
 		$.post("/add-ontology", pars, function(data) {
 			$this.show();
 
-			// window.location.href = "/";
+			window.location.href = "/";
 
 		}).error(function(e) {
 			var responseText = $(e.responseText).eq(0).text();
