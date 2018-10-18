@@ -2215,8 +2215,7 @@ var Editable = (function(){
 		}
 
         $editbox.show();
-
-        $editbox.find("[name=ontology_version]").val(ontology.version);
+        $editbox.find("[name=ontology_version]").val(ontology.ontology_version);
         $editbox.find("[name=category]").val(ontology.category);
 
         $editbox.find("[name=ontology_name]").val(ontology.ontology_name);

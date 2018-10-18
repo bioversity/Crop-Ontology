@@ -2300,13 +2300,13 @@ apejs.urls = {
 								ontology_id: ""+onto.getProperty("ontology_id"),
 								ontology_name: ""+onto.getProperty("ontology_name"),
 								ontology_summary: ""+onto.getProperty("ontology_summary"),
+								ontology_version: parseInt(onto.getProperty("ontology_version")),
 								category: ""+category,
 								userKey: ''+KeyFactory.keyToString(onto.getProperty('user_key'))
 							});
 					});
 
-					response.getWriter().println(JSON.stringify(ret));
-
+					Common.print(response).json(ret);
 			}
 	},
 	"/get-term-parents/(.*)": {
