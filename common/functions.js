@@ -2,27 +2,22 @@
 /**
  * Common functions
  **/
-var languages = require("./languages.js");
+var languages = require("./languages.js"),
+	diff_match_patch = require('./diff_match_patch_uncompressed.js').diff_match_patch;
 
 /**
  * Remove a specific value from a given array
- * @param  array                  array                           The array to clean
- * @param  value                  string                          The value to remove
- * @return array                                                  The cleaned array
+ * @param  array							array								The array to clean
+ * @param  value							string								The value to remove
+ * @return array																The cleaned array
  **/
 exports = {
-	array_clean: function(array, value) {
-		return jQuery.grep(array, function(val) {
-			return val != value;
-		});
-	},
-
 	/**
 	 * Replace a specific key from a given object
-	 * @param  string                 search                          The key to search
-	 * @param  mixed                  replace                         The string to replace
-	 * @param  value                  string                          The value to remove
-	 * @return array                                                  The cleaned array
+	 * @param  string						search								The key to search
+	 * @param  mixed						replace								The string to replace
+	 * @param  value						string								The value to remove
+	 * @return array															The cleaned array
 	 **/
 	object_key_replace: function(search, replace, object) {
 		var new_obj = {};
@@ -63,6 +58,56 @@ exports = {
 			obj = object
 		}
 		return (typeof obj == "object") ? JSON.stringify(obj) : obj;
+	},
+
+	/**
+	 * Calculate the difference between two strings
+	 * @param  string						text1								The first string to compare
+	 * @param  string						text2								The second string to compare
+	 * @return object|bool														If there's difference return an object with statistics and differences, otherwise return false
+	 */
+	load_diff: function(text1, text2) {
+		var dmp = new diff_match_patch(),
+			diff = dmp.diff_main(text1, text2),
+			patch = dmp.patch_make(text1, text2, diff),
+			results = dmp.patch_apply(patch, text1),
+			diff_obj = {};
+
+		if(patch.length) {
+			diff_obj.has_diff = true;
+			diff_obj.stats = {
+				total: {
+					count: 0,
+					additions: 0,
+					removal: 0
+				},
+				detailed: []
+			};
+			diff_obj.diff = patch;
+			for (var j in patch) {
+				diff_obj.stats.detailed[j] = {
+					total: 0,
+					additions: 0,
+					removal: 0
+				};
+				for(var i = 0; i < patch[j].diffs.length; i++) {
+					// log(patch[j].diffs[i][0])
+					if(patch[j].diffs[i][0] == -1 || patch[j].diffs[i][0] == 1) {
+						diff_obj.stats.detailed[j].total++;
+						diff_obj.stats.total.count++;
+					}
+					if(patch[j].diffs[i][0] == 1) {
+						diff_obj.stats.detailed[j].removal++;
+						diff_obj.stats.total.removal++;
+					}
+					if(patch[j].diffs[i][0] == -1) {
+						diff_obj.stats.detailed[j].additions++;
+						diff_obj.stats.total.additions++;
+					}
+				}
+			}
+		}
+		return patch.length ? diff_obj: false;
 	},
 
 	renderIndex: function(htmlFile, data) {
