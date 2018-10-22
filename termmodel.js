@@ -1,4 +1,6 @@
-var ontologymodel = require("./ontologymodel.js");
+var ontologymodel = require("./ontologymodel.js"),
+	googlestore = require("googlestore.js"),
+	Common = require("./common/functions.js");
 
 var termmodel = (function(){
 	function splitter(value) {
@@ -40,7 +42,7 @@ var termmodel = (function(){
 	 * term is a JS object from the API
 	 */
 	function createTerm(term) {
-		term.created_at = new java.util.Date();
+		term.created_at = "" + new java.util.Date();
 		if(!term.ontology_id || !term.ontology_name)
 			throw new Error("Missing references to ontology");
 
@@ -49,34 +51,72 @@ var termmodel = (function(){
 		//term.normalized = normalize(term); // important for search
 
 		if(term.comment) {
-			term.comment = new Text(term.comment);
+			term.comment = "" + new Text(term.comment);
 		}
 		if(term.def) {
-			term.def = new Text(term.def);
+			term.def = "" + new Text(term.def);
 		}
-		// Backup current version
-		term.term_version = ontologymodel.backup_previous_version("term", term.id, "term_versions");
 
-		// XXX a bit hacky - make it faster
-		for(var i in term) {
-			if(term[i] != null && term[i].length && term[i].length > 400) {
-				term[i] = new Text(term[i]);
+		// COMPARE TERMS DATA
+		// -----------------------------------------------------------------
+		var old_term = ontologymodel.getOntology("term", term.id);
+
+		var check = JSON.stringify(old_term),
+			is_new = (check.ontology_name == "" && check.ontology_summary == "") ? true : false;
+
+		if(!is_new) {
+			delete old_term.obo_blob_key;
+			delete old_term.created_at;
+			old_term.name = Common.object_key_replace("undefined", null, old_term.name);
+			old_term.namespace = Common.object_key_replace("undefined", null, old_term.namespace);
+			old_term.is_a = Common.object_key_replace("undefined", null, old_term.is_a);
+			old_term.synonym = Common.object_key_replace("undefined", null, old_term.synonym);
+			old_term.def = Common.object_key_replace("undefined", null, old_term.def);
+
+			var new_term = term;
+			delete new_term.obo_blob_key;
+			delete new_term.created_at;
+			new_term.name = Common.object_key_replace("undefined", null, new_term.name);
+			new_term.namespace = Common.object_key_replace("undefined", null, new_term.namespace);
+			new_term.is_a = Common.object_key_replace("undefined", null, new_term.is_a);
+			new_term.synonym = Common.object_key_replace("undefined", null, new_term.synonym);
+			new_term.def = Common.object_key_replace("undefined", null, new_term.def);
+
+			var diff = Common.load_diff(JSON.stringify(old_term), JSON.stringify(new_term));
+		}
+        //
+		// // -----------------------------------------------------------------
+        //
+		if(!diff && !is_new) {
+			throw new Error("Term already exists and there's no difference with the new one");
+			return false;
+		} else {
+			// Backup current version
+			term.term_version = ontologymodel.backup_previous_version("term", term.id, "term_versions");
+			term.term_version_diff = JSON.stringify(diff);
+			term.term_parent_version_ID = old_term.id;
+
+			// XXX a bit hacky - make it faster
+			for(var i in term) {
+				if(term[i] != null && term[i].length && term[i].length > 400) {
+					term[i] = new Text(term[i]);
+				}
 			}
-		}
 
-		// create in datastore
-		var termEntity;
-		try {
-			var termKey = googlestore.createKey("term", term.id);
-			termEntity = googlestore.get(termKey);
-			googlestore.set(termEntity, term);
-		} catch (e) {
-			// no entity foudn with this id, create it
-			termEntity = googlestore.entity("term", term.id, term);
-		}
+			// create in datastore
+			var termEntity;
+			try {
+				var termKey = googlestore.createKey("term", term.id);
+				termEntity = googlestore.get(termKey);
+				googlestore.set(termEntity, term);
+			} catch (e) {
+				// no entity foudn with this id, create it
+				termEntity = googlestore.entity("term", term.id, term);
+			}
 
-		googlestore.put(termEntity);
-		return term.term_version;
+			googlestore.put(termEntity);
+			return term.term_version;
+		}
 	}
 
 	function translate(term, languages) {

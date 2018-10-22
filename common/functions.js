@@ -26,6 +26,8 @@ exports = {
 			case "string":
 				if(object.indexOf("{") > 0) {
 					object = object.getValue();
+				} else {
+					// object = JSON.parse(object);
 				}
 				break;
 			case "undefined":
@@ -35,10 +37,13 @@ exports = {
 				if(object == null) {
 					object = '{"undefined": ""}';
 				} else {
+					object = JSON.stringify(object);
 					if(object.indexOf("{") == -1) {
 						object = '"' + object + '"';
 					}
 				}
+				break;
+			default:
 				break;
 		}
 		if(typeof object !== "string") {
@@ -55,7 +60,7 @@ exports = {
 				delete obj["undefined"];
 			}
 		} else {
-			obj = object
+			obj = object.replace(/\{.*?\:\"(.*?)\"\}/g, "$1").replace(/[\\]+/g, "");
 		}
 		return (typeof obj == "object") ? JSON.stringify(obj) : obj;
 	},

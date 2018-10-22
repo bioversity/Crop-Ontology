@@ -1873,33 +1873,58 @@ apejs.urls = {
 				if(!ontologyName || ontologyName == "" || !ontologyId || ontologyId == "" || !ontologySummary || ontologySummary == "") {
 					return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
 				}
-				// Backup current version
-				ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
 
-				// create ontology
-				var ontoEntity = googlestore.entity("ontology", ontologyId, {
-					created_at: new java.util.Date(),
-					user_key: currUser.getKey(),
-					ontology_id: ontologyId,
-					ontology_name: ontologyName,
-					ontology_summary: ontologySummary,
-					ontology_version: ontologyVersion,
-					category: request.getParameter("category")
-				});
+				// COMPARE ONTOLOGIES DATA
+				// -----------------------------------------------------------------
+				var old_ontology_data = googlestore.getOntology("ontology", ontologyId),
+					old_ontology = JSON.stringify({
+						"ontology_name": old_ontology_data.ontology_name,
+						"ontology_summary": old_ontology_data.ontology_summary
+					}),
+					new_ontology = JSON.stringify({
+						"ontology_name": ontologyName,
+						"ontology_summary": ontologySummary
+					}),
+					old_id = old_ontology_data.ontology_id
+					diff = Common.load_diff(old_ontology, new_ontology);
 
-				googlestore.put(ontoEntity);
+				if(!diff) {
+					stop = true;
+				}
+				// -----------------------------------------------------------------
 
-				memcache.clearAll();
+				if(!diff) {
+					return err("Ontology ID already exists and there's no difference with the new one");
+				} else {
+					// Backup current version and get the right version number
+					ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
 
-				// now create the terms.
-				// a term is each item in the JSON array
-				for(var i=0,len=arr.length; i<len; i++) {
-					var term = arr[i];
-					term.ontology_id = ontologyId;
-					term.ontology_name = ontologyName;
-					term.ontology_version = ontologyVersion;
-					// XXX someone posting a term with an already existing ID might edit it
-					term.term_version = termmodel.createTerm(term);
+					// create ontology
+					var ontoEntity = googlestore.entity("ontology", ontologyId, {
+						created_at: new java.util.Date(),
+						user_key: currUser.getKey(),
+						ontology_id: ontologyId,
+						ontology_name: ontologyName,
+						ontology_summary: ontologySummary,
+						ontology_version: ontologyVersion,
+						ontology_version_diff: diff,
+						ontology_parent_version_ID: bkp_data.parentID,
+						category: request.getParameter("category")
+					});
+
+					googlestore.put(ontoEntity);
+
+					memcache.clearAll();
+
+					// now create the terms.
+					// a term is each item in the JSON array
+					for(var i=0,len=arr.length; i<len; i++) {
+						var term = arr[i];
+						term.ontology_id = ontologyId;
+						term.ontology_name = ontologyName;
+						term.ontology_version = ontologyVersion;
+						term.term_version = termmodel.createTerm(term);
+					}
 				}
 			} catch(e) {
 				return response.sendError(response.SC_BAD_REQUEST, e);
@@ -1976,115 +2001,108 @@ apejs.urls = {
 		post: function(request, response) {
 			function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
-			var currUser = auth.getUser(request);
-			if(!currUser)
-				return err("Not logged in");
-
-			var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
+			var ontologyVersion = 1,
+				stop = false,
+				// Waring the resource is an object and parseInt() returns NaN!
+				tasks = memcache.get("tasks"),
+				currUser = auth.getUser(request),
+				blobs = blobstore.blobstoreService.getUploadedBlobs(request),
 				oboBlobKey = blobs.get("obofile");
 
+			if(!currUser) {
+				return err("Not logged in");
+			}
 			if(oboBlobKey == null) {
 				return err("Something is missing. Did you fill out all the fields?");
 			}
 			try {
-				var ontologyName = request.getParameter("ontology_name"),
-					ontologySummary = request.getParameter("ontology_summary");
+				var ontologyId = googlestore.get_ontologyId_from_OBO_file(oboBlobKey),
+					ontologyName = "" + request.getParameter("ontology_name"),
+					ontologySummary = "" + request.getParameter("ontology_summary");
 
-				if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "")
+				if(!ontologyName || ontologyName == "" || !ontologySummary || ontologySummary == "") {
 					return err("Something is missing. Did you fill out all the fields?");
+				}
 
-				// let's use BlobstoreInputStream to read more than 1mb at a time.
-				// we read and parse line by line because we don't want to allocate
-				// memory - keeping it light
-				var oboBlobKeyString = ""+oboBlobKey.getKeyString(),
-					ontologyNameString = ""+ontologyName;
+				// COMPARE ONTOLOGIES DATA
+				// -----------------------------------------------------------------
+				var old_ontology_data = googlestore.getOntology("ontology", ontologyId),
+					old_ontology = JSON.stringify({
+						"ontology_name": old_ontology_data.ontology_name,
+						"ontology_summary": old_ontology_data.ontology_summary
+					}),
+					new_ontology = JSON.stringify({
+						"ontology_name": ontologyName,
+						"ontology_summary": ontologySummary
+					}),
+					diff = Common.load_diff(old_ontology, new_ontology);
 
-				try {
-					oboBlobKeyString = JSON.parse(oboBlobKeyString);
-					for(var i in oboBlobKeyString) {
-						oboBlobKeyString = oboBlobKeyString[i];
-					}
-				} catch(e) {}
-
-				// if(typeof oboBlobKeyString === 'object'){
-				//     oboBlobKeyString = ""+oboBlobKeyString[Object.keys(oboBlobKeyString)[0]];
-				// }
-
-				var first = true,
-					ontologyId = 0,
-					ontologyVersion = 1;
-					stop = false,
-					tasks = memcache.get("tasks"); // the resource is an object and parseInt() returns NaN!
-
-				blobstore.readLine(oboBlobKey, function(line) {
-					if(stop) return;
-					jsonobo.findTerm(line, function(term) {
-						// the callback is called when a complete Term is found
-						// let's safely assume the first term we find contains
-						// the ontology id
-						if(first) {
-							var split = term.id.split(":");
-
-							first = false;
-							ontologyId = split[0];
-
-							// check if this ontoId already exists
-							// (of course only runs the first time)
-							try {
-								var ontoKey = googlestore.createKey("ontology", ontologyId);
-								var ontoEntity = googlestore.get(ontoKey);
-
-								stop = true;
-							} catch (e) {
-								// if we get here, ontology doesn't exist
-								stop = false;
-							}
-						}
-
-						if(stop) return;
-
-						// need a reference to the obo we just created
-						term.obo_blob_key = oboBlobKeyString;
-						// also need reference to the ontology
-						term.ontology_name = ontologyNameString;
-						term.ontology_version = ontologyVersion;
-
-						// use this terms ontology ID, if it's different from the rest
-						// it will not show up - it's the OBO's fault
-						term.ontology_id = ontologyId;
-
-						if(!term.parent) term.parent = null;
-
-						// we found a term, let's save it in datastore.
-						// XXX, the .put() in here is expensive - takes more than 30secs
-						// spawn a Task or something else
-						// pass the data as a JSON string
-						taskqueue.createTask("/create-term", JSON.stringify(term));
-					});
-				});
+				if(!diff) {
+					stop = true;
+				}
+				// -----------------------------------------------------------------
 
 				if(stop) {
-					// 	return err("Ontology ID already exists");
+					return err("Ontology ID already exists and there's no difference with the new one. Try to rename it");
+				} else {
+					// let's use BlobstoreInputStream to read more than 1mb at a time.
+					// we read and parse line by line because we don't want to allocate
+					// memory - keeping it light
+					var oboBlobKeyString = "" + oboBlobKey.getKeyString();
+
+					try {
+						oboBlobKeyString = JSON.parse(oboBlobKeyString);
+						for(var i in oboBlobKeyString) {
+							oboBlobKeyString = oboBlobKeyString[i];
+						}
+					} catch(e) {}
+
+					// if(typeof oboBlobKeyString === 'object'){
+					//     oboBlobKeyString = ""+oboBlobKeyString[Object.keys(oboBlobKeyString)[0]];
+					// }
+
+					blobstore.readLine(oboBlobKey, function(line) {
+						if(stop) return;
+						jsonobo.findTerm(line, function(term) {
+							// need a reference to the obo we just created
+							term.obo_blob_key = oboBlobKeyString;
+							// also need reference to the ontology
+							term.ontology_name = ontologyName;
+							term.ontology_version = ontologyVersion;
+
+							// use this terms ontology ID, if it's different from the rest
+							// it will not show up - it's the OBO's fault
+							term.ontology_id = ontologyId;
+
+							if(!term.parent) term.parent = null;
+
+							// we found a term, let's save it in datastore.
+							// XXX, the .put() in here is expensive - takes more than 30secs
+							// spawn a Task or something else
+							// pass the data as a JSON string
+							taskqueue.createTask("/create-term", JSON.stringify(term));
+						});
+					});
+
+					// Backup current version and get the right version number
+					ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
+
+					// create the ontology
+					var ontoEntity = googlestore.entity("ontology", ontologyId, {
+						created_at: new java.util.Date(),
+						user_key: currUser.getKey(),
+						ontology_id: ontologyId,
+						ontology_name: ontologyName,
+						ontology_summary: ontologySummary,
+						ontology_version: ontologyVersion,
+						category: request.getParameter("category")
+					});
+
+					googlestore.put(ontoEntity);
+					// memcache.clearAll();
+
+					return err("");
 				}
-				// Backup current version
-				ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
-
-
-				// create the ontology
-				var ontoEntity = googlestore.entity("ontology", ontologyId, {
-					created_at: new java.util.Date(),
-					user_key: currUser.getKey(),
-					ontology_id: ontologyId,
-					ontology_name: ontologyName,
-					ontology_summary: ontologySummary,
-					ontology_version: ontologyVersion,
-					category: request.getParameter("category")
-				});
-
-				googlestore.put(ontoEntity);
-				// memcache.clearAll();
-
-				return err("");
 			} catch(e) {
 				return err(e );
 			}
@@ -2103,31 +2121,31 @@ apejs.urls = {
 			}
 	},
 	"/create-term": {
-			post: function(request, response) {
-					/*
-					importPackage(java.util.logging);
-					var logger = Logger.getLogger("org.whatever.Logtest");
+		post: function(request, response) {
+			/*
+			importPackage(java.util.logging);
+			var logger = Logger.getLogger("org.whatever.Logtest");
 
-					var jsonTerm = request.getParameter("jsonTerm");
-					logger.info("== RAN TASK - JSON TERM: "+jsonTerm);
-					*/
+			var jsonTerm = request.getParameter("jsonTerm");
+			logger.info("== RAN TASK - JSON TERM: "+jsonTerm);
+			*/
 
-					// XXX if the term id or relationship already exists, do something!
+			// XXX if the term id or relationship already exists, do something!
 
-					// parse the JSON
-					var jsonTerm = request.getParameter("jsonTerm");
-					var term = JSON.parse(jsonTerm);
+			// parse the JSON
+			var jsonTerm = request.getParameter("jsonTerm");
+			var term = JSON.parse(jsonTerm);
 
-					// if there's a language passed and
-					// it's not ENglish, find the entity, and tranform its properties
-					// into JSON - to represent both languages
+			// if there's a language passed and
+			// it's not ENglish, find the entity, and tranform its properties
+			// into JSON - to represent both languages
 
-					// every term should have a langauge
-					var term = termmodel.translate(term, languages);
+			// every term should have a langauge
+			var term = termmodel.translate(term, languages);
 
-					// add it to datastore
-					termmodel.createTerm(term);
-			}
+			// add it to datastore
+			termmodel.createTerm(term);
+		}
 	},
 	"/next-id": {
 			get: function(request, response) {
@@ -2851,10 +2869,11 @@ apejs.urls = {
 
 			var blobs = blobstore.blobstoreService.getUploadedBlobs(request),
 				blobKey = blobs.get("excelfile"),
-				ontologyName = request.getParameter("ontology_name"),
+				ontologyName = "" + request.getParameter("ontology_name"),
 				ontologyId = request.getParameter("ontology_id"),
-				ontologySummary = request.getParameter("ontology_summary"),
-				category = request.getParameter("category"),
+				ontologySummary = "" + request.getParameter("ontology_summary"),
+				ontologyVersion = 1,
+				category = "" + request.getParameter("category"),
 				stop = false;
 
 			if(blobKey == null || Common.isblank(ontologyId) || Common.isblank(ontologyName) || Common.isblank(ontologySummary) || Common.isblank(category)) {
@@ -2882,23 +2901,44 @@ apejs.urls = {
 				}
 			}
 
-			if(stop) {
-				// return err("Ontology ID already exists");
+			// COMPARE ONTOLOGIES DATA
+			// -----------------------------------------------------------------
+			var old_ontology_data = ontologymodel.getOntology("ontology", ontologyId),
+				old_ontology = JSON.stringify({
+					"ontology_name": old_ontology_data.ontology_name,
+					"ontology_summary": old_ontology_data.ontology_summary
+				}),
+				new_ontology = JSON.stringify({
+					"ontology_name": ontologyName,
+					"ontology_summary": ontologySummary
+				}),
+				old_id = old_ontology_data.ontology_id
+				diff = Common.load_diff(old_ontology, new_ontology);
+			if(!diff) {
+				stop = true;
 			}
-			// Backup current version
-			ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
+			// -----------------------------------------------------------------
 
-			// this has all the logics for parsing the template
-			// and creating terms
-			new template(blobKey, ontologyId, ontologyName, ontologyVersion)
+			if(stop) {
+				return err("Ontology ID already exists and there's no difference with the new one");
+			} else {
+				if(old_id !== undefined) {
+					// Backup current version and get the right version number
+					ontologyVersion = ontologymodel.backup_previous_version("ontology", ontologyId, "ontology_versions");
+				}
 
-			taskqueue.createTask("/memcache-clear", "");
+				// this has all the logics for parsing the template
+				// and creating terms
+				new template(blobKey, ontologyId, ontologyName, ontologyVersion)
 
-			// create the ontology
-			// if(!ontoEntity) {
-				ontologymodel.create(currUser, ontologyId, ontologyName, ontologyVersion, ontologySummary, category);
-			// }
-			return err("");
+				taskqueue.createTask("/memcache-clear", "");
+
+				// create the ontology
+				// if(!ontoEntity) {
+					ontologymodel.create(currUser, ontologyId, ontologyName, ontologyVersion, ontologySummary, category, old_id, diff);
+				// }
+				return err("");
+			}
 		}
 	},
 	"/backup": {

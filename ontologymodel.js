@@ -69,15 +69,20 @@ var ontologymodel = (function() {
 		return options;
 	}
 
-	function create(currUser, ontologyId, ontologyName, ontologyVersion, ontologySummary, category) {
+	function create(currUser, ontologyId, ontologyName, ontologyVersion, ontologySummary, category, old_id, diff) {
+		if(old_id == "undefined" || old_id == null) { old_id = ""; }
+		if(diff == "undefined" || diff == null) { diff = ""; }
+
 		// create the ontology
 		var ontoEntity = googlestore.entity("ontology", ontologyId, {
 			created_at: new java.util.Date(),
 			user_key: currUser.getKey(),
 			ontology_id: ontologyId,
 			ontology_name: ontologyName,
-			ontology_version: ontologyVersion,
 			ontology_summary: ontologySummary,
+			ontology_version: ontologyVersion,
+			ontology_version_diff: diff,
+			ontology_parent_version_ID: old_id,
 			category: category
 		});
 
@@ -85,15 +90,37 @@ var ontologymodel = (function() {
 		memcache.clearAll();
 	}
 
-	function getById(ontologyId) {
+	function getById(ontologyId, entityName) {
+		if(entityName == "undefined" || entityName == null) { entityName = "ontology" }
 		// check if this ontoId already exists
 		try {
-			var ontoKey = googlestore.createKey("ontology", ontologyId);
+			var ontoKey = googlestore.createKey(entityName, ontologyId);
 			var ontoEntity = googlestore.get(ontoKey);
 			return ontoEntity;
 		} catch (e) {
 			// if we get here, ontology doesn't exist
 			return false;
+		}
+	}
+
+	/**
+	 * Shortway to retrieve an Ontoloy data
+	 *
+	 * @param  string						entityName						The subject entity name
+	 * @param  integer 						ontologyId						The subject entity ID
+	 * @param  bool 						stringified						Return a stringified value? If yes return a stringified object, otherwise an object. Default is false
+	 * @return string|object												The result could be a string or an object, depending on "stringified" passed parameter. Default is object
+	 */
+	function getOntology(entityName, ontologyId, stringified) {
+		if(stringified == undefined || stringified == null) { stringified = false; }
+
+		var ontoKey = googlestore.createKey(entityName, ontologyId);
+		var ontoEntity = googlestore.get(ontoKey);
+		if(ontoEntity && ontoEntity !== undefined) {
+			var resultObj = googlestore.toJS(ontoEntity);
+			return stringified ? JSON.stringify(resultObj) : resultObj;
+		} else {
+			return {"ontology_name": "", "ontology_summary": ""};
 		}
 	}
 
@@ -111,6 +138,7 @@ var ontologymodel = (function() {
 		catsSelectHtml: catsSelectHtml,
 		create: create,
 		getById: getById,
+		getOntology: getOntology,
 		owns: owns
 	};
 })();
