@@ -3895,6 +3895,9 @@ apejs.urls = {
 	},
 	"/brapi/v1/calls":{
 		get: function(request, response) {
+			request.setCharacterEncoding("utf-8");
+			response.setContentType("application/json; charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
 				if(request.getParameter("page")){
 						var filterPage = request.getParameter("page");
 				}else{
@@ -4219,29 +4222,31 @@ apejs.urls = {
 			var line = null;
 			var obj;
 			try {
-					var reader = request.getReader();
-					while ((line = reader.readLine()) != null)
-						jb.append(line);
+				var reader = request.getReader();
+				while ((line = reader.readLine()) != null) {
+					jb.append(line);
+				}
 			} catch (e) { /*report an error*/ }
 
 			try {
-					obj = JSON.parse(jb);
+				obj = JSON.parse(jb);
 			} catch (e) {
-					// crash and burn
-					throw "Error parsing JSON request string";
+				// crash and burn
+				throw "Error parsing JSON request string";
 			}
 
 			//now that we know that a commit happened, check that this is on the ontology file in the master branch
 
 			//commit on the master branch
-			if(obj["ref"].indexOf("master") !== -1){
+			// if(obj["ref"].indexOf("master") !== -1){
+			if(obj["ref"].indexOf("dev") !== -1){
 				if(obj["repository"]["name"]=="ibp-sweetpotato-traits"){
 					//ontology file has been changed
 					if(obj["head_commit"]["modified"]=="sweetpotato_trait.obo"){
 						//get ontology details from the database
 						ontos = googlestore.query("ontology")
-											.filter("ontology_id", "=", "CO_331")
-											.fetch()
+										   .filter("ontology_id", "=", "CO_331")
+										   .fetch()
 
 						var res = [];
 						ontos.forEach(function(onto){
@@ -4253,20 +4258,25 @@ apejs.urls = {
 								userid = user.getKey().getId();
 							}
 							res.push({
-								ontology_id: ""+onto.getProperty("ontology_id"),
-								ontology_name: ""+onto.getProperty("ontology_name"),
-								ontology_summary: ""+onto.getProperty("ontology_summary"),
-								username: ""+username,
-								userid: ""+userid
+								ontology_id: "" + onto.getProperty("ontology_id"),
+								ontology_name: "" + onto.getProperty("ontology_name"),
+								ontology_summary: "" + onto.getProperty("ontology_summary"),
+								username: "" + username,
+								userid: "" + userid
 							});
 						});
 						//read the file from github
-						token = ''
-						Common.print(response).json(res);
+						token = '';
+						var source = "https://raw.githubusercontent.com/Planteome/ibp-sweetpotato-traits/" + obj["head_commit"]["id"] + "/sweetpotato_trait.obo";
+						var result = httpget(source);
+
+						Common.print(response).text(source);
+						// response.getWriter().println(result);
+						// Common.print(response).json(res);
 					}
 				}
 			}
-			//Common.print(response).json(obj);
+			// Common.print(response).json(obj);
 		}
 	},
 };
