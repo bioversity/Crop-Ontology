@@ -4221,6 +4221,7 @@ apejs.urls = {
 			var jb = new StringBuffer();
 			var line = null;
 			var obj;
+			var sweetpotato_trait_changed = false;
 			try {
 				var reader = request.getReader();
 				while ((line = reader.readLine()) != null) {
@@ -4243,36 +4244,69 @@ apejs.urls = {
 				if(obj["repository"]["name"]=="ibp-sweetpotato-traits"){
 					//ontology file has been changed
 					if(obj["head_commit"]["modified"]=="sweetpotato_trait.obo"){
-						//get ontology details from the database
-						ontos = googlestore.query("ontology")
-										   .filter("ontology_id", "=", "CO_331")
-										   .fetch()
-
-						var res = [];
-						ontos.forEach(function(onto){
-							var username = "",
-								userid = "";
-							if(onto.getProperty("user_key")) {
-								var user = googlestore.get(onto.getProperty("user_key"));
-								username = user.getProperty("username");
-								userid = user.getKey().getId();
+						for(var i in obj["head_commit"]["modified"]) {
+							if(obj["head_commit"]["modified"][i] == "sweetpotato_trait.obo") {
+								sweetpotato_trait_changed = true;
 							}
-							res.push({
-								ontology_id: "" + onto.getProperty("ontology_id"),
-								ontology_name: "" + onto.getProperty("ontology_name"),
-								ontology_summary: "" + onto.getProperty("ontology_summary"),
-								username: "" + username,
-								userid: "" + userid
-							});
-						});
-						//read the file from github
-						token = '';
-						var source = "https://raw.githubusercontent.com/Planteome/ibp-sweetpotato-traits/" + obj["head_commit"]["id"] + "/sweetpotato_trait.obo";
-						var result = httpget(source);
+						}
 
-						Common.print(response).text(source);
-						// response.getWriter().println(result);
-						// Common.print(response).json(res);
+						if(sweetpotato_trait_changed) {
+							//get ontology details from the database
+							ontos = googlestore.query("ontology")
+											   .filter("ontology_id", "=", "CO_331")
+											   .fetch()
+
+							var res = [];
+							ontos.forEach(function(onto){
+								var username = "",
+									userid = "";
+								if(onto.getProperty("user_key")) {
+									var user = googlestore.get(onto.getProperty("user_key"));
+									username = user.getProperty("username");
+									userid = user.getKey().getId();
+								}
+								res.push({
+									ontology_id: "" + onto.getProperty("ontology_id"),
+									ontology_name: "" + onto.getProperty("ontology_name"),
+									ontology_summary: "" + onto.getProperty("ontology_summary"),
+									username: "" + username,
+									userid: "" + userid
+								});
+							});
+							//read the file from github
+							token = '';
+							var commit_id = obj["head_commit"]["id"],
+								source_url = "https://raw.githubusercontent.com/Planteome/ibp-sweetpotato-traits/" + commit_id + "/sweetpotato_trait.obo",
+								file = httpget(source_url);
+
+							// send email to admin / moderator for confirmation
+							var bodyMessage	= "The user " + obj["commits"]["author"]["name"] + " committed a new version of sweetpotato_trait.obo to Plaenteome/ibp-sweetpotato-traits repository.\n"
+							bodyMessage	+= "This link contains the pushed file: " + source_url + "\n";
+							bodyMessage	+= "Following the file content:\n\n";
+							bodyMessage += "------------------------------------\n";
+							bodyMessage += file;
+
+							var from = {
+									address: "admin@cropontology-curationtool.org",
+									personal: "Crop Ontology Curation Tool"
+							};
+
+							var to1 = {
+								address: "m.a.laporte@cgiar.org",
+								personal: "M.A Laporte"
+							};
+							var to2 = {
+								address: "e.arnaud@cgiar.org",
+								personal: "E. Arnaud"
+							};
+							var to_dev = {
+								address: "a.gubitosi@cgiar.org",
+								personal: "A. Gubitosi"
+							};
+							// email.send(from, to1, "New commit to Planteome/ibp-sweetpotato-traits repository", bodyMessage);
+							// email.send(from, to2, "New commit to Planteome/ibp-sweetpotato-traits repository", bodyMessage);
+							email.send(from, to_dev, "New commit to Planteome/ibp-sweetpotato-traits test repository (" + commit_id.substring(0, 7) + ")", bodyMessage);
+						}
 					}
 				}
 			}
