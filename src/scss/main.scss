@@ -1,0 +1,87 @@
+
+@import "colours";
+
+a {
+  color: $highlight;
+  text-decoration: none;
+}
+
+body {
+  font-family: "Roboto", sans serif;
+  padding: 20px 20px 20px 40px;
+
+  & > header {
+    margin: 15px -10px 15px 0;
+  }
+}
+
+
+
+// -----------------------------------------------------------------------------
+
+#top_menu {
+  a {
+    color: $highlight;
+    font-weight: bold;
+  }
+
+  .separator {
+    background-color: #ccc;
+    display: block;
+    height: 64px;
+    width: 2px;
+  }
+}
+
+#top_carousel {
+  margin-top: 60px;
+
+  .carousel {
+    height: 300px !important;
+    opacity: 0;
+
+    .carousel-item {
+      min-height: 300px !important;
+      pointer-events: none;
+    }
+
+    h1 {
+      color: $medium-grey;
+      font-size: 36px;
+      font-weight: 300;
+      margin: 0;
+      text-align: center;
+      width: 100%;
+    }
+  }
+}
+
+#searchbar {
+  width: 50%;
+
+  .input-field {
+    border-radius: 6px;
+    border: #aaa 1px solid;
+
+    input {
+      background-color: transparent !important;
+      border: 0px none;
+      box-shadow: none !important;
+      margin: 0;
+      padding: 0px 10px;
+    }
+    .btn-text {
+      margin-top: 10px;
+    }
+  }
+}
+
+// footer {
+//   bottom: 10px;
+//   color: $dark-grey;
+//   font-family: sans-serif;
+//   left: 0;
+//   position: absolute;
+//   text-align: center;
+//   width: 100%;
+// }

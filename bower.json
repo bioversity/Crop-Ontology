@@ -1,0 +1,27 @@
+{
+  "name": "PANTONE-picker",
+  "description": "Just a color picker with similar PANTONE® code matcher",
+  "main": "",
+  "authors": [
+    "Alessandro Gubitosi <gubi.ale@iod.io>"
+  ],
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/gubi/PANTONE-picker",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "materialize": "^0.100.1"
+  },
+  "keywords": [
+    "PANTONE",
+    "color",
+    "picker",
+    "colopicker"
+  ]
+}

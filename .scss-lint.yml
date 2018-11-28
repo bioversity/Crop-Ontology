@@ -1,0 +1,35 @@
+
+scss_files: "src/scss/**/*.scss"
+
+linters:
+    BorderZero:
+        enabled: false
+    Indentation:
+        severity: warning
+        width: 2
+    NameFormat:
+        enabled: false
+    NestingDepth:
+        enabled: true
+        max_depth: 15
+    SelectorDepth:
+        enabled: true
+        max_depth: 15
+    StringQuotes:
+        enabled: true
+        style: double_quotes
+    ImportantRule:
+        enabled: false
+    DeclarationOrder:
+        enabled: false
+    SpaceBeforeBrace:
+        enabled: true
+        style: space # or 'new_line'
+        allow_single_line_padding: true
+    IdSelector:
+        enabled: false
+    SelectorFormat:
+        enabled: true
+        convention: '[a-zA-Z0-9\-\_]+' # or 'strict_BEM', or 'hyphenated_BEM', or 'snake_case', or 'camel_case', or a regex pattern
+    SingleLinePerSelector:
+        enabled: false
