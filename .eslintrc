@@ -14,6 +14,7 @@
         "no-unreachable": 0,
         "no-unused-vars": 0,
         "no-self-assign": 0,
+        "no-script-url": 0,
         "indent": [
             "error",
             "tab",

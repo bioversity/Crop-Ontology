@@ -1,4 +1,6 @@
 "use strict";
+/* jshint esversion: 6 */
+"strict mode";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
@@ -6,9 +8,31 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _data = require("../../src/js/data.es6");
+
+var _data2 = _interopRequireDefault(_data);
+
+var _filters = require("../../src/js/filters.es6");
+
+var _filters2 = _interopRequireDefault(_filters);
+
+var _modals = require("../../src/js/modals.es6");
+
+var _modals2 = _interopRequireDefault(_modals);
+
+var _str = require("../../src/js/_str.es6");
+
+var _str2 = _interopRequireDefault(_str);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/* jshint esversion: 6 */
+var DATA = new _data2.default(),
+    FILTERS = new _filters2.default(),
+    MODALS = new _modals2.default(),
+    STR = new _str2.default(),
+    moment = require("moment");
 
 var layout = function () {
 	function layout() {
@@ -16,13 +40,37 @@ var layout = function () {
 	}
 
 	_createClass(layout, [{
-		key: "build_menu",
+		key: "activate",
+		value: function activate() {
+			$("select").material_select();
+
+			// Modals
+			$(".modal").modal({
+				dismissible: true,
+				opacity: 0.8,
+				ready: function ready(modal, trigger) {},
+				complete: function complete() {
+					// this.add_search_filters($(".modal-content").find("form").serializeObject());
+					// $("#tags").tagit("createTag", "brand-new-tag");
+
+					// 	$(".modal-content").find("form").serializeObject();//.reduce(function(obj, item) {obj[item.name] = item.value; return obj; }, {}))
+					// }
+				}
+			});
+
+			$(".collapsible").collapsible();
+
+			$(".tooltipped").tooltip({ html: true });
+		}
 
 		/**
    * Build a menu
    * @param  string 						position							The menu position
    * @return object
    */
+
+	}, {
+		key: "build_menu",
 		value: function build_menu(position) {
 			var menus = require("../../common/menu.json");
 
@@ -104,12 +152,63 @@ var layout = function () {
 	}, {
 		key: "build_searchbar",
 		value: function build_searchbar() {
-			$("body").append($('<section>', { "id": "searchbar", "class": "container" }).append($('<form>', { "method": "get", "onsubmit": "return false;" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field" }).append($('<input>', {
+			// Build the filters modal
+			MODALS.filters_modal();
+
+			$("body").append($('<section>', { "id": "searchbar", "class": "container" }).append($('<form>', { "method": "get", "onsubmit": "return false;" }).append($('<div>', { "class": "" }).append($('<div>', { "class": "row bar" }).append($('<div>', { "id": "search_input", "class": "input-field col s8 m8 l8 xl8" }).append($('<input>', {
 				"type": "search",
 				"id": "search",
 				"placeholder": "Search...",
 				"name": "q"
-			})).append($('<a>', { "href": "javascript:;", "class": "btn-text right" }).append($('<span>', { "class": "fa fa-filter" })).append(" Add a filter"))))));
+			}))).append($('<div>', { "id": "tags_list", "class": "input-field col s4 m4 l4 xl4" }).append($('<ul>', { "class": "tags" }).append(FILTERS.draw_filter("type", "TRAIT")).append(FILTERS.draw_filter("user", "MALAPORTE"))))).append($('<a>', { "href": "#searchbar_filters", "class": "btn-text blue-text right modal-trigger" }).append($('<span>', { "class": "fa fa-filter" })).append(" Add a filter")))));
+		}
+
+		/**
+   * Build the halfway menu
+   */
+
+	}, {
+		key: "build_halfway_menu",
+		value: function build_halfway_menu() {
+			$("body").append($('<section>', { "id": "halfway", "class": "" }).append($('<ul>', { "id": "halfway_menu", "class": "center horizontal" })));
+
+			/**
+    * Build the top menu
+    * @uses build_menu()
+    */
+			this.build_menu("halfway_menu");
+		}
+
+		/**
+   * Build the contents section
+   */
+
+	}, {
+		key: "build_contents_section",
+		value: function build_contents_section() {
+			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "feed_container", "class": "col s12 m4 l4 xl4" }).append()).append($('<div>', { "class": "col s12 m8 l8 xl8" }).append())));
+
+			var news_reader_options = {
+				news_per_page: 3
+			};
+
+			DATA.get_community_website_feed().then(function (data) {
+				for (var i = 0; i < news_reader_options.news_per_page; i++) {
+					// console.log("OK", data[i]);
+					var feed = {
+						title: data[i].title,
+						preview: data[i].preview,
+						author: $('<a>', { "href": "mailto:" + data[i].author.email }).text(data[i].author.name).prop("outerHTML"),
+						published: moment(data[i].published).local().format("MMM DD, YYYY, h:mm A"),
+						link: data[i].link,
+						abstract: STR.extract_text(data[i].content) + "<br />"
+					};
+					console.log(data[i].content);
+					$("#feed_container").append($('<div>', { "class": "feed" }).append($(feed.preview)).append($('<h1>').append($('<a>', { "href": feed.link }).text(feed.title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" posted on " + feed.published + " by " + feed.author))).append($('<div>', { "class": "content" }).append(feed.abstract).append($('<a>', { "href": feed.link, "class": "readmore" }).text("Read more..."))));
+				}
+			}).catch(function (e) {
+				// handle the error
+			});
 		}
 	}]);
 

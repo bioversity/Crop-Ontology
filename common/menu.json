@@ -42,6 +42,26 @@
                 }
             ]
         },
+        "halfway_menu": {
+            "position": "center",
+            "items": [
+                {
+                    "label": "Contact us",
+                    "link": "./Contact-us",
+                    "display": true
+                },
+                {
+                    "label": "API",
+                    "link": "./API",
+                    "display": true
+                },
+                {
+                    "label": "Feedback",
+                    "link": "./Feedback",
+                    "display": true
+                }
+            ]
+        },
         "foter_menu": {
             "items": [
                 {

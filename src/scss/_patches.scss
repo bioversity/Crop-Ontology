@@ -1,0 +1,13 @@
+
+
+/* -----------------------------------------------------------------------------
+                                MATERIALIZE
+----------------------------------------------------------------------------- */
+
+/**
+ * Fix checkbox issues
+ * @see https://github.com/Dogfalo/materialize/issues/5062
+ */
+.input-field label {
+  pointer-events: auto;
+}
