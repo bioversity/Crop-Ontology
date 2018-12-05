@@ -2,12 +2,14 @@
 "strict mode";
 
 import data from "../../src/js/data.es6";
+import pagination from "../../src/js/pagination.es6";
 import filters from "../../src/js/filters.es6";
 import modals from "../../src/js/modals.es6";
 import str from "../../src/js/_str.es6";
 
 var
 	DATA = new data(),
+	PAGINATION = new pagination(),
 	FILTERS = new filters(),
 	MODALS = new modals(),
 	STR = new str(),
@@ -211,48 +213,72 @@ class layout {
 			)
 		);
 
-		let news_reader_options = {
-			news_per_page: 3,
-		};
+		let news_per_page = 3;
 
-		DATA.get_community_website_feed()
-		.then((data) => {
-			for(let i = 0; i < news_reader_options.news_per_page; i++) {
-				// console.log("OK", data[i]);
-				let feed = {
-					title: data[i].title,
-					preview: data[i].preview,
-					author: $('<a>', {"href": "mailto:" + data[i].author.email}).text(data[i].author.name).prop("outerHTML"),
-					published: moment(data[i].published).local().format("MMM DD, YYYY, h:mm A"),
-					link: data[i].link,
-					abstract: STR.extract_text(data[i].content) + "<br />"
-				};
-console.log(data[i].content);
-				$("#feed_container").append(
-					$('<div>', {"class": "feed"}).append(
-						$(feed.preview)
+		/**
+		 * Feeds
+		 */
+		DATA.get_community_website_feed().then((data) => {
+			let $feed,
+				feed = [],
+				total_pages = Math.ceil(parseInt(data.length)/news_per_page),
+				current_page = 0;
+
+			$.each(data, (k, v) => {
+				feed.push({
+					title: data[k].title,
+					preview: data[k].preview,
+					author: $('<a>', {"href": "mailto:" + data[k].author.email}).text(data[k].author.name).prop("outerHTML"),
+					published: moment(data[k].published).local().format("MMM DD, YYYY, h:mm A"),
+					link: data[k].link,
+					abstract: STR.extract_text(data[k].content) + "<br />"
+				});
+				if(k % 3 == 0) {
+					current_page++;
+				}
+
+				let visible = (current_page == 1) ? "visible" : "hide";
+				$feed = $('<div>', {"class": "feed page_" + current_page + " " + visible})
+					.append(
+						$('<a>', {"href": feed[k].link}).append(
+							$(feed[k].preview)
+						)
 					).append(
 						$('<h1>').append(
-							$('<a>', {"href": feed.link}).text(feed.title)
+							$('<a>', {"href": feed[k].link}).text(feed[k].title)
 						)
 					).append(
 						$('<div>', {"class": "release"}).append(
 							$('<span>', {"class": "far fa-fw fa-clock"})
 						).append(
-							$('<span>').html(" posted on " + feed.published + " by " + feed.author)
+							$('<span>').html(" posted on " + feed[k].published + " by " + feed[k].author)
 						)
 					).append(
 						$('<div>', {"class": "content"}).append(
-							feed.abstract
+							feed[k].abstract
 						).append(
-							$('<a>', {"href": feed.link, "class": "readmore"}).text("Read more...")
+							$('<a>', {"href": feed[k].link, "class": "readmore"}).text("Read more...")
 						)
-					)
-				);
-			}
+					);
+				$("#feed_container").append($feed);
+			});
+
+			$("#feed_container").append(
+				PAGINATION.build_pagination({
+					id: "feed_pagination",
+					content: "#feed_container",
+					items: ".feed",
+					current_page: 1,
+					total_pages: Math.ceil(parseInt(data.length)/news_per_page),
+				})
+			);
 		}).catch((e) => {
 			// handle the error
 		});
+
+		/**
+		 * Ontologies
+		 */
 	}
 }
 

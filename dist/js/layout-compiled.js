@@ -12,6 +12,10 @@ var _data = require("../../src/js/data.es6");
 
 var _data2 = _interopRequireDefault(_data);
 
+var _pagination = require("../../src/js/pagination.es6");
+
+var _pagination2 = _interopRequireDefault(_pagination);
+
 var _filters = require("../../src/js/filters.es6");
 
 var _filters2 = _interopRequireDefault(_filters);
@@ -29,6 +33,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DATA = new _data2.default(),
+    PAGINATION = new _pagination2.default(),
     FILTERS = new _filters2.default(),
     MODALS = new _modals2.default(),
     STR = new _str2.default(),
@@ -188,27 +193,49 @@ var layout = function () {
 		value: function build_contents_section() {
 			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "feed_container", "class": "col s12 m4 l4 xl4" }).append()).append($('<div>', { "class": "col s12 m8 l8 xl8" }).append())));
 
-			var news_reader_options = {
-				news_per_page: 3
-			};
+			var news_per_page = 3;
 
+			/**
+    * Feeds
+    */
 			DATA.get_community_website_feed().then(function (data) {
-				for (var i = 0; i < news_reader_options.news_per_page; i++) {
-					// console.log("OK", data[i]);
-					var feed = {
-						title: data[i].title,
-						preview: data[i].preview,
-						author: $('<a>', { "href": "mailto:" + data[i].author.email }).text(data[i].author.name).prop("outerHTML"),
-						published: moment(data[i].published).local().format("MMM DD, YYYY, h:mm A"),
-						link: data[i].link,
-						abstract: STR.extract_text(data[i].content) + "<br />"
-					};
-					console.log(data[i].content);
-					$("#feed_container").append($('<div>', { "class": "feed" }).append($(feed.preview)).append($('<h1>').append($('<a>', { "href": feed.link }).text(feed.title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" posted on " + feed.published + " by " + feed.author))).append($('<div>', { "class": "content" }).append(feed.abstract).append($('<a>', { "href": feed.link, "class": "readmore" }).text("Read more..."))));
-				}
+				var $feed = void 0,
+				    feed = [],
+				    total_pages = Math.ceil(parseInt(data.length) / news_per_page),
+				    current_page = 0;
+
+				$.each(data, function (k, v) {
+					feed.push({
+						title: data[k].title,
+						preview: data[k].preview,
+						author: $('<a>', { "href": "mailto:" + data[k].author.email }).text(data[k].author.name).prop("outerHTML"),
+						published: moment(data[k].published).local().format("MMM DD, YYYY, h:mm A"),
+						link: data[k].link,
+						abstract: STR.extract_text(data[k].content) + "<br />"
+					});
+					if (k % 3 == 0) {
+						current_page++;
+					}
+
+					var visible = current_page == 1 ? "visible" : "hide";
+					$feed = $('<div>', { "class": "feed page_" + current_page + " " + visible }).append($('<a>', { "href": feed[k].link }).append($(feed[k].preview))).append($('<h1>').append($('<a>', { "href": feed[k].link }).text(feed[k].title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" posted on " + feed[k].published + " by " + feed[k].author))).append($('<div>', { "class": "content" }).append(feed[k].abstract).append($('<a>', { "href": feed[k].link, "class": "readmore" }).text("Read more...")));
+					$("#feed_container").append($feed);
+				});
+
+				$("#feed_container").append(PAGINATION.build_pagination({
+					id: "feed_pagination",
+					content: "#feed_container",
+					items: ".feed",
+					current_page: 1,
+					total_pages: Math.ceil(parseInt(data.length) / news_per_page)
+				}));
 			}).catch(function (e) {
 				// handle the error
 			});
+
+			/**
+    * Ontologies
+    */
 		}
 	}]);
 

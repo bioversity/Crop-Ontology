@@ -155,7 +155,7 @@ ul {
   #feed_container {
     .feed {
       padding: 30px 0;
-      &:not(:last-child) {
+      &.visible:last-child {
         border-bottom: $very-light-grey 2px dashed;
       }
 
@@ -182,6 +182,13 @@ ul {
         a {
           color: $medium-light-grey;
         }
+      }
+    }
+    .pagination {
+      a { font-size: 13px; }
+
+      .active {
+        background-color: $highlight;
       }
     }
   }
