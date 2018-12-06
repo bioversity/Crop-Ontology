@@ -65,7 +65,6 @@ class layout {
 							});
 							break;
 						case "footer_menu":
-							console.info(item);
 							$("#" + item.position).prepend(
 								$('<h2>').text(item.title)
 							)
@@ -100,9 +99,11 @@ class layout {
 										break;
 								}
 							} else {
-								return $('<li>').append(
-									$('<a>', {"href": item.link}).text(item.label)
-								);
+								if(item.display) {
+									return $('<li>').append(
+										$('<a>', {"href": item.link}).text(item.label)
+									);
+								}
 							}
 							break;
 					}
@@ -169,12 +170,12 @@ class layout {
 		* Animate the carousel
 		* @param integer						time							The delay after carousel change (default is 10'000)
 		*/
-		// setInterval(() => {
-		// 	$(".carousel .carousel-item").fadeOut(300, () => {
-		// 		$(".carousel").carousel("next");
-		// 		$(".carousel .carousel-item").delay(200).fadeIn();
-		// 	})
-		// }, 10000);
+		setInterval(() => {
+			$(".carousel .carousel-item").fadeOut(300, () => {
+				$(".carousel").carousel("next");
+				$(".carousel .carousel-item").delay(300).fadeIn();
+			})
+		}, 10000);
 	}
 
 	/**
@@ -240,11 +241,23 @@ class layout {
 		$("body").append(
 			$('<section>', {"id": "contents", "class": ""}).append(
 				$('<div>', {"class": "row"}).append(
-					$('<div>', {"id": "feed_container", "class": "col s12 m4 l4 xl4"}).append(
+					$('<div>', {"class": "col s12 m4 l4 xl4"}).append(
+						$('<div>', {"class": "row"}).append(
+							$('<div>', {"id": "info_container", "class": "col s12 m12 l12 xl12"}).append(
+								$('<div>', {"class": "card grey lighten-5"}).append(
+									$('<div>', {"class": "card-content"}).append(
+										$('<span>', {"class": "card-title highlight"}).text("Instructions")
+									).append(
+										$('<p>').html("<b>To develop a Trait Dictionary Version 5:</b><ul><li>Download the Trait Dictionary template v5</li><li>Read the Guidelines - may 2018</li><li>Contact helpdesk@cropontologycurationtool.org to get the Crop code for your Trait dictionary and to upload it</li></ul><br /><br /><b>To download a Trait Dictionary from this site:</b><br /><p>Text from the grey banner on the current site</p>")
+									)
+								)
+							)
+						).append(
+							$('<div>', {"id": "feed_container", "class": "col s12 m12 l12 xl12"})
+						)
 					)
 				).append(
-					$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
-					)
+					$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"})
 				)
 			)
 		);
@@ -301,13 +314,14 @@ class layout {
 			});
 
 			$("#feed_container").append(
-				PAGINATION.build_pagination({
-					id: "feed_pagination",
-					content: "#feed_container",
-					items: ".feed",
-					current_page: 1,
-					total_pages: Math.ceil(parseInt(data.length)/news_per_page),
-				})
+				// PAGINATION.build_pagination({
+				// 	id: "feed_pagination",
+				// 	content: "#feed_container",
+				// 	items: ".feed",
+				// 	current_page: 1,
+				// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
+				// })
+				$('<a>', {"href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/", "class": "right"}).text("Read more...")
 			);
 		}).catch((e) => {
 			// handle the error
@@ -417,7 +431,7 @@ class layout {
 			).append(
 				$('<div>', {"class": "col s12 m6 l6 xl6 right right-align"}).append(
 					$('<a>', {"href": "javascript:;", "target": "_blank"}).append(
-						$('<img>', {"src": "common/img/logos_crps_footer.png"})
+						$('<img>', {"src": "common/img/big-data_platform_logo.png"})
 					)
 				)
 			)
@@ -428,10 +442,15 @@ class layout {
 		);
 
 		/**
-		 * Build the top menu
+		 * Build the footer menu
 		 * @uses build_menu()
 		 */
 		this.build_menu("footer_menu");
+
+		/**
+		* Build the bottom links menu
+		* @uses build_menu()
+		*/
 		this.build_menu("bottom_links");
 	}
 }

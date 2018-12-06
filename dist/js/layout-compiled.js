@@ -90,7 +90,6 @@ var layout = function () {
 							});
 							break;
 						case "footer_menu":
-							console.info(item);
 							$("#" + item.position).prepend($('<h2>').text(item.title));
 							$("#" + item.position).append($('<ul>'));
 							$.each(item.items, function (ik, iv) {
@@ -115,7 +114,9 @@ var layout = function () {
 										break;
 								}
 							} else {
-								return $('<li>').append($('<a>', { "href": item.link }).text(item.label));
+								if (item.display) {
+									return $('<li>').append($('<a>', { "href": item.link }).text(item.label));
+								}
 							}
 							break;
 					}
@@ -168,12 +169,12 @@ var layout = function () {
    * Animate the carousel
    * @param integer						time							The delay after carousel change (default is 10'000)
    */
-			// setInterval(() => {
-			// 	$(".carousel .carousel-item").fadeOut(300, () => {
-			// 		$(".carousel").carousel("next");
-			// 		$(".carousel .carousel-item").delay(200).fadeIn();
-			// 	})
-			// }, 10000);
+			setInterval(function () {
+				$(".carousel .carousel-item").fadeOut(300, function () {
+					$(".carousel").carousel("next");
+					$(".carousel .carousel-item").delay(300).fadeIn();
+				});
+			}, 10000);
 		}
 
 		/**
@@ -217,7 +218,7 @@ var layout = function () {
 	}, {
 		key: "build_contents_section",
 		value: function build_contents_section() {
-			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "feed_container", "class": "col s12 m4 l4 xl4" }).append()).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }).append())));
+			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card grey lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" }).text("Instructions")).append($('<p>').html("<b>To develop a Trait Dictionary Version 5:</b><ul><li>Download the Trait Dictionary template v5</li><li>Read the Guidelines - may 2018</li><li>Contact helpdesk@cropontologycurationtool.org to get the Crop code for your Trait dictionary and to upload it</li></ul><br /><br /><b>To download a Trait Dictionary from this site:</b><br /><p>Text from the grey banner on the current site</p>"))))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }))));
 
 			var news_per_page = 3;
 
@@ -249,13 +250,15 @@ var layout = function () {
 					$("#feed_container").append($feed);
 				});
 
-				$("#feed_container").append(PAGINATION.build_pagination({
-					id: "feed_pagination",
-					content: "#feed_container",
-					items: ".feed",
-					current_page: 1,
-					total_pages: Math.ceil(parseInt(data.length) / news_per_page)
-				}));
+				$("#feed_container").append(
+				// PAGINATION.build_pagination({
+				// 	id: "feed_pagination",
+				// 	content: "#feed_container",
+				// 	items: ".feed",
+				// 	current_page: 1,
+				// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
+				// })
+				$('<a>', { "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/", "class": "right" }).text("Read more..."));
 			}).catch(function (e) {
 				// handle the error
 			});
@@ -316,13 +319,18 @@ var layout = function () {
 	}, {
 		key: "build_footer",
 		value: function build_footer() {
-			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners", "class": "row" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/logos_crps_footer.png" }))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")));
+			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners", "class": "row" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/big-data_platform_logo.png" }))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")));
 
 			/**
-    * Build the top menu
+    * Build the footer menu
     * @uses build_menu()
     */
 			this.build_menu("footer_menu");
+
+			/**
+   * Build the bottom links menu
+   * @uses build_menu()
+   */
 			this.build_menu("bottom_links");
 		}
 	}]);

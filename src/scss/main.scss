@@ -52,6 +52,7 @@ ul {
     .carousel-item {
       min-height: 300px !important;
       pointer-events: none;
+      display: flex !important;
     }
 
     h1 {
@@ -132,7 +133,7 @@ ul {
     li {
       font-size: 14px;
 
-      &:not(:last-child):not(:first-child) { margin: 0 9px; }
+      &:not(:first-child) { margin: 0 9px; }
       &:not(:first-child) {
         &:before {
           content: "-";
@@ -155,7 +156,7 @@ ul {
   padding: 0 20px;
 
   #feed_container {
-    padding-right: 30px;
+    // padding-right: 30px;
 
     .feed {
       padding: 30px 0;
@@ -197,7 +198,7 @@ ul {
     }
   }
   #ontologies_container {
-    padding: 22px 0 22px 30px;
+    padding: 0 0 22px 30px;
 
     .collapsible-header {
       font-size: 16px;

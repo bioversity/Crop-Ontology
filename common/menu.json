@@ -16,17 +16,17 @@
                 {
                     "label": "API",
                     "link": "/API",
-                    "display": true
+                    "display": false
                 },
                 {
                     "label": "Agtrials",
                     "link": "/Agtrials",
-                    "display": true
+                    "display": false
                 },
                 {
                     "label": "Annotation Tool",
                     "link": "/Annotation-Tool",
-                    "display": true
+                    "display": false
                 },
                 { "separator": true },
                 {
@@ -53,7 +53,7 @@
                 {
                     "label": "API",
                     "link": "./API",
-                    "display": true
+                    "display": false
                 },
                 {
                     "label": "Feedback",
@@ -87,17 +87,17 @@
                         {
                             "label": "API",
                             "link": "/API",
-                            "display": true
+                            "display": false
                         },
                         {
                             "label": "Agtrials",
                             "link": "/Agtrials",
-                            "display": true
+                            "display": false
                         },
                         {
                             "label": "Annotation Tool",
                             "link": "/Annotation-Tool",
-                            "display": true
+                            "display": false
                         },
                         {
                             "label": "All ontologies",
