@@ -181,7 +181,7 @@ var data = function () {
      */
 				$.ajax({
 					type: "GET",
-					url: "http://www.cropontology.org/get-ontologies",
+					url: "common/get-ontologies.json",
 					data: {
 						alt: "json"
 					},
