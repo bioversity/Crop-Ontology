@@ -63,11 +63,11 @@ module.exports={
                 }
             ]
         },
-        "foter_menu": {
+        "footer_menu": {
             "items": [
                 {
                     "title": "",
-                    "position": "left",
+                    "position": "left_menu",
                     "items": [
                         {
                             "label": "Home",
@@ -109,7 +109,7 @@ module.exports={
                 },
                 {
                     "title": "Related sites",
-                    "position": "left",
+                    "position": "center_menu",
                     "items": [
                         {
                             "label": "Integrated Breeding Platform",
@@ -138,8 +138,8 @@ module.exports={
                     ]
                 },
                 {
-                    "title": "Othe projects",
-                    "position": "left",
+                    "title": "Other projects",
+                    "position": "right_menu",
                     "items": [
                         {
                             "label": "External project",
@@ -159,28 +159,28 @@ module.exports={
                         {
                             "label": "Integrated Breeding Platform",
                             "link": "https://www.integratedbreeding.net",
-                            "image": "",
+                            "image": "ibp.png",
                             "display": true,
                             "target": "_blank"
                         },
                         {
                             "label": "Bioversity International",
                             "link": "http://www.bioversityinternational.org",
-                            "image": "",
+                            "image": "bioversity_small.png",
                             "display": true,
                             "target": "_blank"
                         },
                         {
                             "label": "NSF (National Science Foundation) -  cROP: Common Reference Ontologies and Applications for Plant Biology",
                             "link": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=1340112",
-                            "image": "",
+                            "image": "nsf.jpg",
                             "display": true,
                             "target": "_blank"
                         },
                         {
                             "label": "Planteome",
                             "link": "http://www.planteome.org",
-                            "image": "",
+                            "image": "planteome.png",
                             "display": true,
                             "target": "_blank"
                         }
@@ -194,7 +194,7 @@ module.exports={
                             "label": "",
                             "link": "",
                             "image": "bottom_headings.svg",
-                            "display": true
+                            "display": false
                         }
                     ]
                 }
@@ -245,6 +245,8 @@ $(document).ready(function () {
 	LAYOUT.build_halfway_menu();
 	// Build the contents section
 	LAYOUT.build_contents_section();
+	// Build the footer
+	LAYOUT.build_footer();
 
 	LAYOUT.activate();
 });
@@ -6684,17 +6686,43 @@ var layout = function () {
 
 			$.each(menus, function (k, v) {
 				$("#" + position).append($.map(v[position].items, function (item) {
-					if (item.label === undefined && item.separator) {
-						switch ($.type(item.separator)) {
-							case "boolean":
-								return $('<li>').append($('<span>', { "class": "separator" }));
-								break;
-							case "string":
-								return $('<li>', { "class": "disabled black-text" }).append($('<span>').text(item.separator));
-								break;
-						}
-					} else {
-						return $('<li>').append($('<a>', { "href": item.link }).text(item.label));
+					switch (position) {
+						case "bottom_links":
+							$.each(item.items, function (ik, iv) {
+								if (iv.display) {
+									$("#" + position).append($('<a>', { "href": iv.link, "target": iv.target, "title": iv.label }).append($('<img>', { "src": "common/img/" + iv.image })));
+								}
+							});
+							break;
+						case "footer_menu":
+							console.info(item);
+							$("#" + item.position).prepend($('<h2>').text(item.title));
+							$("#" + item.position).append($('<ul>'));
+							$.each(item.items, function (ik, iv) {
+								$("#" + item.position).find("ul").append(function () {
+									if (iv.display) {
+										return $('<li>').append($('<a>', { "href": iv.link, "target": iv.target }).text(iv.label));
+									}
+									if (iv.separator !== undefined) {
+										return $('<li>', { "class": "separator" });
+									}
+								});
+							});
+							break;
+						default:
+							if (item.label === undefined && item.separator) {
+								switch ($.type(item.separator)) {
+									case "boolean":
+										return $('<li>').append($('<span>', { "class": "separator" }));
+										break;
+									case "string":
+										return $('<li>', { "class": "disabled black-text" }).append($('<span>').text(item.separator));
+										break;
+								}
+							} else {
+								return $('<li>').append($('<a>', { "href": item.link }).text(item.label));
+							}
+							break;
 					}
 				}));
 			});
@@ -6884,6 +6912,23 @@ var layout = function () {
 			}).catch(function (e) {
 				// handle the error
 			});
+		}
+
+		/**
+   * Build the footer section
+   */
+
+	}, {
+		key: "build_footer",
+		value: function build_footer() {
+			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners", "class": "row" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/logos_crps_footer.png" }))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")));
+
+			/**
+    * Build the top menu
+    * @uses build_menu()
+    */
+			this.build_menu("footer_menu");
+			this.build_menu("bottom_links");
 		}
 	}]);
 

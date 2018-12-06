@@ -29,6 +29,8 @@ $(document).ready(function () {
 	LAYOUT.build_halfway_menu();
 	// Build the contents section
 	LAYOUT.build_contents_section();
+	// Build the footer
+	LAYOUT.build_footer();
 
 	LAYOUT.activate();
 });

@@ -62,11 +62,11 @@
                 }
             ]
         },
-        "foter_menu": {
+        "footer_menu": {
             "items": [
                 {
                     "title": "",
-                    "position": "left",
+                    "position": "left_menu",
                     "items": [
                         {
                             "label": "Home",
@@ -108,7 +108,7 @@
                 },
                 {
                     "title": "Related sites",
-                    "position": "left",
+                    "position": "center_menu",
                     "items": [
                         {
                             "label": "Integrated Breeding Platform",
@@ -137,8 +137,8 @@
                     ]
                 },
                 {
-                    "title": "Othe projects",
-                    "position": "left",
+                    "title": "Other projects",
+                    "position": "right_menu",
                     "items": [
                         {
                             "label": "External project",
@@ -158,28 +158,28 @@
                         {
                             "label": "Integrated Breeding Platform",
                             "link": "https://www.integratedbreeding.net",
-                            "image": "",
+                            "image": "ibp.png",
                             "display": true,
                             "target": "_blank"
                         },
                         {
                             "label": "Bioversity International",
                             "link": "http://www.bioversityinternational.org",
-                            "image": "",
+                            "image": "bioversity_small.png",
                             "display": true,
                             "target": "_blank"
                         },
                         {
                             "label": "NSF (National Science Foundation) -  cROP: Common Reference Ontologies and Applications for Plant Biology",
                             "link": "https://www.nsf.gov/awardsearch/showAward?AWD_ID=1340112",
-                            "image": "",
+                            "image": "nsf.jpg",
                             "display": true,
                             "target": "_blank"
                         },
                         {
                             "label": "Planteome",
                             "link": "http://www.planteome.org",
-                            "image": "",
+                            "image": "planteome.png",
                             "display": true,
                             "target": "_blank"
                         }
@@ -193,7 +193,7 @@
                             "label": "",
                             "link": "",
                             "image": "bottom_headings.svg",
-                            "display": true
+                            "display": false
                         }
                     ]
                 }
