@@ -153,6 +153,8 @@ ul {
   margin: 60px 0 90px 0;
 
   #feed_container {
+    padding-right: 30px;
+
     .feed {
       padding: 30px 0;
       &.visible:last-child {
@@ -160,8 +162,8 @@ ul {
       }
 
       a {
-        text-decoration: underline;
         &:hover { text-decoration: none; }
+        text-decoration: underline;
       }
       h1 {
         color: $highlight;
@@ -191,6 +193,51 @@ ul {
         background-color: $highlight;
       }
     }
+  }
+  #ontologies_container {
+    padding: 22px 0 22px 30px;
+
+    .collapsible-header {
+      font-size: 16px;
+
+      span {
+        font-size: 24px;
+        margin-right: 12px;
+        margin-top: -6px;
+      }
+    }
+    .collapsible-body {
+      padding: 0px;
+
+      h2 {
+        color: $text-blue;
+        font-size: 14px;
+        margin: 0;
+
+        a {
+          &.right {
+            color: $black;
+            font-size: 11px;
+            text-decoration: none;
+            &:hover { text-decoration: underline; }
+          }
+        }
+      }
+      .content {
+        border-bottom: $very-light-grey 1px solid;
+        padding: 30px;
+
+        .items_count {
+          color: $medium-grey;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .all-ontologies {
+    margin-top: 70px;
+    font-size: 22px;
+    font-weight: 300;
   }
 }
 

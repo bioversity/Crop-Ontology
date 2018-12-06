@@ -6135,6 +6135,12 @@ process.umask = function() { return 0; };
 /* jshint esversion: 6 */
 "strict mode";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 $.fn.serializeObject = function () {
     var o = {},
         a = this.serializeArray();
@@ -6155,6 +6161,12 @@ $.fn.serializeObject = function () {
 $.fn.hasAttr = function (name) {
     return this.attr(name) !== undefined;
 };
+
+var obj = function obj() {
+    _classCallCheck(this, obj);
+};
+
+exports.default = obj;
 
 },{}],8:[function(require,module,exports){
 "use strict";
@@ -6260,11 +6272,16 @@ var _str = require("../../src/js/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
+var _obj = require("../../src/js/_obj.es6");
+
+var _obj2 = _interopRequireDefault(_obj);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var STR = new _str2.default();
+var OBJ = new _obj2.default();
 
 var data = function () {
 	function data() {
@@ -6365,6 +6382,88 @@ var data = function () {
 				});
 			});
 		}
+
+		/**
+   * Get and parse all ontologies from the Crop Ontology website
+   * @NOTE This is an async function
+   *
+   * @return object 															The ontologies data JSON object
+   */
+
+	}, {
+		key: "get_ontologies",
+		value: function get_ontologies() {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				function filter_categories(cat, ontologies) {
+					// if the first word contains a dash - good enough
+					var words = cat.split(" "),
+					    category = {
+						id: words[0],
+						name: $.trim(cat.replace(words[0], "")),
+						icon: ""
+					};
+
+					if (category.id.includes("-")) {
+						switch (category.name) {
+							case "General Germplasm Ontology":
+								category.icon = "picol_ontology";break;
+							case "Phenotype and Trait Ontology":
+								category.icon = "picol_relevance";break;
+							case "Solanaceae Phenotype Ontology":
+								category.icon = "picol_path";break;
+							case "Structural and Functional Genomic Ontology":
+								category.icon = "picol_hierarchy";break;
+							case "Location and Environmental Ontology":
+								category.icon = "picol_point_of_interest";break;
+							case "Plant Anatomy & Development Ontology":
+								category.icon = "picol_copy";break;
+						}
+
+						// order the categories
+						return {
+							category: category,
+							ontologies: ontologies
+						};
+					} else {
+						return cat;
+					}
+				}
+
+				var filteredCats = [],
+				    newCats = {},
+				    categories = [];
+
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-ontologies",
+					data: {
+						alt: "json"
+					},
+					dataType: "json",
+					success: function success(data) {
+						$.each(data, function (key, ontologies) {
+							/**
+        * Filtered categories
+        * @type object
+        */
+							var filtered = filter_categories(key, ontologies);
+							categories.push(filtered);
+						});
+						// console.info(categories);
+						// categories = OBJ.sort_by_key(categories, ["category", "name"])
+						// console.dir(categories);
+
+						resolve(categories);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 	}]);
 
 	return data;
@@ -6372,7 +6471,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/js/_str.es6":8,"es6-promise":4}],10:[function(require,module,exports){
+},{"../../src/js/_obj.es6":7,"../../src/js/_str.es6":8,"es6-promise":4}],10:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6695,12 +6794,13 @@ var layout = function () {
 	}, {
 		key: "build_contents_section",
 		value: function build_contents_section() {
-			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "feed_container", "class": "col s12 m4 l4 xl4" }).append()).append($('<div>', { "class": "col s12 m8 l8 xl8" }).append())));
+			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "feed_container", "class": "col s12 m4 l4 xl4" }).append()).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }).append())));
 
 			var news_per_page = 3;
 
 			/**
     * Feeds
+    * ---------------------------------------------------------------------
     */
 			DATA.get_community_website_feed().then(function (data) {
 				var $feed = void 0,
@@ -6739,7 +6839,51 @@ var layout = function () {
 
 			/**
     * Ontologies
+    * ---------------------------------------------------------------------
     */
+			DATA.get_ontologies().then(function (data) {
+				$("#ontologies_container").append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" })).append($('<h5>', { "class": "all-ontologies" }).append($('<a>', { "href": "" }).text("All ontologies ›")));
+
+				console.log(data.ontologies);
+				$.each(data, function (k, data) {
+					// console.log(data);
+					$("#ontologies_container .collapsible").append($('<li>', {
+						"class": k == 3 ? "active" : "",
+						"data-category": data.category.id
+					}).append($('<div>', { "class": "collapsible-header " + (k == 3 ? "active" : "") }).append($('<span>', { "class": data.category.icon })).append(data.category.name)).append($('<div>', { "class": "collapsible-body" }).append($.map(data.ontologies, function (v, k) {
+						return $('<div>', { "class": "content" }).append($('<h2>').append($('<a>', { "href": "javascript:;", "class": "right" }).append("Download").append($('<span>', { "class": "picol_arrow_full_down" }))).append(v.ontology_name)
+						// $('<a>', {"href": "javascript:;", "class": "right"}).append(
+						).append($('<span>', { "class": "items_count" }).text(v.tot + " items")).append($('<p>').text(v.ontology_summary));
+					})))).collapsible();
+				});
+				// $("#ontologies_container .collapsible").collapsible({
+				// 	accordion: true
+				// }).open(1);
+				// for(var i=0, len=filteredCats.length; i<len; i++) {
+				// 	var currCat = filteredCats[i];
+
+
+				// c.find(".featured-heading span").text(currCat);
+				// c.get(0).className = "";
+				//
+				// if(i%2) // is odd, add to right
+				//     right.append(c);
+				// else
+				//     left.append(c);
+				//
+				// c.show();
+				//
+				// // now load the ontologies for this category
+				// // hrm seems like "c" isn't carried on
+				// (function(currCat, c) {
+				//     for(var i=0; i<newCats[currCat].length; i++) {
+				//         addRow(newCats[currCat][i], c);
+				//     };
+				// })(currCat, c);
+				// }
+			}).catch(function (e) {
+				// handle the error
+			});
 		}
 	}]);
 

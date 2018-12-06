@@ -22,3 +22,8 @@ $.fn.serializeObject = function() {
 $.fn.hasAttr = function(name) {
 	return this.attr(name) !== undefined;
 };
+
+
+class obj {
+}
+export default obj;

@@ -3,7 +3,9 @@
 
 import { Promise } from 'es6-promise'
 import str from "../../src/js/_str.es6";
+import obj from "../../src/js/_obj.es6";
 var STR = new str();
+var OBJ = new obj();
 
 class data {
 	/**
@@ -90,6 +92,79 @@ class data {
 						}
 					});
 					resolve(feed);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	/**
+	 * Get and parse all ontologies from the Crop Ontology website
+	 * @NOTE This is an async function
+	 *
+	 * @return object 															The ontologies data JSON object
+	 */
+	get_ontologies() {
+		return new Promise((resolve, reject) => {
+			function filter_categories(cat, ontologies) {
+			    // if the first word contains a dash - good enough
+			    let words = cat.split(" "),
+					category = {
+						id: words[0],
+						name: $.trim(cat.replace(words[0], "")),
+						icon: ""
+					};
+
+			    if(category.id.includes("-")) {
+					switch(category.name) {
+						case "General Germplasm Ontology":					category.icon = "picol_ontology";				break;
+						case "Phenotype and Trait Ontology":				category.icon = "picol_relevance";				break;
+						case "Solanaceae Phenotype Ontology":				category.icon = "picol_path";					break;
+						case "Structural and Functional Genomic Ontology":	category.icon = "picol_hierarchy";				break;
+						case "Location and Environmental Ontology":			category.icon = "picol_point_of_interest";		break;
+						case "Plant Anatomy & Development Ontology":		category.icon = "picol_copy";					break;
+					}
+
+					// order the categories
+			        return {
+						category: category,
+						ontologies: ontologies
+					};
+			    } else {
+			        return cat;
+				}
+			}
+
+			let filteredCats = [],
+				newCats = {},
+				categories = [];
+
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-ontologies",
+				data: {
+					alt: "json"
+				},
+				dataType: "json",
+				success: (data) => {
+					$.each(data, (key, ontologies) => {
+						/**
+						 * Filtered categories
+						 * @type object
+						 */
+						var filtered = filter_categories(key, ontologies);
+						categories.push(filtered);
+					});
+					// console.info(categories);
+					// categories = OBJ.sort_by_key(categories, ["category", "name"])
+					// console.dir(categories);
+
+					resolve(categories);
 				},
 				error: (jqXHR, textStatus, errorThrown) => {
 					reject(errorThrown);

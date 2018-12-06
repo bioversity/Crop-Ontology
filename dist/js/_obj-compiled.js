@@ -2,6 +2,12 @@
 /* jshint esversion: 6 */
 "strict mode";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 $.fn.serializeObject = function () {
     var o = {},
         a = this.serializeArray();
@@ -22,3 +28,9 @@ $.fn.serializeObject = function () {
 $.fn.hasAttr = function (name) {
     return this.attr(name) !== undefined;
 };
+
+var obj = function obj() {
+    _classCallCheck(this, obj);
+};
+
+exports.default = obj;

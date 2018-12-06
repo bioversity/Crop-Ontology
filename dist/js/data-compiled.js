@@ -14,11 +14,16 @@ var _str = require("../../src/js/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
+var _obj = require("../../src/js/_obj.es6");
+
+var _obj2 = _interopRequireDefault(_obj);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var STR = new _str2.default();
+var OBJ = new _obj2.default();
 
 var data = function () {
 	function data() {
@@ -112,6 +117,88 @@ var data = function () {
 							}
 						});
 						resolve(feed);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+
+		/**
+   * Get and parse all ontologies from the Crop Ontology website
+   * @NOTE This is an async function
+   *
+   * @return object 															The ontologies data JSON object
+   */
+
+	}, {
+		key: "get_ontologies",
+		value: function get_ontologies() {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				function filter_categories(cat, ontologies) {
+					// if the first word contains a dash - good enough
+					var words = cat.split(" "),
+					    category = {
+						id: words[0],
+						name: $.trim(cat.replace(words[0], "")),
+						icon: ""
+					};
+
+					if (category.id.includes("-")) {
+						switch (category.name) {
+							case "General Germplasm Ontology":
+								category.icon = "picol_ontology";break;
+							case "Phenotype and Trait Ontology":
+								category.icon = "picol_relevance";break;
+							case "Solanaceae Phenotype Ontology":
+								category.icon = "picol_path";break;
+							case "Structural and Functional Genomic Ontology":
+								category.icon = "picol_hierarchy";break;
+							case "Location and Environmental Ontology":
+								category.icon = "picol_point_of_interest";break;
+							case "Plant Anatomy & Development Ontology":
+								category.icon = "picol_copy";break;
+						}
+
+						// order the categories
+						return {
+							category: category,
+							ontologies: ontologies
+						};
+					} else {
+						return cat;
+					}
+				}
+
+				var filteredCats = [],
+				    newCats = {},
+				    categories = [];
+
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-ontologies",
+					data: {
+						alt: "json"
+					},
+					dataType: "json",
+					success: function success(data) {
+						$.each(data, function (key, ontologies) {
+							/**
+        * Filtered categories
+        * @type object
+        */
+							var filtered = filter_categories(key, ontologies);
+							categories.push(filtered);
+						});
+						// console.info(categories);
+						// categories = OBJ.sort_by_key(categories, ["category", "name"])
+						// console.dir(categories);
+
+						resolve(categories);
 					},
 					error: function error(jqXHR, textStatus, errorThrown) {
 						reject(errorThrown);

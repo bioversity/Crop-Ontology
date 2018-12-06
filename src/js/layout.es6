@@ -207,7 +207,7 @@ class layout {
 					$('<div>', {"id": "feed_container", "class": "col s12 m4 l4 xl4"}).append(
 					)
 				).append(
-					$('<div>', {"class": "col s12 m8 l8 xl8"}).append(
+					$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
 					)
 				)
 			)
@@ -217,6 +217,7 @@ class layout {
 
 		/**
 		 * Feeds
+		 * ---------------------------------------------------------------------
 		 */
 		DATA.get_community_website_feed().then((data) => {
 			let $feed,
@@ -278,7 +279,78 @@ class layout {
 
 		/**
 		 * Ontologies
+		 * ---------------------------------------------------------------------
 		 */
+		DATA.get_ontologies().then((data) => {
+			$("#ontologies_container").append(
+				$('<ul>', {"class": "collapsible z-depth-0", "data-collapsible": "accordion"})
+			).append(
+				$('<h5>', {"class": "all-ontologies"}).append(
+					$('<a>', {"href": ""}).text("All ontologies ›")
+				)
+			)
+
+			console.log(data.ontologies);
+			$.each(data, (k, data) => {
+				// console.log(data);
+				$("#ontologies_container .collapsible").append(
+					$('<li>', {
+						"class": ((k == 3) ? "active" : ""),
+						"data-category": data.category.id
+					}).append(
+						$('<div>', {"class": "collapsible-header " + ((k == 3) ? "active" : "")}).append(
+							$('<span>', {"class": data.category.icon})
+						).append(data.category.name)
+					).append(
+						$('<div>', {"class": "collapsible-body"}).append(
+							$.map(data.ontologies, (v, k) => {
+								return $('<div>', {"class": "content"}).append(
+									$('<h2>')
+										.append(
+											$('<a>', {"href": "javascript:;", "class": "right"}).append("Download").append(
+												$('<span>', {"class": "picol_arrow_full_down"})
+											)
+										).append(v.ontology_name)
+									// $('<a>', {"href": "javascript:;", "class": "right"}).append(
+								).append(
+									$('<span>', {"class": "items_count"}).text(v.tot + " items")
+								).append(
+									$('<p>').text(v.ontology_summary)
+								)
+							})
+						)
+					)
+				).collapsible()
+			})
+			// $("#ontologies_container .collapsible").collapsible({
+			// 	accordion: true
+			// }).open(1);
+			// for(var i=0, len=filteredCats.length; i<len; i++) {
+			// 	var currCat = filteredCats[i];
+
+
+				// c.find(".featured-heading span").text(currCat);
+				// c.get(0).className = "";
+				//
+				// if(i%2) // is odd, add to right
+				//     right.append(c);
+				// else
+				//     left.append(c);
+				//
+				// c.show();
+				//
+				// // now load the ontologies for this category
+				// // hrm seems like "c" isn't carried on
+				// (function(currCat, c) {
+				//     for(var i=0; i<newCats[currCat].length; i++) {
+				//         addRow(newCats[currCat][i], c);
+				//     };
+				// })(currCat, c);
+			// }
+
+		}).catch((e) => {
+			// handle the error
+		})
 	}
 }
 
