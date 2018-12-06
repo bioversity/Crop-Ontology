@@ -1,12 +1,12 @@
 {
-  "name": "PANTONE-picker",
-  "description": "Just a color picker with similar PANTONE® code matcher",
+  "name": "crop-ontology",
+  "description": "The Crop Ontology website interface, written in NodeJs over [Google App Engine](http://code.google.com/appengine/).",
   "main": "",
   "authors": [
-    "Alessandro Gubitosi <gubi.ale@iod.io>"
+    "Alessandro Gubitosi <a.gubitosi@cgiar.org>"
   ],
   "license": "GPL-3.0",
-  "homepage": "https://github.com/gubi/PANTONE-picker",
+  "homepage": "https://github.com/bioversity/<REPO>",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -16,7 +16,9 @@
   ],
   "dependencies": {
     "jquery": "^3.2.1",
-    "materialize": "^0.100.1"
+    "materialize": "^0.100.1",
+    "fontawesome": "^5.5.0",
+    "picol-font": "*"
   },
   "keywords": [
     "PANTONE",

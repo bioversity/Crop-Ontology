@@ -26,6 +26,7 @@ class data {
 				data: {
 					alt: "json"
 				},
+				async: true,
 				dataType: "json",
 				success: (data) => {
 					let
@@ -150,6 +151,7 @@ class data {
 				data: {
 					alt: "json"
 				},
+				async: true,
 				dataType: "json",
 				success: (data) => {
 					$.each(data, (key, ontologies) => {

@@ -6311,6 +6311,7 @@ var data = function () {
 					data: {
 						alt: "json"
 					},
+					async: true,
 					dataType: "json",
 					success: function success(data) {
 						var
@@ -6444,6 +6445,7 @@ var data = function () {
 					data: {
 						alt: "json"
 					},
+					async: true,
 					dataType: "json",
 					success: function success(data) {
 						$.each(data, function (key, ontologies) {
