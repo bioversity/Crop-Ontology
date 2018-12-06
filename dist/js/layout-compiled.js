@@ -282,31 +282,6 @@ var layout = function () {
 						).append($('<span>', { "class": "items_count" }).text(v.tot + " items")).append($('<p>').text(v.ontology_summary));
 					})))).collapsible();
 				});
-				// $("#ontologies_container .collapsible").collapsible({
-				// 	accordion: true
-				// }).open(1);
-				// for(var i=0, len=filteredCats.length; i<len; i++) {
-				// 	var currCat = filteredCats[i];
-
-
-				// c.find(".featured-heading span").text(currCat);
-				// c.get(0).className = "";
-				//
-				// if(i%2) // is odd, add to right
-				//     right.append(c);
-				// else
-				//     left.append(c);
-				//
-				// c.show();
-				//
-				// // now load the ontologies for this category
-				// // hrm seems like "c" isn't carried on
-				// (function(currCat, c) {
-				//     for(var i=0; i<newCats[currCat].length; i++) {
-				//         addRow(newCats[currCat][i], c);
-				//     };
-				// })(currCat, c);
-				// }
 			}).catch(function (e) {
 				// handle the error
 			});
@@ -319,7 +294,7 @@ var layout = function () {
 	}, {
 		key: "build_footer",
 		value: function build_footer() {
-			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners", "class": "row" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/big-data_platform_logo.png" }))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")));
+			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners" }).append($('<div>', { "class": "row container center" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/big-data_platform_logo.png" })))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")));
 
 			/**
     * Build the footer menu

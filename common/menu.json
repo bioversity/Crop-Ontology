@@ -10,34 +10,34 @@
                 },
                 {
                     "label": "About",
-                    "link": "/About",
+                    "link": "http://new.cropontology.iod.io/About",
                     "display": true
                 },
                 {
                     "label": "API",
-                    "link": "/API",
+                    "link": "http://new.cropontology.iod.io/API",
                     "display": false
                 },
                 {
                     "label": "Agtrials",
-                    "link": "/Agtrials",
+                    "link": "http://new.cropontology.iod.io/Agtrials",
                     "display": false
                 },
                 {
                     "label": "Annotation Tool",
-                    "link": "/Annotation-Tool",
+                    "link": "http://new.cropontology.iod.io/Annotation-Tool",
                     "display": false
                 },
                 { "separator": true },
                 {
                     "label": "Login",
-                    "link": "/Login",
+                    "link": "http://new.cropontology.iod.io/Login",
                     "display": true
                 },
                 { "separator": "or" },
                 {
                     "label": "Register",
-                    "link": "/Register",
+                    "link": "http://new.cropontology.iod.io/Register",
                     "display": true
                 }
             ]
@@ -76,32 +76,32 @@
                         { "separator": "" },
                         {
                             "label": "About the project",
-                            "link": "/About",
+                            "link": "http://www.cropontology.org/About",
                             "display": true
                         },
                         {
                             "label": "Blog",
-                            "link": "/Blog",
+                            "link": "http://www.cropontology.org/Blog",
                             "display": true
                         },
                         {
                             "label": "API",
-                            "link": "/API",
+                            "link": "http://www.cropontology.org/API",
                             "display": false
                         },
                         {
                             "label": "Agtrials",
-                            "link": "/Agtrials",
+                            "link": "http://www.cropontology.org/Agtrials",
                             "display": false
                         },
                         {
                             "label": "Annotation Tool",
-                            "link": "/Annotation-Tool",
+                            "link": "http://www.cropontology.org/Annotation-Tool",
                             "display": false
                         },
                         {
                             "label": "All ontologies",
-                            "link": "/All-ontologies",
+                            "link": "http://www.cropontology.org/All-ontologies",
                             "display": true
                         }
                     ]

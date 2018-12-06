@@ -372,32 +372,6 @@ class layout {
 					)
 				).collapsible()
 			})
-			// $("#ontologies_container .collapsible").collapsible({
-			// 	accordion: true
-			// }).open(1);
-			// for(var i=0, len=filteredCats.length; i<len; i++) {
-			// 	var currCat = filteredCats[i];
-
-
-				// c.find(".featured-heading span").text(currCat);
-				// c.get(0).className = "";
-				//
-				// if(i%2) // is odd, add to right
-				//     right.append(c);
-				// else
-				//     left.append(c);
-				//
-				// c.show();
-				//
-				// // now load the ontologies for this category
-				// // hrm seems like "c" isn't carried on
-				// (function(currCat, c) {
-				//     for(var i=0; i<newCats[currCat].length; i++) {
-				//         addRow(newCats[currCat][i], c);
-				//     };
-				// })(currCat, c);
-			// }
-
 		}).catch((e) => {
 			// handle the error
 		})
@@ -426,12 +400,14 @@ class layout {
 				)
 			)
 		).append(
-			$('<section>', {"id": "partners", "class": "row"}).append(
-				$('<div>', {"id": "bottom_links", "class": "col s12 m6 l6 xl6"})
-			).append(
-				$('<div>', {"class": "col s12 m6 l6 xl6 right right-align"}).append(
-					$('<a>', {"href": "javascript:;", "target": "_blank"}).append(
-						$('<img>', {"src": "common/img/big-data_platform_logo.png"})
+			$('<section>', {"id": "partners"}).append(
+				$('<div>', {"class": "row container center"}).append(
+					$('<div>', {"id": "bottom_links", "class": "col s12 m6 l6 xl6"})
+				).append(
+					$('<div>', {"class": "col s12 m6 l6 xl6 right right-align"}).append(
+						$('<a>', {"href": "javascript:;", "target": "_blank"}).append(
+							$('<img>', {"src": "common/img/big-data_platform_logo.png"})
+						)
 					)
 				)
 			)
