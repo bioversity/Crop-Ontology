@@ -269,13 +269,13 @@ class layout {
 		 * ---------------------------------------------------------------------
 		 */
 		DATA.get_community_website_feed().then((data) => {
-			let $feed,
-				feed = [],
+			let $feeds = [],
+				feeds = [],
 				total_pages = Math.ceil(parseInt(data.length)/news_per_page),
 				current_page = 0;
 
 			$.each(data, (k, v) => {
-				feed.push({
+				feeds.push({
 					title: data[k].title,
 					preview: data[k].preview,
 					author: $('<a>', {"href": "mailto:" + data[k].author.email}).text(data[k].author.name).prop("outerHTML"),
@@ -288,40 +288,52 @@ class layout {
 				}
 
 				let visible = (current_page == 1) ? "visible" : "hide";
-				$feed = $('<div>', {"class": "feed page_" + current_page + " " + visible})
+				$feeds.push(
+					$('<div>', {"class": "card-content feed page_" + current_page + " " + visible})
 					.append(
-						$('<a>', {"href": feed[k].link}).append(
-							$(feed[k].preview)
+						$('<div>', {"class": "preview"}).append(
+							$('<a>', {"href": feeds[k].link}).append(
+								$(feeds[k].preview)
+							)
 						)
 					).append(
-						$('<h1>').append(
-							$('<a>', {"href": feed[k].link}).text(feed[k].title)
+						$('<span>', {"class": "card-title highlight"}).append(
+							$('<a>', {"href": feeds[k].link}).text(feeds[k].title)
 						)
 					).append(
 						$('<div>', {"class": "release"}).append(
 							$('<span>', {"class": "far fa-fw fa-clock"})
 						).append(
-							$('<span>').html(" posted on " + feed[k].published + " by " + feed[k].author)
+							$('<span>').html(" posted on " + feeds[k].published + " by " + feeds[k].author)
 						)
-					).append(
-						$('<div>', {"class": "content"}).append(
-							feed[k].abstract
-						).append(
-							$('<a>', {"href": feed[k].link, "class": "readmore"}).text("Read more...")
-						)
-					);
-				$("#feed_container").append($feed);
+					// ).append(
+					// 	$('<div>', {"class": "content"}).append(
+					// 		feeds[k].abstract
+					// 	).append(
+					// 		$('<a>', {"href": feeds[k].link, "class": "readmore"}).text("Read more...")
+					// 	)
+					)
+				);
 			});
-
 			$("#feed_container").append(
-				// PAGINATION.build_pagination({
-				// 	id: "feed_pagination",
-				// 	content: "#feed_container",
-				// 	items: ".feed",
-				// 	current_page: 1,
-				// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
-				// })
-				$('<a>', {"href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/", "class": "right"}).text("Read more...")
+				$('<div>', {"class": "card z-depth-1"}).append(
+					$('<div>', {"class": "card-content"}).append(
+						$('<div>', {"class": "card-title highlight"}).append("Latest news")
+					)
+				).append(
+					$feeds
+					// PAGINATION.build_pagination({
+					// 	id: "feed_pagination",
+					// 	content: "#feed_container",
+					// 	items: ".feed",
+					// 	current_page: 1,
+					// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
+					// })
+				).append(
+					$('<div>', {"class": "card-action right-align"}).append(
+						$('<a>', {"class": "btn btn-flat highlight-btn", "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/"}).text("Read more...")
+					)
+				)
 			);
 		}).catch((e) => {
 			// handle the error

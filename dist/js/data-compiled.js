@@ -67,7 +67,7 @@ var data = function () {
 								if ($imgs.length == 1) {
 									return $('<img>', {
 										"src": $imgs[0],
-										"class": "responsive-img"
+										"class": ""
 									}).prop("outerHTML");
 								}
 							} else {
@@ -82,7 +82,7 @@ var data = function () {
        */
 						get_preview_video = function get_preview_video(content) {
 							if ($(content).find("iframe").attr("src") !== undefined) {
-								return $(content).find("iframe").attr("width", "100%");
+								return $(content).find("iframe").attr("width", "100%").attr("height", "100%");
 							} else {
 								return null;
 							}

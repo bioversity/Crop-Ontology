@@ -159,7 +159,9 @@ ul {
     // padding-right: 30px;
 
     .feed {
-      padding: 30px 0;
+      min-height: 120px;
+      // padding: 10px 0;
+
       &.visible:last-child {
         border-bottom: $very-light-grey 2px dashed;
       }
@@ -177,6 +179,29 @@ ul {
         a {
           text-decoration: none;
           &:hover { text-decoration: underline; }
+        }
+      }
+      .preview {
+        border: $very-light-grey 1px solid;
+        float: left;
+        height: 100px;
+        margin-right: 10px;
+        overflow: hidden;
+        text-align: center;
+        width: 100px;
+
+        a {
+          display: block;
+          height: 100%;
+          line-height: 100px;
+
+          iframe { pointer-events: none; }
+          img { height: 100%; }
+        }
+      }
+      .card-title {
+        a {
+          font-size: 18px;
         }
       }
       .release {

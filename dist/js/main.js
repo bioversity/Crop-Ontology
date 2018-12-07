@@ -11,7 +11,7 @@ module.exports={
                 },
                 {
                     "label": "About",
-                    "link": "http://new.cropontology.iod.io/About",
+                    "link": "http://new.cropontology.iod.io/about",
                     "display": true
                 },
                 {
@@ -77,7 +77,7 @@ module.exports={
                         { "separator": "" },
                         {
                             "label": "About the project",
-                            "link": "http://www.cropontology.org/About",
+                            "link": "http://www.cropontology.org/about",
                             "display": true
                         },
                         {
@@ -6327,7 +6327,7 @@ var data = function () {
 								if ($imgs.length == 1) {
 									return $('<img>', {
 										"src": $imgs[0],
-										"class": "responsive-img"
+										"class": ""
 									}).prop("outerHTML");
 								}
 							} else {
@@ -6342,7 +6342,7 @@ var data = function () {
        */
 						get_preview_video = function get_preview_video(content) {
 							if ($(content).find("iframe").attr("src") !== undefined) {
-								return $(content).find("iframe").attr("width", "100%");
+								return $(content).find("iframe").attr("width", "100%").attr("height", "100%");
 							} else {
 								return null;
 							}
@@ -6834,13 +6834,13 @@ var layout = function () {
     * ---------------------------------------------------------------------
     */
 			DATA.get_community_website_feed().then(function (data) {
-				var $feed = void 0,
-				    feed = [],
+				var $feeds = [],
+				    feeds = [],
 				    total_pages = Math.ceil(parseInt(data.length) / news_per_page),
 				    current_page = 0;
 
 				$.each(data, function (k, v) {
-					feed.push({
+					feeds.push({
 						title: data[k].title,
 						preview: data[k].preview,
 						author: $('<a>', { "href": "mailto:" + data[k].author.email }).text(data[k].author.name).prop("outerHTML"),
@@ -6853,11 +6853,16 @@ var layout = function () {
 					}
 
 					var visible = current_page == 1 ? "visible" : "hide";
-					$feed = $('<div>', { "class": "feed page_" + current_page + " " + visible }).append($('<a>', { "href": feed[k].link }).append($(feed[k].preview))).append($('<h1>').append($('<a>', { "href": feed[k].link }).text(feed[k].title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" posted on " + feed[k].published + " by " + feed[k].author))).append($('<div>', { "class": "content" }).append(feed[k].abstract).append($('<a>', { "href": feed[k].link, "class": "readmore" }).text("Read more...")));
-					$("#feed_container").append($feed);
+					$feeds.push($('<div>', { "class": "card-content feed page_" + current_page + " " + visible }).append($('<div>', { "class": "preview" }).append($('<a>', { "href": feeds[k].link }).append($(feeds[k].preview)))).append($('<span>', { "class": "card-title highlight" }).append($('<a>', { "href": feeds[k].link }).text(feeds[k].title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" posted on " + feeds[k].published + " by " + feeds[k].author))
+					// ).append(
+					// 	$('<div>', {"class": "content"}).append(
+					// 		feeds[k].abstract
+					// 	).append(
+					// 		$('<a>', {"href": feeds[k].link, "class": "readmore"}).text("Read more...")
+					// 	)
+					));
 				});
-
-				$("#feed_container").append(
+				$("#feed_container").append($('<div>', { "class": "card z-depth-1" }).append($('<div>', { "class": "card-content" }).append($('<div>', { "class": "card-title highlight" }).append("Latest news"))).append($feeds
 				// PAGINATION.build_pagination({
 				// 	id: "feed_pagination",
 				// 	content: "#feed_container",
@@ -6865,7 +6870,7 @@ var layout = function () {
 				// 	current_page: 1,
 				// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
 				// })
-				$('<a>', { "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/", "class": "right" }).text("Read more..."));
+				).append($('<div>', { "class": "card-action right-align" }).append($('<a>', { "class": "btn btn-flat highlight-btn", "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/" }).text("Read more..."))));
 			}).catch(function (e) {
 				// handle the error
 			});

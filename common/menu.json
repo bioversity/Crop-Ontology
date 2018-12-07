@@ -10,7 +10,7 @@
                 },
                 {
                     "label": "About",
-                    "link": "http://new.cropontology.iod.io/About",
+                    "link": "http://new.cropontology.iod.io/about",
                     "display": true
                 },
                 {
@@ -76,7 +76,7 @@
                         { "separator": "" },
                         {
                             "label": "About the project",
-                            "link": "http://www.cropontology.org/About",
+                            "link": "http://www.cropontology.org/about",
                             "display": true
                         },
                         {

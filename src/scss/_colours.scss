@@ -19,3 +19,8 @@ $text-blue: #4283c5;
 .highlight-text, .highlight {
   color: $highlight;
 }
+.highlight-btn {
+  color: $highlight;
+
+  &:hover { background-color: $very-light-grey; }
+}
