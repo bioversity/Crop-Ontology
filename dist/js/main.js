@@ -6870,7 +6870,7 @@ var layout = function () {
 				// 	current_page: 1,
 				// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
 				// })
-				).append($('<div>', { "class": "card-action right-align" }).append($('<a>', { "class": "btn btn-flat highlight-btn", "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/" }).text("Read more..."))));
+				).append($('<div>', { "class": "card-action right-align" }).append($('<a>', { "class": "btn btn-flat highlight-btn", "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/" }).text("Read more...")))).slideDown(300);
 			}).catch(function (e) {
 				// handle the error
 			});

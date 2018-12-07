@@ -334,7 +334,7 @@ class layout {
 						$('<a>', {"class": "btn btn-flat highlight-btn", "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/"}).text("Read more...")
 					)
 				)
-			);
+			).slideDown(300);
 		}).catch((e) => {
 			// handle the error
 		});

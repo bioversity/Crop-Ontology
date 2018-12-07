@@ -12,8 +12,8 @@ body {
   // padding: 20px;
 
   & > header {
-    margin: 15px -10px 15px 0;
-    padding: 0 20px;
+    margin: 15px 0 15px 0;
+    padding: 0 10px 0 20px;
   }
 }
 
@@ -156,6 +156,7 @@ ul {
   padding: 0 20px;
 
   #feed_container {
+    display: none;
     // padding-right: 30px;
 
     .feed {
