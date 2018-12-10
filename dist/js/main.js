@@ -15,18 +15,23 @@ module.exports={
                     "display": true
                 },
                 {
+                    "label": "Add new terms",
+                    "link": "http://new.cropontology.iod.io/add-ontology",
+                    "display": true
+                },
+                {
                     "label": "API",
-                    "link": "http://new.cropontology.iod.io/API",
+                    "link": "http://new.cropontology.iod.io/api",
                     "display": false
                 },
                 {
                     "label": "Agtrials",
-                    "link": "http://new.cropontology.iod.io/Agtrials",
+                    "link": "http://new.cropontology.iod.io/agtrials",
                     "display": false
                 },
                 {
                     "label": "Annotation Tool",
-                    "link": "http://new.cropontology.iod.io/Annotation-Tool",
+                    "link": "http://new.cropontology.iod.io/annotation-tool",
                     "display": false
                 },
                 { "separator": true },
@@ -54,11 +59,11 @@ module.exports={
                 {
                     "label": "API",
                     "link": "./API",
-                    "display": false
+                    "display": true
                 },
                 {
                     "label": "Feedback",
-                    "link": "./Feedback",
+                    "link": "http://new.cropontology.iod.io/feedback",
                     "display": true
                 }
             ]
@@ -82,27 +87,27 @@ module.exports={
                         },
                         {
                             "label": "Blog",
-                            "link": "http://www.cropontology.org/Blog",
+                            "link": "http://www.cropontology.org/blog",
                             "display": true
                         },
                         {
                             "label": "API",
-                            "link": "http://www.cropontology.org/API",
+                            "link": "http://www.cropontology.org/api",
                             "display": false
                         },
                         {
                             "label": "Agtrials",
-                            "link": "http://www.cropontology.org/Agtrials",
+                            "link": "http://www.cropontology.org/agtrials",
                             "display": false
                         },
                         {
                             "label": "Annotation Tool",
-                            "link": "http://www.cropontology.org/Annotation-Tool",
+                            "link": "http://www.cropontology.org/annotation-tool",
                             "display": false
                         },
                         {
                             "label": "All ontologies",
-                            "link": "http://www.cropontology.org/All-ontologies",
+                            "link": "http://www.cropontology.org/all-ontologies",
                             "display": true
                         }
                     ]
@@ -206,7 +211,7 @@ module.exports={
 },{}],2:[function(require,module,exports){
 module.exports={
     "messages": [
-        "Claim text or 300x1920 banner image\nwith [carousel] sliding or fade effect",
+        "Claim text or 300x1280 banner image\nwith [carousel] sliding or fade effect",
         "Test"
     ]
 }
@@ -6193,7 +6198,7 @@ var str = function () {
 
 		/**
    * Make a string's first character uppercase
-   * This function is a porting of equivalent PHP ucfirst()
+   * This function is very similar to PHP ucfirst()
    * @see http://php.net/manual/en/function.ucfirst.php
    *
    * @param  string 							string							The input string
@@ -6205,7 +6210,7 @@ var str = function () {
 
 		/**
    * Make a string's first character lowercase
-   * This function is a porting of equivalent PHP lcfirst()
+   * This function is very similar to PHP lcfirst()
    * @see http://php.net/manual/en/function.lcfirst.php
    *
    * @param  string 							string							The input string
@@ -6220,7 +6225,7 @@ var str = function () {
 
 		/**
    * Uppercase the first character of each word in a string
-   * This function is a porting of equivalent PHP ucwords()
+   * This function is very similar to PHP ucwords()
    * @see http://php.net/manual/en/function.ucwords.php
    *
    * @param  string 							string							The input string
@@ -6234,21 +6239,66 @@ var str = function () {
 				return $1.toUpperCase();
 			});
 		}
-	}, {
-		key: "extract_text",
-		value: function extract_text(string) {
-			var string_part = $.trim($(string).text()).split(".")[0] + ".";
-			return string_part.split("\n")[0];
-		}
+
+		/**
+   * Quote string with slashes
+   * This function is very similar to PHP addslashes()
+   * @see http://php.net/manual/en/function.addslashes.php
+   *
+   * @param  string 							string							The input string
+   * @return string															The converted string
+   */
+
 	}, {
 		key: "addslashes",
 		value: function addslashes(str) {
 			return str.replace(/\\/g, '\\\\').replace(/\'/g, '\\\'').replace(/\"/g, '\\"').replace(/\0/g, '\\0');
 		}
+
+		/**
+   * Un-quotes a quoted string
+   * This function is very similar to PHP stripslashes()
+   * @see http://php.net/manual/en/function.stripslashes.php
+   *
+   * @param  string 							string							The input string
+   * @return string															The converted string
+   */
+
 	}, {
 		key: "stripslashes",
 		value: function stripslashes(str) {
 			return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+		}
+
+		/**
+   * Split a multiline string by a given separator, then get the first line
+   * NOTE: If not provided the separator is a comma ","
+   * @param  string 							string							The string to split
+   * @param  string 							split_by						The separator to split
+   * @return string															The extracted string
+   */
+
+	}, {
+		key: "extract_text",
+		value: function extract_text(string, split_by) {
+			if (split_by == undefined) {
+				split_by = ",";
+			}
+			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
+			return string_part.split("\n")[0];
+		}
+
+		/**
+   * Pluralize a string
+   * @param  integer 							items							The amount of items
+   * @param  string 							string							The string to pluralize
+   * @return The pluralized string
+   */
+
+	}, {
+		key: "pluralize",
+		value: function pluralize(items, string) {
+			return items !== 1 ? string + "s" : string;
 		}
 	}]);
 
@@ -6882,17 +6932,87 @@ var layout = function () {
 			DATA.get_ontologies().then(function (data) {
 				$("#ontologies_container").append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" })).append($('<h5>', { "class": "all-ontologies" }).append($('<a>', { "href": "" }).text("All ontologies ›")));
 
-				console.log(data.ontologies);
-				$.each(data, function (k, data) {
-					// console.log(data);
+				var current_page = 1,
+				    page_limit = 4,
+				    items = [],
+				    $pagination = $('<div>', { "class": "ontology_pagination pagination-content" });
+
+				$.each(data, function (k, categories) {
+					// console.warn(k);
+					var onto_count = 0;
+
+					var pages = categories.ontologies.length > page_limit ? Math.ceil(categories.ontologies.length / page_limit) : 1;
+					// 	$('<span>', {"class": "left help-text"}).append("Displaying page " + current_page + " of " + pages)
+					// ).append(
+					// 	$('<ul>', {"class": "pagination center"}).append(
+					// 		$('<li>', {"class": "disabled"}).append(
+					// 			$('<a>', {"href": "javascript:;"}).append(
+					// 				$('<span>', {"class": "fa fa-chevron-left"})
+					// 			)
+					// 		)
+					// 	)
+					// 	// ).append(
+					// 	// 	$('<li>', {"class": "waves-effect"}).append(
+					// 	// 		$('<a>', {"href": "javascript:;"}).text("2")
+					// 	// 	)
+					// 	// ).append(
+					// 	// 	$('<li>', {"class": "waves-effect"}).append(
+					// 	// 		$('<a>', {"href": "javascript:;"}).text("3")
+					// 	// 	)
+					// 	// ).append(
+					// 	// 	$('<li>', {"class": "disabled"}).append(
+					// 	// 		$('<a>', {"href": "javascript:;"}).append(
+					// 	// 			$('<span>', {"class": "fa fa-chevron-right"})
+					// 	// 		)
+					// 	// 	)
+					// );
+					// $pagination.find("ul").append(
+					// 	$('<li>', {"class": "active"}).append(
+					// 			$('<a>', {"href": "javascript:;"}).text("1")
+					// 		)
+					// 	})
+					// )
+					// // Add pagination numbers
+					// $.each(categories.ontologies, (ko, ontology) => {
+					// 	onto_count++;
+					// 	console.log(onto_count, onto_count % page_limit == 1);
+					// });
+
 					$("#ontologies_container .collapsible").append($('<li>', {
 						"class": k == 3 ? "active" : "",
-						"data-category": data.category.id
-					}).append($('<div>', { "class": "collapsible-header " + (k == 3 ? "active" : "") }).append($('<span>', { "class": data.category.icon })).append(data.category.name)).append($('<div>', { "class": "collapsible-body" }).append($.map(data.ontologies, function (v, k) {
-						return $('<div>', { "class": "content" }).append($('<h2>').append($('<a>', { "href": "javascript:;", "class": "right" }).append("Download").append($('<span>', { "class": "picol_arrow_full_down" }))).append(v.ontology_name)
-						// $('<a>', {"href": "javascript:;", "class": "right"}).append(
-						).append($('<span>', { "class": "items_count" }).text(v.tot + " items")).append($('<p>').text(v.ontology_summary));
-					})))).collapsible();
+						"id": categories.category.id
+					}).append($('<div>', { "class": "collapsible-header " + (k == 3 ? "active" : "") }).append($('<div>', { "class": "collapsible-secondary help-text" }).append(categories.ontologies.length + " " + STR.pluralize(categories.ontologies.length, "item")).append(function () {
+						if (pages > 1) {
+							var $indications = $('<span>', {
+								"class": "tooltipped",
+								"data-tooltip": "Displaying page " + current_page + " of " + pages
+							}).append(" | ").append($('<span>', { "class": "far fa-file-alt" })).append($('<span>', { "class": "page_no grey-text" }).text(current_page)).append("/" + pages).prop("outerHTML");
+
+							setTimeout(function () {
+								$("#ontologies_container .tooltipped").tooltip({ position: "left" });
+							}, 1000);
+							return $indications;
+						}
+					})).append($('<div>', { "class": "left" }).append($('<span>', { "class": categories.category.icon })).append(categories.category.name))).append($('<div>', { "class": "collapsible-body " + (pages > 1 ? "paginated" : "") }).append(function () {
+						if (pages > 1) {
+							return $pagination;
+						}
+					}).append($('<div>', { "id": "ontology_container" }).append($.map(categories.ontologies, function (v, k) {
+						if (k < page_limit) {
+							return $('<div>', { "class": "content" }).append($('<h2>').append($('<a>', { "href": "javascript:;", "class": "right" }).append("Download").append($('<span>', { "class": "picol_arrow_full_down" }))).append(v.ontology_name)).append($('<span>', { "class": "items_count" }).text(v.tot + " " + STR.pluralize(v.tot, "item"))).append($('<p>').text(v.ontology_summary));
+						}
+					}))).append(function () {
+						if (pages > 1) {
+							return $pagination.clone();
+						}
+					}))).collapsible();
+					$("#" + categories.category.id).find(".pagination-content").append(PAGINATION.build_pagination({
+						id: "ontology_pagination",
+						context_class: categories.category.id + "_pagination",
+						content: "#ontology_container",
+						items: ".ontology",
+						total_pages: Math.ceil(categories.ontologies.length / 4)
+					}));
 				});
 			}).catch(function (e) {
 				// handle the error
@@ -7083,26 +7203,26 @@ var pagination = function () {
 
 			var defaults = {
 				id: "",
+				context_class: "group",
 				content: "",
 				items: "",
 				current_page: 1,
 				total_pages: 1
 			},
 			    settings = $.extend({}, defaults, options);
-
 			var prev_page = settings.current_page <= 1 ? 1 : settings.current_page - 1,
 			    next_page = settings.current_page >= settings.total_pages ? settings.total_pages : settings.current_page + 1,
 			    $news_pagination = $('<ul>', {
 				"id": settings.id,
-				"class": "pagination center",
+				"class": settings.context_class + " pagination center",
 				"data-current_page": settings.current_page,
 				"data-total_pages": settings.total_pages
 			}),
-			    $left_arrow_btn = $('<li>', { "class": "prev_page_btn" }).append($('<a>', { "href": "javascript:;" }).append($('<span>', { "class": "fa fa-chevron-left" }))).click(function () {
-				_this.goto(settings.id, "prev", settings.content, settings.items);
+			    $left_arrow_btn = $('<li>', { "class": "prev_page_btn", disabled: true }).append($('<a>', { "href": "javascript:;" }).append($('<span>', { "class": "fa fa-chevron-left" }))).click(function (e) {
+				_this.goto(e, settings.context_class, "prev", settings.content, settings.items);
 			}),
-			    $right_arrow_btn = $('<li>', { "class": "next_page_btn" }).append($('<a>', { "href": "javascript:;" }).append($('<span>', { "class": "fa fa-chevron-right" }))).click(function () {
-				_this.goto(settings.id, "next", settings.content, settings.items);
+			    $right_arrow_btn = $('<li>', { "class": "next_page_btn" }).append($('<a>', { "href": "javascript:;" }).append($('<span>', { "class": "fa fa-chevron-right" }))).click(function (e) {
+				_this.goto(e, settings.context_class, "next", settings.content, settings.items);
 			});
 
 			var _loop = function _loop(p) {
@@ -7112,57 +7232,58 @@ var pagination = function () {
 
 				$left_arrow_btn.addClass(left_arrow_class);
 				$right_arrow_btn.addClass(right_arrow_class);
-				$news_pagination.append($('<li>', { "class": pagelink_class + " page_" + p }).append($('<a>', { "href": "javascript:;" }).text(p).click(function () {
-					_this.goto(settings.id, p, settings.content, settings.items);
+				$news_pagination.append($('<li>', { "class": pagelink_class + " page_" + p }).append($('<a>', { "href": "javascript:;" }).text(p).click(function (e) {
+					_this.goto(e, settings.id, p, settings.content, settings.items);
 				})));
 			};
 
 			for (var p = 1; p <= settings.total_pages; p++) {
 				_loop(p);
 			}
-
 			return $news_pagination.prepend($left_arrow_btn).append($right_arrow_btn);
 		}
 	}, {
 		key: "goto",
-		value: function goto(id, page, content, items) {
-			var current_page = parseInt($("#" + id).data("current_page")),
-			    total_pages = parseInt($("#" + id).data("total_pages")),
-			    prev_page = current_page <= 1 ? 1 : current_page - 1,
-			    next_page = current_page >= total_pages ? total_pages : current_page + 1;
+		value: function goto(e, context_class, page, content, items) {
+			if (!$(e.target).closest("li").attr("disabled")) {
+				var current_page = parseInt($("." + context_class).data("current_page")),
+				    total_pages = parseInt($("." + context_class).data("total_pages")),
+				    prev_page = current_page <= 1 ? 1 : current_page - 1,
+				    next_page = current_page >= total_pages ? total_pages : current_page + 1;
 
-			$("#" + id).find("li.active").removeClass("active");
+				$("." + context_class).find("li.active").removeClass("active");
+				$(content + " " + items + ".page_" + current_page).addClass("hide");
+				switch (page) {
+					case "prev":
+						$("." + context_class).find("li.page_" + prev_page).addClass("active");
+						$("." + context_class).data("current_page", prev_page);
+						current_page = prev_page;
+						break;
+					case "next":
+						$("." + context_class).find("li.page_" + next_page).addClass("active");
+						$("." + context_class).data("current_page", next_page);
+						current_page = next_page;
+						break;
+					default:
+						console.log(context_class, page, current_page);
+						$("." + context_class).find("li.page_" + page).addClass("active");
+						$("." + context_class).data("current_page", page);
+						current_page = page;
+						break;
+				}
+				$(content + " " + items + ".page_" + current_page).removeClass("hide");
 
-			$(content + " " + items + ".page_" + current_page).addClass("hide");
-			switch (page) {
-				case "prev":
-					$("#" + id).find("li.page_" + prev_page).addClass("active");
-					$("#" + id).data("current_page", prev_page);
-					current_page = prev_page;
-					break;
-				case "next":
-					$("#" + id).find("li.page_" + next_page).addClass("active");
-					$("#" + id).data("current_page", next_page);
-					current_page = next_page;
-					break;
-				default:
-					$("#" + id).find("li.page_" + page).addClass("active");
-					$("#" + id).data("current_page", page);
-					current_page = page;
-					break;
-			}
-			$(content + " " + items + ".page_" + current_page).removeClass("hide");
-
-			// Prev/next buttons
-			if (current_page > 1) {
-				$(".prev_page_btn").removeClass("disabled");
-			} else {
-				$(".prev_page_btn").addClass("disabled");
-			}
-			if (current_page < total_pages) {
-				$(".next_page_btn").removeClass("disabled");
-			} else {
-				$(".next_page_btn").addClass("disabled");
+				// Prev/next buttons
+				if (current_page > 1) {
+					$(".prev_page_btn").removeClass("disabled").attr("disabled", false);
+				} else {
+					$(".prev_page_btn").addClass("disabled").attr("disabled", true);
+				}
+				if (current_page < total_pages) {
+					$(".next_page_btn").removeClass("disabled").attr("disabled", false);
+				} else {
+					$(".next_page_btn").addClass("disabled").attr("disabled", true);
+				}
 			}
 		}
 	}]);

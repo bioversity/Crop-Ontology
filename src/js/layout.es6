@@ -352,38 +352,121 @@ class layout {
 				)
 			)
 
-			console.log(data.ontologies);
-			$.each(data, (k, data) => {
-				// console.log(data);
+			var current_page = 1,
+				page_limit = 4,
+				items = [],
+
+				$pagination = $('<div>', {"class": "ontology_pagination pagination-content"});
+
+			$.each(data, (k, categories) => {
+				// console.warn(k);
+				var onto_count = 0;
+
+				let pages = (categories.ontologies.length > page_limit) ? Math.ceil(categories.ontologies.length/page_limit) : 1;
+				// 	$('<span>', {"class": "left help-text"}).append("Displaying page " + current_page + " of " + pages)
+				// ).append(
+				// 	$('<ul>', {"class": "pagination center"}).append(
+				// 		$('<li>', {"class": "disabled"}).append(
+				// 			$('<a>', {"href": "javascript:;"}).append(
+				// 				$('<span>', {"class": "fa fa-chevron-left"})
+				// 			)
+				// 		)
+				// 	)
+				// 	// ).append(
+				// 	// 	$('<li>', {"class": "waves-effect"}).append(
+				// 	// 		$('<a>', {"href": "javascript:;"}).text("2")
+				// 	// 	)
+				// 	// ).append(
+				// 	// 	$('<li>', {"class": "waves-effect"}).append(
+				// 	// 		$('<a>', {"href": "javascript:;"}).text("3")
+				// 	// 	)
+				// 	// ).append(
+				// 	// 	$('<li>', {"class": "disabled"}).append(
+				// 	// 		$('<a>', {"href": "javascript:;"}).append(
+				// 	// 			$('<span>', {"class": "fa fa-chevron-right"})
+				// 	// 		)
+				// 	// 	)
+				// );
+				// $pagination.find("ul").append(
+				// 	$('<li>', {"class": "active"}).append(
+				// 			$('<a>', {"href": "javascript:;"}).text("1")
+				// 		)
+				// 	})
+				// )
+				// // Add pagination numbers
+				// $.each(categories.ontologies, (ko, ontology) => {
+				// 	onto_count++;
+				// 	console.log(onto_count, onto_count % page_limit == 1);
+				// });
+
 				$("#ontologies_container .collapsible").append(
 					$('<li>', {
 						"class": ((k == 3) ? "active" : ""),
-						"data-category": data.category.id
+						"id": categories.category.id
 					}).append(
 						$('<div>', {"class": "collapsible-header " + ((k == 3) ? "active" : "")}).append(
-							$('<span>', {"class": data.category.icon})
-						).append(data.category.name)
-					).append(
-						$('<div>', {"class": "collapsible-body"}).append(
-							$.map(data.ontologies, (v, k) => {
-								return $('<div>', {"class": "content"}).append(
-									$('<h2>')
-										.append(
-											$('<a>', {"href": "javascript:;", "class": "right"}).append("Download").append(
-												$('<span>', {"class": "picol_arrow_full_down"})
-											)
-										).append(v.ontology_name)
-									// $('<a>', {"href": "javascript:;", "class": "right"}).append(
-								).append(
-									$('<span>', {"class": "items_count"}).text(v.tot + " items")
-								).append(
-									$('<p>').text(v.ontology_summary)
-								)
-							})
+							$('<div>', {"class": "collapsible-secondary help-text"})
+								.append(categories.ontologies.length + " " + STR.pluralize(categories.ontologies.length, "item"))
+								.append(() => {
+									if(pages > 1) {
+										let $indications = $('<span>', {
+											"class": "tooltipped",
+											"data-tooltip": "Displaying page " + current_page + " of " + pages
+										}).append(" | ")
+										  .append($('<span>', {"class": "far fa-file-alt"}))
+										  .append($('<span>', {"class": "page_no grey-text"}).text(current_page))
+										  .append("/" + pages)
+										  .prop("outerHTML");
+
+										setTimeout(() => {
+											$("#ontologies_container .tooltipped").tooltip({position: "left"});
+										}, 1000);
+										return $indications;
+									}
+								})
+						).append(
+							$('<div>', {"class": "left"}).append(
+								$('<span>', {"class": categories.category.icon})
+							).append(categories.category.name)
 						)
+					).append(
+						$('<div>', {"class": "collapsible-body " + ((pages > 1) ? "paginated" : "")}).append(() => {
+							if(pages > 1) { return $pagination; }
+						}).append(
+							$('<div>', {"id": "ontology_container"}).append(
+								$.map(categories.ontologies, (v, k) => {
+									if(k < page_limit) {
+										return $('<div>', {"class": "content"}).append(
+											$('<h2>')
+												.append(
+													$('<a>', {"href": "javascript:;", "class": "right"}).append("Download").append(
+														$('<span>', {"class": "picol_arrow_full_down"})
+													)
+												).append(v.ontology_name)
+										).append(
+											$('<span>', {"class": "items_count"}).text(v.tot + " " + STR.pluralize(v.tot, "item"))
+										).append(
+											$('<p>').text(v.ontology_summary)
+										)
+									}
+								})
+							)
+						).append(() => {
+							if(pages > 1) { return $pagination.clone(); }
+						})
 					)
 				).collapsible()
+				$("#" + categories.category.id).find(".pagination-content").append(
+					PAGINATION.build_pagination({
+						id: "ontology_pagination",
+						context_class: categories.category.id + "_pagination",
+						content: "#ontology_container",
+						items: ".ontology",
+						total_pages: Math.ceil(categories.ontologies.length/4),
+					})
+				);
 			})
+
 		}).catch((e) => {
 			// handle the error
 		})

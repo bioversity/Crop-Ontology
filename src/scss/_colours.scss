@@ -3,6 +3,7 @@ $grey: #ccc;
 $light-grey: #ddd;
 $light-light-grey: #eee;
 $very-light-grey: #efefef;
+$white-grey: #fafafa;
 $medium-light-grey: #999;
 $medium-grey: #666;
 $dark-grey: #333;
@@ -23,4 +24,8 @@ $text-blue: #4283c5;
   color: $highlight;
 
   &:hover { background-color: $very-light-grey; }
+}
+
+.help-text {
+  color: $grey;
 }

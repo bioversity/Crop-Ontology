@@ -11,3 +11,22 @@
 .input-field label {
   pointer-events: auto;
 }
+
+.pagination {
+  .active {
+    background-color: $highlight !important;
+  }
+}
+
+#ontologies_container {
+  .collapsible-header {
+    display: block;
+    height: 4em;
+
+    .collapsible-secondary {
+      float: right;
+      // line-height: 2.5em;
+      font-size: 0.9em;
+    }
+  }
+}
