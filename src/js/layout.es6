@@ -42,6 +42,43 @@ class layout {
 	}
 
 	/**
+	 * Build a circular loader
+	 * @see https://materializecss.com/preloader.html
+	 *
+	 * @param  string 						size								The loader size. Options are: ""|"small"|"big"
+	 * @param  string						colour								The loader colour
+	 */
+	loader(type, size, colour) {
+		if(size == undefined) { let size = "small"; }
+		if(colour == undefined) { let colour = "grey"; }
+
+		switch(type) {
+			case "progress":
+				return $('<div>', {"class": "progress"}).append(
+					$('<div>', {"class": "indeterminate"})
+				);
+				break;
+			case "circular":
+				return $('<div>', {"class": "preloader-wrapper " + size + " active"}).append(
+					$('<div>', {"class": "spinner-layer spinner-" + colour + "-only"}).append(
+						$('<div>', {"class": "circle-clipper left"}).append(
+							$('<div>', {"class": "circle"})
+						)
+					).append(
+						$('<div>', {"class": "gap-patch"}).append(
+							$('<div>', {"class": "circle"})
+						)
+					).append(
+						$('<div>', {"class": "circle-clipper right"}).append(
+							$('<div>', {"class": "circle"})
+						)
+					)
+				);
+				break;
+		}
+	}
+
+	/**
 	 * Build a menu
 	 * @param  string 						position							The menu position
 	 * @return object
@@ -253,7 +290,9 @@ class layout {
 									$('<div>', {"class": "card-content"}).append(
 										$('<span>', {"class": "card-title highlight"})
 									).append(
-										$('<div>', {"class": "help"})
+										$('<div>', {"class": "help"}).append(
+											this.loader("progress")
+										)
 									)
 								)
 							)
@@ -318,7 +357,7 @@ class layout {
 			});
 			$.each(feeds, (k, v) => {
 				$feeds.push(
-					$('<div>', {"class": "card-content feed page_" + v.page + " " + v.visible})
+					$('<div>', {"class": "feed page_" + v.page + " " + v.visible})
 					.append(
 						$('<div>', {"class": "preview"}).append(
 							$('<a>', {"href": v.link}).append(
@@ -353,17 +392,19 @@ class layout {
 						$('<div>', {"class": "card-title highlight"}).append(settings.home.sections.news.title)
 					)
 				).append(
-					$feeds
+					$('<div>', {"class": "card-content"}).append(
+						$feeds
 
-					// Uncomment below if you want news pagination
-					//
-					// PAGINATION.build_pagination({
-					// 	id: "feed_pagination",
-					// 	content: "#feed_container",
-					// 	items: ".feed",
-					// 	current_page: 1,
-					// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
-					// })
+						// Uncomment below if you want news pagination
+						//
+						// PAGINATION.build_pagination({
+						// 	id: "feed_pagination",
+						// 	content: "#feed_container",
+						// 	items: ".feed",
+						// 	current_page: 1,
+						// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
+						// })
+					)
 				).append(
 					$('<div>', {"class": "card-action right-align"}).append(
 						$('<a>', {"class": "btn btn-flat highlight-btn", "href": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/"}).text("Read more...")
@@ -435,7 +476,9 @@ class layout {
 						).append(
 							$('<div>', {"class": "left"}).append(
 								$('<span>', {"class": categories.category.icon})
-							).append(categories.category.name)
+							).append(
+								$('<span>').text(categories.category.name)
+							)
 						)
 					).append(
 						$('<div>', {"class": "collapsible-body" + ((pages > 0) ? " paginated" : "")}).append(() => {
@@ -495,17 +538,6 @@ class layout {
 					})
 				);
 			});
-			// console.info(page_content);
-			// console.log(typeof page_content);
-			// $.each(page_content, (i, j) => {
-			// 	console.warn("ok", i, j);
-			// // 	// $.each(v, (page, v) => {
-			// // 	// 	if(page > 0) {
-			// // 	// 		console.warn(id, "ontology page_" + page);
-			// // 	// 		console.info(v);
-			// // 	// 	}
-			// // 	// });
-			// });
 
 		}).catch((e) => {
 			// handle the error
@@ -521,7 +553,7 @@ class layout {
 				$("<div>", {"class": "row"}).append(
 					$("<div>", {"class": "col s12 m3 l3 xl3"}).append(
 						$('<a>', {"href": "./", "class": "brand-logo"}).append(
-							$('<img>', {"src": "common/img/crop_ontology_white.png"})
+							$('<img>', {"class": "responsive-img", "src": "common/img/crop_ontology_white.png"})
 						)
 					).append(
 						$('<p>', {"class": "description"}).html("Some identities data<br />such as address, informations, etc...")
