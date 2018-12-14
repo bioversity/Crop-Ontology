@@ -42,25 +42,54 @@ class layout {
 	}
 
 	/**
-	 * Build a circular loader
+	 * Build a circular or a progress loader
 	 * @see https://materializecss.com/preloader.html
 	 *
-	 * @param  string 						size								The loader size. Options are: ""|"small"|"big"
-	 * @param  string						colour								The loader colour
+	 * @param  object 						options								The loader display options
 	 */
-	loader(type, size, colour) {
-		if(size == undefined) { let size = "small"; }
-		if(colour == undefined) { let colour = "grey"; }
+	loader(options) {
+		let defaults = {
+			/**
+			 * The loader type.
+			 * Options: "progress" or "circular"
+			 * @type {String}
+			 */
+			type: "progress",
+			/**
+			 * The progress type.
+			 * Options: `true` stay for determinate progress (need `size` option)
+			 * NOTE: This option is available only for progress loaders
+			 * @type {Boolean}
+			 */
+			determinate: false,
+			/**
+			 * The loader size.
+			 * Options:
+			 * 	- Circular loader: @type {String} 	"" or "small" or "big"
+			 * 	- Progress loader: @type {Integer}	The percentage of progress
+			 */
+			size: "",
+			/**
+			 * The loader colour
+			 * NOTE: This option is available only for circular loaders
+			 * @type {String}
+			 */
+			colour: "grey"
+		},
+		settings = $.extend({}, defaults, options);
 
-		switch(type) {
+		switch(settings.type) {
 			case "progress":
 				return $('<div>', {"class": "progress"}).append(
-					$('<div>', {"class": "indeterminate"})
+					$('<div>', {
+						"class": (settings.determinate) ? "determinate" : "indeterminate",
+						"style": (settings.size !== "") ? "width: " + settings.size + "%" : ""
+					})
 				);
 				break;
 			case "circular":
-				return $('<div>', {"class": "preloader-wrapper " + size + " active"}).append(
-					$('<div>', {"class": "spinner-layer spinner-" + colour + "-only"}).append(
+				return $('<div>', {"class": "preloader-wrapper " + settings.size + " active"}).append(
+					$('<div>', {"class": "spinner-layer spinner-" + settings.colour + "-only"}).append(
 						$('<div>', {"class": "circle-clipper left"}).append(
 							$('<div>', {"class": "circle"})
 						)
@@ -291,7 +320,7 @@ class layout {
 										$('<span>', {"class": "card-title highlight"})
 									).append(
 										$('<div>', {"class": "help"}).append(
-											this.loader("progress")
+											this.loader({type: "progress"})
 										)
 									)
 								)

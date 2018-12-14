@@ -37,7 +37,7 @@ class filters {
 			cancel_button: "Cancel",
 			fixed_footer: true
 		},
-		settings = $.extend( {}, defaults, options );
+		settings = $.extend({}, defaults, options);
 
 		$("body").prepend(
 			$('<div>', {"id": settings.id, "class": "modal" + ((settings.fixed_footer) ? " modal-fixed-footer" : "")}).append(
