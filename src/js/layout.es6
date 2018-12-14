@@ -103,7 +103,7 @@ class layout {
 							break;
 						case "footer_menu":
 							$("#" + item.position).prepend(
-								$('<h2>').text(item.title)
+								$('<h2>').html(item.title)
 							)
 							$("#" + item.position).append(
 								$('<ul>')
@@ -580,7 +580,9 @@ class layout {
 			)
 		).append(
 			$('<center>').append(
-				$('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")
+				$('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a ").append(
+					$('<a>', {"href": "https://creativecommons.org/licenses/by/4.0/", "target": "_blank"}).text("Creative Commons Attribution 4.0 International License")
+				)
 			)
 		);
 

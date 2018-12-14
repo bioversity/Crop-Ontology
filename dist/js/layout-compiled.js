@@ -118,7 +118,7 @@ var layout = function () {
 							});
 							break;
 						case "footer_menu":
-							$("#" + item.position).prepend($('<h2>').text(item.title));
+							$("#" + item.position).prepend($('<h2>').html(item.title));
 							$("#" + item.position).append($('<ul>'));
 							$.each(item.items, function (ik, iv) {
 								$("#" + item.position).find("ul").append(function () {
@@ -418,7 +418,7 @@ var layout = function () {
 	}, {
 		key: "build_footer",
 		value: function build_footer() {
-			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "class": "responsive-img", "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners" }).append($('<div>', { "class": "row container center" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/big-data_platform_logo.png" })))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a Creative Commons Attribution 4.0 International License")));
+			$("body").append($("<footer>").append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl3" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "class": "responsive-img", "src": "common/img/crop_ontology_white.png" }))).append($('<p>', { "class": "description" }).html("Some identities data<br />such as address, informations, etc..."))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "partners" }).append($('<div>', { "class": "row container center" }).append($('<div>', { "id": "bottom_links", "class": "col s12 m6 l6 xl6" })).append($('<div>', { "class": "col s12 m6 l6 xl6 right right-align" }).append($('<a>', { "href": "javascript:;", "target": "_blank" }).append($('<img>', { "src": "common/img/big-data_platform_logo.png" })))))).append($('<center>').append($('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a ").append($('<a>', { "href": "https://creativecommons.org/licenses/by/4.0/", "target": "_blank" }).text("Creative Commons Attribution 4.0 International License"))));
 
 			/**
     * Build the footer menu

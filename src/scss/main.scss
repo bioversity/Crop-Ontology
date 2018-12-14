@@ -366,10 +366,11 @@ footer {
     margin-top: 50px;
   }
   h2 {
+    color: $medium-light-grey;
     display: inline-block;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 300;
-    margin: 25px 0;
+    margin: 25px 0 10px 0;
   }
   a {
     color: white;
@@ -390,8 +391,18 @@ footer {
   }
 }
 center {
+  border-top: $very-light-grey 1px solid;
+  margin: 20px auto;
+  padding: 20px 0 10px 0;
+  width: 80%;
+
   p {
     color: $medium-light-grey;
-    font-size: 14px;
+    font-size: 12px;
+
+    a {
+      color: $dark-grey;
+      &:hover { text-decoration: underline; }
+    }
   }
 }

@@ -70,7 +70,7 @@
         "footer_menu": {
             "items": [
                 {
-                    "title": "",
+                    "title": "&nbsp;",
                     "position": "left_menu",
                     "items": [
                         {
