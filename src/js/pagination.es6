@@ -22,7 +22,7 @@ class pagination {
 		let prev_page = (settings.current_page <= 1) ? 1 : settings.current_page - 1,
 			next_page = (settings.current_page >= settings.total_pages) ? settings.total_pages : settings.current_page + 1,
 
-			$news_pagination = $('<ul>', {
+			$pagination = $('<ul>', {
 				"id": settings.id,
 				"class": settings.context_class + " pagination center",
 				"data-current_page": settings.current_page,
@@ -50,12 +50,12 @@ class pagination {
 
 			$left_arrow_btn.addClass(left_arrow_class);
 			$right_arrow_btn.addClass(right_arrow_class);
-			$news_pagination.append(
+			$pagination.append(
 				$('<li>', {"class": pagelink_class + " page_" + p}).append(
 					$('<a>', {"href": "javascript:;"}).text(p).click((e) => {
 						this.goto(
 							e,
-							settings.id,
+							settings.context_class,
 							p,
 							settings.content,
 							settings.items
@@ -64,7 +64,7 @@ class pagination {
 				)
 			);
 		}
-		return $news_pagination.prepend($left_arrow_btn).append($right_arrow_btn);
+		return $pagination.prepend($left_arrow_btn).append($right_arrow_btn);
 	}
 
 	goto(e, context_class, page, content, items) {
@@ -75,7 +75,8 @@ class pagination {
 				next_page = (current_page >= total_pages) ? total_pages : current_page + 1;
 
 			$("." + context_class).find("li.active").removeClass("active");
-			$(content + " " + items + ".page_" + current_page).addClass("hide");
+			$("#" + context_class + " " + items).addClass("hide");
+			console.log(context_class + " " + items);
 			switch(page) {
 				case "prev":
 					$("." + context_class).find("li.page_" + prev_page).addClass("active");
@@ -88,13 +89,15 @@ class pagination {
 					current_page = next_page;
 					break;
 				default:
-					console.log(context_class, page, current_page);
 					$("." + context_class).find("li.page_" + page).addClass("active");
 					$("." + context_class).data("current_page", page);
 					current_page = page;
 					break;
 			}
 			$(content + " " + items + ".page_" + current_page).removeClass("hide");
+			if($("#page_no").length > 0) {
+				$("#page_no").text(current_page);
+			}
 
 			// Prev/next buttons
 			if(current_page > 1) {

@@ -125,6 +125,94 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "get_help_content",
+		value: function get_help_content() {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+     * @see https://developers.google.com/gdata/docs/json
+     */
+				var feed = [];
+				$.ajax({
+					type: "GET",
+					url: "https://sites.google.com/feeds/content/cgxchange.org/cropontologycommunity",
+					data: {
+						path: "/home/help-for-the-crop-ontology",
+						alt: "json"
+					},
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						var
+						/**
+       * Find all images in content: the first one will be the preview
+       * @param  string 				content 				The HTML image tag
+       * @return string|null									The image source
+       */
+						get_preview_image = function get_preview_image(content) {
+							var $imgs = [];
+							if ($(content).find("img").attr("src") !== undefined) {
+								$imgs.push($(content).find("img").attr("src"));
+								if ($imgs.length == 1) {
+									return $('<img>', {
+										"src": $imgs[0],
+										"class": ""
+									}).prop("outerHTML");
+								}
+							} else {
+								return null;
+							}
+						},
+
+						/**
+       * Find all videos in content: the first one will be the preview
+       * @param  string 				content 				The HTML video embed
+       * @return string										The image source
+       */
+						get_preview_video = function get_preview_video(content) {
+							if ($(content).find("iframe").attr("src") !== undefined) {
+								return $(content).find("iframe").attr("width", "100%").attr("height", "100%");
+							} else {
+								return null;
+							}
+						};
+
+						$.each(data.feed.entry, function (key, entry) {
+							// Clean the response object
+							feed.push({
+								id: entry.id.$t,
+								published: entry.published.$t,
+								updated: entry.updated.$t,
+								title: entry.title.$t,
+								content: entry.content.$t,
+								preview: get_preview_image(entry.content.$t) !== null ? get_preview_image(entry.content.$t) : get_preview_video(entry.content.$t),
+								category: entry.category,
+								page: entry.sites$pageName !== undefined ? entry.sites$pageName.$t : null,
+								feeds: entry.link,
+								link: $.map(entry.link, function (v, k) {
+									if (v.type == "text/html") {
+										return v.href;
+									}
+								})[0],
+								author: $.map(entry.author, function (v, k) {
+									return {
+										name: STR.ucwords(v.name.$t),
+										email: v.email.$t
+									};
+								})
+							});
+							if (feed[key].author.length == 1) {
+								feed[key].author = feed[key].author[0];
+							}
+						});
+						resolve(feed);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse all ontologies from the Crop Ontology website

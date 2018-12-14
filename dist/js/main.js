@@ -1,5 +1,37 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports={
+    "home": {
+        "sections": {
+                "help": {
+                    "title": "Help for the Crop Ontology",
+                    "items_per_page": null,
+                    "read_more_button": {
+                        "visible": false,
+                        "label": ""
+                    }
+                },
+            "news": {
+                "title": "Latest news",
+                "items_per_page": 3,
+                "read_more_button": {
+                    "visible": true,
+                    "label": "Read more..."
+                }
+            },
+            "ontologies": {
+                "title": "Ontologies",
+                "items_per_page": 10,
+                "read_more_button": {
+                    "visible": true,
+                    "label": "All ontologies ›"
+                }
+            }
+        }
+    }
+}
+
+},{}],2:[function(require,module,exports){
+module.exports={
     "menu": {
         "top_menu": {
             "position": "right",
@@ -208,7 +240,7 @@ module.exports={
     }
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 module.exports={
     "messages": [
         "Claim text or 300x1280 banner image\nwith [carousel] sliding or fade effect",
@@ -216,7 +248,7 @@ module.exports={
     ]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -256,7 +288,7 @@ $(document).ready(function () {
 	LAYOUT.activate();
 });
 
-},{"../../src/js/_obj.es6":7,"../../src/js/layout.es6":11}],4:[function(require,module,exports){
+},{"../../src/js/_obj.es6":8,"../../src/js/layout.es6":12}],5:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -1443,7 +1475,7 @@ return Promise$1;
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":6}],5:[function(require,module,exports){
+},{"_process":7}],6:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -5951,7 +5983,7 @@ return Promise$1;
 
 })));
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -6137,7 +6169,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 /* jshint esversion: 6 */
 "strict mode";
@@ -6175,7 +6207,7 @@ var obj = function obj() {
 
 exports.default = obj;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6307,7 +6339,7 @@ var str = function () {
 
 exports.default = str;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6435,6 +6467,94 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "get_help_content",
+		value: function get_help_content() {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+     * @see https://developers.google.com/gdata/docs/json
+     */
+				var feed = [];
+				$.ajax({
+					type: "GET",
+					url: "https://sites.google.com/feeds/content/cgxchange.org/cropontologycommunity",
+					data: {
+						path: "/home/help-for-the-crop-ontology",
+						alt: "json"
+					},
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						var
+						/**
+       * Find all images in content: the first one will be the preview
+       * @param  string 				content 				The HTML image tag
+       * @return string|null									The image source
+       */
+						get_preview_image = function get_preview_image(content) {
+							var $imgs = [];
+							if ($(content).find("img").attr("src") !== undefined) {
+								$imgs.push($(content).find("img").attr("src"));
+								if ($imgs.length == 1) {
+									return $('<img>', {
+										"src": $imgs[0],
+										"class": ""
+									}).prop("outerHTML");
+								}
+							} else {
+								return null;
+							}
+						},
+
+						/**
+       * Find all videos in content: the first one will be the preview
+       * @param  string 				content 				The HTML video embed
+       * @return string										The image source
+       */
+						get_preview_video = function get_preview_video(content) {
+							if ($(content).find("iframe").attr("src") !== undefined) {
+								return $(content).find("iframe").attr("width", "100%").attr("height", "100%");
+							} else {
+								return null;
+							}
+						};
+
+						$.each(data.feed.entry, function (key, entry) {
+							// Clean the response object
+							feed.push({
+								id: entry.id.$t,
+								published: entry.published.$t,
+								updated: entry.updated.$t,
+								title: entry.title.$t,
+								content: entry.content.$t,
+								preview: get_preview_image(entry.content.$t) !== null ? get_preview_image(entry.content.$t) : get_preview_video(entry.content.$t),
+								category: entry.category,
+								page: entry.sites$pageName !== undefined ? entry.sites$pageName.$t : null,
+								feeds: entry.link,
+								link: $.map(entry.link, function (v, k) {
+									if (v.type == "text/html") {
+										return v.href;
+									}
+								})[0],
+								author: $.map(entry.author, function (v, k) {
+									return {
+										name: STR.ucwords(v.name.$t),
+										email: v.email.$t
+									};
+								})
+							});
+							if (feed[key].author.length == 1) {
+								feed[key].author = feed[key].author[0];
+							}
+						});
+						resolve(feed);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse all ontologies from the Crop Ontology website
@@ -6525,7 +6645,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/js/_obj.es6":7,"../../src/js/_str.es6":8,"es6-promise":4}],10:[function(require,module,exports){
+},{"../../src/js/_obj.es6":8,"../../src/js/_str.es6":9,"es6-promise":5}],11:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6654,7 +6774,7 @@ var filters = function () {
 
 exports.default = filters;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6734,7 +6854,7 @@ var layout = function () {
 	}, {
 		key: "build_menu",
 		value: function build_menu(position) {
-			var menus = require("../../common/menu.json");
+			var menus = require("../../common/settings/menu.json");
 
 			$.each(menus, function (k, v) {
 				$("#" + position).append($.map(v[position].items, function (item) {
@@ -6807,9 +6927,9 @@ var layout = function () {
 	}, {
 		key: "build_carousel",
 		value: function build_carousel() {
-			var top_carousel = require("../../common/top_carousel.json");
+			var top_carousel = require("../../common/settings/top_carousel.json");
 
-			$("body").append($('<section>', { "id": "top_carousel", "class": "container" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($.map(top_carousel.messages, function (message) {
+			$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($.map(top_carousel.messages, function (message) {
 				message = message.replace(/\n/gm, "<br />");
 				message = message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
 				return $('<div>', { "class": "carousel-item valign-wrapper", "href": "#one" }).append($('<h1>').html(message));
@@ -6875,9 +6995,27 @@ var layout = function () {
 	}, {
 		key: "build_contents_section",
 		value: function build_contents_section() {
-			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card grey lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" }).text("Instructions")).append($('<p>').html("<b>To develop a Trait Dictionary Version 5:</b><ul><li>Download the Trait Dictionary template v5</li><li>Read the Guidelines - may 2018</li><li>Contact helpdesk@cropontologycurationtool.org to get the Crop code for your Trait dictionary and to upload it</li></ul><br /><br /><b>To download a Trait Dictionary from this site:</b><br /><p>Text from the grey banner on the current site</p>"))))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }))));
+			var settings = require("../../common/settings/contents.json");
+
+			/**
+    * Prepare containers
+    */
+			$("body").append($('<section>', { "id": "contents", "class": "" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append($('<div>', { "class": "help" }))))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }))));
+			/**
+    * ---------------------------------------------------------------------
+    */
 
 			var news_per_page = 3;
+
+			/**
+    * Info
+    * ---------------------------------------------------------------------
+    */
+			DATA.get_help_content().then(function (data) {
+				$("#info_container .card-title").append($('<small>', { "class": "far fa-question-circle grey-text" })).append(" " + settings.home.sections.help.title);
+				$("#info_container .card-content .help").html(data[0].content.replace("<ul>", '<ul class="browser-default">'));
+				// return data[0].content;
+			});
 
 			/**
     * Feeds
@@ -6887,32 +7025,46 @@ var layout = function () {
 				var $feeds = [],
 				    feeds = [],
 				    total_pages = Math.ceil(parseInt(data.length) / news_per_page),
-				    current_page = 0;
+				    visible_data = 0,
+				    current_page = 0,
+				    visible;
 
 				$.each(data, function (k, v) {
-					feeds.push({
-						title: data[k].title,
-						preview: data[k].preview,
-						author: $('<a>', { "href": "mailto:" + data[k].author.email }).text(data[k].author.name).prop("outerHTML"),
-						published: moment(data[k].published).local().format("MMM DD, YYYY, h:mm A"),
-						link: data[k].link,
-						abstract: STR.extract_text(data[k].content) + "<br />"
-					});
-					if (k % 3 == 0) {
-						current_page++;
-					}
+					if (v.category[0].label == "announcement") {
+						visible_data++;
+						if (visible_data % parseInt(settings.home.sections.news.items_per_page + 1) == 0) {
+							current_page++;
+						}
 
-					var visible = current_page == 1 ? "visible" : "hide";
-					$feeds.push($('<div>', { "class": "card-content feed page_" + current_page + " " + visible }).append($('<div>', { "class": "preview" }).append($('<a>', { "href": feeds[k].link }).append($(feeds[k].preview)))).append($('<span>', { "class": "card-title highlight" }).append($('<a>', { "href": feeds[k].link }).text(feeds[k].title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" posted on " + feeds[k].published + " by " + feeds[k].author))
+						feeds.push({
+							page: current_page,
+							visible: current_page == 0 ? "visible" : "hide",
+							title: v.title,
+							preview: v.preview,
+							author: $('<a>', { "href": "mailto:" + v.author.email }).text(v.author.name).prop("outerHTML"),
+							published: moment(v.published).local().format("MMM DD, YYYY"),
+							link: v.link,
+							abstract: STR.extract_text(v.content) + "<br />"
+						});
+					}
+				});
+				$.each(feeds, function (k, v) {
+					$feeds.push($('<div>', { "class": "card-content feed page_" + v.page + " " + v.visible }).append($('<div>', { "class": "preview" }).append($('<a>', { "href": v.link }).append($(v.preview)))).append($('<span>', { "class": "card-title highlight" }).append($('<a>', { "href": v.link }).text(v.title))).append($('<div>', { "class": "release" }).append($('<span>', { "class": "far fa-fw fa-clock" })).append($('<span>').html(" " + v.published + " by " + v.author))
+					// Uncomment below if you want the abstract and the "Read more" button on each news
+					//
 					// ).append(
 					// 	$('<div>', {"class": "content"}).append(
-					// 		feeds[k].abstract
+					// 		v.abstract
 					// 	).append(
-					// 		$('<a>', {"href": feeds[k].link, "class": "readmore"}).text("Read more...")
+					// 		$('<a>', {"href": v.link, "class": "readmore"}).text("Read more...")
 					// 	)
 					));
 				});
-				$("#feed_container").append($('<div>', { "class": "card z-depth-1" }).append($('<div>', { "class": "card-content" }).append($('<div>', { "class": "card-title highlight" }).append("Latest news"))).append($feeds
+
+				$("#feed_container").append($('<div>', { "class": "card z-depth-1" }).append($('<div>', { "class": "card-content" }).append($('<div>', { "class": "card-title highlight" }).append(settings.home.sections.news.title))).append($feeds
+
+				// Uncomment below if you want news pagination
+				//
 				// PAGINATION.build_pagination({
 				// 	id: "feed_pagination",
 				// 	content: "#feed_container",
@@ -6930,53 +7082,25 @@ var layout = function () {
     * ---------------------------------------------------------------------
     */
 			DATA.get_ontologies().then(function (data) {
-				$("#ontologies_container").append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" })).append($('<h5>', { "class": "all-ontologies" }).append($('<a>', { "href": "" }).text("All ontologies ›")));
+				$("#ontologies_container").append($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" })).append($('<h5>', { "class": "all-ontologies" }).append($('<a>', { "href": "" }).text("All ontologies ›")));
 
 				var current_page = 1,
-				    page_limit = 4,
-				    items = [],
-				    $pagination = $('<div>', { "class": "ontology_pagination pagination-content" });
+				    page_limit = parseInt(settings.home.sections.ontologies.items_per_page),
+				    page_content = [];
 
+				if (page_limit <= 0) {
+					page_limit = 1;
+				}
+
+				/**
+     * Cycle categories (5 items)
+     */
 				$.each(data, function (k, categories) {
-					// console.warn(k);
-					var onto_count = 0;
-
-					var pages = categories.ontologies.length > page_limit ? Math.ceil(categories.ontologies.length / page_limit) : 1;
-					// 	$('<span>', {"class": "left help-text"}).append("Displaying page " + current_page + " of " + pages)
-					// ).append(
-					// 	$('<ul>', {"class": "pagination center"}).append(
-					// 		$('<li>', {"class": "disabled"}).append(
-					// 			$('<a>', {"href": "javascript:;"}).append(
-					// 				$('<span>', {"class": "fa fa-chevron-left"})
-					// 			)
-					// 		)
-					// 	)
-					// 	// ).append(
-					// 	// 	$('<li>', {"class": "waves-effect"}).append(
-					// 	// 		$('<a>', {"href": "javascript:;"}).text("2")
-					// 	// 	)
-					// 	// ).append(
-					// 	// 	$('<li>', {"class": "waves-effect"}).append(
-					// 	// 		$('<a>', {"href": "javascript:;"}).text("3")
-					// 	// 	)
-					// 	// ).append(
-					// 	// 	$('<li>', {"class": "disabled"}).append(
-					// 	// 		$('<a>', {"href": "javascript:;"}).append(
-					// 	// 			$('<span>', {"class": "fa fa-chevron-right"})
-					// 	// 		)
-					// 	// 	)
-					// );
-					// $pagination.find("ul").append(
-					// 	$('<li>', {"class": "active"}).append(
-					// 			$('<a>', {"href": "javascript:;"}).text("1")
-					// 		)
-					// 	})
-					// )
-					// // Add pagination numbers
-					// $.each(categories.ontologies, (ko, ontology) => {
-					// 	onto_count++;
-					// 	console.log(onto_count, onto_count % page_limit == 1);
-					// });
+					var page = 0,
+					    pages = categories.ontologies.length > page_limit ? Math.ceil(categories.ontologies.length / page_limit) : 1,
+					    page_count = 0,
+					    $pagination = $('<div>', { "class": "ontology_pagination pagination-content" }),
+					    $ontology_page = null;
 
 					$("#ontologies_container .collapsible").append($('<li>', {
 						"class": k == 3 ? "active" : "",
@@ -6985,35 +7109,63 @@ var layout = function () {
 						if (pages > 1) {
 							var $indications = $('<span>', {
 								"class": "tooltipped",
-								"data-tooltip": "Displaying page " + current_page + " of " + pages
-							}).append(" | ").append($('<span>', { "class": "far fa-file-alt" })).append($('<span>', { "class": "page_no grey-text" }).text(current_page)).append("/" + pages).prop("outerHTML");
+								"data-tooltip": "Displaying page " + current_page + " of " + pages + " - " + page_limit + " items per page"
+							}).append(" | ").append($('<span>', { "class": "far fa-file-alt" })).append($('<span>', { "id": "page_no", "class": "grey-text" }).text(current_page)).append("/" + pages).prop("outerHTML");
 
 							setTimeout(function () {
 								$("#ontologies_container .tooltipped").tooltip({ position: "left" });
 							}, 1000);
 							return $indications;
 						}
-					})).append($('<div>', { "class": "left" }).append($('<span>', { "class": categories.category.icon })).append(categories.category.name))).append($('<div>', { "class": "collapsible-body " + (pages > 1 ? "paginated" : "") }).append(function () {
+					})).append($('<div>', { "class": "left" }).append($('<span>', { "class": categories.category.icon })).append(categories.category.name))).append($('<div>', { "class": "collapsible-body" + (pages > 0 ? " paginated" : "") }).append(function () {
 						if (pages > 1) {
 							return $pagination;
 						}
-					}).append($('<div>', { "id": "ontology_container" }).append($.map(categories.ontologies, function (v, k) {
-						if (k < page_limit) {
-							return $('<div>', { "class": "content" }).append($('<h2>').append($('<a>', { "href": "javascript:;", "class": "right" }).append("Download").append($('<span>', { "class": "picol_arrow_full_down" }))).append(v.ontology_name)).append($('<span>', { "class": "items_count" }).text(v.tot + " " + STR.pluralize(v.tot, "item"))).append($('<p>').text(v.ontology_summary));
+					}).append($('<ul>', { "id": "ontology_container" }).append(
+					/**
+      * Cycle all ontologies
+      */
+					$.map(categories.ontologies, function (vv, kk) {
+						page_count = kk + 1;
+
+						/**
+       * Subdivide ontologies in pages
+       */
+						if (page_count % page_limit == 1 || page_limit == 1) {
+							page++;
+
+							var display = page == 1 || pages == 1 ? "" : "hide";
+							$ontology_page = $('<li>', { "class": "ontology page_" + page + " " + display }).append($('<ul>', { "class": "collection" }));
 						}
+						$ontology_page.find(".collection").append($('<li>', { "class": "collection-item" }).append($('<a>', {
+							"href": "http://www.cropontology.org/ontology/" + vv.ontology_id + "/" + vv.ontology_name
+						}).append($('<h2>').append(vv.ontology_name))).append($('<a>', { "href": "javascript:;", "class": "secondary-content download" }).append("Download").append($('<span>', { "class": "picol_arrow_full_down" }))).append($('<span>', { "class": "items_count" }).text(vv.tot + " " + STR.pluralize(vv.tot, "item"))).append($('<p>').text(vv.ontology_summary)));
+						return $ontology_page;
 					}))).append(function () {
 						if (pages > 1) {
 							return $pagination.clone();
 						}
 					}))).collapsible();
+
 					$("#" + categories.category.id).find(".pagination-content").append(PAGINATION.build_pagination({
 						id: "ontology_pagination",
-						context_class: categories.category.id + "_pagination",
+						context_class: categories.category.id,
 						content: "#ontology_container",
 						items: ".ontology",
-						total_pages: Math.ceil(categories.ontologies.length / 4)
+						total_pages: pages
 					}));
 				});
+				// console.info(page_content);
+				// console.log(typeof page_content);
+				// $.each(page_content, (i, j) => {
+				// 	console.warn("ok", i, j);
+				// // 	// $.each(v, (page, v) => {
+				// // 	// 	if(page > 0) {
+				// // 	// 		console.warn(id, "ontology page_" + page);
+				// // 	// 		console.info(v);
+				// // 	// 	}
+				// // 	// });
+				// });
 			}).catch(function (e) {
 				// handle the error
 			});
@@ -7047,7 +7199,7 @@ var layout = function () {
 
 exports.default = layout;
 
-},{"../../common/menu.json":1,"../../common/top_carousel.json":2,"../../src/js/_str.es6":8,"../../src/js/data.es6":9,"../../src/js/filters.es6":10,"../../src/js/modals.es6":12,"../../src/js/pagination.es6":13,"moment":5}],12:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../common/settings/top_carousel.json":3,"../../src/js/_str.es6":9,"../../src/js/data.es6":10,"../../src/js/filters.es6":11,"../../src/js/modals.es6":13,"../../src/js/pagination.es6":14,"moment":6}],13:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7165,7 +7317,7 @@ var modals = function () {
 
 exports.default = modals;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7212,7 +7364,7 @@ var pagination = function () {
 			    settings = $.extend({}, defaults, options);
 			var prev_page = settings.current_page <= 1 ? 1 : settings.current_page - 1,
 			    next_page = settings.current_page >= settings.total_pages ? settings.total_pages : settings.current_page + 1,
-			    $news_pagination = $('<ul>', {
+			    $pagination = $('<ul>', {
 				"id": settings.id,
 				"class": settings.context_class + " pagination center",
 				"data-current_page": settings.current_page,
@@ -7232,15 +7384,15 @@ var pagination = function () {
 
 				$left_arrow_btn.addClass(left_arrow_class);
 				$right_arrow_btn.addClass(right_arrow_class);
-				$news_pagination.append($('<li>', { "class": pagelink_class + " page_" + p }).append($('<a>', { "href": "javascript:;" }).text(p).click(function (e) {
-					_this.goto(e, settings.id, p, settings.content, settings.items);
+				$pagination.append($('<li>', { "class": pagelink_class + " page_" + p }).append($('<a>', { "href": "javascript:;" }).text(p).click(function (e) {
+					_this.goto(e, settings.context_class, p, settings.content, settings.items);
 				})));
 			};
 
 			for (var p = 1; p <= settings.total_pages; p++) {
 				_loop(p);
 			}
-			return $news_pagination.prepend($left_arrow_btn).append($right_arrow_btn);
+			return $pagination.prepend($left_arrow_btn).append($right_arrow_btn);
 		}
 	}, {
 		key: "goto",
@@ -7252,7 +7404,8 @@ var pagination = function () {
 				    next_page = current_page >= total_pages ? total_pages : current_page + 1;
 
 				$("." + context_class).find("li.active").removeClass("active");
-				$(content + " " + items + ".page_" + current_page).addClass("hide");
+				$("#" + context_class + " " + items).addClass("hide");
+				console.log(context_class + " " + items);
 				switch (page) {
 					case "prev":
 						$("." + context_class).find("li.page_" + prev_page).addClass("active");
@@ -7265,13 +7418,15 @@ var pagination = function () {
 						current_page = next_page;
 						break;
 					default:
-						console.log(context_class, page, current_page);
 						$("." + context_class).find("li.page_" + page).addClass("active");
 						$("." + context_class).data("current_page", page);
 						current_page = page;
 						break;
 				}
 				$(content + " " + items + ".page_" + current_page).removeClass("hide");
+				if ($("#page_no").length > 0) {
+					$("#page_no").text(current_page);
+				}
 
 				// Prev/next buttons
 				if (current_page > 1) {
@@ -7293,4 +7448,4 @@ var pagination = function () {
 
 exports.default = pagination;
 
-},{"../../src/js/_str.es6":8}]},{},[3]);
+},{"../../src/js/_str.es6":9}]},{},[4]);

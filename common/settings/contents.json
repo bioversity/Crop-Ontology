@@ -1,0 +1,30 @@
+{
+    "home": {
+        "sections": {
+                "help": {
+                    "title": "Help for the Crop Ontology",
+                    "items_per_page": null,
+                    "read_more_button": {
+                        "visible": false,
+                        "label": ""
+                    }
+                },
+            "news": {
+                "title": "Latest news",
+                "items_per_page": 3,
+                "read_more_button": {
+                    "visible": true,
+                    "label": "Read more..."
+                }
+            },
+            "ontologies": {
+                "title": "Ontologies",
+                "items_per_page": 10,
+                "read_more_button": {
+                    "visible": true,
+                    "label": "All ontologies ›"
+                }
+            }
+        }
+    }
+}

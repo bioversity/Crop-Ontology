@@ -43,7 +43,8 @@ ul {
 
 // Carousel
 #top_carousel {
-  margin-top: 60px;
+  margin: 60px 0 20px 0;
+  border: $light-light-grey 1px dashed;
 
   .carousel {
     height: 300px !important;
@@ -127,7 +128,7 @@ ul {
 
 // Halfway menu
 #halfway {
-  margin: 150px 0 60px 0;
+  margin: 100px 0 60px 0;
 
   #halfway_menu {
     li {
@@ -155,16 +156,43 @@ ul {
   margin: 60px 0 90px 0;
   padding: 0 20px;
 
+  #info_container {
+    .card-title {
+      .fa, .far { vertical-align: 3px; }
+    }
+    .help {
+      *:not(ul) {
+        margin: 0;
+        padding: 0;
+      }
+      h1 { font-size: 24px; }
+      h2 { font-size: 22px; }
+      h3 { font-size: 20px; }
+      h4 { font-size: 18px; }
+      h5 { font-size: 16px; }
+      h6 { font-size: 14px; }
+      a {
+        text-decoration: underline;
+        &:hover { text-decoration: none; }
+      }
+      ul + p {
+        font-style: italic;
+        border-top: $light-light-grey 1px solid;
+        padding-top: 15px;
+        margin-top: 20px;
+      }
+    }
+  }
   #feed_container {
     display: none;
     // padding-right: 30px;
-
+    .card-title { margin: 0; }
     .feed {
       min-height: 120px;
       // padding: 10px 0;
 
-      &.visible:last-child {
-        border-bottom: $very-light-grey 2px dashed;
+      &.visible:not(:first-child) {
+        border-top: $white-grey 2px dashed;
       }
 
       a {
@@ -173,7 +201,7 @@ ul {
       }
       h1 {
         color: $highlight;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 300;
         margin-bottom: 20px;
 
@@ -185,11 +213,11 @@ ul {
       .preview {
         border: $very-light-grey 1px solid;
         float: left;
-        height: 100px;
+        height: 80px;
         margin-right: 10px;
         overflow: hidden;
         text-align: center;
-        width: 100px;
+        width: 80px;
 
         a {
           display: block;
@@ -201,14 +229,19 @@ ul {
         }
       }
       .card-title {
+        display: contents;
+        line-height: 22px;
+
         a {
-          font-size: 18px;
+          font-size: 16px;
+          text-decoration: none;
+          &:hover { text-decoration: underline; }
         }
       }
       .release {
         color: $medium-light-grey;
         font-size: 12px;
-        margin-bottom: 20px;
+        // margin-bottom: 20px;
 
         a {
           color: $medium-light-grey;
@@ -226,79 +259,96 @@ ul {
   #ontologies_container {
     padding: 0 0 22px 30px;
 
-    .collapsible-header {
-      font-size: 16px;
+    h1, h2, h3, h4, h5, h6 {
+      color: $highlight;
+      font-weight: 300;
+    }
+    .collapsible {
+      margin-top: 15px;
+      
+      .collapsible-header {
+        font-size: 16px;
 
-      span {
-        font-size: 24px;
-        margin-right: 12px;
-        margin-top: -6px;
-      }
-      .collapsible-secondary {
-        &.help-text {
-          padding: 10px;
+        span {
+          font-size: 24px;
+          margin-right: 12px;
+          margin-top: -6px;
+        }
+        .collapsible-secondary {
+          &.help-text {
+            padding: 10px;
 
-          span {
-            font-size: inherit;
-            margin: 0;
+            span {
+              font-size: inherit;
+              margin: 0;
 
-            &.fa, &.far {
-              font-size: 16px;
-              margin-right: 5px;
+              &.fa, &.far {
+                font-size: 16px;
+                margin-right: 5px;
+              }
             }
           }
         }
       }
-    }
-    .collapsible-body {
-      padding: 0px;
+      .collapsible-body {
+        padding: 0px;
 
-      h2 {
-        color: $text-blue;
-        font-size: 14px;
-        margin: 0;
+        h2 {
+          color: $text-blue;
+          display: inline-block;
+          font-size: 22px;
+          margin: 0;
 
-        a {
-          &.right {
-            color: $black;
-            font-size: 11px;
-            text-decoration: none;
-            &:hover { text-decoration: underline; }
+          a {
+            &.right {
+              color: $black;
+              font-size: 11px;
+              text-decoration: none;
+              &:hover { text-decoration: underline; }
+            }
           }
         }
-      }
-
-      &.paginated {
-        box-shadow: 3px 3px 12px $white-grey inset;
-        // background: linear-gradient(to right, $very-light-grey 2px, white 3px);
-      }
-      .pagination-content {
-        // box-shadow: 0 0 6px $very-light-grey inset;
-        border-bottom: $very-light-grey 1px solid;
-        padding: 10px;
 
         a {
-          font-size: 0.9em;
+          &.download {
+            font-size: 12px;
+          }
         }
-        .help-text {
-          font-size: 0.9em;
-          line-height: 2.2em;
-        }
-      }
-      .content {
-        border-bottom: $very-light-grey 1px solid;
-        padding: 30px;
         .items_count {
           color: $medium-grey;
+          display: block;
           font-size: 12px;
+        }
+        &.paginated {
+          box-shadow: 3px 3px 12px $white-grey inset;
+          // background: linear-gradient(to right, $very-light-grey 2px, white 3px);
+        }
+        .collection, .pagination-content {
+          // box-shadow: 0 0 6px $very-light-grey inset;
+          border-bottom: $very-light-grey 1px solid;
+          padding: 10px;
+
+          a {
+            font-size: 0.9em;
+          }
+          .help-text {
+            font-size: 0.9em;
+            line-height: 2.2em;
+          }
+        }
+        .content {
+          border-bottom: $very-light-grey 1px solid;
+          padding: 30px;
         }
       }
     }
   }
   .all-ontologies {
     margin-top: 70px;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 300;
+
+    &:hover { text-decoration: underline; }
   }
 }
 
