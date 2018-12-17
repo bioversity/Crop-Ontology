@@ -26,5 +26,8 @@
                 }
             }
         }
+    },
+    "about": {
+        "title": "About the Project"
     }
 }

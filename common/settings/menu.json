@@ -10,39 +10,39 @@
                 },
                 {
                     "label": "About",
-                    "link": "http://new.cropontology.iod.io/about",
+                    "link": "./about",
                     "display": true
                 },
                 {
                     "label": "Add new terms",
-                    "link": "http://new.cropontology.iod.io/add-ontology",
+                    "link": "./add-ontology",
                     "display": true
                 },
                 {
                     "label": "API",
-                    "link": "http://new.cropontology.iod.io/api",
+                    "link": "./api",
                     "display": false
                 },
                 {
                     "label": "Agtrials",
-                    "link": "http://new.cropontology.iod.io/agtrials",
+                    "link": "./agtrials",
                     "display": false
                 },
                 {
                     "label": "Annotation Tool",
-                    "link": "http://new.cropontology.iod.io/annotation-tool",
+                    "link": "./annotation-tool",
                     "display": false
                 },
                 { "separator": true },
                 {
                     "label": "Login",
-                    "link": "http://new.cropontology.iod.io/Login",
+                    "link": "./Login",
                     "display": true
                 },
                 { "separator": "or" },
                 {
                     "label": "Register",
-                    "link": "http://new.cropontology.iod.io/Register",
+                    "link": "./Register",
                     "display": true
                 }
             ]
@@ -52,7 +52,7 @@
             "items": [
                 {
                     "label": "Contact us",
-                    "link": "./Contact-us",
+                    "link": "./contact-us",
                     "display": true
                 },
                 {
@@ -62,7 +62,7 @@
                 },
                 {
                     "label": "Feedback",
-                    "link": "http://new.cropontology.iod.io/feedback",
+                    "link": "./feedback",
                     "display": true
                 }
             ]
@@ -81,32 +81,32 @@
                         { "separator": "" },
                         {
                             "label": "About the project",
-                            "link": "http://www.cropontology.org/about",
+                            "link": "./about",
                             "display": true
                         },
                         {
                             "label": "Blog",
-                            "link": "http://www.cropontology.org/blog",
+                            "link": "./blog",
                             "display": true
                         },
                         {
                             "label": "API",
-                            "link": "http://www.cropontology.org/api",
+                            "link": "./api",
                             "display": false
                         },
                         {
                             "label": "Agtrials",
-                            "link": "http://www.cropontology.org/agtrials",
+                            "link": "./agtrials",
                             "display": false
                         },
                         {
                             "label": "Annotation Tool",
-                            "link": "http://www.cropontology.org/annotation-tool",
+                            "link": "./annotation-tool",
                             "display": false
                         },
                         {
                             "label": "All ontologies",
-                            "link": "http://www.cropontology.org/all-ontologies",
+                            "link": "./all-ontologies",
                             "display": true
                         }
                     ]

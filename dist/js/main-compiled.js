@@ -17,6 +17,7 @@ require("../../src/js/_obj.es6");
 var LAYOUT = new _layout2.default();
 // 	PANTONE = new Pantone();
 
+
 // $.noConflict();
 $(document).ready(function () {
 	// Build the <header> object

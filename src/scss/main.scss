@@ -156,6 +156,21 @@ ul {
   margin: 60px 0 90px 0;
   padding: 0 20px;
 
+  &.coloured {
+    margin-bottom: 0;
+    padding: 10px 0 60px 0;
+  }
+  & > .container {
+    font-size: 14px;
+
+    h1, h2, h3, h4 { font-weight: 300; }
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 2.2rem; }
+    h3 { font-size: 2rem; }
+    h4 { font-size: 1.8rem; }
+    h5 { font-size: 1.6rem; }
+    h6 { font-size: 1.4rem; }
+  }
   #info_container {
     .card-title {
       .fa, .far { vertical-align: 3px; }
