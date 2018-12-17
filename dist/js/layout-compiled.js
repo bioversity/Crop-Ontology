@@ -216,15 +216,22 @@ var layout = function () {
 		value: function build_carousel() {
 			var top_carousel = require("../../common/settings/top_carousel.json");
 
-			$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($.map(top_carousel.messages, function (message) {
-				message = message.replace(/\n/gm, "<br />");
-				message = message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
-				return $('<div>', { "class": "carousel-item valign-wrapper", "href": "#one" }).append($('<h1>').html(message));
+			$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($.map(top_carousel.messages, function (v) {
+				console.log(v.message);
+				v.message = v.message.replace(/\n/gm, "<br />");
+				v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
+				return $('<div>', { "class": "carousel-item valign-wrapper", "href": "#one" }).append(function () {
+					if (v.image !== "") {
+						return $('<img>', { "src": v.image, "class": "responsive-img" });
+					}
+				}).append($('<h1>').html(v.message));
 			}))));
 
 			// Instantiate Materialize carousel
 			$(".carousel").carousel({
 				duration: 50,
+				// dist: 0,
+				// noWrap: true,
 				fullWidth: true,
 				indicators: false
 			}).animate({ "opacity": 1 }, 300);
@@ -234,10 +241,10 @@ var layout = function () {
    * @param integer						time							The delay after carousel change (default is 10'000)
    */
 			setInterval(function () {
-				$(".carousel .carousel-item").fadeOut(300, function () {
-					$(".carousel").carousel("next");
-					$(".carousel .carousel-item").delay(300).fadeIn();
-				});
+				// $(".carousel .carousel-item").fadeOut(300, () => {
+				$(".carousel").carousel("next");
+				// $(".carousel .carousel-item").delay(300).fadeIn();
+				// })
 			}, 10000);
 		}
 

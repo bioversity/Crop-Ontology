@@ -1,6 +1,20 @@
 {
     "messages": [
-        "Claim text or 300x1280 banner image\nwith [carousel] sliding or fade effect",
-        "Test"
+        {
+            "message": "Banner [without] background image",
+            "image": ""
+        },
+        {
+            "message": "Test",
+            "image": "common/img/carousel_images/banana-prata-2-1328615.jpg"
+        },
+        {
+            "message": "Test 2",
+            "image": "common/img/carousel_images/cowpea.jpg"
+        },
+        {
+            "message": "Test 3",
+            "image": "common/img/carousel_images/Credit_ Bioversity International_N. Capozio.jpg"
+        }
     ]
 }

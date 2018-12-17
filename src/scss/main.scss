@@ -43,8 +43,8 @@ ul {
 
 // Carousel
 #top_carousel {
-  margin: 60px 0 20px 0;
-  border: $light-light-grey 1px dashed;
+  margin: 60px 0 60px 0;
+  // border: $light-light-grey 1px dashed;
 
   .carousel {
     height: 300px !important;
@@ -63,6 +63,11 @@ ul {
       margin: 0;
       text-align: center;
       width: 100%;
+    }
+    img + h1 {
+      color: white;
+      position: absolute;
+      text-shadow: 0 0 3px $black;
     }
   }
 }

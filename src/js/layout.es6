@@ -221,11 +221,16 @@ class layout {
 		$("body").append(
 			$('<section>', {"id": "top_carousel", "class": ""}).append(
 				$('<div>', {"class": "carousel carousel-slider center"}).append(
-					$.map(top_carousel.messages, (message) => {
-						message = message.replace(/\n/gm, "<br />");
-						message = message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
-						return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"}).append(
-							$('<h1>').html(message)
+					$.map(top_carousel.messages, (v) => {
+						console.log(v.message);
+						v.message = v.message.replace(/\n/gm, "<br />");
+						v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
+						return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"}).append(() => {
+							if(v.image !== "") {
+								return $('<img>', {"src": v.image, "class": "responsive-img"});
+							}
+						}).append(
+							$('<h1>').html(v.message)
 						)
 					})
 				)
@@ -235,6 +240,8 @@ class layout {
 		// Instantiate Materialize carousel
 		$(".carousel").carousel({
 			duration: 50,
+			// dist: 0,
+			// noWrap: true,
 			fullWidth: true,
 			indicators: false
 		}).animate({"opacity": 1}, 300);
@@ -244,10 +251,10 @@ class layout {
 		* @param integer						time							The delay after carousel change (default is 10'000)
 		*/
 		setInterval(() => {
-			$(".carousel .carousel-item").fadeOut(300, () => {
+			// $(".carousel .carousel-item").fadeOut(300, () => {
 				$(".carousel").carousel("next");
-				$(".carousel .carousel-item").delay(300).fadeIn();
-			})
+				// $(".carousel .carousel-item").delay(300).fadeIn();
+			// })
 		}, 10000);
 	}
 
