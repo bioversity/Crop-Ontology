@@ -49,7 +49,7 @@ ul {
   // border: $light-light-grey 1px dashed;
 
   .carousel {
-    height: 300px !important;
+    height: 450px !important;
     opacity: 0;
 
     .carousel-item {
@@ -283,6 +283,10 @@ ul {
     h1, h2, h3, h4, h5, h6 {
       color: $highlight;
       font-weight: 300;
+    }
+    h5 {
+      text-transform: uppercase;
+      margin-top: -37px;
     }
     .collapsible {
       margin-top: 15px;

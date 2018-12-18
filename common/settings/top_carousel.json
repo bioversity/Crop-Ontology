@@ -1,20 +1,44 @@
 {
     "messages": [
         {
-            "message": "Banner [without] background image",
-            "image": ""
-        },
-        {
-            "message": "Test",
+            "message": "",
             "image": "common/img/carousel_images/banana-prata-2-1328615.jpg"
         },
         {
-            "message": "Test 2",
+            "message": "",
             "image": "common/img/carousel_images/cowpea.jpg"
         },
         {
-            "message": "Test 3",
+            "message": "",
+            "image": "common/img/carousel_images/credit_Anindya Phani.jpg"
+        },
+        {
+            "message": "",
+            "image": "common/img/carousel_images/credit_Bioversity International_J.van de Gevel.jpg"
+        },
+        {
+            "message": "",
             "image": "common/img/carousel_images/Credit_ Bioversity International_N. Capozio.jpg"
+        },
+        {
+            "message": "",
+            "image": "common/img/carousel_images/credit_Krishnasis Ghosh.jpg"
+        },
+        {
+            "message": "",
+            "image": "common/img/carousel_images/credit_Neil Palmer1.jpg"
+        },
+        {
+            "message": "",
+            "image": "common/img/carousel_images/credit_Neil Palmer2.jpg"
+        },
+        {
+            "message": "",
+            "image": "common/img/carousel_images/credit_Neil Palmer3.jpg"
+        },
+        {
+            "message": "",
+            "image": "common/img/carousel_images/credit_Neil Palmer.jpg"
         }
     ]
 }

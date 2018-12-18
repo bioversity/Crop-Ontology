@@ -28,7 +28,7 @@
     "home": {
         "sections": {
             "help": {
-                "title": "Help for the Crop Ontology",
+                "title": "Instructions to develop a new ontology",
                 "items_per_page": null,
                 "read_more_button": {
                     "visible": false,
