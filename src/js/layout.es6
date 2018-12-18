@@ -17,6 +17,7 @@ import page_login from "../../common/statics/login.html";
 import page_register from "../../common/statics/register.html";
 import page_forgot_password from "../../common/statics/forgot-password.html";
 import page_feedback from "../../common/statics/feedback.html";
+import page_add_ontology from "../../common/statics/add-ontology.html";
 
 var
 	DATA = new data(),
@@ -35,6 +36,7 @@ var
 	PAGE_REGISTER = page_register,
 	PAGE_FORGOT_PASSWORD = page_forgot_password,
 	PAGE_FEEDBACK = page_feedback,
+	PAGE_ADD_ONTOLOGY = page_add_ontology,
 
 	moment = require("moment")
 ;
@@ -45,7 +47,6 @@ class layout {
 	activate() {
 		/* Add rel="external" to links that are external (this.hostname !== location.hostname) BUT don't add to anchors containing images */
 		$("#static_contents a, .license a").each((k, v) => {
-			console.log($(v).prop("hostname"), location.hostname);
 		    // Compare the anchor tag's host name with location's host name
 		    if($(v).prop("hostname") && $(v).prop("hostname") !== location.hostname) {
 				$(v).not("a:has(img)").attr("rel","external")
@@ -75,6 +76,10 @@ class layout {
 		$(".tooltipped").tooltip({html: true});
 
 		$(".parallax").parallax();
+
+		$(".tabs").tabs();
+
+		$("textarea.autoresize").trigger("autoresize");
 	}
 
 	/**
@@ -792,6 +797,15 @@ class layout {
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_FEEDBACK);
+				break;
+			/**
+			 * ADD-ONTOLOGIES contents
+			 */
+			case "add-ontology":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_ADD_ONTOLOGY);
 				break;
 		}
 	}

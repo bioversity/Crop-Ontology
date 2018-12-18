@@ -12,6 +12,7 @@ $black: #000;
 $white: #fff;
 
 $highlight: #f28021;
+$highlight-dark: #db6200;
 $tag-green: #56a681;
 $tag-blue: #568da6;
 $text-blue: #3f83b9;
@@ -21,9 +22,10 @@ $text-blue: #3f83b9;
   color: $highlight;
 }
 .highlight-btn {
-  color: $highlight;
+  background-color: $highlight;
+  color: white;
 
-  &:hover { background-color: $very-light-grey; }
+  &:hover { background-color: $highlight-dark; }
 }
 
 .help-text {
