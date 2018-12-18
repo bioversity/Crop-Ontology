@@ -1,5 +1,20 @@
 {
     "general": {
+        "loader": {
+            "text": "Getting data..."
+        },
+        "search": {
+            "tags": {
+                "visible": false
+            },
+            "filters": {
+                "visible": false
+            },
+            "visible": true
+        },
+        "halfway_menu": {
+            "visible": true
+        },
         "footer": {
             "logo": "crop_ontology_white.png",
             "background": "footer-background_399395-PCOQ5H-624.png",
