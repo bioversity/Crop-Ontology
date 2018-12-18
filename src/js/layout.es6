@@ -7,11 +7,12 @@ import pagination from "../../src/js/pagination.es6";
 import filters from "../../src/js/filters.es6";
 import modals from "../../src/js/modals.es6";
 import str from "../../src/js/_str.es6";
-
 /**
- * Static pages
- */
-import about from "../../common/statics/about.html";
+* Static pages
+*/
+import page_about from "../../common/statics/about.html";
+import page_api from "../../common/statics/api.html";
+import page_help from "../../common/statics/help.html";
 
 var
 	DATA = new data(),
@@ -21,11 +22,26 @@ var
 	MODALS = new modals(),
 	STR = new str(),
 
+	URL = "http://www.cropontology.org",
+
+	PAGE_ABOUT = page_about,
+	PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
+	PAGE_HELP = page_help,
+
 	moment = require("moment")
 ;
 
+
+
 class layout {
 	activate() {
+		/* Add rel="external" to links that are external (this.hostname !== location.hostname) BUT don't add to anchors containing images */
+		$("#static_contents a, .license a").each(() => {
+		    // Compare the anchor tag's host name with location's host name
+		    return this.hostname && this.hostname !== location.hostname;
+		}).not("a:has(img)").attr("rel","external");
+
+
 		$("select").material_select();
 
 		// Modals
@@ -46,6 +62,8 @@ class layout {
 		$(".collapsible").collapsible();
 
 		$(".tooltipped").tooltip({html: true});
+
+		$(".parallax").parallax();
 	}
 
 	/**
@@ -129,8 +147,8 @@ class layout {
 						case "bottom_links":
 							$.each(item.items, (ik, iv) => {
 								if(iv.display) {
-									$("#" + position).append(
-										$('<a>', {"href": iv.link, "target": iv.target, "title": iv.label}).append(
+									$("#" + position + " ." + item.position).append(
+										$('<a>', {"class": "tooltipped", "href": iv.link, "target": iv.target, "data-tooltip": iv.label}).append(
 											$('<img>', {"src": "common/img/" + iv.image})
 										)
 									)
@@ -194,7 +212,7 @@ class layout {
 			$("<header>").append(
 				$('<nav>', {"class": "transparent z-depth-0"}).append(
 					$('<div>', {"class": "nav-wrapper"}).append(
-						$('<a>', {"href": "javascript:;", "class": "brand-logo"}).append(
+						$('<a>', {"href": "./", "class": "brand-logo"}).append(
 	                        $('<img>', {"src": "common/img/crop_ontology.png"})
 						)
 					).append(
@@ -222,7 +240,6 @@ class layout {
 			$('<section>', {"id": "top_carousel", "class": ""}).append(
 				$('<div>', {"class": "carousel carousel-slider center"}).append(
 					$.map(top_carousel.messages, (v) => {
-						console.log(v.message);
 						v.message = v.message.replace(/\n/gm, "<br />");
 						v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
 						return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"}).append(() => {
@@ -322,10 +339,14 @@ class layout {
 		let page = NAV.get_page();
 
 		/**
-		 * Prepare containers
+		 * Content container
 		 */
 		$("body").append(
 			$('<section>', {"id": "contents", "class": ""}).append(() => {
+				/**
+				 * Home layout
+				 * -------------------------------------------------------------
+				 */
 				if(page == "home") {
 					return $('<div>', {"class": "row"}).append(
 						$('<div>', {"class": "col s12 m4 l4 xl4"}).append(
@@ -335,11 +356,14 @@ class layout {
 										$('<div>', {"class": "card-content"}).append(
 											$('<span>', {"class": "card-title highlight"})
 										).append(
+											// Loader
+											// ---------------------------------
 											$('<div>', {"class": "help"}).append(
 												$('<div>', {"class": "center-align"}).text("Getting data...")
 											).append(
 												this.loader({type: "progress"})
 											)
+											// ---------------------------------
 										)
 									)
 								)
@@ -350,13 +374,18 @@ class layout {
 					).append(
 						$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"})
 					)
+					/**
+					 * ---------------------------------------------------------
+					 */
 				} else {
 					return $('<div>', {"class": "container"});
 				}
 			})
 		);
 
-		// Get and place contents in the page
+		/**
+		 * Get and place contents in the page
+		 */
 		this.build_page_contents(page);
 	}
 
@@ -365,18 +394,19 @@ class layout {
 	 * @param  string 						page								Tha page name
 	 */
 	build_page_contents(page) {
+		// Get settings
 		let settings = require("../../common/settings/contents.json");
+
 		switch(page) {
+			/**
+			 * -----------------------------------------------------------------
+			 * 							HOME contents
+			 * -----------------------------------------------------------------
+			 */
 			case "home":
 				/**
-				 * ---------------------------------------------------------------------
-				 */
-
-				let news_per_page = 3;
-
-				/**
 				 * Info
-				 * ---------------------------------------------------------------------
+				 * -------------------------------------------------------------
 				 */
 				DATA.get_help_content().then((data) => {
 					$("#info_container .card-title").append(
@@ -388,12 +418,12 @@ class layout {
 
 				/**
 				 * Feeds
-				 * ---------------------------------------------------------------------
+				 * -------------------------------------------------------------
 				 */
 				DATA.get_community_website_feed().then((data) => {
 					var $feeds = [],
 						feeds = [],
-						total_pages = Math.ceil(parseInt(data.length)/news_per_page),
+						total_pages = Math.ceil(parseInt(data.length)/settings.home.sections.news.items_per_page),
 						visible_data = 0,
 						current_page = 0,
 						visible;
@@ -437,7 +467,7 @@ class layout {
 								).append(
 									$('<span>').html(" " + v.published + " by " + v.author)
 								)
-		                        // Uncomment below if you want the abstract and the "Read more" button on each news
+		                        // Uncomment below if you want the "abstract" content and the "Read more..." button on each news
 		                        //
 								// ).append(
 								// 	$('<div>', {"class": "content"}).append(
@@ -465,7 +495,7 @@ class layout {
 								// 	content: "#feed_container",
 								// 	items: ".feed",
 								// 	current_page: 1,
-								// 	total_pages: Math.ceil(parseInt(data.length)/news_per_page),
+								// 	total_pages: Math.ceil(parseInt(data.length)/settings.home.sections.news.items_per_page),
 								// })
 							)
 						).append(
@@ -480,7 +510,7 @@ class layout {
 
 				/**
 				 * Ontologies
-				 * ---------------------------------------------------------------------
+				 * -------------------------------------------------------------
 				 */
 				DATA.get_ontologies().then((data) => {
 					$("#ontologies_container").append(
@@ -606,6 +636,11 @@ class layout {
 					// handle the error
 				});
 				break;
+   			/**
+   			 * -----------------------------------------------------------------
+   			 * 						CONTACT US contents
+			 * -----------------------------------------------------------------
+   			 */
 			case "contact-us":
 			case "contact us":
 				$("#contents").addClass("coloured grey lighten-5").find(".container").attr("id", "contact_form").append(
@@ -655,25 +690,53 @@ class layout {
 					)
 				)
 				break;
+   			/**
+   			 * -----------------------------------------------------------------
+   			 * 							ABOUT contents
+			 * -----------------------------------------------------------------
+   			 */
 			case "about":
 				// Place the external html page
-				$("#contents").addClass("coloured grey lighten-5").find(".container").attr("id", "static_contents").append(about);
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_ABOUT);
+				break;
+			case "api":
+			case "API":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_API);
+				break;
+			case "help":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_HELP);
 				break;
 		}
 	}
+
 	/**
 	 * Build the footer section
 	 */
 	build_footer() {
+		// Get settings
+		let settings = require("../../common/settings/contents.json");
+
 		$("body").append(
-			$("<footer>").append(
+			$("<footer>", {"class": "parallax-container"}).append(
+				$("<div>", {"class": "parallax"}).append(
+					$("<img>", {"src": "common/img/" + settings.general.footer.background})
+				)
+			).append(
 				$("<div>", {"class": "row"}).append(
 					$("<div>", {"class": "col s12 m3 l3 xl3"}).append(
 						$('<a>', {"href": "./", "class": "brand-logo"}).append(
-							$('<img>', {"class": "responsive-img", "src": "common/img/crop_ontology_white.png"})
+							$('<img>', {"class": "responsive-img", "src": "common/img/" + settings.general.footer.logo})
 						)
 					).append(
-						$('<p>', {"class": "description"}).html("Some identities data<br />such as address, informations, etc...")
+						$('<p>', {"class": "description"}).html(settings.general.footer.description)
 					)
 				).append(
 					$("<div>", {"id": "left_menu", "class": "col s12 m2 l2 xl2"})
@@ -684,22 +747,16 @@ class layout {
 				)
 			)
 		).append(
-			$('<section>', {"id": "partners"}).append(
-				$('<div>', {"class": "row container center"}).append(
-					$('<div>', {"id": "bottom_links", "class": "col s12 m6 l6 xl6"})
+			$('<section>', {"id": "bottom_links"}).append(
+				$('<div>', {"class": "row container"}).append(
+					$('<div>', {"id": "", "class": "col s12 m6 l6 xl6 left"})
 				).append(
-					$('<div>', {"class": "col s12 m6 l6 xl6 right right-align"}).append(
-						$('<a>', {"href": "javascript:;", "target": "_blank"}).append(
-							$('<img>', {"src": "common/img/big-data_platform_logo.png"})
-						)
-					)
+					$('<div>', {"id": "owner", "class": "col s12 m6 l6 xl6 right right-align"})
 				)
 			)
 		).append(
-			$('<center>').append(
-				$('<p>').append("Crop Ontology by Integrated Breeding Platform is licensed under a ").append(
-					$('<a>', {"href": "https://creativecommons.org/licenses/by/4.0/", "target": "_blank"}).text("Creative Commons Attribution 4.0 International License")
-				)
+			$('<center>', {"class": "license"}).append(
+				$('<p>').html(settings.general.license.text)
 			)
 		);
 
@@ -714,6 +771,7 @@ class layout {
 		* @uses build_menu()
 		*/
 		this.build_menu("bottom_links");
+		// this.build_menu("owner");
 	}
 }
 

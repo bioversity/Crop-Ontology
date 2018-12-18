@@ -142,10 +142,10 @@ ul {
       &:not(:first-child) {
         &:before {
           content: "-";
-          margin-right: 9px;
+          margin-right: 12px;
         }
       }
-      &:not(:last-child) { margin-right: 6px; }
+      &:not(:last-child) { margin-right: 12px; }
 
       a {
         color: $medium-grey;
@@ -166,8 +166,6 @@ ul {
     padding: 10px 0 60px 0;
   }
   & > .container {
-    font-size: 14px;
-
     h1, h2, h3, h4 { font-weight: 300; }
     h1 { font-size: 2.4rem; }
     h2 { font-size: 2.2rem; }
@@ -363,6 +361,31 @@ ul {
       }
     }
   }
+  #static_contents {
+    font-size: 15px;
+    line-height: 1.8em;
+    text-align: justify;
+
+    a {
+      text-decoration: underline;
+
+      &:hover { text-decoration: none; }
+      // &:not([href*='cropontology.local']):not([href*='cropontology.org']):not([href^='#']):not([href^='/']) {
+      &[rel="external"], &[target="_blank"]  {
+        &:after {
+          color: $grey;
+          // content: "\f35d";
+          // font-family: "Font Awesome 5 Free";
+          content: url("../../common/img/ext.png");
+          font-size: .83em;
+          font-weight: 400;
+          vertical-align: super;
+          margin-left: 2px;
+          margin-right: -2px;
+        }
+      }
+    }
+  }
   .all-ontologies {
     margin-top: 70px;
     font-size: 20px;
@@ -374,8 +397,10 @@ ul {
 
 // Footer
 footer {
-  background-color: $dark-grey;
+  // background-color: $dark-grey;
+  // background: url("../../common/img/footer-background_399395-PCOQ5H-624.png") top left no-repeat;
   color: $white;
+  height: 300px !important;
   padding: 20px 40px;
   width: 100%;
 
@@ -400,7 +425,7 @@ footer {
     &:hover { text-decoration: underline; }
   }
 }
-#partners {
+#bottom_links {
   margin: 70px 0;
   height: 75px;
 
@@ -410,7 +435,7 @@ footer {
     margin-right: 20px;
   }
 }
-center {
+.license {
   border-top: $very-light-grey 1px solid;
   margin: 20px auto;
   padding: 20px 0 10px 0;
@@ -423,6 +448,19 @@ center {
     a {
       color: $dark-grey;
       &:hover { text-decoration: underline; }
+      &[rel="external"], &[target="_blank"]  {
+        &:after {
+          color: $grey;
+          // content: "\f35d";
+          // font-family: "Font Awesome 5 Free";
+          content: url("../../common/img/ext.png");
+          font-size: .83em;
+          font-weight: 400;
+          vertical-align: super;
+          margin-left: 2px;
+          margin-right: -2px;
+        }
+      }
     }
   }
 }

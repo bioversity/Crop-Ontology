@@ -1,21 +1,34 @@
 {
+    "general": {
+        "footer": {
+            "logo": "crop_ontology_white.png",
+            "background": "footer-background_399395-PCOQ5H-624.png",
+            "description": "Some identities data<br />such as address, informations, etc...",
+            "visible": true
+        },
+        "license": {
+            "text": "Crop Ontology by Integrated Breeding Platform is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>"
+        }
+    },
     "home": {
         "sections": {
-                "help": {
-                    "title": "Help for the Crop Ontology",
-                    "items_per_page": null,
-                    "read_more_button": {
-                        "visible": false,
-                        "label": ""
-                    }
+            "help": {
+                "title": "Help for the Crop Ontology",
+                "items_per_page": null,
+                "read_more_button": {
+                    "visible": false,
+                    "label": ""
                 },
+                "visible": true
+            },
             "news": {
                 "title": "Latest news",
                 "items_per_page": 3,
                 "read_more_button": {
                     "visible": true,
                     "label": "Read more..."
-                }
+                },
+                "visible": true
             },
             "ontologies": {
                 "title": "Ontologies",
@@ -23,7 +36,8 @@
                 "read_more_button": {
                     "visible": true,
                     "label": "All ontologies ›"
-                }
+                },
+                "visible": true
             }
         }
     },

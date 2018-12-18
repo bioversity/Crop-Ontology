@@ -1,0 +1,217 @@
+
+<h2>Video Tutorials</h2>
+<style type="text/css"> 
+    
+ 
+    
+ 
+#ytvideo,
+#ytvideo2 {
+    float: left;
+    margin-right:10px;
+}
+ 
+ 
+.yt_holder {
+    background: #f3f3f3;
+    padding: 10px;
+    float: left;
+    border: 1px solid #e3e3e3;
+    margin-bottom:15px;
+}
+ 
+ 
+ul {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 220px;
+}
+ 
+ul li {
+    list-style-type: none;
+    display:block;
+    background: #f1f1f1;
+    float: left;
+    width: 216px;
+    margin-bottom: 5px;
+    padding:2px;
+ 
+}
+ 
+ul li img {
+    width: 120px;
+    float: left;
+    margin-right: 5px;
+    border: 1px solid #999;
+}
+ 
+ul li a {
+    text-decoration: none;
+    display: block;
+    color: #000;
+}
+ 
+.currentvideo {
+    background: #e6e6e6;
+}
+    
+ 
+    
+</style> 
+<script>
+//-------------------------------------------------
+//      youtube playlist jquery plugin
+//      Created by dan@geckonm.com
+//      www.geckonewmedia.com
+//
+//      v1.1 - updated to allow fullscreen 
+//           - thanks Ashraf for the request
+//-------------------------------------------------
+
+jQuery.fn.ytplaylist = function(options) {
+ 
+  // default settings
+  var options = jQuery.extend( {
+    holderId: 'ytvideo',
+    playerHeight: '300',
+    playerWidth: '450',
+    addThumbs: false,
+    thumbSize: 'small',
+    showInline: false,
+    autoPlay: true,
+    showRelated: true,
+    allowFullScreen: false
+  },options);
+ 
+  return this.each(function() {
+                            
+        var selector = $(this);
+        
+        var autoPlay = "", autoHide = "", hd = "", modestBranding = "", showInfo = "&showinfo=0";
+        var showRelated = "&rel=0";
+        var fullScreen = "";
+        if(options.autoPlay) autoPlay = "&autoplay=1"; 
+        if(options.showRelated) showRelated = "&rel=1"; 
+        if(options.allowFullScreen) fullScreen = "&fs=1"; 
+        if(options.autoHide) autoHide = "&autohide=1";
+        if(options.hd) hd = "&hd=1";
+        if(options.modestBranding) modestBranding = "&modestbranding=1";
+        if(options.showInfo) showInfo = "&showinfo=1";
+
+        var params = autoPlay+showRelated+fullScreen+autoHide+hd+modestBranding+showInfo;
+        
+        //throw a youtube player in
+        function play(id)
+        {
+           var html  = '';
+    
+           html += '<object height="'+options.playerHeight+'" width="'+options.playerWidth+'">';
+           html += '<param name="movie" value="http://www.youtube.com/v/'+id+params+'"> </param>';
+           html += '<param name="wmode" value="transparent"> </param>';
+           if(options.allowFullScreen) { 
+                html += '<param name="allowfullscreen" value="true"> </param>'; 
+           }
+           html += '<embed src="http://www.youtube.com/v/'+id+params+'"';
+           if(options.allowFullScreen) { 
+                html += ' allowfullscreen="true" '; 
+            }
+           html += 'type="application/x-shockwave-flash" wmode="transparent"  height="'+options.playerHeight+'" width="'+options.playerWidth+'"></embed>';
+           html += '</object>';
+            
+           return html;
+           
+        };
+        
+        
+        //grab a youtube id from a (clean, no querystring) url (thanks to http://jquery-howto.blogspot.com/2009/05/jyoutube-jquery-youtube-thumbnail.html)
+        function youtubeid(url) {
+            var ytid = url.match("[\\?&]v=([^&#]*)");
+            ytid = ytid[1];
+            return ytid;
+        };
+        
+        
+        //load inital video
+        var firstVid = selector.children("li:first-child").addClass("currentvideo").children("a").attr("href");
+        $("#"+options.holderId+"").html(play(youtubeid(firstVid)));
+        
+        //load video on request
+        selector.children("li").children("a").click(function() {
+            
+            if(options.showInline) {
+                $("li.currentvideo").removeClass("currentvideo");
+                $(this).parent("li").addClass("currentvideo").html(play(youtubeid($(this).attr("href"))));
+            }
+            else {
+                $("#"+options.holderId+"").html(play(youtubeid($(this).attr("href"))));
+                $(this).parent().parent("ul").find("li.currentvideo").removeClass("currentvideo");
+                $(this).parent("li").addClass("currentvideo");
+            }
+                                                             
+            
+            
+            return false;
+        });
+        
+        //do we want thumns with that?
+        if(options.addThumbs) {
+            
+            selector.children().each(function(i){
+                                              
+                var replacedText = $(this).text();
+                
+                if(options.thumbSize == 'small') {
+                    var thumbUrl = "http://img.youtube.com/vi/"+youtubeid($(this).children("a").attr("href"))+"/2.jpg";
+                }
+                else {
+                    var thumbUrl = "http://img.youtube.com/vi/"+youtubeid($(this).children("a").attr("href"))+"/0.jpg";
+                }
+                
+                
+                $(this).children("a").empty().html("<img src='"+thumbUrl+"' alt='"+replacedText+"' />"+replacedText).attr("title", replacedText);
+                
+            }); 
+            
+        }
+            
+        
+   
+  });
+ 
+};
+
+</script>
+
+<script type="text/ecmascript"> 
+    
+        $(function() {
+            $("ul.demo2").ytplaylist({
+                addThumbs:true, 
+                autoPlay: false, 
+                holderId: 'ytvideo2',
+                playerWidth: 660,
+                playerHeight: 500,
+                autoHide: true,
+                allowFullScreen: true,
+                hd: true,
+                modestBranding: true,
+                showRelated: false
+
+            });
+        });
+    
+</script> 
+ <div class="yt_holder"> 
+    <div id="ytvideo2"></div> 
+    <ul class="demo2"> 
+        <li><a href="http://www.youtube.com/watch?v=ani1SWy1N-g">Homepage Navigation</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=GiADgYlwmGI">Login & Registration</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=E67xYagMYe0">Search</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=-5j7AeuFT1A">OBO Upload</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=HMaQgKPrpwo">Create New Ontology</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=-aLr_E-JuSM">API & Feedback</a></li> 
+        <li><a href="http://www.youtube.com/watch?v=TLo4GpuXHn4">General Navigation</a></li> 
+    </ul> 
+</div>
+

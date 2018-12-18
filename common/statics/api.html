@@ -1,0 +1,244 @@
+<style>
+li {
+    margin-left: 15px;
+    list-style: none;
+}
+.api_left h2 {
+    margin-top: 30px !important;
+    padding-top: 30px !important;
+    color: #f28021 !important;
+}
+</style>
+<script>
+
+$(function(){
+
+    // replaces API urls for examples
+    $(".example").each(function() {
+        var $this = $(this);
+
+        var url = $this.parent().siblings().first().find("code").text();
+
+        var parameters = url.match(/{(.*?)}/g);
+
+        if(parameters) {
+            for(var i=0; i<parameters.length; i++) {
+                var par = parameters[i];
+                var clean = par.substring(1, par.length-1);
+                url = url.replace(par, $this.attr(clean));
+            }
+        }
+
+        $this.html("<a href='"+url+"' target='_blank'>"+url+"</a>");
+
+    });
+
+});
+
+</script>
+
+<div class="api_left">
+
+<h1>API</h1>
+<p>
+This is the official API for the Ontology Curation Tool. It allows you to programmatically retrieve and interact with Ontology data.
+</p>
+<p>
+To let us gather feedback you can leave a comment using the form on the right.
+</p>
+<h2>Statistics on collected ontologies</h2>
+<li><strong>URL:</strong> <a target="_blank" href="http://www.cropontology.org/ontos_stats">http://www.cropontology.org/ontos_stats</a></li>
+<li><strong>Returns:</strong> JSON object with statistics about collected ontologies</li>
+
+<h2>API Data Types</h2>
+<p>
+Data can be requested in JSON.<br> API calls follow the <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> semantics: create, retrieve, update and delete.
+</p>
+
+<!--
+<h2>Retrieve all traits given an Ontology Name</h2>
+<ul>
+    <li>Here's a little code snippet written in <b>PHP</b> to show you how you can leverage this API to retrieve all the traits of a specific Ontology: <a href="https://gist.github.com/1322511">https://gist.github.com/1322511</a></li>
+</ul>
+-->
+<h2>JSON DUMP</h2>
+<ul>
+    <li><strong>URL:</strong> <a target="_blank" href="https://github.com/bioversity/Crop-Ontology/blob/master/public/dump.json">https://github.com/bioversity/Crop-Ontology/blob/master/public/dump.json</a></li>
+    <li><strong>Returns:</strong> JSON array of *raw* objects inside database</li>
+</ul>
+
+<h2>Search Terms</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/search?q={query}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects matching the search query - each object being a term</li>
+    <li><strong>Example:</strong> <span class="example" query="stem rust"></span></li>
+</ul>
+
+<h2>Retrieve all Ontologies</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-ontologies</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> JSON Hierarchy of the Ontologies under each category</li>
+    <li><strong>Example:</strong> <span class="example"></span></li>
+</ul>
+<h2>Retrieve a specific Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-ontology/{ontologyId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+	<li><strong>Returns:</strong> JSON representation of the ontology. </br><span style="font-style:italic;">NB: This call does not retrieve the variables that are present in TD template v5 (and in the OBO files derived from the TDv5)</span></li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_334"></span></li>
+</ul>
+<h2>Retrieve Ontology ID by its Name</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-id?ontology_name={ontology_name}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> ID of the ontology, to be used with <code>/get-ontology-roots/{id}</code></li>
+    <li><strong>Example:</strong> <span class="example" ontology_name="cassava"></span></li>
+</ul>
+
+<h2>Retrieve Categories</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-categories</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of strings - string being the name of the category that you pass to the <code>/ontologies</code> API call</li>
+    <li><strong>Example:</strong> <span class="example"></span></li>
+</ul>
+
+<h2>Retrieve Ontologies By Category</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/ontologies?category={category}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects; each one representing an ontology</li>
+    <li><strong>Example:</strong> <span class="example" category="010-089 General Germplasm Ontology"></span></li>
+</ul>
+
+<a name="rdf"></a>
+<h2>Retrieve Terms in RDF</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/rdf/{termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> XML related RDF</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
+</ul>
+
+<h2>Retrieve Root Terms of an Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-roots/{ontologyId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects; each one representing a term</li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_020"></span></li>
+</ul>
+
+<h2>Retrieve Child Terms of parent Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of terms</li>
+    <li><strong>Example:</strong> <span class="example" parentId="CO_020:0000000"></span></li>
+</ul>
+<h2>Retrieve Parents of Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-term-parents/{termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of the paths from the parent to child</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_020:0000000"></span></li>
+</ul>
+
+<h2>Retrieve Properties/Attributes of a Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-attributes/{termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects representing the terms property</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
+</ul>
+
+<h2>Retrieve Comments of a Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-comments?termId={termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Array of objects representing a comment</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
+</ul>
+
+<h2>Login - Retrieve a user's auth token (used for adding and editing ontologies)</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. {username}, {password}</li>
+    <li><strong>Returns:</strong> HTTP response with a <code>user</code> cookie in the header that contains a <code>token</code>. You'll need to pass this cookie to subsequent requests that require authentication</li>
+</ul>
+
+<h2>Retrieve Logged-in User information</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>
+    <li><strong>Method:</strong> <code>GET</code>. Pass <code>user</code> cookie in request</li>
+    <li><strong>Returns:</strong> Object of the currently logged in user</li>
+</ul>
+
+<h2>Create Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/add-ontology</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. Pass <code>user</code> cookie in request. {json} a JSON string representing a list of objects; each object being a term. {ontology_name}, {ontology_id}, {ontology_summary}</li>
+    <li><strong>Returns:</strong> HTTP error if something went wrong</li>
+</ul>
+
+<!--
+<h2>Create Term</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/create-term</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. {jsonTerm} a JSON representation of the term. You can call this method as many times as you need to build the structure of an ontology. Example: <code>{"ontology_id: "CO_22", "ontology_name": "Sorghum Trait", "parent": "CO_222:1122" ...}</code>. As you can see the <strong>parent</strong> property describes the relationship between terms. If parent is <i>null</i> then the term is a ROOT term</li>
+    <li><strong>Returns:</strong> HTTP error if something went wrong</li>
+</ul>
+-->
+
+<h2>Delete Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/delete-ontology</code></li>
+    <li><strong>Method:</strong> <code>POST</code>. {ontologyID}</li>
+    <li><strong>Returns:</strong> HTTP error if something went wrong</li>
+</ul>
+
+<h2>Retrieve IB Fieldbook Default List</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/default-list/?ontologyId={ontologyId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> JSON of the default list of traits, methods and scales of an ontology ID</li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_334"></span></li>
+</ul>
+
+<h2>Retrieve Term Information</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-term/?id={termId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> Object representing a term information. Can be used to update the information of a given term when it is updated</li>
+    <li><strong>Example:</strong> <span class="example" termId="CO_321:0000118"></span></li>
+</ul>
+
+<h2>Retrieve all Comments from an Ontology</h2>
+<ul>
+    <li><strong>URL:</strong> <code>{{URL}}/get-comments-onto/?ontoId={ontologyId}</code></li>
+    <li><strong>Method:</strong> <code>GET</code></li>
+    <li><strong>Returns:</strong> a JSON object that lists the comments and the details about the comments' authors. Comments are grouped by terms</li>
+    <li><strong>Example:</strong> <span class="example" ontologyId="CO_321"></span></li>
+</ul>
+
+</div><!-- /api_left -->
+<div class="api_right" style="margin-top:40px">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'cropontologycurationtool'; // required: replace example with your forum shortname
+
+        // The following are highly recommended additional parameters. Remove the slashes in front to use.
+        // var disqus_identifier = 'unique_dynamic_id_1234';
+        // var disqus_url = 'http://example.com/permalink-to-page.html';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div><!-- //api_right -->

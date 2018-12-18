@@ -195,10 +195,11 @@
                     "position": "right",
                     "items": [
                         {
-                            "label": "",
-                            "link": "",
-                            "image": "bottom_headings.svg",
-                            "display": false
+                            "label": "Platform for Big Data in Agricolture",
+                            "link": "https://www.cgiar.org/research/program-platform/platform-for-big-data-in-agriculture/",
+                            "image": "big-data_platform_logo.png",
+                            "display": true,
+                            "target": "_blank"
                         }
                     ]
                 }
