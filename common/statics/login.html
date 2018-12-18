@@ -1,0 +1,35 @@
+
+<form method="post" id="login_form" action="http://www.cropontology.org/login">
+    <div class="container">
+        <div class="row">
+            <div class="col s6 offset-s2">
+                <div class="context-loader" style="display: none; top:0px;">Sending Request...</div>
+                <div class="error_box" style="display: none;">Incorrect login or password.</div>
+                <h1>Login</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-field col s6 offset-s2">
+                <input type="text" value="" tabindex="1" name="username" id="log_username" class="text">
+                <label for="log_username">Username</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6 offset-s2">
+                <input type="password" value="" tabindex="2" name="password" id="log_password" class="text">
+                <label for="log_password">Password</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6 offset-s2">
+                <a href="./forgot-password">Forgot Password?</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6 offset-s2">
+                <input type="submit" value="Log in" tabindex="3" name="commit" class="btn btn-flat green white-text waves-effect waves-light right">
+            </div>
+        </div>
+    </div>
+</form>

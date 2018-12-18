@@ -36,13 +36,13 @@
                 { "separator": true },
                 {
                     "label": "Login",
-                    "link": "./Login",
+                    "link": "./login",
                     "display": true
                 },
                 { "separator": "or" },
                 {
                     "label": "Register",
-                    "link": "./Register",
+                    "link": "./register",
                     "display": true
                 }
             ]

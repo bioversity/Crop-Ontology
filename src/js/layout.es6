@@ -13,6 +13,10 @@ import str from "../../src/js/_str.es6";
 import page_about from "../../common/statics/about.html";
 import page_api from "../../common/statics/api.html";
 import page_help from "../../common/statics/help.html";
+import page_login from "../../common/statics/login.html";
+import page_register from "../../common/statics/register.html";
+import page_forgot_password from "../../common/statics/forgot-password.html";
+import page_feedback from "../../common/statics/feedback.html";
 
 var
 	DATA = new data(),
@@ -27,6 +31,10 @@ var
 	PAGE_ABOUT = page_about,
 	PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
 	PAGE_HELP = page_help,
+	PAGE_LOGIN = page_login,
+	PAGE_REGISTER = page_register,
+	PAGE_FORGOT_PASSWORD = page_forgot_password,
+	PAGE_FEEDBACK = page_feedback,
 
 	moment = require("moment")
 ;
@@ -36,10 +44,13 @@ var
 class layout {
 	activate() {
 		/* Add rel="external" to links that are external (this.hostname !== location.hostname) BUT don't add to anchors containing images */
-		$("#static_contents a, .license a").each(() => {
+		$("#static_contents a, .license a").each((k, v) => {
+			console.log($(v).prop("hostname"), location.hostname);
 		    // Compare the anchor tag's host name with location's host name
-		    return this.hostname && this.hostname !== location.hostname;
-		}).not("a:has(img)").attr("rel","external");
+		    if($(v).prop("hostname") && $(v).prop("hostname") !== location.hostname) {
+				$(v).not("a:has(img)").attr("rel","external")
+			}
+		});
 
 
 		$("select").material_select();
@@ -719,9 +730,7 @@ class layout {
 				)
 				break;
    			/**
-   			 * -----------------------------------------------------------------
-   			 * 							ABOUT contents
-			 * -----------------------------------------------------------------
+   			 * ABOUT contents
    			 */
 			case "about":
 				// Place the external html page
@@ -729,6 +738,9 @@ class layout {
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_ABOUT);
 				break;
+			/**
+			 * API contents
+			 */
 			case "api":
 			case "API":
 				// Place the external html page
@@ -736,11 +748,50 @@ class layout {
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_API);
 				break;
+			/**
+			 * HELP contents
+			 */
 			case "help":
 				// Place the external html page
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_HELP);
+				break;
+			/**
+			 * LOGIN contents
+			 */
+			case "login":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_LOGIN);
+				break;
+			/**
+			 * REGISTER contents
+			 */
+			case "register":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_REGISTER);
+				break;
+			/**
+			 * FORGOT-PASSWORD contents
+			 */
+			case "forgot-password":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_FORGOT_PASSWORD);
+				break;
+			/**
+			 * FEEDBACK contents
+			 */
+			case "feedback":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_FEEDBACK);
 				break;
 		}
 	}
