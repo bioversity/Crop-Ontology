@@ -26,6 +26,22 @@ var navigation = function () {
 			var page = window.location.pathname.split("/").splice(1)[0];
 			return page == "" ? "home" : page;
 		}
+
+		/**
+   * Get the path of the current page
+   * @return array															The page path
+   */
+
+	}, {
+		key: "get_url_path",
+		value: function get_url_path() {
+			var url = window.location.pathname.split("/").splice(1),
+			    path = [];
+			$.each(url, function (k, v) {
+				path.push(decodeURIComponent(v));
+			});
+			return path;
+		}
 	}]);
 
 	return navigation;

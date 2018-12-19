@@ -56,7 +56,6 @@ var DATA = new _data2.default(),
     MODALS = new _modals2.default(),
     STR = new _str2.default(),
     URL = "http://www.cropontology.org",
-    page = NAV.get_page(),
     PAGE_ABOUT = page_about,
     PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
     PAGE_HELP = page_help,
@@ -65,6 +64,7 @@ var DATA = new _data2.default(),
     PAGE_FORGOT_PASSWORD = page_forgot_password,
     PAGE_FEEDBACK = page_feedback,
     PAGE_ADD_ONTOLOGY = page_add_ontology,
+    page = NAV.get_page(),
     settings = require("../../common/settings/contents.json"),
     top_carousel = require("../../common/settings/top_carousel.json"),
     moment = require("moment");
@@ -268,18 +268,18 @@ var layout = function () {
 				// noWrap: true,
 				fullWidth: true,
 				indicators: false
-			}).animate({ "opacity": 1 }, 300);
+			}).animate({ "opacity": 1 }, 300).css("pointer-events", "none");
 
 			/**
    * Animate the carousel
    * @param integer						time							The delay after carousel change (default is 10'000)
    */
-			setInterval(function () {
-				// $(".carousel .carousel-item").fadeOut(300, () => {
-				$(".carousel").carousel("next");
-				// $(".carousel .carousel-item").delay(300).fadeIn();
-				// })
-			}, 10000);
+			// setInterval(() => {
+			// 	// $(".carousel .carousel-item").fadeOut(300, () => {
+			// 		$(".carousel").carousel("next");
+			// 		// $(".carousel .carousel-item").delay(300).fadeIn();
+			// 	// })
+			// }, 10000);
 		}
 
 		/**
@@ -299,7 +299,21 @@ var layout = function () {
 					"placeholder": "Search...",
 					"name": "q"
 				}))),
-				    $breadcrumbs = $('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "./", "class": "breadcrumb" }).append($('<span>', { "class": "fas fa-home grey-text" }))).append($('<a>', { "href": "./", "class": "breadcrumb" }).text(STR.ucfirst(page)))));
+				    $breadcrumbs = $('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "./", "class": "breadcrumb" }).append($('<span>', { "class": "fas fa-home grey-text" }))).append(function () {
+					if (NAV.get_url_path().length > 1) {
+						var path = [];
+						return $.map(NAV.get_url_path(), function (v, k) {
+							path.push(v);
+							if (k < NAV.get_url_path().length - 1) {
+								return $('<a>', { "href": "./" + path.join("/"), "class": "breadcrumb" }).text(STR.ucfirst(v));
+							} else {
+								return $('<span>', { "class": "breadcrumb" }).text(STR.ucfirst(v));
+							}
+						});
+					} else {
+						return $('<span>', { "class": "breadcrumb" }).text(STR.ucfirst(NAV.get_page()));
+					}
+				})));
 
 				if (page == "home") {
 					$("body").append($('<section>', { "id": "searchbar", "class": "container" }).append($('<form>', { "method": "get", "onsubmit": "return false;" }).append($('<div>', { "class": "" }).append($('<div>', { "class": "row" }).append($searchbar).append(function () {
@@ -533,7 +547,7 @@ var layout = function () {
 										$ontology_page = $('<li>', { "class": "ontology page_" + page + " " + display }).append($('<ul>', { "class": "collection" }));
 									}
 									$ontology_page.find(".collection").append($('<li>', { "class": "collection-item" }).append($('<a>', {
-										"href": "http://www.cropontology.org/ontology/" + vv.ontology_id + "/" + vv.ontology_name
+										"href": "./ontology/" + vv.ontology_id + "/" + vv.ontology_name.replace("/", "-")
 									}).append($('<h2>').append(vv.ontology_name))).append($('<a>', { "href": "javascript:;", "class": "secondary-content download" }).append("Download").append($('<span>', { "class": "picol_arrow_full_down" }))).append($('<span>', { "class": "items_count" }).text(vv.tot + " " + STR.pluralize(vv.tot, "item"))).append($('<p>').text(vv.ontology_summary)));
 									return $ontology_page;
 								}))).append(function () {

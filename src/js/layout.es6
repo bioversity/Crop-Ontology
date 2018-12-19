@@ -29,7 +29,6 @@ var
 
 	URL = "http://www.cropontology.org",
 
-	page = NAV.get_page(),
 	PAGE_ABOUT = page_about,
 	PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
 	PAGE_HELP = page_help,
@@ -39,6 +38,7 @@ var
 	PAGE_FEEDBACK = page_feedback,
 	PAGE_ADD_ONTOLOGY = page_add_ontology,
 
+	page = NAV.get_page(),
 	settings = require("../../common/settings/contents.json"),
 	top_carousel = require("../../common/settings/top_carousel.json"),
 
@@ -287,18 +287,18 @@ class layout {
 			// noWrap: true,
 			fullWidth: true,
 			indicators: false
-		}).animate({"opacity": 1}, 300);
+		}).animate({"opacity": 1}, 300).css("pointer-events", "none");
 
 		/**
 		* Animate the carousel
 		* @param integer						time							The delay after carousel change (default is 10'000)
 		*/
-		setInterval(() => {
-			// $(".carousel .carousel-item").fadeOut(300, () => {
-				$(".carousel").carousel("next");
-				// $(".carousel .carousel-item").delay(300).fadeIn();
-			// })
-		}, 10000);
+		// setInterval(() => {
+		// 	// $(".carousel .carousel-item").fadeOut(300, () => {
+		// 		$(".carousel").carousel("next");
+		// 		// $(".carousel .carousel-item").delay(300).fadeIn();
+		// 	// })
+		// }, 10000);
 	}
 
 	/**
@@ -325,9 +325,21 @@ class layout {
         					$('<a>', {"href": "./", "class": "breadcrumb"}).append(
 								$('<span>', {"class": "fas fa-home grey-text"})
 							)
-						).append(
-							$('<a>', {"href": "./", "class": "breadcrumb"}).text(STR.ucfirst(page))
-						)
+						).append(() => {
+							if(NAV.get_url_path().length > 1) {
+								let path = [];
+								return $.map(NAV.get_url_path(), (v, k) => {
+									path.push(v);
+									if(k < (NAV.get_url_path().length - 1)) {
+										return $('<a>', {"href": "./" + path.join("/"), "class": "breadcrumb"}).text(STR.ucfirst(v))
+									} else {
+										return $('<span>', {"class": "breadcrumb"}).text(STR.ucfirst(v))
+									}
+								})
+							} else {
+								return $('<span>', {"class": "breadcrumb"}).text(STR.ucfirst(NAV.get_page()))
+							}
+						})
 					)
 				)
             ;
@@ -674,7 +686,7 @@ class layout {
 												$ontology_page.find(".collection").append(
 													$('<li>', {"class": "collection-item"}).append(
 														$('<a>', {
-															"href": "http://www.cropontology.org/ontology/" + vv.ontology_id + "/" + vv.ontology_name
+															"href": "./ontology/" + vv.ontology_id + "/" + vv.ontology_name.replace("/", "-")
 														}).append(
 															$('<h2>').append(vv.ontology_name)
 														)

@@ -96,13 +96,17 @@ ul {
     line-height: 47px;
 
     .breadcrumb {
-      color: $dark-grey;
+      font-size: 14px;
+
       &:before {
+        color: $medium-light-grey;
         content: "›";
         font-family: "Roboto", sans-serif;
-        color: $medium-light-grey;
+        vertical-align: -3px;
       }
     }
+    a { color: $dark-grey; }
+    span { color: $medium-grey; }
   }
 }
 

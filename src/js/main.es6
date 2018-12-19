@@ -14,7 +14,7 @@ var
 	NAV = new navigation(),
 
 	page = NAV.get_page(),
-	
+    
 	settings = require("../../common/settings/contents.json")
 ;
 

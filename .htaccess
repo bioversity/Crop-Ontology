@@ -1,10 +1,12 @@
 RewriteEngine On
 RewriteBase /
 
-#only for the root directory
+# Only for the root directory
 #RewriteCond %{REQUEST_URI} ^/$
-#if the uri is not already index.html
+# If the uri is not already index.html
 #RewriteCond %{REQUEST_URI} !^/index.html [NC]
 #RewriteRule ^$ /index.html    [R=301,L]
 
-RewriteRule ^([^/\.]+)/?$ /index.html?page=$1 [QSA]
+RewriteRule ^([^/\.]+)/?$ index.html?page=$1 [QSA]
+RewriteRule ^([^/\.]+)/([^/\.]+)/?$ index.html?page=$1&id=$2 [QSA]
+RewriteRule ^([^/\.]+)/([^/\.]+)/([^/\.]+)?$ index.html?page=$1&id=$2&data=$3 [QSA]
