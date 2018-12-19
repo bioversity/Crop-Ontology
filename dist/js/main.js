@@ -68,6 +68,9 @@ module.exports={
     },
     "contact-us": {
         "title": "Contact us"
+    },
+    "add-ontology": {
+        "title": "Add new terms"
     }
 }
 
