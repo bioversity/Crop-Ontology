@@ -36,7 +36,8 @@
                 { "separator": true },
                 {
                     "label": "Login",
-                    "link": "./login",
+                    "link": "#user_modal",
+                    "class": "modal-trigger",
                     "display": true
                 },
                 { "separator": "or" },

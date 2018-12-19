@@ -29,6 +29,7 @@ var
 
 	URL = "http://www.cropontology.org",
 
+	page = NAV.get_page(),
 	PAGE_ABOUT = page_about,
 	PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
 	PAGE_HELP = page_help,
@@ -38,10 +39,15 @@ var
 	PAGE_FEEDBACK = page_feedback,
 	PAGE_ADD_ONTOLOGY = page_add_ontology,
 
+	settings = require("../../common/settings/contents.json"),
+	top_carousel = require("../../common/settings/top_carousel.json"),
+
 	moment = require("moment")
 ;
 
-
+if(settings[page] == undefined) {
+	page = "404";
+}
 
 class layout {
 	activate() {
@@ -117,20 +123,20 @@ class layout {
 			 */
 			colour: "grey"
 		},
-		settings = $.extend({}, defaults, options);
+		data = $.extend({}, defaults, options);
 
-		switch(settings.type) {
+		switch(data.type) {
 			case "progress":
 				return $('<div>', {"class": "progress"}).append(
 					$('<div>', {
-						"class": (settings.determinate) ? "determinate" : "indeterminate",
-						"style": (settings.size !== "") ? "width: " + settings.size + "%" : ""
+						"class": (data.determinate) ? "determinate" : "indeterminate",
+						"style": (data.size !== "") ? "width: " + data.size + "%" : ""
 					})
 				);
 				break;
 			case "circular":
-				return $('<div>', {"class": "preloader-wrapper " + settings.size + " active"}).append(
-					$('<div>', {"class": "spinner-layer spinner-" + settings.colour + "-only"}).append(
+				return $('<div>', {"class": "preloader-wrapper " + data.size + " active"}).append(
+					$('<div>', {"class": "spinner-layer spinner-" + data.colour + "-only"}).append(
 						$('<div>', {"class": "circle-clipper left"}).append(
 							$('<div>', {"class": "circle"})
 						)
@@ -208,7 +214,7 @@ class layout {
 							} else {
 								if(item.display) {
 									return $('<li>').append(
-										$('<a>', {"href": item.link}).text(item.label)
+										$('<a>', {"href": item.link, "class": item.class}).text(item.label)
 									);
 								}
 							}
@@ -250,11 +256,15 @@ class layout {
 	 * Build the carousel messages slider
 	 */
 	build_carousel() {
-		let top_carousel = require("../../common/settings/top_carousel.json");
-
 		$("body").append(
 			$('<section>', {"id": "top_carousel", "class": ""}).append(
 				$('<div>', {"class": "carousel carousel-slider center"}).append(
+					$('<div>', {"class": "carousel-fixed-item container"}).append(
+						$('<div>', {"class": "left"}).append(
+							$('<h1>', {"id": "page_title"}).text(settings[page].title)
+						)
+					)
+				).append(
 					$.map(top_carousel.messages, (v) => {
 						v.message = v.message.replace(/\n/gm, "<br />");
 						v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
@@ -298,44 +308,73 @@ class layout {
 		// Build the filters modal
 		// MODALS.filters_modal();
 
-		// Get settings
-		let settings = require("../../common/settings/contents.json");
-
 		if(settings.general.search.visible) {
-			$("body").append(
-				$('<section>', {"id": "searchbar", "class": "container"}).append(
-					$('<form>', {"method": "get", "onsubmit": "return false;"}).append(
-						$('<div>', {"class": ""}).append(
-							$('<div>', {"class": "row bar"}).append(
-								$('<div>', {"id": "search_input", "class": "input-field col s8 m8 l8 xl8"}).append(
-									$('<input>', {
-										"type": "search",
-										"id": "search",
-										"placeholder": "Search...",
-										"name": "q"
-									})
-								)
-							).append(() => {
-								if(settings.general.search.tags.visible) {
-									return $('<div>', {"id": "tags_list", "class": "input-field col s4 m4 l4 xl4"}).append(
-										$('<ul>', {"class": "tags"}).append(
-											FILTERS.draw_filter("type", "TRAIT")
-										).append(
-											FILTERS.draw_filter("user", "MALAPORTE")
-										)
-									)
-								}
-							})
-						).append(() => {
-							if(settings.general.search.filters.visible) {
-								return $('<a>', {"href": "#searchbar_filters", "class": "btn-text blue-text right modal-trigger"}).append(
-									$('<span>', {"class": "fa fa-filter"})
-								).append(" Add a filter")
-							}
+			let $searchbar = $('<div>', {"class": "bar"}).append(
+					$('<div>', {"id": "search_input", "class": "input-field col s8 m8 l8 xl8"}).append(
+						$('<input>', {
+							"type": "search",
+							"id": "search",
+							"placeholder": "Search...",
+							"name": "q"
 						})
 					)
+				),
+				$breadcrumbs = $('<nav>', {"class": "transparent z-depth-0"}).append(
+    				$('<div>', {"class": "nav-wrapper"}).append(
+      					$('<div>', {"class": "col s12"}).append(
+        					$('<a>', {"href": "./", "class": "breadcrumb"}).append(
+								$('<span>', {"class": "fas fa-home grey-text"})
+							)
+						).append(
+							$('<a>', {"href": "./", "class": "breadcrumb"}).text(STR.ucfirst(page))
+						)
+					)
 				)
-			);
+            ;
+
+			if(page == "home") {
+				$("body").append(
+					$('<section>', {"id": "searchbar", "class": "container"}).append(
+						$('<form>', {"method": "get", "onsubmit": "return false;"}).append(
+							$('<div>', {"class": ""}).append(
+								$('<div>', {"class": "row"}).append(
+									$searchbar
+								).append(() => {
+									if(settings.general.search.tags.visible) {
+										return $('<div>', {"id": "tags_list", "class": "input-field col s4 m4 l4 xl4"}).append(
+											$('<ul>', {"class": "tags"}).append(
+												FILTERS.draw_filter("type", "TRAIT")
+											).append(
+												FILTERS.draw_filter("user", "MALAPORTE")
+											)
+										)
+									}
+								})
+							).append(() => {
+								if(settings.general.search.filters.visible) {
+									return $('<a>', {"href": "#searchbar_filters", "class": "btn-text blue-text right modal-trigger"}).append(
+										$('<span>', {"class": "fa fa-filter"})
+									).append(" Add a filter")
+								}
+							})
+						)
+					)
+				);
+			} else {
+				$("body").append(
+					$('<section>', {"id": "navbar", "class": "container"}).append(
+						$('<div>', {"class": "row"}).append(
+							$('<div>', {"id": "breadcrumb", "class": "col s12 m6 l6"}).append(
+								$breadcrumbs
+							)
+						).append(
+							$('<div>', {"id": "searchbar", "class": "col s12 m6 l6"}).append(
+								$searchbar
+							)
+						)
+					)
+				);
+			}
 		}
 	}
 
@@ -343,9 +382,6 @@ class layout {
 	 * Build the halfway menu
 	 */
 	build_halfway_menu() {
-		// Get settings
-		let settings = require("../../common/settings/contents.json");
-
 		if(settings.general.halfway_menu.visible) {
 			$("body").append(
 				$('<section>', {"id": "halfway", "class": ""}).append(
@@ -366,10 +402,6 @@ class layout {
 	 * @uses build_page_contents()
 	 */
 	build_contents_section() {
-		// Get settings
-		let settings = require("../../common/settings/contents.json"),
-			page = NAV.get_page();
-
 		/**
 		 * Content container
 		 */
@@ -418,20 +450,27 @@ class layout {
 		/**
 		 * Get and place contents in the page
 		 */
-		this.build_page_contents(page);
+		this.build_page_contents();
 	}
 
 	/**
 	 * Build pages contents
-	 * @param  string 						page								Tha page name
 	 */
-	build_page_contents(page) {
-		// Get settings
-		let settings = require("../../common/settings/contents.json");
+	build_page_contents() {
+		// Build the user account modal
+		MODALS.user_modal("Login");
 
 		switch(page) {
 			/**
+			 * 							HOME contents
 			 * -----------------------------------------------------------------
+			 */
+			case "404":
+				$("#contents .container").append(
+					$('<center>', {"class": "flow-text"}).text("The page you are looking for does not exists")
+				);
+				break;
+			/**
 			 * 							HOME contents
 			 * -----------------------------------------------------------------
 			 */
@@ -681,14 +720,12 @@ class layout {
 			case "contact-us":
 			case "contact us":
 				$("#contents").addClass("coloured grey lighten-5").find(".container").attr("id", "contact_form").append(
-					$('<h1>').text("Contact us")
-				).append(
 					$('<form>', {
 						"method": "get",
 						"onsubmit": "return false;"
 					}).append(
 						$('<div>', {"class": "row"}).append(
-							$('<form>', {"class": "col s12 m6"}).append(
+							$('<form>', {"class": "col s12 m6 offset-m3"}).append(
 								$('<div>', {"class": "row"}).append(
 									$('<div>', {"class": "input-field col s6"}).append(
 										$('<input>', {"type": "text", "id": "first_name", "class": "validate"})
@@ -814,9 +851,6 @@ class layout {
 	 * Build the footer section
 	 */
 	build_footer() {
-		// Get settings
-		let settings = require("../../common/settings/contents.json");
-
 		if(settings.general.footer.visible) {
 			$("body").append(
 				$("<footer>", {"class": "parallax-container"}).append(

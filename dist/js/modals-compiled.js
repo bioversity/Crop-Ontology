@@ -38,11 +38,17 @@ var modals = function () {
 				content: "Modal Content",
 				ok_button: "Ok",
 				cancel_button: "Cancel",
-				fixed_footer: true
+				fixed_footer: true,
+				bottom_sheet: false,
+				width: "55%"
 			},
 			    settings = $.extend({}, defaults, options);
 
-			$("body").prepend($('<div>', { "id": settings.id, "class": "modal" + (settings.fixed_footer ? " modal-fixed-footer" : "") }).append($('<div>', { "class": "modal-content" }).append($('<h4>').text(settings.title)).append(settings.content)).append($('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat right" }).text(settings.ok_button))));
+			$("body").prepend($('<div>', {
+				"id": settings.id,
+				"class": "modal" + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : ""),
+				"style": settings.width ? "width: " + settings.width : ""
+			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').text(settings.title)).append(settings.content)).append($('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat right" }).text(settings.ok_button))));
 		}
 	}, {
 		key: "add_filter_row",
@@ -107,6 +113,32 @@ var modals = function () {
 				fixed_footer: false
 			});
 			activate_rows();
+		}
+	}, {
+		key: "user_modal",
+		value: function user_modal(title) {
+			var $user_modal_content = $('<div>', { "class": "container" }).append($('<form>', { class: "col s12" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
+				"type": "text",
+				"name": "username",
+				"id": "log_username"
+			})).append($('<label>', { "for": "log_username" }).text("Username"))
+			// 	)
+			).append(
+			// 	$('<div>', {"class": "row"}).append(
+			$('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
+				"type": "password",
+				"name": "Password",
+				"id": "log_password"
+			})).append($('<label>', { "for": "log_password" }).text("Password")))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s10 offset-s1" }).append($('<a>', { "href": "./forgot-password" }).text("Forgot Password?")))));
+
+			this.build_modal({
+				id: "user_modal",
+				width: "35%",
+				title: title,
+				content: $user_modal_content,
+				fixed_footer: false,
+				bottom_sheet: false
+			});
 		}
 	}]);
 

@@ -6,6 +6,10 @@ var _layout = require("../../src/js/layout.es6");
 
 var _layout2 = _interopRequireDefault(_layout);
 
+var _navigation = require("../../src/js/_navigation.es6");
+
+var _navigation2 = _interopRequireDefault(_navigation);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // // import ColorCanvas from "../../src/js/ColorCanvas.es6";
@@ -14,9 +18,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 require("../../src/js/_obj.es6");
 
-var LAYOUT = new _layout2.default();
-// 	PANTONE = new Pantone();
-
+var LAYOUT = new _layout2.default(),
+    NAV = new _navigation2.default(),
+    page = NAV.get_page(),
+    settings = require("../../common/settings/contents.json");
 
 // $.noConflict();
 $(document).ready(function () {
@@ -26,10 +31,17 @@ $(document).ready(function () {
 	LAYOUT.build_carousel();
 	// Build the search bar
 	LAYOUT.build_searchbar();
-	// Build the halfway menu
-	LAYOUT.build_halfway_menu();
-	// Build the contents section
-	LAYOUT.build_contents_section();
+	if (page == "home") {
+		// Build the halfway menu
+		LAYOUT.build_halfway_menu();
+		// Build the contents section
+		LAYOUT.build_contents_section();
+	} else {
+		// Build the contents section
+		LAYOUT.build_contents_section();
+		// Build the halfway menu
+		LAYOUT.build_halfway_menu();
+	}
 	// Build the footer
 	LAYOUT.build_footer();
 

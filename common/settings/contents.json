@@ -25,6 +25,9 @@
             "text": "Crop Ontology by Integrated Breeding Platform is licensed under a <a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">Creative Commons Attribution 4.0 International License</a>"
         }
     },
+    "404": {
+        "title": "Page not found"
+    },
     "home": {
         "sections": {
             "help": {
@@ -58,5 +61,11 @@
     },
     "about": {
         "title": "About the Project"
+    },
+    "API": {
+        "title": "API"
+    },
+    "contact-us": {
+        "title": "Contact us"
     }
 }
