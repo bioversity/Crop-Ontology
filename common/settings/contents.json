@@ -73,5 +73,8 @@
     },
     "add-ontology": {
         "title": "Add new terms"
+    },
+    "ontology": {
+        "title": "%s"
     }
 }

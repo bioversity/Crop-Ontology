@@ -256,14 +256,24 @@ class layout {
 	 * Build the carousel messages slider
 	 */
 	build_carousel() {
+		let path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]);
+
 		$("body").append(
 			$('<section>', {"id": "top_carousel", "class": ""}).append(
 				$('<div>', {"class": "carousel carousel-slider center"}).append(
-					$('<div>', {"class": "carousel-fixed-item container"}).append(
-						$('<div>', {"class": "left"}).append(
-							$('<h1>', {"id": "page_title"}).text(settings[page].title)
-						)
-					)
+					$('<div>', {"class": "carousel-fixed-item container"}).append(() => {
+						if(page == "ontology") {
+							return $('<div>', {"class": "left"}).append(
+								$('<h1>', {"id": "page_subtitle"}).text(NAV.get_ontology_id())
+							).append(
+								$('<h2>', {"id": "page_title"}).text(NAV.get_ontology_label())
+							);
+						} else {
+							return $('<div>', {"class": "left"}).append(
+								$('<h1>', {"id": "page_title"}).text(settings[page].title)
+							);
+						}
+					})
 				).append(
 					$.map(top_carousel.messages, (v) => {
 						v.message = v.message.replace(/\n/gm, "<br />");
@@ -333,7 +343,7 @@ class layout {
 									if(k < (NAV.get_url_path().length - 1)) {
 										return $('<a>', {"href": "./" + path.join("/"), "class": "breadcrumb"}).text(STR.ucfirst(v))
 									} else {
-										return $('<span>', {"class": "breadcrumb"}).text(STR.ucfirst(v))
+										return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(v).replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))
 									}
 								})
 							} else {
@@ -474,7 +484,7 @@ class layout {
 
 		switch(page) {
 			/**
-			 * 							HOME contents
+			 * 							404 contents
 			 * -----------------------------------------------------------------
 			 */
 			case "404":
@@ -725,8 +735,7 @@ class layout {
 				});
 				break;
    			/**
-   			 * -----------------------------------------------------------------
-   			 * 						CONTACT US contents
+   			 * 							CONTACT US contents
 			 * -----------------------------------------------------------------
    			 */
 			case "contact-us":
@@ -784,7 +793,8 @@ class layout {
 				)
 				break;
    			/**
-   			 * ABOUT contents
+   			 * 							ABOUT contents
+			 * -----------------------------------------------------------------
    			 */
 			case "about":
 				// Place the external html page
@@ -793,7 +803,8 @@ class layout {
 						.append(PAGE_ABOUT);
 				break;
 			/**
-			 * API contents
+			 * 							API contents
+			 * -----------------------------------------------------------------
 			 */
 			case "api":
 			case "API":
@@ -803,7 +814,8 @@ class layout {
 						.append(PAGE_API);
 				break;
 			/**
-			 * HELP contents
+			 * 							HELP contents
+			 * -----------------------------------------------------------------
 			 */
 			case "help":
 				// Place the external html page
@@ -812,7 +824,8 @@ class layout {
 						.append(PAGE_HELP);
 				break;
 			/**
-			 * LOGIN contents
+			 * 							LOGIN contents
+			 * -----------------------------------------------------------------
 			 */
 			case "login":
 				// Place the external html page
@@ -821,7 +834,8 @@ class layout {
 						.append(PAGE_LOGIN);
 				break;
 			/**
-			 * REGISTER contents
+			 * 							REGISTER contents
+			 * -----------------------------------------------------------------
 			 */
 			case "register":
 				// Place the external html page
@@ -830,7 +844,8 @@ class layout {
 						.append(PAGE_REGISTER);
 				break;
 			/**
-			 * FORGOT-PASSWORD contents
+			 * 							FORGOT-PASSWORD contents
+			 * -----------------------------------------------------------------
 			 */
 			case "forgot-password":
 				// Place the external html page
@@ -839,7 +854,8 @@ class layout {
 						.append(PAGE_FORGOT_PASSWORD);
 				break;
 			/**
-			 * FEEDBACK contents
+			 * 							FEEDBACK contents
+			 * -----------------------------------------------------------------
 			 */
 			case "feedback":
 				// Place the external html page
@@ -848,13 +864,89 @@ class layout {
 						.append(PAGE_FEEDBACK);
 				break;
 			/**
-			 * ADD-ONTOLOGIES contents
+			 * 							ADD-ONTOLOGIES contents
+			 * -----------------------------------------------------------------
 			 */
 			case "add-ontology":
 				// Place the external html page
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_ADD_ONTOLOGY);
+				break;
+			/**
+			 * 							ONTOLOGIES contents
+			 * -----------------------------------------------------------------
+			 */
+			case "ontology":
+			console.info(NAV.get_ontology_label());
+				$.ajax({
+					url: "http://www.cropontology.org/get-ontology-roots/" + NAV.get_ontology_id(),
+					success: (data) => {
+						console.log(data);
+					}
+				})
+
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").append(
+						$('<div>', {"class": "row"}).append(
+							$('<div>', {"class": "col s5"}).append(
+								$('<h6>').text("Traits, methods and scales")
+							).append(
+								$('<div>', {"id": "ontology_tree", "class": "card z-depth-0"}).append(
+									$('<nav>').append(
+										$('<div>', {"class": "languages_refresh left"}).append(
+											$('<select>', {"name": "language"}).append(
+												$('<option>', {"value": "english"}).text("English")
+											)
+										)
+									).append(
+										$('<ul>', {"class": "right"}).append(
+											$('<li>').append(
+												$('<a>', {"href": "javascript:;", "class": ""}).text("Download")
+											)
+										)
+									)
+								)
+							)
+						).append(
+							$('<div>', {"class": "col s7"}).append(
+								$('<h6>').text("Term information")
+							).append(
+								$('<div>', {"id": "ontology_info"}).append(
+									$('<div>', {"class": "card z-depth-1 browser-content browser"}).append(
+										$('<nav>').append(
+											$('<div>', {"class": "filterbar nav-wrapper"}).append(
+												$('<ul>', {"class": "filters left"}).append(
+													$('<li>', {"data-filter": "read"}).append(
+														$('<span>', {"class": "term_id"}).text("Term name")
+													).append(
+														$('<a>', {"href": "javascript:;", "class": "right tooltipped", "data-tooltip": "Permalink"}).append(
+															$('<span>', {"class": "fa fa-link"})
+														)
+													)
+												)
+											).append(
+												$('<ul>', {"class": "sorts right"}).append(
+													$('<li>', {"id": "general"}).append(
+														$('<span>').text("General")
+													)
+												).append(
+													$('<li>', {"id": "new-comments"}).append(
+														$('<span>').text("Comments")
+													)
+												)
+											)
+										)
+									).append(
+										$('<div>', {"id": "pages", "class": "card-content"}).append()
+									)
+								).append(
+									$('<div>', {"id": "graph", "class": "card"}).append()
+								)
+							)
+						)
+					)
 				break;
 		}
 	}

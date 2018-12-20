@@ -30,3 +30,19 @@
     }
   }
 }
+
+nav {
+  .select-wrapper {
+    span {
+      &.caret {
+        right: 20px;
+      }
+    }
+    input {
+      &.select-dropdown {
+        border: 0px none !important;
+        margin: 5px 0 0 0;
+      }
+    }
+  }
+}

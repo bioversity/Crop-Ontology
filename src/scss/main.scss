@@ -58,11 +58,23 @@ ul {
       display: flex !important;
     }
     .carousel-fixed-item {
+      #page_subtitle {
+        color: $medium-light-grey;
+        font-family: "Roboto Condensed";
+        font-size: 2.8em;
+        text-align: left;
+        text-shadow: 0 0 3px $dark-grey;
+      }
       #page_title {
         color: white;
-        text-shadow: 0 0 3px $black;
+        font-family: "Roboto";
         font-size: 3em;
         margin: 1em 0;
+        text-align: left;
+        text-shadow: 0 0 3px $black;
+      }
+      #page_subtitle + #page_title {
+        margin-top: 0;
       }
     }
     h1 {
@@ -85,6 +97,7 @@ ul {
   margin-top: -30px;
   margin-bottom: -80px;
 }
+
 // Breadcrumb
 #breadcrumb {
   background-color: transparent;
@@ -103,6 +116,13 @@ ul {
         content: "›";
         font-family: "Roboto", sans-serif;
         vertical-align: -3px;
+      }
+
+      tt {
+        background-color: $white-grey;
+        font-size: 1.05em;
+        margin-right: 5px;
+        padding: 5px;
       }
     }
     a { color: $dark-grey; }
@@ -464,6 +484,60 @@ ul {
     font-weight: 300;
 
     &:hover { text-decoration: underline; }
+  }
+  #ontology_tree {
+    border-radius: 6px;
+    border: $grey 1px solid;
+    min-height: 400px;
+
+    nav {
+      background: $light-light-grey;
+      color: $dark-grey;
+
+      a { color: $dark-grey; }
+
+      .languages_refresh {
+        .select-wrapper {
+          height: 64px;
+          padding: 5px 15px;
+        }
+      }
+    }
+    .card-content {
+      padding: 15px;
+    }
+  }
+  #ontology_info {
+    nav {
+      background: white;
+      color: $dark-grey;
+      // padding: 5px 15px;
+
+      a {
+        color: $grey;
+        &:hover { color: $medium-light-grey; }
+      }
+
+      .filterbar {
+        // min-height: 250px;
+
+        .filters {
+          .term_id { margin: 0 5px 0 20px; }
+        }
+        .sorts {
+          li {
+            display: inline-block;
+            &:not(:last-child) { margin-right: 5px; }
+
+            a { font-size: 12px; }
+            span {
+              font-size: 12px;
+              padding: 0 15px;
+            }
+          }
+        }
+      }
+    }
   }
 }
 

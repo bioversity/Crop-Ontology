@@ -16,24 +16,12 @@ var navigation = function () {
 	}
 
 	_createClass(navigation, [{
-		key: "get_page",
-
-		/**
-   * Get the current page from the address bar
-   * @return string															The current page
-   */
-		value: function get_page() {
-			var page = window.location.pathname.split("/").splice(1)[0];
-			return page == "" ? "home" : page;
-		}
-
-		/**
-   * Get the path of the current page
-   * @return array															The page path
-   */
-
-	}, {
 		key: "get_url_path",
+
+		/**
+  * Get the path of the current page
+  * @return array															The page path
+  */
 		value: function get_url_path() {
 			var url = window.location.pathname.split("/").splice(1),
 			    path = [];
@@ -41,6 +29,75 @@ var navigation = function () {
 				path.push(decodeURIComponent(v));
 			});
 			return path;
+		}
+
+		/**
+   * Get the current page from the address bar
+   * @uses get_url_path()
+   *
+   * @return string															The current page
+   */
+
+	}, {
+		key: "get_page",
+		value: function get_page() {
+			var page = this.get_url_path()[0];
+			return page == "" ? "home" : page;
+		}
+
+		/**
+   * ONTOLOGY
+   * -------------------------------------------------------------------------
+   */
+
+		/**
+   * The ontology url performed by regex
+   * @see https://regex101.com/r/S4gNgj/2
+   */
+
+	}, {
+		key: "get_ontology_url_regex",
+		value: function get_ontology_url_regex(separator) {
+			var id = "([\\w]{2}\\_[\\d]{3})",
+			    label = "(.*)";
+			return new RegExp(id + "\\" + separator + label, "g");
+		}
+
+		/**
+   * Get the current page from the address bar
+   * @uses get_url_path()
+   *
+   * @return string															The current page
+   */
+
+	}, {
+		key: "get_ontology_id",
+		value: function get_ontology_id() {
+			var path = this.get_url_path();
+			if (path[0] == "ontology") {
+				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
+			}
+		}
+
+		/**
+   * Get the current page from the address bar
+   * @uses get_url_path()
+   *
+   * @return string															The current page
+   */
+
+	}, {
+		key: "get_ontology_label",
+		value: function get_ontology_label() {
+			var path = this.get_url_path();
+			if (path[0] == "ontology") {
+				console.log(path[2]);
+				if (path[2] !== undefined) {
+					return path[2];
+				} else {
+					return path[1].replace(this.get_ontology_url_regex(":"), "$2");
+				}
+			}
 		}
 	}]);
 
