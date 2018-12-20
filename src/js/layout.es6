@@ -914,13 +914,77 @@ class layout {
 					);
 					$("#treeviev").append(
 						$('<li>', {"class": "last expandable lastExpandable"}).append(
-							$('<input>', {"type": "hidden", "class": "id", "value": data.id})
+							$('<div>', {"class": "hitarea expandable-hitarea lastExpandable-hitarea"}).click((e) => {
+								if($(e.target).closest("li").find("ul").length == 0) {
+									$("#treeviev_container").prepend(
+										this.loader({type: "progress"})
+									);
+
+									$(e.target).closest("li").append(
+										$('<ul>')
+									).find("a").addClass("selected");
+
+									DATA.get_children(data.id).then((data) => {
+										$.each(data, (k, v) => {
+											$(e.target).closest("li").find("ul").append(
+												$('<li>', {
+													"class": ((v.has_children) ? ((k == data.length - 1) ? "last expandable lastExpandable" : "expandable") : "")
+												}).append(
+													$('<div>', {"class": "hitarea expandable-hitarea " + ((k == data.length - 1) ? "lastExpandable-hitarea" : "")})
+												).append(
+													$('<a>', {
+														"title": DATA.extract_name(v.name), "class": "btn btn-mini",
+														"data-id": data.id
+													}).append(
+														$('<span>').text(DATA.extract_name(v.name))
+													)
+												)
+											)
+										});
+										$("#treeviev_container .progress").animate({"opacity": 0});
+									});
+								}
+							})
 						).append(
-							$('<div>', {"class": "hitarea expandable-hitarea lastExpandable-hitarea"})
-						).append(
-							$('<a>', {"title": STR.ucfirst(term), "class": "btn btn-mini"}).append(
+							$('<a>', {
+								"title": STR.ucfirst(term), "class": "btn btn-mini",
+								"data-id": data.id
+							}).append(
 								$('<span>').text(STR.ucfirst(term))
-							)
+							).click((e) => {
+								$("#page_info dl").html("");
+
+								$(e.currentTarget).addClass("selected");
+								$("#ontology_info .card").addClass("disabled");
+								$("#pages").prepend(
+									this.loader({type: "progress"})
+								);
+
+								DATA.get_ontology_attributes(data.id).then((data) => {
+									let name,
+										$dl = $("#page_info dl");
+									$.each(data, (k, v) => {
+										if(k !== "comment") {
+											$dl.append(
+												$('<dt>').append(k)
+											).append(
+												$('<dd>').append(v)
+											)
+										}
+									});
+
+									$("#pages .progress").animate({"opacity": 0});
+									$("#ontology_info .card").removeClass("disabled");
+								});
+
+								DATA.get_ontology_comments(data.id).then((data) => {
+									$("#new-comments a").text("Comments (" + data.length + ")");
+									if(data.length == 0) {
+										$("#new-comments").addClass("disabled");
+									}
+									console.info(data)
+								});
+							})
 						)
 					);
 					$("#term_permalink").attr("data-permalink", "http://www.cropontology.org/terms/" + data.id + "/" + term)

@@ -500,7 +500,7 @@ ul {
     min-height: 400px;
 
     nav {
-      background: $light-light-grey;
+      background: $white;
       color: $dark-grey;
 
       a { color: $dark-grey; }
@@ -512,8 +512,17 @@ ul {
         }
       }
     }
-    .card-content {
-      padding: 15px;
+    #treeviev_container {
+      background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
+      padding: 0;
+
+      .progress {
+        margin-top: 1px;
+        margin-bottom: -5px;
+      }
+      #treeviev {
+        padding: 25px;
+      }
     }
   }
   #ontology_info {
@@ -551,6 +560,11 @@ ul {
     }
     #pages {
       background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
+
+      .progress {
+        margin-top: 1px;
+        margin-bottom: -5px;
+      }
       #page_info {
         dl {
           display: flex;

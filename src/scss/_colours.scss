@@ -42,6 +42,7 @@ $text-blue: #3f83b9;
   height: 25px;
   line-height: 25px;
   padding: 0px 10px;
+  text-transform: none;
 
-  &:hover, &.selected { background-color: $highlight-very-clear; }
+  &:hover, &.selected { background-color: $highlight-very-clear !important; }
 }

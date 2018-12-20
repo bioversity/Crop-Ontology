@@ -8,6 +8,19 @@ var STR = new str();
 var OBJ = new obj();
 
 class data {
+	extract_name(json_name) {
+		let term;
+
+		if(STR.is_json(json_name)) {
+			$.each(JSON.parse(json_name), (lang, name) => {
+				term = STR.ucfirst(name);
+			});
+		} else {
+			term = "";
+		}
+		return term;
+	}
+
 	/**
 	 * Get and parse the CropOntology Community website feed
 	 * @NOTE This is an async function
@@ -284,6 +297,85 @@ class data {
 				dataType: "json",
 				success: (data) => {
 					resolve(data[0]);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	get_ontology_attributes(id) {
+		return new Promise((resolve, reject) => {
+			let filteredCats = [],
+				newCats = {},
+				categories = [];
+
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-attributes/" + id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					let d = {};
+					$.each(data, (k, v) => {
+						if(v.key == "name" || v.key == "xref") {
+							v.value = this.extract_name(v.value);
+						}
+						d[v.key] = v.value;
+					});
+					resolve(d);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	get_ontology_comments(id) {
+		return new Promise((resolve, reject) => {
+			let filteredCats = [],
+				newCats = {},
+				categories = [];
+
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-comments?termId=/" + id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	get_children(id) {
+		return new Promise((resolve, reject) => {
+			let filteredCats = [],
+				newCats = {},
+				categories = [];
+
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-children/" + id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
 				},
 				error: (jqXHR, textStatus, errorThrown) => {
 					reject(errorThrown);

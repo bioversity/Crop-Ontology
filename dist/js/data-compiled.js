@@ -31,7 +31,19 @@ var data = function () {
 	}
 
 	_createClass(data, [{
-		key: "get_community_website_feed",
+		key: "extract_name",
+		value: function extract_name(json_name) {
+			var term = void 0;
+
+			if (STR.is_json(json_name)) {
+				$.each(JSON.parse(json_name), function (lang, name) {
+					term = STR.ucfirst(name);
+				});
+			} else {
+				term = "";
+			}
+			return term;
+		}
 
 		/**
    * Get and parse the CropOntology Community website feed
@@ -39,6 +51,9 @@ var data = function () {
    *
    * @return object															The feed data JSON object
    */
+
+	}, {
+		key: "get_community_website_feed",
 		value: function get_community_website_feed() {
 			return new _es6Promise.Promise(function (resolve, reject) {
 				/**
@@ -322,6 +337,90 @@ var data = function () {
 					dataType: "json",
 					success: function success(data) {
 						resolve(data[0]);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "get_ontology_attributes",
+		value: function get_ontology_attributes(id) {
+			var _this = this;
+
+			return new _es6Promise.Promise(function (resolve, reject) {
+				var filteredCats = [],
+				    newCats = {},
+				    categories = [];
+
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-attributes/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						var d = {};
+						$.each(data, function (k, v) {
+							if (v.key == "name" || v.key == "xref") {
+								v.value = _this.extract_name(v.value);
+							}
+							d[v.key] = v.value;
+						});
+						resolve(d);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "get_ontology_comments",
+		value: function get_ontology_comments(id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				var filteredCats = [],
+				    newCats = {},
+				    categories = [];
+
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-comments?termId=/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "get_children",
+		value: function get_children(id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				var filteredCats = [],
+				    newCats = {},
+				    categories = [];
+
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-children/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
 					},
 					error: function error(jqXHR, textStatus, errorThrown) {
 						reject(errorThrown);
