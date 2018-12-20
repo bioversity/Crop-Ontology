@@ -275,6 +275,32 @@ class data {
 		});
 	}
 
+	get_ontologies_data(id) {
+		return new Promise((resolve, reject) => {
+			let filteredCats = [],
+			newCats = {},
+			categories = [];
+
+			/**
+			* @see http://www.cropontology.org/api
+			*/
+			$.ajax({
+				type: "GET",
+				url: "common/ontologies_data.json",
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					if(data[id] !== undefined) {
+						resolve(data[id]);
+					}
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	/**
 	 * Get and parse all ontologies from the Crop Ontology website
 	 * @NOTE This is an async function

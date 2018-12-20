@@ -6314,6 +6314,7 @@ var navigation = function () {
 		value: function get_ontology_id() {
 			var path = this.get_url_path();
 			if (path[0] == "ontology") {
+				console.log(path);
 				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
 			}
 		}
@@ -6838,6 +6839,33 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "get_ontologies_data",
+		value: function get_ontologies_data(id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				var filteredCats = [],
+				    newCats = {},
+				    categories = [];
+
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "GET",
+					url: "common/ontologies_data.json",
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						if (data[id] !== undefined) {
+							resolve(data[id]);
+						}
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse all ontologies from the Crop Ontology website
@@ -7202,6 +7230,8 @@ var layout = function () {
 			$(".collapsible").collapsible();
 
 			$(".tooltipped").tooltip({ html: true });
+
+			$(".materialboxed").materialbox();
 
 			$(".parallax").parallax();
 
@@ -7759,6 +7789,50 @@ var layout = function () {
 					var name = "",
 					    term = "",
 					    language = "english";
+
+					DATA.get_ontologies_data(NAV.get_ontology_id()).then(function (ontologies_data) {
+						console.log(ontologies_data);
+						$('<div>', { "id": "ontology_card", "class": "row container" }).append($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>').append(function () {
+							if (ontologies_data.ontology_title.link !== "") {
+								return $('<a>', { "href": ontologies_data.ontology_title.link, "target": "_blank" }).text(ontologies_data.ontology_title.title);
+							} else {
+								return ontologies_data.ontology_title.title;
+							}
+						})).append($('<table>').append($('<thead>').append($('<tr>').append($('<th>').text("Ontology curators")).append($('<th>').text("Scientists")).append($('<th>', { "class": "center" }).text("Crop Lead Center")).append($('<th>', { "class": "center" }).text("Partners")).append($('<th>', { "class": "center" }).text("CGIAR research program")))).append($('<tbody>').append($('<td>').append(function () {
+							if (ontologies_data.ontology_curators.length > 0 && ontologies_data.ontology_curators[0] !== "") {
+								return $('<ul>', { "class": "browser-default" }).append($.map(ontologies_data.ontology_curators, function (v, k) {
+									return $('<li>').append(v);
+								}));
+							}
+						})).append($('<td>').append(function () {
+							if (ontologies_data.scientists.length > 0 && ontologies_data.scientists[0] !== "") {
+								return $('<ul>', { "class": "browser-default" }).append($.map(ontologies_data.scientists, function (v, k) {
+									return $('<li>').append(v);
+								}));
+							}
+						})).append($('<td>', { "class": "center" }).append(function () {
+							if (ontologies_data.lead_centers.length > 0) {
+								// 	console.info(v.image);
+								return $('<div>').append($.map(ontologies_data.lead_centers, function (v, k) {
+									return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": "common/img/" + v.image }));
+								})).html();
+							}
+						})).append($('<td>', { "class": "center" }).append(function () {
+							if (ontologies_data.partners.length > 0) {
+								// 	console.info(v.image);
+								return $('<div>').append($.map(ontologies_data.partners, function (v, k) {
+									return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": "common/img/" + v.image }));
+								})).html();
+							}
+						})).append($('<td>', { "class": "center" }).append(function () {
+							if (ontologies_data.cgiar_research_program.length > 0) {
+								// 	console.info(v.image);
+								return $('<div>').append($.map(ontologies_data.cgiar_research_program, function (v, k) {
+									return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": "common/img/" + v.image }));
+								})).html();
+							}
+						}))))).insertAfter("#contents .progress");
+					});
 
 					DATA.get_ontology(NAV.get_ontology_id()).then(function (data) {
 						$("#contents .progress").animate({ "opacity": 0 });
