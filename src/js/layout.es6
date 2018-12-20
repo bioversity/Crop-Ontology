@@ -11,6 +11,7 @@ import str from "../../src/js/_str.es6";
 * Static pages
 */
 import page_about from "../../common/statics/about.html";
+import page_privacy_policy from "../../common/statics/privacy_policy.html";
 import page_api from "../../common/statics/api.html";
 import page_help from "../../common/statics/help.html";
 import page_login from "../../common/statics/login.html";
@@ -30,6 +31,7 @@ var
 	URL = "http://www.cropontology.org",
 
 	PAGE_ABOUT = page_about,
+	PAGE_PRIVACY_POLICY = page_privacy_policy,
 	PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
 	PAGE_HELP = page_help,
 	PAGE_LOGIN = page_login,
@@ -184,13 +186,13 @@ class layout {
 								$('<h2>').html(item.title)
 							)
 							$("#" + item.position).append(
-								$('<ul>')
+								$('<ul>', {"class": item.class})
 							)
 							$.each(item.items, (ik, iv) => {
 								$("#" + item.position).find("ul").append(() => {
 									if(iv.display) {
 										return $('<li>').append(
-											$('<a>', {"href": iv.link, "target": iv.target}).text(iv.label)
+											$('<a>', {"href": iv.link, "target": iv.target}).append((iv.icon !== undefined) ? $('<span>', {"class": iv.icon}) : iv.label)
 										);
 									}
 									if(iv.separator !== undefined) {
@@ -804,6 +806,17 @@ class layout {
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_ABOUT);
 				break;
+   			/**
+   			 * 							PRIVACY POLICY contents
+			 * -----------------------------------------------------------------
+   			 */
+			case "privacy-policy":
+			case "privacy policy":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_PRIVACY_POLICY);
+				break;
 			/**
 			 * 							API contents
 			 * -----------------------------------------------------------------
@@ -1179,7 +1192,7 @@ class layout {
 					)
 				).append(
 					$("<div>", {"class": "row"}).append(
-						$("<div>", {"class": "col s12 m3 l3 xl3"}).append(
+						$("<div>", {"class": "col s12 m3 l3 xl2"}).append(
 							$('<a>', {"href": "./", "class": "brand-logo"}).append(
 								$('<img>', {"class": "responsive-img", "src": "common/img/" + settings.general.footer.logo})
 							)
@@ -1187,7 +1200,7 @@ class layout {
 							$('<p>', {"class": "description"}).html(settings.general.footer.description)
 						)
 					).append(
-						$("<div>", {"id": "left_menu", "class": "col s12 m2 l2 xl2"})
+						$("<div>", {"id": "left_menu", "class": "col s12 m2 l2 xl2 offset-xl1"})
 					).append(
 						$("<div>", {"id": "center_menu", "class": "col s12 m2 l2 xl2"})
 					).append(

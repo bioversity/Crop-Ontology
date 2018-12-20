@@ -18,7 +18,7 @@
         "footer": {
             "logo": "crop_ontology_white.png",
             "background": "footer-background_399395-PCOQ5H-624.png",
-            "description": "Some identities data<br />such as address, informations, etc...",
+            "description": "A tool for Breeders and Agronomists to harmonize the capture of field data, ease fieldbook creation, and facilitate data modeling",
             "visible": true
         },
         "license": {
@@ -60,21 +60,31 @@
         }
     },
     "about": {
-        "title": "About the Project"
+        "title": "About the Project",
+        "visible": true
+    },
+    "privacy-policy": {
+        "title": "Privacy policy",
+        "visible": true
     },
     "API": {
-        "title": "API"
+        "title": "API",
+        "visible": true
     },
     "contact-us": {
-        "title": "Contact us"
+        "title": "Contact us",
+        "visible": true
     },
     "feedback": {
-        "title": "Feedback"
+        "title": "Feedback",
+        "visible": true
     },
     "add-ontology": {
-        "title": "Add new terms"
+        "title": "Add new terms",
+        "visible": true
     },
     "ontology": {
-        "title": "%s"
+        "title": "%s",
+        "visible": true
     }
 }

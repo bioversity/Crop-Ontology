@@ -2,6 +2,7 @@
     "menu": {
         "top_menu": {
             "position": "right",
+            "class": "",
             "items": [
                 {
                     "label": "Home",
@@ -50,6 +51,7 @@
         },
         "halfway_menu": {
             "position": "center",
+            "class": "",
             "items": [
                 {
                     "label": "Contact us",
@@ -73,6 +75,7 @@
                 {
                     "title": "&nbsp;",
                     "position": "left_menu",
+                    "class": "",
                     "items": [
                         {
                             "label": "Home",
@@ -83,6 +86,11 @@
                         {
                             "label": "About the project",
                             "link": "./about",
+                            "display": true
+                        },
+                        {
+                            "label": "Privacy policy",
+                            "link": "./privacy-policy",
                             "display": true
                         },
                         {
@@ -115,6 +123,7 @@
                 {
                     "title": "Related sites",
                     "position": "center_menu",
+                    "class": "",
                     "items": [
                         {
                             "label": "Integrated Breeding Platform",
@@ -143,13 +152,23 @@
                     ]
                 },
                 {
-                    "title": "Other projects",
+                    "title": "",
                     "position": "right_menu",
+                    "class": "horizontal right",
                     "items": [
                         {
-                            "label": "External project",
-                            "link": "",
-                            "display": true
+                            "label": "Github",
+                            "link": "https://github.com/bioversity/Crop-Ontology/",
+                            "display": true,
+                            "target": "_blank",
+                            "icon": "fab fa-github fa-2x"
+                        },
+                        {
+                            "label": "Youtube",
+                            "link": "https://www.youtube.com/channel/UC1HBPf5qzcR6YGaAh-3TzNg",
+                            "display": true,
+                            "target": "_blank",
+                            "icon": "fab fa-youtube fa-2x"
                         }
                     ]
                 }
@@ -160,6 +179,7 @@
                 {
                     "title": "",
                     "position": "left",
+                    "class": "",
                     "items": [
                         {
                             "label": "Integrated Breeding Platform",
@@ -194,6 +214,7 @@
                 {
                     "title": "Bottom Heading",
                     "position": "right",
+                    "class": "",
                     "items": [
                         {
                             "label": "Platform for Big Data in Agricolture",
