@@ -45,4 +45,15 @@ nav {
       }
     }
   }
+  .nav-content, .tabs, .tab {
+    height: 64px !important;
+    line-height: 64px !important;
+  }
+  .tabs {
+    display: inline-block;
+    margin-right: 0;
+    position: absolute;
+    right: 0;
+    width: auto !important;
+  }
 }

@@ -82,5 +82,12 @@ class str {
 	pluralize(items, string) {
 		return (items !== 1) ? string + "s" : string;
 	}
+
+	is_json(str) {
+	    try { JSON.parse(str); } catch (e) {
+	        return false;
+	    }
+	    return true;
+	}
 }
 export default str;

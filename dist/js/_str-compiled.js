@@ -122,6 +122,16 @@ var str = function () {
 		value: function pluralize(items, string) {
 			return items !== 1 ? string + "s" : string;
 		}
+	}, {
+		key: "is_json",
+		value: function is_json(str) {
+			try {
+				JSON.parse(str);
+			} catch (e) {
+				return false;
+			}
+			return true;
+		}
 	}]);
 
 	return str;

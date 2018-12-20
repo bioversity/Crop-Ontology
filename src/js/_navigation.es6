@@ -4,7 +4,7 @@
 
 class navigation {
 	/**
-	* Get the path of the current page
+	* Get the path of the current URL
 	* @return array															The page path
 	*/
 	get_url_path() {
@@ -17,7 +17,7 @@ class navigation {
 	}
 
 	/**
-	 * Get the current page from the address bar
+	 * Get the current page from the current URL
 	 * @uses get_url_path()
 	 *
 	 * @return string															The current page
@@ -43,7 +43,7 @@ class navigation {
 	}
 
 	/**
-	 * Get the current page from the address bar
+	 * Get the Ontology ID from current URL
 	 * @uses get_url_path()
 	 *
 	 * @return string															The current page
@@ -56,7 +56,7 @@ class navigation {
 	}
 
 	/**
-	 * Get the current page from the address bar
+	 * Get the Ontology ID from current URL
 	 * @uses get_url_path()
 	 *
 	 * @return string															The current page
@@ -64,7 +64,6 @@ class navigation {
 	get_ontology_label() {
 		let path = this.get_url_path();
 		if(path[0] == "ontology") {
-			console.log(path[2]);
 			if(path[2] !== undefined) {
 				return path[2];
 			} else {

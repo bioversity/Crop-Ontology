@@ -696,7 +696,7 @@ class layout {
 												$ontology_page.find(".collection").append(
 													$('<li>', {"class": "collection-item"}).append(
 														$('<a>', {
-															"href": "./ontology/" + vv.ontology_id + "/" + vv.ontology_name.replace("/", "-")
+															"href": "./ontology/" + vv.ontology_id + ":" + vv.ontology_name.replace("/", "-")
 														}).append(
 															$('<h2>').append(vv.ontology_name)
 														)
@@ -878,13 +878,55 @@ class layout {
 			 * -----------------------------------------------------------------
 			 */
 			case "ontology":
-			console.info(NAV.get_ontology_label());
-				$.ajax({
-					url: "http://www.cropontology.org/get-ontology-roots/" + NAV.get_ontology_id(),
-					success: (data) => {
-						console.log(data);
+				let name = "",
+					term = "",
+					language = "english";
+
+				DATA.get_ontology(NAV.get_ontology_id()).then((data) => {
+					$("#contents .progress").animate({"opacity": 0});
+
+					let langs = [];
+					if(STR.is_json(data.name)) {
+						$.each(JSON.parse(data.name), (lang, name) => {
+							langs.push(STR.ucfirst(lang));
+							term = STR.ucfirst(name);
+						});
+					} else {
+						langs.push("English");
+						term = "?"
 					}
-				})
+
+					$("#page_info").append(
+						$('<dl>').append(
+							$('<dt>').text("Ontology type:")
+						).append(
+							$('<dd>').text(data.ontologyType)
+						).append(
+							$('<dt>').append("Available languages:")
+						).append(
+							$('<dd>').append(() => {
+								return langs.length + ": " + langs.join(", ")
+							})
+						)
+					);
+					$("#ontology_tree .languages_refresh select").append(
+						$('<option>', {"value": "english"}).text("English")
+					);
+					$("#treeviev").append(
+						$('<li>', {"class": "last expandable lastExpandable"}).append(
+							$('<input>', {"type": "hidden", "class": "id", "value": data.id})
+						).append(
+							$('<div>', {"class": "hitarea expandable-hitarea lastExpandable-hitarea"})
+						).append(
+							$('<a>', {"title": STR.ucfirst(term), "class": "btn btn-mini"}).append(
+								$('<span>').text(STR.ucfirst(term))
+							)
+						)
+					);
+					$("#term_permalink").attr("data-permalink", "http://www.cropontology.org/terms/" + data.id + "/" + term)
+					$("#ontology_tree .languages_refresh select").material_select();
+					$("#ontology_tree, #ontology_info").removeClass("disabled");
+				});
 
 				// Place the external html page
 				$("#contents").addClass("coloured grey lighten-5")
@@ -893,12 +935,10 @@ class layout {
 							$('<div>', {"class": "col s5"}).append(
 								$('<h6>').text("Traits, methods and scales")
 							).append(
-								$('<div>', {"id": "ontology_tree", "class": "card z-depth-0"}).append(
+								$('<div>', {"id": "ontology_tree", "class": "card z-depth-0 disabled"}).append(
 									$('<nav>').append(
 										$('<div>', {"class": "languages_refresh left"}).append(
-											$('<select>', {"name": "language"}).append(
-												$('<option>', {"value": "english"}).text("English")
-											)
+											$('<select>', {"name": "language"})
 										)
 									).append(
 										$('<ul>', {"class": "right"}).append(
@@ -907,46 +947,60 @@ class layout {
 											)
 										)
 									)
+								).append(
+									$('<div>', {"id": "treeviev_container", "class": "card-content"}).append(
+										$('<ul>', {"id": "treeviev", "class": "treeview"})
+									)
 								)
 							)
 						).append(
 							$('<div>', {"class": "col s7"}).append(
 								$('<h6>').text("Term information")
 							).append(
-								$('<div>', {"id": "ontology_info"}).append(
+								$('<div>', {"id": "ontology_info", "class": "disabled"}).append(
 									$('<div>', {"class": "card z-depth-1 browser-content browser"}).append(
-										$('<nav>').append(
+										$('<nav>', {"class": "nav-extended"}).append(
+											$('<div>', {"class": "nav-content"}).append(
+												$('<ul>', {"class": "tabs"}).append(
+													$('<li>', {"id": "general", "class": "tab"}).append(
+														$('<a>', {"href": "#page_info", "class": "active"}).text("General")
+													)
+												).append(
+													$('<li>', {"id": "new-comments", "class": "tab"}).append(
+														$('<a>', {"href": "#page_comments"}).text("Comments")
+													)
+												)
+											)
+										).append(
 											$('<div>', {"class": "filterbar nav-wrapper"}).append(
 												$('<ul>', {"class": "filters left"}).append(
 													$('<li>', {"data-filter": "read"}).append(
 														$('<span>', {"class": "term_id"}).text("Term name")
 													).append(
-														$('<a>', {"href": "javascript:;", "class": "right tooltipped", "data-tooltip": "Permalink"}).append(
+														$('<a>', {"href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink"}).append(
 															$('<span>', {"class": "fa fa-link"})
 														)
-													)
-												)
-											).append(
-												$('<ul>', {"class": "sorts right"}).append(
-													$('<li>', {"id": "general"}).append(
-														$('<span>').text("General")
-													)
-												).append(
-													$('<li>', {"id": "new-comments"}).append(
-														$('<span>').text("Comments")
 													)
 												)
 											)
 										)
 									).append(
-										$('<div>', {"id": "pages", "class": "card-content"}).append()
+										$('<div>', {"id": "pages"}).append(
+											$('<div>', {"id": "page_info", "class": "card-content"})
+										).append(
+											$('<div>', {"id": "page_comments", "class": "card-content"}).append()
+										)
 									)
 								).append(
 									$('<div>', {"id": "graph", "class": "card"}).append()
 								)
 							)
 						)
-					)
+					);
+
+					$("#contents").prepend(
+						this.loader({type: "progress"})
+					);
 				break;
 		}
 	}

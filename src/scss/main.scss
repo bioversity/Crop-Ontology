@@ -232,6 +232,15 @@ ul {
     h4 { font-size: 1.8rem; }
     h5 { font-size: 1.6rem; }
     h6 { font-size: 1.4rem; }
+
+    div.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+  .progress {
+    margin-bottom: 60px;
+    margin-top: -60px;
   }
   #info_container {
     .card-title {
@@ -519,10 +528,12 @@ ul {
       }
 
       .filterbar {
+        position: absolute;
+        top: 0;
         // min-height: 250px;
 
         .filters {
-          .term_id { margin: 0 5px 0 20px; }
+          .term_id { margin: 0 15px 0 20px; }
         }
         .sorts {
           li {
@@ -534,6 +545,21 @@ ul {
               font-size: 12px;
               padding: 0 15px;
             }
+          }
+        }
+      }
+    }
+    #pages {
+      background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
+      #page_info {
+        dl {
+          display: flex;
+          flex-wrap: wrap;
+
+          dt { width: 33%; }
+          dd {
+            margin-left: auto;
+            width: 66%;
           }
         }
       }

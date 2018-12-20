@@ -12,6 +12,8 @@ $black: #000;
 $white: #fff;
 
 $highlight: #f28021;
+$highlight-clear: #ef9f5d;
+$highlight-very-clear: #ead09d;
 $highlight-dark: #db6200;
 $tag-green: #56a681;
 $tag-blue: #568da6;
@@ -21,7 +23,7 @@ $text-blue: #3f83b9;
 .highlight-text, .highlight {
   color: $highlight;
 }
-.highlight-btn {
+.highlight-btn, .btn-highlight {
   background-color: $highlight;
   color: white;
 
@@ -30,4 +32,16 @@ $text-blue: #3f83b9;
 
 .help-text {
   color: $grey;
+}
+
+.btn-mini {
+  background-color: $light-light-grey;
+  color: $dark-grey;
+  font-size: .75em;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  padding: 0px 10px;
+
+  &:hover, &.selected { background-color: $highlight-very-clear; }
 }

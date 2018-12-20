@@ -19,7 +19,7 @@ var navigation = function () {
 		key: "get_url_path",
 
 		/**
-  * Get the path of the current page
+  * Get the path of the current URL
   * @return array															The page path
   */
 		value: function get_url_path() {
@@ -32,7 +32,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the current page from the address bar
+   * Get the current page from the current URL
    * @uses get_url_path()
    *
    * @return string															The current page
@@ -64,7 +64,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the current page from the address bar
+   * Get the Ontology ID from current URL
    * @uses get_url_path()
    *
    * @return string															The current page
@@ -80,7 +80,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the current page from the address bar
+   * Get the Ontology ID from current URL
    * @uses get_url_path()
    *
    * @return string															The current page
@@ -91,7 +91,6 @@ var navigation = function () {
 		value: function get_ontology_label() {
 			var path = this.get_url_path();
 			if (path[0] == "ontology") {
-				console.log(path[2]);
 				if (path[2] !== undefined) {
 					return path[2];
 				} else {
