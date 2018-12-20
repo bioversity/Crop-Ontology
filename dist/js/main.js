@@ -177,13 +177,8 @@ module.exports={
                         },
                         { "separator": "" },
                         {
-                            "label": "About the project",
+                            "label": "About",
                             "link": "./about",
-                            "display": true
-                        },
-                        {
-                            "label": "Privacy policy",
-                            "link": "./privacy-policy",
                             "display": true
                         },
                         {
@@ -209,6 +204,21 @@ module.exports={
                         {
                             "label": "All ontologies",
                             "link": "./all-ontologies",
+                            "display": false
+                        },
+                        {
+                            "label": "Contact us",
+                            "link": "./contact-us",
+                            "display": true
+                        },
+                        {
+                            "label": "Feedback",
+                            "link": "./feedback",
+                            "display": true
+                        },
+                        {
+                            "label": "Privacy policy",
+                            "link": "./privacy-policy",
                             "display": true
                         }
                     ]
