@@ -277,10 +277,6 @@ class data {
 
 	get_ontologies_data(id) {
 		return new Promise((resolve, reject) => {
-			let filteredCats = [],
-			newCats = {},
-			categories = [];
-
 			/**
 			* @see http://www.cropontology.org/api
 			*/
@@ -309,10 +305,6 @@ class data {
 	 */
 	get_ontology(id) {
 		return new Promise((resolve, reject) => {
-			let filteredCats = [],
-				newCats = {},
-				categories = [];
-
 			/**
 			 * @see http://www.cropontology.org/api
 			 */
@@ -333,10 +325,6 @@ class data {
 
 	get_ontology_attributes(id) {
 		return new Promise((resolve, reject) => {
-			let filteredCats = [],
-				newCats = {},
-				categories = [];
-
 			/**
 			 * @see http://www.cropontology.org/api
 			 */
@@ -364,16 +352,32 @@ class data {
 
 	get_ontology_comments(id) {
 		return new Promise((resolve, reject) => {
-			let filteredCats = [],
-				newCats = {},
-				categories = [];
+			/**
+			* @see http://www.cropontology.org/api
+			*/
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-comments-onto/?ontoId=/" + id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
 
+	get_terms_comments(term_id) {
+		return new Promise((resolve, reject) => {
 			/**
 			 * @see http://www.cropontology.org/api
 			 */
 			$.ajax({
 				type: "GET",
-				url: "http://www.cropontology.org/get-comments?termId=/" + id,
+				url: "http://www.cropontology.org/get-comments?termId=" + term_id,
 				async: true,
 				dataType: "json",
 				success: (data) => {
@@ -388,10 +392,6 @@ class data {
 
 	get_children(id) {
 		return new Promise((resolve, reject) => {
-			let filteredCats = [],
-				newCats = {},
-				categories = [];
-
 			/**
 			 * @see http://www.cropontology.org/api
 			 */
@@ -402,6 +402,36 @@ class data {
 				dataType: "json",
 				success: (data) => {
 					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	get_user(id) {
+		return new Promise((resolve, reject) => {
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/users/" + id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					// Get Gravatar data
+					$.ajax({
+						type: "GET",
+						url: "https://en.gravatar.com/" + data.gravatar + ".json",
+						async: true,
+						dataType: "json",
+						success: (gravatar_data) => {
+							data.gravatar = gravatar_data.entry[0];
+							resolve(data);
+						}
+					});
 				},
 				error: (jqXHR, textStatus, errorThrown) => {
 					reject(errorThrown);

@@ -315,10 +315,6 @@ var data = function () {
 		key: "get_ontologies_data",
 		value: function get_ontologies_data(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -350,10 +346,6 @@ var data = function () {
 		key: "get_ontology",
 		value: function get_ontology(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -377,10 +369,6 @@ var data = function () {
 			var _this = this;
 
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -409,16 +397,33 @@ var data = function () {
 		key: "get_ontology_comments",
 		value: function get_ontology_comments(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-comments-onto/?ontoId=/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "get_terms_comments",
+		value: function get_terms_comments(term_id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
 				$.ajax({
 					type: "GET",
-					url: "http://www.cropontology.org/get-comments?termId=/" + id,
+					url: "http://www.cropontology.org/get-comments?termId=" + term_id,
 					async: true,
 					dataType: "json",
 					success: function success(data) {
@@ -434,10 +439,6 @@ var data = function () {
 		key: "get_children",
 		value: function get_children(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -448,6 +449,37 @@ var data = function () {
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "get_user",
+		value: function get_user(id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/users/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						// Get Gravatar data
+						$.ajax({
+							type: "GET",
+							url: "https://en.gravatar.com/" + data.gravatar + ".json",
+							async: true,
+							dataType: "json",
+							success: function success(gravatar_data) {
+								data.gravatar = gravatar_data.entry[0];
+								resolve(data);
+							}
+						});
 					},
 					error: function error(jqXHR, textStatus, errorThrown) {
 						reject(errorThrown);

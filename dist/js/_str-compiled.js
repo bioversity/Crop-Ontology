@@ -10,6 +10,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var settings = require("../../common/settings/contents.json");
+
 var str = function () {
 	function str() {
 		_classCallCheck(this, str);
@@ -122,15 +124,78 @@ var str = function () {
 		value: function pluralize(items, string) {
 			return items !== 1 ? string + "s" : string;
 		}
+
+		/**
+   * Check wheter a given string is a JSON
+   * @param  string 							string							The string to analyze
+   * @return boolean
+   */
+
 	}, {
 		key: "is_json",
-		value: function is_json(str) {
+		value: function is_json(string) {
 			try {
-				JSON.parse(str);
+				JSON.parse(string);
 			} catch (e) {
 				return false;
 			}
 			return true;
+		}
+
+		/**
+   * 								ONTOLOGIES
+   * -------------------------------------------------------------------------
+   */
+
+		/**
+   * Get all languages in a JSON string
+   * @param  string 							string							The string to analyze
+   * @return array|string														All collected languages
+   */
+
+	}, {
+		key: "get_ontologies_languages",
+		value: function get_ontologies_languages(string) {
+			var _this = this;
+
+			var langs = [];
+			if (this.is_json(string)) {
+				$.each(JSON.parse(string), function (lang, name) {
+					langs.push(_this.ucfirst(lang));
+				});
+			} else {
+				langs.push("English");
+			}
+			return langs.length == 1 ? langs[0] : langs;
+		}
+
+		/**
+   * Extract a string from a JSON string
+   * The Crop Onlogy API often provide a JSON language string.
+   * This method extract the string value from that JSON string
+   * @example `{"english": "Text in english"}`
+   *
+   * @param  string 							string							The string to analyze
+   * @param  string 							language						The preferred language
+   * @return string															The extracted string
+   */
+
+	}, {
+		key: "get_ontology_term",
+		value: function get_ontology_term(string, language) {
+			var _this2 = this;
+
+			language = language == undefined ? settings.general.language : language;
+
+			var strings = {};
+			if (this.is_json(string)) {
+				$.each(JSON.parse(string), function (lang, term) {
+					strings[lang] = _this2.ucfirst(term);
+				});
+			} else {
+				strings[language] = "?";
+			}
+			return strings[language];
 		}
 	}]);
 

@@ -1,6 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports={
     "general": {
+        "language": "english",
         "loader": {
             "text": "Getting data..."
         },
@@ -396,7 +397,7 @@ $(document).ready(function () {
 	LAYOUT.activate();
 });
 
-},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":8,"../../src/js/_obj.es6":9,"../../src/js/layout.es6":13}],5:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":8,"../../src/js/_obj.es6":9,"../../src/js/layout.es6":14}],5:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -6355,7 +6356,6 @@ var navigation = function () {
 		value: function get_ontology_id() {
 			var path = this.get_url_path();
 			if (path[0] == "ontology") {
-				console.log(path);
 				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
 			}
 		}
@@ -6436,6 +6436,8 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var settings = require("../../common/settings/contents.json");
 
 var str = function () {
 	function str() {
@@ -6549,15 +6551,78 @@ var str = function () {
 		value: function pluralize(items, string) {
 			return items !== 1 ? string + "s" : string;
 		}
+
+		/**
+   * Check wheter a given string is a JSON
+   * @param  string 							string							The string to analyze
+   * @return boolean
+   */
+
 	}, {
 		key: "is_json",
-		value: function is_json(str) {
+		value: function is_json(string) {
 			try {
-				JSON.parse(str);
+				JSON.parse(string);
 			} catch (e) {
 				return false;
 			}
 			return true;
+		}
+
+		/**
+   * 								ONTOLOGIES
+   * -------------------------------------------------------------------------
+   */
+
+		/**
+   * Get all languages in a JSON string
+   * @param  string 							string							The string to analyze
+   * @return array|string														All collected languages
+   */
+
+	}, {
+		key: "get_ontologies_languages",
+		value: function get_ontologies_languages(string) {
+			var _this = this;
+
+			var langs = [];
+			if (this.is_json(string)) {
+				$.each(JSON.parse(string), function (lang, name) {
+					langs.push(_this.ucfirst(lang));
+				});
+			} else {
+				langs.push("English");
+			}
+			return langs.length == 1 ? langs[0] : langs;
+		}
+
+		/**
+   * Extract a string from a JSON string
+   * The Crop Onlogy API often provide a JSON language string.
+   * This method extract the string value from that JSON string
+   * @example `{"english": "Text in english"}`
+   *
+   * @param  string 							string							The string to analyze
+   * @param  string 							language						The preferred language
+   * @return string															The extracted string
+   */
+
+	}, {
+		key: "get_ontology_term",
+		value: function get_ontology_term(string, language) {
+			var _this2 = this;
+
+			language = language == undefined ? settings.general.language : language;
+
+			var strings = {};
+			if (this.is_json(string)) {
+				$.each(JSON.parse(string), function (lang, term) {
+					strings[lang] = _this2.ucfirst(term);
+				});
+			} else {
+				strings[language] = "?";
+			}
+			return strings[language];
 		}
 	}]);
 
@@ -6566,7 +6631,227 @@ var str = function () {
 
 exports.default = str;
 
-},{}],11:[function(require,module,exports){
+},{"../../common/settings/contents.json":1}],11:[function(require,module,exports){
+"use strict";
+/* jshint esversion: 6 */
+"strict mode";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _data = require("../../src/js/data.es6");
+
+var _data2 = _interopRequireDefault(_data);
+
+var _loader = require("../../src/js/loader.es6");
+
+var _loader2 = _interopRequireDefault(_loader);
+
+var _str = require("../../src/js/_str.es6");
+
+var _str2 = _interopRequireDefault(_str);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DATA = new _data2.default(),
+    LOADER = new _loader2.default(),
+    STR = new _str2.default(),
+    moment = require("moment");
+
+var treeview = function () {
+	function treeview() {
+		_classCallCheck(this, treeview);
+	}
+
+	_createClass(treeview, [{
+		key: "tree_icon",
+		value: function tree_icon(is_subroot) {
+			var icon_class = is_subroot ? "expandable-hitarea lastExpandable-hitarea" : "";
+
+			return $('<div>', { "class": "hitarea " + icon_class }).click(function (e) {
+				if ($(e.target).closest("li").find("ul").length == 0) {
+					// Display loader
+					$("#treeviev_container").prepend(LOADER.create({ target: "#treeviev_container", type: "progress" }));
+
+					$(e.target).closest("li").append($('<ul>')).find("a").addClass("selected");
+
+					// Expandable icon
+					DATA.get_children(_data2.default.id).then(function (child) {
+						$.each(child, function (k, v) {
+							$(e.target).closest("li").find("ul").append($('<li>', {
+								"class": v.has_children ? k == child.length - 1 ? "last expandable lastExpandable" : "expandable" : ""
+							}).append($('<div>', { "class": "hitarea expandable-hitarea " + (k == child.length - 1 ? "lastExpandable-hitarea" : "") })).append($('<a>', {
+								"title": DATA.extract_name(v.name), "class": "btn btn-mini",
+								"data-id": child.id
+							}).append($('<span>').text(DATA.extract_name(v.name)))));
+						});
+
+						// Hide the loader
+						LOADER.hide("#treeviev_container .progress");
+					});
+				}
+			});
+		}
+	}, {
+		key: "add_info",
+		value: function add_info(source, remote) {
+			if (remote) {
+				var name = void 0,
+				    $dl = $("#page_info dl");
+				$.each(source, function (k, v) {
+					if (k !== "comment") {
+						$dl.append($('<dt>').append(STR.ucfirst(k))).append($('<dd>').append(v));
+					}
+				});
+				$("#page_info").html($dl);
+			} else {
+				$("#page_info").html(source);
+			}
+		}
+	}, {
+		key: "button",
+		value: function button(options) {
+			var _this = this;
+
+			var defaults = {
+				id: "",
+				term: "",
+				source: {},
+				is_root: false,
+				langs: []
+			},
+			    option = $.extend({}, defaults, options);
+
+			return $('<a>', {
+				"title": STR.ucfirst(option.term),
+				"class": "btn btn-mini" + (option.is_root ? " selected" : ""),
+				"data-id": option.id
+			}).append($('<span>').text(option.term)).click(function (e) {
+				$("#page_info dl").html("");
+				$("#comments").html("");
+
+				if (option.is_root) {
+					_this.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
+						return option.langs.length + ": " + option.langs.join(", ");
+					})), false);
+				} else {
+					// Item selection in treeview
+					$(".treeview a.selected").removeClass("selected");
+					$(e.currentTarget).addClass("selected");
+
+					// Info
+					_this.disable_info();
+					LOADER.create({ target: "#pages", type: "progress" });
+					DATA.get_ontology_attributes(option.source.id).then(function (data) {
+						_this.add_info(data, true);
+
+						// Comments
+						DATA.get_terms_comments(option.source.id).then(function (comments) {
+							$("#new-comments a").text("Comments (" + comments.length + ")");
+							// Get user data
+							$.each(comments, function (k, c) {
+								DATA.get_user(c.author_id).then(function (user) {
+									$("#comments").append($('<li>', { "class": "collection-item avatar" }).append($('<img>', { "src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle" })).append($('<span>', { "class": "title" }).append($('<span>', { "class": "highlight" }).text(user.name + " " + user.sirname)).append("<br />").append($('<small>', { "class": "grey-text" }).text(c.created))).append($('<p>', { "style": "font-style:italic;" }).text(c.comment)));
+
+									LOADER.hide("#pages .progress");
+									_this.enable_info();
+								});
+							});
+							$("#comments").append();
+						});
+					});
+				}
+			});
+		}
+	}, {
+		key: "disable_info",
+		value: function disable_info() {
+			$("#ontology_info .card").addClass("disabled");
+		}
+	}, {
+		key: "enable_info",
+		value: function enable_info() {
+			$("#ontology_info .card").removeClass("disabled");
+		}
+	}, {
+		key: "get_tree_items",
+		value: function get_tree_items(options) {
+			var defaults = {
+				target: "#treeview",
+				source: {}
+			},
+			    option = $.extend({}, defaults, options);
+
+			this.add_items({
+				item: option.target,
+				source: option.source,
+				term: STR.get_ontology_term(option.source.name),
+				is_root: false,
+				langs: option.langs
+			});
+		}
+	}, {
+		key: "add_items",
+		value: function add_items(options) {
+			var defaults = {
+				item: "#treeview",
+				source: {},
+				term: "",
+				is_root: false,
+				langs: []
+			},
+			    option = $.extend({}, defaults, options);
+
+			if (option.is_root) {
+				var $root_li = $('<li>', { "class": "root" }).append(this.button({
+					id: option.source.id,
+					term: option.term,
+					source: option.source,
+					is_root: option.is_root,
+					langs: option.langs
+				}));
+
+				$(option.item).append($root_li);
+
+				LOADER.create({ target: "#pages", type: "progress" });
+				// Default action (only for root items)
+				$("#page_info").html($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
+					return option.langs.length + ": " + option.langs.join(", ");
+				})));
+				LOADER.hide("#pages .progress");
+
+				this.get_tree_items({
+					target: "#treeviev li.root",
+					source: option.source,
+					langs: option.langs
+				});
+			} else {
+				var $li = $('<li>', { "class": "last expandable lastExpandable" }).append(this.tree_icon(true)).append(this.button({
+					id: option.source.id,
+					term: option.term,
+					source: option.source,
+					is_root: option.is_root,
+					langs: option.langs
+				}));
+				$(option.item).append($li);
+				// $('<li>', {"class": "last expandable lastExpandable"}).append(
+				// 	this.button(option.source.id, option.term)
+				// )
+			}
+		}
+	}]);
+
+	return treeview;
+}();
+
+exports.default = treeview;
+
+},{"../../src/js/_str.es6":10,"../../src/js/data.es6":12,"../../src/js/loader.es6":15,"moment":6}],12:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6884,10 +7169,6 @@ var data = function () {
 		key: "get_ontologies_data",
 		value: function get_ontologies_data(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -6919,10 +7200,6 @@ var data = function () {
 		key: "get_ontology",
 		value: function get_ontology(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -6946,10 +7223,6 @@ var data = function () {
 			var _this = this;
 
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -6978,16 +7251,33 @@ var data = function () {
 		key: "get_ontology_comments",
 		value: function get_ontology_comments(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/get-comments-onto/?ontoId=/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "get_terms_comments",
+		value: function get_terms_comments(term_id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
 				$.ajax({
 					type: "GET",
-					url: "http://www.cropontology.org/get-comments?termId=/" + id,
+					url: "http://www.cropontology.org/get-comments?termId=" + term_id,
 					async: true,
 					dataType: "json",
 					success: function success(data) {
@@ -7003,10 +7293,6 @@ var data = function () {
 		key: "get_children",
 		value: function get_children(id) {
 			return new _es6Promise.Promise(function (resolve, reject) {
-				var filteredCats = [],
-				    newCats = {},
-				    categories = [];
-
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7024,6 +7310,37 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "get_user",
+		value: function get_user(id) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+     * @see http://www.cropontology.org/api
+     */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/users/" + id,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						// Get Gravatar data
+						$.ajax({
+							type: "GET",
+							url: "https://en.gravatar.com/" + data.gravatar + ".json",
+							async: true,
+							dataType: "json",
+							success: function success(gravatar_data) {
+								data.gravatar = gravatar_data.entry[0];
+								resolve(data);
+							}
+						});
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 	}]);
 
 	return data;
@@ -7031,7 +7348,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/js/_obj.es6":9,"../../src/js/_str.es6":10,"es6-promise":5}],12:[function(require,module,exports){
+},{"../../src/js/_obj.es6":9,"../../src/js/_str.es6":10,"es6-promise":5}],13:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7160,7 +7477,7 @@ var filters = function () {
 
 exports.default = filters;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7183,6 +7500,10 @@ var _pagination = require("../../src/js/pagination.es6");
 
 var _pagination2 = _interopRequireDefault(_pagination);
 
+var _treeview = require("../../src/js/_treeview.es6");
+
+var _treeview2 = _interopRequireDefault(_treeview);
+
 var _filters = require("../../src/js/filters.es6");
 
 var _filters2 = _interopRequireDefault(_filters);
@@ -7194,6 +7515,10 @@ var _modals2 = _interopRequireDefault(_modals);
 var _str = require("../../src/js/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
+
+var _loader = require("../../src/js/loader.es6");
+
+var _loader2 = _interopRequireDefault(_loader);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7216,9 +7541,11 @@ var page_add_ontology = "<!-- <script type=\"text/javascript\" src=\"http://www.
 var DATA = new _data2.default(),
     NAV = new _navigation2.default(),
     PAGINATION = new _pagination2.default(),
+    TREEVIEW = new _treeview2.default(),
     FILTERS = new _filters2.default(),
     MODALS = new _modals2.default(),
     STR = new _str2.default(),
+    LOADER = new _loader2.default(),
     URL = "http://www.cropontology.org",
     PAGE_ABOUT = page_about,
     PAGE_PRIVACY_POLICY = page_privacy_policy,
@@ -7232,7 +7559,10 @@ var DATA = new _data2.default(),
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json"),
     top_carousel = require("../../common/settings/top_carousel.json"),
-    moment = require("moment");
+    moment = require("moment"),
+    user = {
+	logged: false
+};
 
 if (settings[page] == undefined) {
 	page = "404";
@@ -7281,59 +7611,6 @@ var layout = function () {
 			$(".tabs").tabs();
 
 			$("textarea.autoresize").trigger("autoresize");
-		}
-
-		/**
-   * Build a circular or a progress loader
-   * @see https://materializecss.com/preloader.html
-   *
-   * @param  object 						options								The loader display options
-   */
-
-	}, {
-		key: "loader",
-		value: function loader(options) {
-			var defaults = {
-				/**
-     * The loader type.
-     * Options: "progress" or "circular"
-     * @type {String}
-     */
-				type: "progress",
-				/**
-     * The progress type.
-     * Options: `true` stay for determinate progress (need `size` option)
-     * NOTE: This option is available only for progress loaders
-     * @type {Boolean}
-     */
-				determinate: false,
-				/**
-     * The loader size.
-     * Options:
-     * 	- Circular loader: @type {String} 	"" or "small" or "big"
-     * 	- Progress loader: @type {Integer}	The percentage of progress
-     */
-				size: "",
-				/**
-     * The loader colour
-     * NOTE: This option is available only for circular loaders
-     * @type {String}
-     */
-				colour: "grey"
-			},
-			    data = $.extend({}, defaults, options);
-
-			switch (data.type) {
-				case "progress":
-					return $('<div>', { "class": "progress" }).append($('<div>', {
-						"class": data.determinate ? "determinate" : "indeterminate",
-						"style": data.size !== "" ? "width: " + data.size + "%" : ""
-					}));
-					break;
-				case "circular":
-					return $('<div>', { "class": "preloader-wrapper " + data.size + " active" }).append($('<div>', { "class": "spinner-layer spinner-" + data.colour + "-only" }).append($('<div>', { "class": "circle-clipper left" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "gap-patch" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "circle-clipper right" }).append($('<div>', { "class": "circle" }))));
-					break;
-			}
 		}
 
 		/**
@@ -7532,8 +7809,6 @@ var layout = function () {
 	}, {
 		key: "build_contents_section",
 		value: function build_contents_section() {
-			var _this = this;
-
 			/**
     * Content container
     */
@@ -7546,7 +7821,7 @@ var layout = function () {
 					return $('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
 					// Loader
 					// ---------------------------------
-					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)).append(_this.loader({ type: "progress" }))
+					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)).append(LOADER.create({ type: "progress" }))
 					// ---------------------------------
 					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }));
 					/**
@@ -7570,8 +7845,6 @@ var layout = function () {
 	}, {
 		key: "build_page_contents",
 		value: function build_page_contents() {
-			var _this2 = this;
-
 			// Build the user account modal
 			MODALS.user_modal("Login");
 
@@ -7843,7 +8116,6 @@ var layout = function () {
 					    language = "english";
 
 					DATA.get_ontologies_data(NAV.get_ontology_id()).then(function (ontologies_data) {
-						console.log(ontologies_data);
 						$('<div>', { "id": "ontology_card", "class": "row container" }).append($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>').append(function () {
 							if (ontologies_data.ontology_title.link !== "") {
 								return $('<a>', { "href": ontologies_data.ontology_title.link, "target": "_blank" }).text(ontologies_data.ontology_title.title);
@@ -7887,81 +8159,56 @@ var layout = function () {
 					});
 
 					DATA.get_ontology(NAV.get_ontology_id()).then(function (data) {
-						$("#contents .progress").animate({ "opacity": 0 });
+						LOADER.hide("#contents .progress");
 
 						var langs = [];
-						if (STR.is_json(data.name)) {
-							$.each(JSON.parse(data.name), function (lang, name) {
-								langs.push(STR.ucfirst(lang));
-								term = STR.ucfirst(name);
-							});
-						} else {
-							langs.push("English");
-							term = "?";
-						}
 
-						$("#page_info").append($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(data.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
-							return langs.length + ": " + langs.join(", ");
-						})));
-						$("#ontology_tree .languages_refresh select").append($('<option>', { "value": "english" }).text("English"));
-						$("#treeviev").append($('<li>', { "class": "last expandable lastExpandable" }).append($('<div>', { "class": "hitarea expandable-hitarea lastExpandable-hitarea" }).click(function (e) {
-							if ($(e.target).closest("li").find("ul").length == 0) {
-								$("#treeviev_container").prepend(_this2.loader({ type: "progress" }));
+						langs.push(STR.get_ontologies_languages(data.name));
 
-								$(e.target).closest("li").append($('<ul>')).find("a").addClass("selected");
+						$("#ontology_tree .languages_refresh select").append($.map(langs, function (lang) {
+							return $('<option>', {
+								"value": lang.toLowerCase(),
+								"selected": lang.toLowerCase() == settings.general.language ? true : false
+							}).text(lang);
+						})).attr("disabled", langs.length == 1).material_select();
 
-								DATA.get_children(data.id).then(function (data) {
-									$.each(data, function (k, v) {
-										$(e.target).closest("li").find("ul").append($('<li>', {
-											"class": v.has_children ? k == data.length - 1 ? "last expandable lastExpandable" : "expandable" : ""
-										}).append($('<div>', { "class": "hitarea expandable-hitarea " + (k == data.length - 1 ? "lastExpandable-hitarea" : "") })).append($('<a>', {
-											"title": DATA.extract_name(v.name), "class": "btn btn-mini",
-											"data-id": data.id
-										}).append($('<span>').text(DATA.extract_name(v.name)))));
-									});
-									$("#treeviev_container .progress").animate({ "opacity": 0 });
-								});
-							}
-						})).append($('<a>', {
-							"title": STR.ucfirst(term), "class": "btn btn-mini",
-							"data-id": data.id
-						}).append($('<span>').text(STR.ucfirst(term))).click(function (e) {
-							$("#page_info dl").html("");
+						TREEVIEW.add_items({
+							item: "#treeviev",
+							source: data,
+							term: "ROOT",
+							is_root: true,
+							langs: langs
+						});
 
-							$(e.currentTarget).addClass("selected");
-							$("#ontology_info .card").addClass("disabled");
-							$("#pages").prepend(_this2.loader({ type: "progress" }));
-
-							DATA.get_ontology_attributes(data.id).then(function (data) {
-								var name = void 0,
-								    $dl = $("#page_info dl");
-								$.each(data, function (k, v) {
-									if (k !== "comment") {
-										$dl.append($('<dt>').append(k)).append($('<dd>').append(v));
-									}
-								});
-
-								$("#pages .progress").animate({ "opacity": 0 });
-								$("#ontology_info .card").removeClass("disabled");
-							});
-
-							DATA.get_ontology_comments(data.id).then(function (data) {
-								$("#new-comments a").text("Comments (" + data.length + ")");
-								if (data.length == 0) {
-									$("#new-comments").addClass("disabled");
-								}
-								console.info(data);
-							});
-						})));
 						$("#term_permalink").attr("data-permalink", "http://www.cropontology.org/terms/" + data.id + "/" + term);
-						$("#ontology_tree .languages_refresh select").material_select();
 						$("#ontology_tree, #ontology_info").removeClass("disabled");
 					});
 
-					// Place the external html page
-					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeviev_container", "class": "card-content" }).append($('<ul>', { "id": "treeviev", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "class": "term_id" }).text("Term name")).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append()))).append($('<div>', { "id": "graph", "class": "card" }).append()))));
+					DATA.get_ontology_comments(NAV.get_ontology_id()).then(function (data) {
+						var comments_count = $.map(data, function (n, i) {
+							return i;
+						}).length;
+						if (jQuery.isEmptyObject(data)) {
+							data = {};
+						}
+						$("#new-comments a").text("Comments (" + comments_count + ")");
+						$("#comments").append();
+					});
 
-					$("#contents").prepend(this.loader({ type: "progress" }));
+					// Place the external html page
+					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeviev_container", "class": "card-content" }).append($('<ul>', { "id": "treeviev", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "class": "term_id" }).text("Term name")).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
+						if (user.logged) {
+							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
+						} else {
+							return $('<div>', { "class": "row" }).append($('<div>', { "class": "input-field col s12" }).append($("<textarea>", {
+								"name": "comment",
+								"class": "materialize-textarea",
+								"id": "comment_input"
+							})).append($('<label>', { "for": "comment_input" }).text("Add a comment")));
+						}
+					}))))).append($('<div>', { "id": "graph", "class": "card" }).append()))));
+
+					$("#contents").prepend(LOADER.create({ type: "progress" }));
 					break;
 			}
 		}
@@ -7997,7 +8244,90 @@ var layout = function () {
 
 exports.default = layout;
 
-},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../common/settings/top_carousel.json":3,"../../src/js/_navigation.es6":8,"../../src/js/_str.es6":10,"../../src/js/data.es6":11,"../../src/js/filters.es6":12,"../../src/js/modals.es6":14,"../../src/js/pagination.es6":15,"moment":6}],14:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../common/settings/top_carousel.json":3,"../../src/js/_navigation.es6":8,"../../src/js/_str.es6":10,"../../src/js/_treeview.es6":11,"../../src/js/data.es6":12,"../../src/js/filters.es6":13,"../../src/js/loader.es6":15,"../../src/js/modals.es6":16,"../../src/js/pagination.es6":17,"moment":6}],15:[function(require,module,exports){
+"use strict";
+/* jshint esversion: 6 */
+"strict mode";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var loader = function () {
+	function loader() {
+		_classCallCheck(this, loader);
+	}
+
+	_createClass(loader, [{
+		key: "create",
+
+		/**
+   * Build a circular or a progress loader
+   * @see https://materializecss.com/preloader.html
+   *
+   * @param  object 						options								The loader display options
+   */
+		value: function create(options) {
+			var defaults = {
+				/**
+     * The loader type.
+     * Options: "progress" or "circular"
+     * @type {String}
+     */
+				type: "progress",
+				/**
+     * The progress type.
+     * Options: `true` stay for determinate progress (need `size` option)
+     * NOTE: This option is available only for progress loaders
+     * @type {Boolean}
+     */
+				determinate: false,
+				/**
+     * The loader size.
+     * Options:
+     * 	- Circular loader: @type {String} 	"" or "small" or "big"
+     * 	- Progress loader: @type {Integer}	The percentage of progress
+     */
+				size: "",
+				/**
+     * The loader colour
+     * NOTE: This option is available only for circular loaders
+     * @type {String}
+     */
+				colour: "grey",
+				target: ""
+			},
+			    data = $.extend({}, defaults, options);
+
+			switch (data.type) {
+				case "progress":
+					$(data.target).prepend($('<div>', { "class": "progress" }).append($('<div>', {
+						"class": data.determinate ? "determinate" : "indeterminate",
+						"style": data.size !== "" ? "width: " + data.size + "%" : ""
+					})));
+					break;
+				case "circular":
+					$(data.target).prepend($('<div>', { "class": "preloader-wrapper " + data.size + " active" }).append($('<div>', { "class": "spinner-layer spinner-" + data.colour + "-only" }).append($('<div>', { "class": "circle-clipper left" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "gap-patch" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "circle-clipper right" }).append($('<div>', { "class": "circle" })))));
+					break;
+			}
+		}
+	}, {
+		key: "hide",
+		value: function hide(item) {
+			$(item).animate({ "opacity": 0 });
+		}
+	}]);
+
+	return loader;
+}();
+
+exports.default = loader;
+
+},{}],16:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8147,7 +8477,7 @@ var modals = function () {
 
 exports.default = modals;
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";

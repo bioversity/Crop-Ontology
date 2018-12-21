@@ -2,6 +2,7 @@
 "strict mode";
 
 
+var settings = require("../../common/settings/contents.json");
 
 class str {
 	/**
@@ -83,11 +84,60 @@ class str {
 		return (items !== 1) ? string + "s" : string;
 	}
 
-	is_json(str) {
-	    try { JSON.parse(str); } catch (e) {
-	        return false;
-	    }
+	/**
+	 * Check wheter a given string is a JSON
+	 * @param  string 							string							The string to analyze
+	 * @return boolean
+	 */
+	is_json(string) {
+	    try { JSON.parse(string); } catch (e) { return false; }
 	    return true;
+	}
+
+	/**
+	 * 								ONTOLOGIES
+	 * -------------------------------------------------------------------------
+	 */
+
+	/**
+	 * Get all languages in a JSON string
+	 * @param  string 							string							The string to analyze
+	 * @return array|string														All collected languages
+	 */
+	get_ontologies_languages(string) {
+		let langs = [];
+		if(this.is_json(string)) {
+			$.each(JSON.parse(string), (lang, name) => {
+				langs.push(this.ucfirst(lang));
+			});
+		} else {
+			langs.push("English");
+		}
+		return (langs.length == 1) ? langs[0] : langs;
+	}
+
+	/**
+	 * Extract a string from a JSON string
+	 * The Crop Onlogy API often provide a JSON language string.
+	 * This method extract the string value from that JSON string
+	 * @example `{"english": "Text in english"}`
+	 *
+	 * @param  string 							string							The string to analyze
+	 * @param  string 							language						The preferred language
+	 * @return string															The extracted string
+	 */
+	get_ontology_term(string, language) {
+		language = (language == undefined) ? settings.general.language : language;
+
+		let strings = {};
+		if(this.is_json(string)) {
+			$.each(JSON.parse(string), (lang, term) => {
+				strings[lang] = this.ucfirst(term);
+			});
+		} else {
+			strings[language] = "?";
+		}
+		return strings[language];
 	}
 }
 export default str;

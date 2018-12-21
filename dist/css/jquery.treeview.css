@@ -36,6 +36,7 @@
 
 .treeview .hover { color: red; cursor: pointer; }
 
+.treeview li.root { background: none !important; }
 .treeview li { background: url("../../../common/img/images/treeview-default-line.gif") 0 0 no-repeat; }
 .treeview li.collapsable, .treeview li.expandable { background-position: 0 -176px; }
 

@@ -1,5 +1,6 @@
 {
     "general": {
+        "language": "english",
         "loader": {
             "text": "Getting data..."
         },

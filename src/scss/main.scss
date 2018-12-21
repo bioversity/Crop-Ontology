@@ -613,7 +613,10 @@ ul {
           display: flex;
           flex-wrap: wrap;
 
-          dt { width: 33%; }
+          dt {
+            font-weight: bold;
+            width: 33%;
+          }
           dd {
             margin-left: auto;
             width: 66%;

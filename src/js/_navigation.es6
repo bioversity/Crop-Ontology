@@ -51,7 +51,6 @@ class navigation {
 	get_ontology_id() {
 		let path = this.get_url_path();
 		if(path[0] == "ontology") {
-			console.log(path);
 			return path[1].replace(this.get_ontology_url_regex(":"), "$1");
 		}
 	}

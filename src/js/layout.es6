@@ -4,9 +4,11 @@
 import data from "../../src/js/data.es6";
 import navigation from "../../src/js/_navigation.es6";
 import pagination from "../../src/js/pagination.es6";
+import treeview from "../../src/js/_treeview.es6";
 import filters from "../../src/js/filters.es6";
 import modals from "../../src/js/modals.es6";
 import str from "../../src/js/_str.es6";
+import loader from "../../src/js/loader.es6";
 /**
 * Static pages
 */
@@ -24,9 +26,11 @@ var
 	DATA = new data(),
 	NAV = new navigation(),
 	PAGINATION = new pagination(),
+	TREEVIEW = new treeview(),
 	FILTERS = new filters(),
 	MODALS = new modals(),
 	STR = new str(),
+	LOADER = new loader(),
 
 	URL = "http://www.cropontology.org",
 
@@ -44,7 +48,11 @@ var
 	settings = require("../../common/settings/contents.json"),
 	top_carousel = require("../../common/settings/top_carousel.json"),
 
-	moment = require("moment")
+	moment = require("moment"),
+
+	user = {
+		logged: false
+	}
 ;
 
 if(settings[page] == undefined) {
@@ -90,72 +98,6 @@ class layout {
 		$(".tabs").tabs();
 
 		$("textarea.autoresize").trigger("autoresize");
-	}
-
-	/**
-	 * Build a circular or a progress loader
-	 * @see https://materializecss.com/preloader.html
-	 *
-	 * @param  object 						options								The loader display options
-	 */
-	loader(options) {
-		let defaults = {
-			/**
-			 * The loader type.
-			 * Options: "progress" or "circular"
-			 * @type {String}
-			 */
-			type: "progress",
-			/**
-			 * The progress type.
-			 * Options: `true` stay for determinate progress (need `size` option)
-			 * NOTE: This option is available only for progress loaders
-			 * @type {Boolean}
-			 */
-			determinate: false,
-			/**
-			 * The loader size.
-			 * Options:
-			 * 	- Circular loader: @type {String} 	"" or "small" or "big"
-			 * 	- Progress loader: @type {Integer}	The percentage of progress
-			 */
-			size: "",
-			/**
-			 * The loader colour
-			 * NOTE: This option is available only for circular loaders
-			 * @type {String}
-			 */
-			colour: "grey"
-		},
-		data = $.extend({}, defaults, options);
-
-		switch(data.type) {
-			case "progress":
-				return $('<div>', {"class": "progress"}).append(
-					$('<div>', {
-						"class": (data.determinate) ? "determinate" : "indeterminate",
-						"style": (data.size !== "") ? "width: " + data.size + "%" : ""
-					})
-				);
-				break;
-			case "circular":
-				return $('<div>', {"class": "preloader-wrapper " + data.size + " active"}).append(
-					$('<div>', {"class": "spinner-layer spinner-" + data.colour + "-only"}).append(
-						$('<div>', {"class": "circle-clipper left"}).append(
-							$('<div>', {"class": "circle"})
-						)
-					).append(
-						$('<div>', {"class": "gap-patch"}).append(
-							$('<div>', {"class": "circle"})
-						)
-					).append(
-						$('<div>', {"class": "circle-clipper right"}).append(
-							$('<div>', {"class": "circle"})
-						)
-					)
-				);
-				break;
-		}
 	}
 
 	/**
@@ -451,7 +393,7 @@ class layout {
 											$('<div>', {"class": "help"}).append(
 												$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
 											).append(
-												this.loader({type: "progress"})
+												LOADER.create({type: "progress"})
 											)
 											// ---------------------------------
 										)
@@ -898,7 +840,6 @@ class layout {
 					language = "english";
 
 				DATA.get_ontologies_data(NAV.get_ontology_id()).then((ontologies_data) => {
-					console.log(ontologies_data);
 					$('<div>', {"id": "ontology_card", "class": "row container"}).append(
 						$('<div>', {"class": "col s2"}).append(
 							$('<img>', {"class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture})
@@ -994,113 +935,40 @@ class layout {
 				});
 
 				DATA.get_ontology(NAV.get_ontology_id()).then((data) => {
-					$("#contents .progress").animate({"opacity": 0});
+					LOADER.hide("#contents .progress");
 
 					let langs = [];
-					if(STR.is_json(data.name)) {
-						$.each(JSON.parse(data.name), (lang, name) => {
-							langs.push(STR.ucfirst(lang));
-							term = STR.ucfirst(name);
-						});
-					} else {
-						langs.push("English");
-						term = "?"
-					}
 
-					$("#page_info").append(
-						$('<dl>').append(
-							$('<dt>').text("Ontology type:")
-						).append(
-							$('<dd>').text(data.ontologyType)
-						).append(
-							$('<dt>').append("Available languages:")
-						).append(
-							$('<dd>').append(() => {
-								return langs.length + ": " + langs.join(", ")
-							})
-						)
-					);
+					langs.push(STR.get_ontologies_languages(data.name));
+
 					$("#ontology_tree .languages_refresh select").append(
-						$('<option>', {"value": "english"}).text("English")
-					);
-					$("#treeviev").append(
-						$('<li>', {"class": "last expandable lastExpandable"}).append(
-							$('<div>', {"class": "hitarea expandable-hitarea lastExpandable-hitarea"}).click((e) => {
-								if($(e.target).closest("li").find("ul").length == 0) {
-									$("#treeviev_container").prepend(
-										this.loader({type: "progress"})
-									);
+						$.map(langs, (lang) => {
+							return $('<option>', {
+								"value": lang.toLowerCase(),
+								"selected": ((lang.toLowerCase() == settings.general.language) ? true : false),
+							}).text(lang)
+						})
+					).attr("disabled", (langs.length == 1)).material_select();
 
-									$(e.target).closest("li").append(
-										$('<ul>')
-									).find("a").addClass("selected");
+					TREEVIEW.add_items({
+						item: "#treeviev",
+						source: data,
+						term: "ROOT",
+						is_root: true,
+						langs: langs
+					});
 
-									DATA.get_children(data.id).then((data) => {
-										$.each(data, (k, v) => {
-											$(e.target).closest("li").find("ul").append(
-												$('<li>', {
-													"class": ((v.has_children) ? ((k == data.length - 1) ? "last expandable lastExpandable" : "expandable") : "")
-												}).append(
-													$('<div>', {"class": "hitarea expandable-hitarea " + ((k == data.length - 1) ? "lastExpandable-hitarea" : "")})
-												).append(
-													$('<a>', {
-														"title": DATA.extract_name(v.name), "class": "btn btn-mini",
-														"data-id": data.id
-													}).append(
-														$('<span>').text(DATA.extract_name(v.name))
-													)
-												)
-											)
-										});
-										$("#treeviev_container .progress").animate({"opacity": 0});
-									});
-								}
-							})
-						).append(
-							$('<a>', {
-								"title": STR.ucfirst(term), "class": "btn btn-mini",
-								"data-id": data.id
-							}).append(
-								$('<span>').text(STR.ucfirst(term))
-							).click((e) => {
-								$("#page_info dl").html("");
-
-								$(e.currentTarget).addClass("selected");
-								$("#ontology_info .card").addClass("disabled");
-								$("#pages").prepend(
-									this.loader({type: "progress"})
-								);
-
-								DATA.get_ontology_attributes(data.id).then((data) => {
-									let name,
-										$dl = $("#page_info dl");
-									$.each(data, (k, v) => {
-										if(k !== "comment") {
-											$dl.append(
-												$('<dt>').append(k)
-											).append(
-												$('<dd>').append(v)
-											)
-										}
-									});
-
-									$("#pages .progress").animate({"opacity": 0});
-									$("#ontology_info .card").removeClass("disabled");
-								});
-
-								DATA.get_ontology_comments(data.id).then((data) => {
-									$("#new-comments a").text("Comments (" + data.length + ")");
-									if(data.length == 0) {
-										$("#new-comments").addClass("disabled");
-									}
-									console.info(data)
-								});
-							})
-						)
-					);
 					$("#term_permalink").attr("data-permalink", "http://www.cropontology.org/terms/" + data.id + "/" + term)
-					$("#ontology_tree .languages_refresh select").material_select();
 					$("#ontology_tree, #ontology_info").removeClass("disabled");
+				});
+
+				DATA.get_ontology_comments(NAV.get_ontology_id()).then((data) => {
+					let comments_count = $.map(data, function(n, i) { return i; }).length;
+					if(jQuery.isEmptyObject(data)) {
+						data = {};
+					}
+					$("#new-comments a").text("Comments (" + comments_count + ")");
+					$("#comments").append();
 				});
 
 				// Place the external html page
@@ -1163,7 +1031,29 @@ class layout {
 										$('<div>', {"id": "pages"}).append(
 											$('<div>', {"id": "page_info", "class": "card-content"})
 										).append(
-											$('<div>', {"id": "page_comments", "class": "card-content"}).append()
+											$('<div>', {"id": "page_comments", "class": "card-content"}).append(
+												$('<ul>', {"id": "comments", "class": "collection"})
+											).append(
+												$('<div>', {"id": "comment_form"}).append(() => {
+													if(user.logged) {
+														return $('<center>', {"class": "grey-text"}).append(
+															$('<i>').text("Please log in to comment")
+														)
+													} else {
+														return $('<div>', {"class": "row"}).append(
+															$('<div>', {"class": "input-field col s12"}).append(
+																$("<textarea>", {
+																	"name": "comment",
+																	"class": "materialize-textarea",
+																	"id": "comment_input"
+																})
+															).append(
+																$('<label>', {"for": "comment_input"}).text("Add a comment")
+															)
+														)
+													}
+												})
+											)
 										)
 									)
 								).append(
@@ -1174,7 +1064,7 @@ class layout {
 					);
 
 					$("#contents").prepend(
-						this.loader({type: "progress"})
+						LOADER.create({type: "progress"})
 					);
 				break;
 		}
