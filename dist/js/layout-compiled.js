@@ -160,7 +160,7 @@ var layout = function () {
 							$.each(item.items, function (ik, iv) {
 								$("#" + item.position).find("ul").append(function () {
 									if (iv.display) {
-										return $('<li>').append($('<a>', { "href": iv.link, "target": iv.target }).append(iv.icon !== undefined ? $('<span>', { "class": iv.icon }) : iv.label));
+										return $('<li>').append($('<a>', { "href": iv.link, "target": iv.target, "data-tooltip": iv.label, "class": "tooltipped" }).append(iv.icon !== undefined ? $('<span>', { "class": iv.icon }) : iv.label));
 									}
 									if (iv.separator !== undefined) {
 										return $('<li>', { "class": "separator" });
@@ -695,7 +695,7 @@ var layout = function () {
 						TREEVIEW.add_items({
 							item: "#treeviev",
 							source: data,
-							term: "ROOT",
+							term: '<tt>' + NAV.get_ontology_id() + "</tt> - " + STR.get_ontology_term(data.name),
 							is_root: true,
 							langs: langs
 						});
@@ -741,7 +741,7 @@ var layout = function () {
 		key: "build_footer",
 		value: function build_footer() {
 			if (settings.general.footer.visible) {
-				$("body").append($("<footer>", { "class": "parallax-container" }).append($("<div>", { "class": "parallax" }).append($("<img>", { "src": "common/img/" + settings.general.footer.background }))).append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl2" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "class": "responsive-img", "src": "common/img/" + settings.general.footer.logo }))).append($('<p>', { "class": "description" }).html(settings.general.footer.description))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2 offset-xl1" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2" })))).append($('<section>', { "id": "bottom_links" }).append($('<div>', { "class": "row container" }).append($('<div>', { "id": "", "class": "col s12 m6 l6 xl6 left" })).append($('<div>', { "id": "owner", "class": "col s12 m6 l6 xl6 right right-align" })))).append($('<center>', { "class": "license" }).append($('<p>').html(settings.general.license.text)));
+				$("body").append($("<footer>", { "class": "parallax-container" }).append($("<div>", { "class": "parallax" }).append($("<img>", { "src": "common/img/" + settings.general.footer.background }))).append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl2" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "class": "responsive-img", "src": "common/img/" + settings.general.footer.logo }))).append($('<p>', { "class": "description" }).html(settings.general.footer.description))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2 offset-xl1" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2 offset-xl1" })))).append($('<section>', { "id": "bottom_links" }).append($('<div>', { "class": "row container" }).append($('<div>', { "id": "", "class": "col s12 m6 l6 xl6 left" })).append($('<div>', { "id": "owner", "class": "col s12 m6 l6 xl6 right right-align" })))).append($('<center>', { "class": "license" }).append($('<p>').html(settings.general.license.text)));
 			}
 
 			/**

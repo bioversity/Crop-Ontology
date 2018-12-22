@@ -162,9 +162,9 @@
                     ]
                 },
                 {
-                    "title": "",
+                    "title": "Follow us",
                     "position": "right_menu",
-                    "class": "horizontal right",
+                    "class": "horizontal",
                     "items": [
                         {
                             "label": "Github",
@@ -179,6 +179,13 @@
                             "display": true,
                             "target": "_blank",
                             "icon": "fab fa-youtube fa-2x"
+                        },
+                        {
+                            "label": "Crop Ontology Community Website",
+                            "link": "https://sites.google.com/a/cgxchange.org/cropontologycommunity/",
+                            "display": true,
+                            "target": "_blank",
+                            "icon": "fas fa-newspaper fa-2x"
                         }
                     ]
                 }

@@ -16,7 +16,7 @@ class data {
 				term = STR.ucfirst(name);
 			});
 		} else {
-			term = "";
+			term = STR.ucfirst(json_name);
 		}
 		return term;
 	}

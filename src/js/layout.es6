@@ -134,7 +134,7 @@ class layout {
 								$("#" + item.position).find("ul").append(() => {
 									if(iv.display) {
 										return $('<li>').append(
-											$('<a>', {"href": iv.link, "target": iv.target}).append((iv.icon !== undefined) ? $('<span>', {"class": iv.icon}) : iv.label)
+											$('<a>', {"href": iv.link, "target": iv.target, "data-tooltip": iv.label, "class": "tooltipped"}).append((iv.icon !== undefined) ? $('<span>', {"class": iv.icon}) : iv.label)
 										);
 									}
 									if(iv.separator !== undefined) {
@@ -953,7 +953,7 @@ class layout {
 					TREEVIEW.add_items({
 						item: "#treeviev",
 						source: data,
-						term: "ROOT",
+						term: '<tt>' + NAV.get_ontology_id() + "</tt> - " + STR.get_ontology_term(data.name),
 						is_root: true,
 						langs: langs
 					});
@@ -1094,7 +1094,7 @@ class layout {
 					).append(
 						$("<div>", {"id": "center_menu", "class": "col s12 m2 l2 xl2"})
 					).append(
-						$("<div>", {"id": "right_menu", "class": "col s12 m2 l2 xl2"})
+						$("<div>", {"id": "right_menu", "class": "col s12 m2 l2 xl2 offset-xl1"})
 					)
 				)
 			).append(
