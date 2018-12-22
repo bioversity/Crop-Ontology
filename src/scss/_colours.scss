@@ -6,16 +6,21 @@ $very-light-grey: #efefef;
 $white-grey: #fafafa;
 $medium-light-grey: #999;
 $medium-grey: #666;
+$medium-dark-grey: #454545;
 $dark-grey: #333;
 
 $black: #000;
 $white: #fff;
 
-$highlight: #f28021;
-$highlight-clear: #ef9f5d;
 $highlight-very-clear: #ead09d;
+$highlight-clear: #ef9f5d;
+$highlight: #f28021;
 $highlight-dark: #db6200;
+
+$tag-light-green: #9fddc0;
 $tag-green: #56a681;
+
+$tag-light-blue: #b8e0ef;
 $tag-blue: #568da6;
 $text-blue: #3f83b9;
 
@@ -45,4 +50,16 @@ $text-blue: #3f83b9;
   text-transform: none;
 
   &:hover, &.selected { background-color: $highlight-very-clear !important; }
+}
+
+.relationship {
+  background-color: $tag-light-blue;
+  border-radius: 4px;
+  color: $medium-dark-grey;
+  font-family: monospace;
+  font-size: 0.6em;
+  margin-left: 10px;
+  padding: 3px 6px;
+
+  &.is_a { background-color: $tag-light-green; }
 }

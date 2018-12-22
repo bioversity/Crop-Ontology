@@ -115,6 +115,8 @@ class treeview {
 											source: v,
 											is_root: false
 										})
+									).append(
+										$('<span>', {"class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`"}).text(v.relationship)
 									)
 								)
 							});
@@ -173,9 +175,9 @@ class treeview {
 		},
 		option = $.extend({}, defaults, options);
 
-		return $('<a>', {
-			"title": STR.ucfirst(option.term),
-			"class": "btn btn-mini" + ((option.is_root) ? " selected" : ""),
+		let $a = $('<a>', {
+			"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
+			"class": "btn btn-mini tooltipped" + ((option.is_root) ? " selected" : ""),
 			"data-id": option.id
 		}).append(
 			$('<span>').html(option.term)
@@ -240,6 +242,15 @@ class treeview {
 
 			}
 		});
+
+		if(option.source.relationship !== undefined) {
+			$a.tooltip({
+				position: "right",
+				html: true,
+				delay: 1000
+			});
+		}
+		return $a;
 	}
 
 	disable_info() {
