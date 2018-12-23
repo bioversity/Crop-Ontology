@@ -6739,10 +6739,9 @@ var treeview = function () {
       * ---------------------------------------------------------
       */
 
-					$(".treeview a.selected").removeClass("selected");
-
 					toggleIcon(e);
-					$li.find("a").first().addClass("selected");
+					// $(".treeview a.selected").removeClass("selected");
+					// $li.find("a").first().addClass("selected");
 
 					if ($li_ul.length == 0) {
 						// Display loader
@@ -6950,6 +6949,8 @@ var treeview = function () {
 				$("#page_info").html($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 					return option.langs.length + ": " + option.langs.join(", ");
 				})));
+				$("#term_info_name").html(option.term);
+
 				LOADER.hide("#pages .progress");
 
 				// Load the root tree
@@ -8340,7 +8341,7 @@ var layout = function () {
 					});
 
 					// Place the external html page
-					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" }).text("Term name")).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
+					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" })).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
 						if (user.logged) {
 							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
 						} else {

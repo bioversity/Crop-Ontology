@@ -1032,7 +1032,7 @@ class layout {
 											$('<div>', {"class": "filterbar nav-wrapper"}).append(
 												$('<ul>', {"class": "filters left"}).append(
 													$('<li>', {"data-filter": "read"}).append(
-														$('<span>', {"id": "term_info_name"}).text("Term name")
+														$('<span>', {"id": "term_info_name"})
 													).append(
 														$('<a>', {"href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink"}).append(
 															$('<span>', {"class": "fa fa-link"})

@@ -88,10 +88,9 @@ var treeview = function () {
       * ---------------------------------------------------------
       */
 
-					$(".treeview a.selected").removeClass("selected");
-
 					toggleIcon(e);
-					$li.find("a").first().addClass("selected");
+					// $(".treeview a.selected").removeClass("selected");
+					// $li.find("a").first().addClass("selected");
 
 					if ($li_ul.length == 0) {
 						// Display loader
@@ -299,6 +298,8 @@ var treeview = function () {
 				$("#page_info").html($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 					return option.langs.length + ": " + option.langs.join(", ");
 				})));
+				$("#term_info_name").html(option.term);
+
 				LOADER.hide("#pages .progress");
 
 				// Load the root tree
