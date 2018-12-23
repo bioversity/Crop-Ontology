@@ -95,24 +95,6 @@ var str = function () {
 		}
 
 		/**
-   * Split a multiline string by a given separator, then get the first line
-   * NOTE: If not provided the separator is a comma ","
-   * @param  string 							string							The string to split
-   * @param  string 							split_by						The separator to split
-   * @return string															The extracted string
-   */
-
-	}, {
-		key: "extract_text",
-		value: function extract_text(string, split_by) {
-			if (split_by == undefined) {
-				split_by = ",";
-			}
-			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
-			return string_part.split("\n")[0];
-		}
-
-		/**
    * Pluralize a string
    * @param  integer 							items							The amount of items
    * @param  string 							string							The string to pluralize
@@ -141,11 +123,39 @@ var str = function () {
 			}
 			return true;
 		}
+	}, {
+		key: "camel_case_2_text",
+		value: function camel_case_2_text(string) {
+			return string.replace(/([a-z])([A-Z])/g, "$1 $2");
+		}
+	}, {
+		key: "readable_data",
+		value: function readable_data(string) {
+			return this.camel_case_2_text(string.replace("_", " "));
+		}
 
 		/**
    * 								ONTOLOGIES
    * -------------------------------------------------------------------------
    */
+
+		/**
+   * Split a multiline string by a given separator, then get the first line
+   * NOTE: If not provided the separator is a comma ","
+   * @param  string 							string							The string to split
+   * @param  string 							split_by						The separator to split
+   * @return string															The extracted string
+   */
+
+	}, {
+		key: "extract_text",
+		value: function extract_text(string, split_by) {
+			if (split_by == undefined) {
+				split_by = ",";
+			}
+			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
+			return string_part.split("\n")[0];
+		}
 
 		/**
    * Get all languages in a JSON string

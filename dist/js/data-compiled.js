@@ -383,8 +383,7 @@ var data = function () {
 					success: function success(data) {
 						var d = {};
 						$.each(data, function (k, v) {
-							v.value = _this.extract_name(v.value);
-							d[v.key] = STR.stripslashes(v.value);
+							d[STR.readable_data(v.key)] = STR.camel_case_2_text(STR.stripslashes(_this.extract_name(v.value)));
 						});
 						resolve(d);
 					},
@@ -403,7 +402,7 @@ var data = function () {
     */
 				$.ajax({
 					type: "GET",
-					url: "http://www.cropontology.org/get-comments-onto/?ontoId=/" + id,
+					url: "http://www.cropontology.org/get-comments-onto/?ontoId=" + id,
 					async: true,
 					dataType: "json",
 					success: function success(data) {

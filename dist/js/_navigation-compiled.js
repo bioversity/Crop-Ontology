@@ -52,13 +52,13 @@ var navigation = function () {
 
 		/**
    * The ontology url performed by regex
-   * @see https://regex101.com/r/S4gNgj/2
+   * @see https://regex101.com/r/S4gNgj/4
    */
 
 	}, {
 		key: "get_ontology_url_regex",
 		value: function get_ontology_url_regex(separator) {
-			var id = "([\\w]{2}\\_[\\d]{3})",
+			var id = "([\\w]+\\_[\\w\\d]+)",
 			    label = "(.*)";
 			return new RegExp(id + "\\" + separator + label, "g");
 		}

@@ -555,15 +555,14 @@ ul {
         }
       }
     }
-    #treeviev_container {
+    #treeview_container {
       background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
       padding: 0;
 
       .progress {
-        margin-top: 1px;
-        margin-bottom: -5px;
+        margin: -24px -24px 24px 0px
       }
-      #treeviev {
+      #treeview {
         padding: 25px;
       }
     }
@@ -585,7 +584,7 @@ ul {
         // min-height: 250px;
 
         .filters {
-          .term_id { margin: 0 15px 0 20px; }
+          #term_info_name { margin: 0 15px 0 20px; }
         }
         .sorts {
           li {

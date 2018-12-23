@@ -71,8 +71,8 @@ class treeview {
 
 					if($li_ul.length == 0) {
 						// Display loader
-						$("#treeviev_container").prepend(
-							LOADER.create({target: "#treeviev_container", type: "progress"})
+						$("#treeview_container").prepend(
+							LOADER.create({target: "#treeview_container", type: "progress"})
 						);
 
 						$li.append($('<ul>'));
@@ -111,7 +111,7 @@ class treeview {
 									).append(
 										this.button({
 											id: v.id,
-											term: DATA.extract_name(v.name),
+											term: STR.ucfirst(DATA.extract_name(v.name)),
 											source: v,
 											is_root: false
 										})
@@ -122,12 +122,12 @@ class treeview {
 							});
 
 							// Hide the loader
-							LOADER.hide("#treeviev_container .progress");
+							LOADER.hide("#treeview_container .progress");
 						});
 					} else {
 						$li_ul.show();
 						// Hide the loader
-						LOADER.hide("#treeviev_container .progress");
+						LOADER.hide("#treeview_container .progress");
 					}
 				} else {
 					/**
@@ -147,6 +147,7 @@ class treeview {
 	}
 
 	add_info(source, remote) {
+		$("#term_info_name").text(source.name);
 		if(remote) {
 			let name,
 				$dl = $("#page_info dl");
@@ -175,12 +176,13 @@ class treeview {
 		},
 		option = $.extend({}, defaults, options);
 
+
 		let $a = $('<a>', {
 			"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
 			"class": "btn btn-mini tooltipped" + ((option.is_root) ? " selected" : ""),
 			"data-id": option.id
 		}).append(
-			$('<span>').html(option.term)
+			$('<span>').html(STR.camel_case_2_text(option.term))
 		).click((e) => {
 			$("#page_info dl").html("");
 			$("#comments").html("");
@@ -300,6 +302,9 @@ class treeview {
 
 			$(option.item).append($root_li);
 
+			/**
+			 * Term Information
+			 */
 			LOADER.create({target: "#pages", type: "progress"});
 				// Default action (only for root items)
 				$("#page_info").html(
@@ -317,11 +322,15 @@ class treeview {
 				);
 			LOADER.hide("#pages .progress");
 
+			// Load the root tree
 			this.get_tree_items({
-				target: "#treeviev li.root",
+				target: "#treeview li.root",
 				source: option.source,
 				langs: option.langs
 			});
+
+			// Open the first tree branch
+			$(".treeview .expandable-hitarea").first().click();
 		} else {
 			let $li = $('<li>', {"class": "last expandable lastExpandable"}).append(
 				this.tree_icon(true, option.source.id)
@@ -335,9 +344,6 @@ class treeview {
 				})
 			);
 			$(option.item).append($li);
-				// $('<li>', {"class": "last expandable lastExpandable"}).append(
-				// 	this.button(option.source.id, option.term)
-				// )
 		}
 	}
 }

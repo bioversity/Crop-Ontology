@@ -6340,13 +6340,13 @@ var navigation = function () {
 
 		/**
    * The ontology url performed by regex
-   * @see https://regex101.com/r/S4gNgj/2
+   * @see https://regex101.com/r/S4gNgj/4
    */
 
 	}, {
 		key: "get_ontology_url_regex",
 		value: function get_ontology_url_regex(separator) {
-			var id = "([\\w]{2}\\_[\\d]{3})",
+			var id = "([\\w]+\\_[\\w\\d]+)",
 			    label = "(.*)";
 			return new RegExp(id + "\\" + separator + label, "g");
 		}
@@ -6529,24 +6529,6 @@ var str = function () {
 		}
 
 		/**
-   * Split a multiline string by a given separator, then get the first line
-   * NOTE: If not provided the separator is a comma ","
-   * @param  string 							string							The string to split
-   * @param  string 							split_by						The separator to split
-   * @return string															The extracted string
-   */
-
-	}, {
-		key: "extract_text",
-		value: function extract_text(string, split_by) {
-			if (split_by == undefined) {
-				split_by = ",";
-			}
-			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
-			return string_part.split("\n")[0];
-		}
-
-		/**
    * Pluralize a string
    * @param  integer 							items							The amount of items
    * @param  string 							string							The string to pluralize
@@ -6575,11 +6557,39 @@ var str = function () {
 			}
 			return true;
 		}
+	}, {
+		key: "camel_case_2_text",
+		value: function camel_case_2_text(string) {
+			return string.replace(/([a-z])([A-Z])/g, "$1 $2");
+		}
+	}, {
+		key: "readable_data",
+		value: function readable_data(string) {
+			return this.camel_case_2_text(string.replace("_", " "));
+		}
 
 		/**
    * 								ONTOLOGIES
    * -------------------------------------------------------------------------
    */
+
+		/**
+   * Split a multiline string by a given separator, then get the first line
+   * NOTE: If not provided the separator is a comma ","
+   * @param  string 							string							The string to split
+   * @param  string 							split_by						The separator to split
+   * @return string															The extracted string
+   */
+
+	}, {
+		key: "extract_text",
+		value: function extract_text(string, split_by) {
+			if (split_by == undefined) {
+				split_by = ",";
+			}
+			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
+			return string_part.split("\n")[0];
+		}
 
 		/**
    * Get all languages in a JSON string
@@ -6736,7 +6746,7 @@ var treeview = function () {
 
 					if ($li_ul.length == 0) {
 						// Display loader
-						$("#treeviev_container").prepend(LOADER.create({ target: "#treeviev_container", type: "progress" }));
+						$("#treeview_container").prepend(LOADER.create({ target: "#treeview_container", type: "progress" }));
 
 						$li.append($('<ul>'));
 
@@ -6770,19 +6780,19 @@ var treeview = function () {
 									action(e, v.id);
 								})).append(_this.button({
 									id: v.id,
-									term: DATA.extract_name(v.name),
+									term: STR.ucfirst(DATA.extract_name(v.name)),
 									source: v,
 									is_root: false
 								})).append($('<span>', { "class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`" }).text(v.relationship)));
 							});
 
 							// Hide the loader
-							LOADER.hide("#treeviev_container .progress");
+							LOADER.hide("#treeview_container .progress");
 						});
 					} else {
 						$li_ul.show();
 						// Hide the loader
-						LOADER.hide("#treeviev_container .progress");
+						LOADER.hide("#treeview_container .progress");
 					}
 				} else {
 					/**
@@ -6803,6 +6813,7 @@ var treeview = function () {
 	}, {
 		key: "add_info",
 		value: function add_info(source, remote) {
+			$("#term_info_name").text(source.name);
 			if (remote) {
 				var name = void 0,
 				    $dl = $("#page_info dl");
@@ -6834,7 +6845,7 @@ var treeview = function () {
 				"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
 				"class": "btn btn-mini tooltipped" + (option.is_root ? " selected" : ""),
 				"data-id": option.id
-			}).append($('<span>').html(option.term)).click(function (e) {
+			}).append($('<span>').html(STR.camel_case_2_text(option.term))).click(function (e) {
 				$("#page_info dl").html("");
 				$("#comments").html("");
 
@@ -6931,6 +6942,9 @@ var treeview = function () {
 
 				$(option.item).append($root_li);
 
+				/**
+     * Term Information
+     */
 				LOADER.create({ target: "#pages", type: "progress" });
 				// Default action (only for root items)
 				$("#page_info").html($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
@@ -6938,11 +6952,15 @@ var treeview = function () {
 				})));
 				LOADER.hide("#pages .progress");
 
+				// Load the root tree
 				this.get_tree_items({
-					target: "#treeviev li.root",
+					target: "#treeview li.root",
 					source: option.source,
 					langs: option.langs
 				});
+
+				// Open the first tree branch
+				$(".treeview .expandable-hitarea").first().click();
 			} else {
 				var $li = $('<li>', { "class": "last expandable lastExpandable" }).append(this.tree_icon(true, option.source.id)).append(this.button({
 					id: option.source.id,
@@ -6952,9 +6970,6 @@ var treeview = function () {
 					langs: option.langs
 				}));
 				$(option.item).append($li);
-				// $('<li>', {"class": "last expandable lastExpandable"}).append(
-				// 	this.button(option.source.id, option.term)
-				// )
 			}
 		}
 	}]);
@@ -7350,8 +7365,7 @@ var data = function () {
 					success: function success(data) {
 						var d = {};
 						$.each(data, function (k, v) {
-							v.value = _this.extract_name(v.value);
-							d[v.key] = STR.stripslashes(v.value);
+							d[STR.readable_data(v.key)] = STR.camel_case_2_text(STR.stripslashes(_this.extract_name(v.value)));
 						});
 						resolve(d);
 					},
@@ -7370,7 +7384,7 @@ var data = function () {
     */
 				$.ajax({
 					type: "GET",
-					url: "http://www.cropontology.org/get-comments-onto/?ontoId=/" + id,
+					url: "http://www.cropontology.org/get-comments-onto/?ontoId=" + id,
 					async: true,
 					dataType: "json",
 					success: function success(data) {
@@ -8303,7 +8317,7 @@ var layout = function () {
 						})).attr("disabled", langs.length == 1).material_select();
 
 						TREEVIEW.add_items({
-							item: "#treeviev",
+							item: "#treeview",
 							source: data,
 							term: '<tt>' + NAV.get_ontology_id() + "</tt> - " + STR.get_ontology_term(data.name),
 							is_root: true,
@@ -8326,7 +8340,7 @@ var layout = function () {
 					});
 
 					// Place the external html page
-					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeviev_container", "class": "card-content" }).append($('<ul>', { "id": "treeviev", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "class": "term_id" }).text("Term name")).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
+					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" }).text("Term name")).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
 						if (user.logged) {
 							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
 						} else {

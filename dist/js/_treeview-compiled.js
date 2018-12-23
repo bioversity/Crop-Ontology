@@ -95,7 +95,7 @@ var treeview = function () {
 
 					if ($li_ul.length == 0) {
 						// Display loader
-						$("#treeviev_container").prepend(LOADER.create({ target: "#treeviev_container", type: "progress" }));
+						$("#treeview_container").prepend(LOADER.create({ target: "#treeview_container", type: "progress" }));
 
 						$li.append($('<ul>'));
 
@@ -129,19 +129,19 @@ var treeview = function () {
 									action(e, v.id);
 								})).append(_this.button({
 									id: v.id,
-									term: DATA.extract_name(v.name),
+									term: STR.ucfirst(DATA.extract_name(v.name)),
 									source: v,
 									is_root: false
 								})).append($('<span>', { "class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`" }).text(v.relationship)));
 							});
 
 							// Hide the loader
-							LOADER.hide("#treeviev_container .progress");
+							LOADER.hide("#treeview_container .progress");
 						});
 					} else {
 						$li_ul.show();
 						// Hide the loader
-						LOADER.hide("#treeviev_container .progress");
+						LOADER.hide("#treeview_container .progress");
 					}
 				} else {
 					/**
@@ -162,6 +162,7 @@ var treeview = function () {
 	}, {
 		key: "add_info",
 		value: function add_info(source, remote) {
+			$("#term_info_name").text(source.name);
 			if (remote) {
 				var name = void 0,
 				    $dl = $("#page_info dl");
@@ -193,7 +194,7 @@ var treeview = function () {
 				"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
 				"class": "btn btn-mini tooltipped" + (option.is_root ? " selected" : ""),
 				"data-id": option.id
-			}).append($('<span>').html(option.term)).click(function (e) {
+			}).append($('<span>').html(STR.camel_case_2_text(option.term))).click(function (e) {
 				$("#page_info dl").html("");
 				$("#comments").html("");
 
@@ -290,6 +291,9 @@ var treeview = function () {
 
 				$(option.item).append($root_li);
 
+				/**
+     * Term Information
+     */
 				LOADER.create({ target: "#pages", type: "progress" });
 				// Default action (only for root items)
 				$("#page_info").html($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
@@ -297,11 +301,15 @@ var treeview = function () {
 				})));
 				LOADER.hide("#pages .progress");
 
+				// Load the root tree
 				this.get_tree_items({
-					target: "#treeviev li.root",
+					target: "#treeview li.root",
 					source: option.source,
 					langs: option.langs
 				});
+
+				// Open the first tree branch
+				$(".treeview .expandable-hitarea").first().click();
 			} else {
 				var $li = $('<li>', { "class": "last expandable lastExpandable" }).append(this.tree_icon(true, option.source.id)).append(this.button({
 					id: option.source.id,
@@ -311,9 +319,6 @@ var treeview = function () {
 					langs: option.langs
 				}));
 				$(option.item).append($li);
-				// $('<li>', {"class": "last expandable lastExpandable"}).append(
-				// 	this.button(option.source.id, option.term)
-				// )
 			}
 		}
 	}]);

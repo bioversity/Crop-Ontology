@@ -965,7 +965,7 @@ class layout {
 					).attr("disabled", (langs.length == 1)).material_select();
 
 					TREEVIEW.add_items({
-						item: "#treeviev",
+						item: "#treeview",
 						source: data,
 						term: '<tt>' + NAV.get_ontology_id() + "</tt> - " + STR.get_ontology_term(data.name),
 						is_root: true,
@@ -1005,8 +1005,8 @@ class layout {
 										)
 									)
 								).append(
-									$('<div>', {"id": "treeviev_container", "class": "card-content"}).append(
-										$('<ul>', {"id": "treeviev", "class": "treeview"})
+									$('<div>', {"id": "treeview_container", "class": "card-content"}).append(
+										$('<ul>', {"id": "treeview", "class": "treeview"})
 									)
 								)
 							)
@@ -1032,7 +1032,7 @@ class layout {
 											$('<div>', {"class": "filterbar nav-wrapper"}).append(
 												$('<ul>', {"class": "filters left"}).append(
 													$('<li>', {"data-filter": "read"}).append(
-														$('<span>', {"class": "term_id"}).text("Term name")
+														$('<span>', {"id": "term_info_name"}).text("Term name")
 													).append(
 														$('<a>', {"href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink"}).append(
 															$('<span>', {"class": "fa fa-link"})
