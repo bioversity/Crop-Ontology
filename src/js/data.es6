@@ -13,6 +13,9 @@ class data {
 
 		if(STR.is_json(json_name)) {
 			$.each(JSON.parse(json_name), (lang, name) => {
+				if($.isArray(name)) {
+					name = name.join(", ");
+				}
 				term = STR.ucfirst(name);
 			});
 		} else {
@@ -247,7 +250,7 @@ class data {
 			 */
 			$.ajax({
 				type: "GET",
-				url: "common/get-ontologies.json",
+				url: "http://www.cropontology.org/get-ontologies",
 				data: {
 					alt: "json"
 				},
@@ -336,10 +339,8 @@ class data {
 				success: (data) => {
 					let d = {};
 					$.each(data, (k, v) => {
-						if(v.key == "name" || v.key == "xref") {
-							v.value = this.extract_name(v.value);
-						}
-						d[v.key] = v.value;
+						v.value = this.extract_name(v.value);
+						d[v.key] = STR.stripslashes(v.value);
 					});
 					resolve(d);
 				},

@@ -238,7 +238,7 @@ ul {
       pointer-events: none;
     }
   }
-  .progress {
+  & > .progress {
     margin-bottom: 60px;
     margin-top: -60px;
   }

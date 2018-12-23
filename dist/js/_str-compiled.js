@@ -91,7 +91,7 @@ var str = function () {
 	}, {
 		key: "stripslashes",
 		value: function stripslashes(str) {
-			return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+			return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
 		}
 
 		/**

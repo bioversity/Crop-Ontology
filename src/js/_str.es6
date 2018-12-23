@@ -13,7 +13,9 @@ class str {
 	 * @param  string 							string							The input string
 	 * @return string															The converted string
 	 */
-	ucfirst(string) { return string.charAt(0).toUpperCase() + string.slice(1); }
+	ucfirst(string) {
+		return string.charAt(0).toUpperCase() + string.slice(1);
+	}
 
 	/**
 	 * Make a string's first character lowercase
@@ -56,7 +58,7 @@ class str {
 	 * @return string															The converted string
 	 */
 	stripslashes(str) {
-	    return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+	    return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
 	}
 
 	/**

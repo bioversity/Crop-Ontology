@@ -98,6 +98,21 @@ class layout {
 		$(".tabs").tabs();
 
 		$("textarea.autoresize").trigger("autoresize");
+
+		/**
+		 * Behaviours after page build
+		 * ---------------------------------------------------------------------
+		 */
+		switch(page) {
+			case "home":
+				// Add the loader for news and info contents
+				LOADER.create({target: ".help", type: "progress"});
+				break;
+			case "ontology":
+				// Add the loader for news and info contents
+				LOADER.create({target: "#contents", type: "progress"});
+				break;
+		}
 	}
 
 	/**
@@ -392,8 +407,6 @@ class layout {
 											// ---------------------------------
 											$('<div>', {"class": "help"}).append(
 												$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
-											).append(
-												LOADER.create({type: "progress"})
 											)
 											// ---------------------------------
 										)
@@ -449,6 +462,7 @@ class layout {
 				 */
 				DATA.get_help_content().then((data) => {
 					if(settings.home.sections.help.visible) {
+						// LOADER.hide("#help");
 						$("#info_container .card-title").append(
 							$('<small>', {"class": "far fa-question-circle grey-text"})
 						).append(" " + settings.home.sections.help.title);

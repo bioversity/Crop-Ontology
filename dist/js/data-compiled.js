@@ -37,6 +37,9 @@ var data = function () {
 
 			if (STR.is_json(json_name)) {
 				$.each(JSON.parse(json_name), function (lang, name) {
+					if ($.isArray(name)) {
+						name = name.join(", ");
+					}
 					term = STR.ucfirst(name);
 				});
 			} else {
@@ -284,7 +287,7 @@ var data = function () {
      */
 				$.ajax({
 					type: "GET",
-					url: "common/get-ontologies.json",
+					url: "http://www.cropontology.org/get-ontologies",
 					data: {
 						alt: "json"
 					},
@@ -380,10 +383,8 @@ var data = function () {
 					success: function success(data) {
 						var d = {};
 						$.each(data, function (k, v) {
-							if (v.key == "name" || v.key == "xref") {
-								v.value = _this.extract_name(v.value);
-							}
-							d[v.key] = v.value;
+							v.value = _this.extract_name(v.value);
+							d[v.key] = STR.stripslashes(v.value);
 						});
 						resolve(d);
 					},

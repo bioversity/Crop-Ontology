@@ -131,6 +131,21 @@ var layout = function () {
 			$(".tabs").tabs();
 
 			$("textarea.autoresize").trigger("autoresize");
+
+			/**
+    * Behaviours after page build
+    * ---------------------------------------------------------------------
+    */
+			switch (page) {
+				case "home":
+					// Add the loader for news and info contents
+					LOADER.create({ target: ".help", type: "progress" });
+					break;
+				case "ontology":
+					// Add the loader for news and info contents
+					LOADER.create({ target: "#contents", type: "progress" });
+					break;
+			}
 		}
 
 		/**
@@ -341,7 +356,7 @@ var layout = function () {
 					return $('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
 					// Loader
 					// ---------------------------------
-					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)).append(LOADER.create({ type: "progress" }))
+					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text))
 					// ---------------------------------
 					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }));
 					/**
@@ -387,6 +402,7 @@ var layout = function () {
       */
 					DATA.get_help_content().then(function (data) {
 						if (settings.home.sections.help.visible) {
+							// LOADER.hide("#help");
 							$("#info_container .card-title").append($('<small>', { "class": "far fa-question-circle grey-text" })).append(" " + settings.home.sections.help.title);
 							$("#info_container .card-content .help").html(data[0].content.replace("<ul>", '<ul class="browser-default">'));
 							// return data[0].content;

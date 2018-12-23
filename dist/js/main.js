@@ -6525,7 +6525,7 @@ var str = function () {
 	}, {
 		key: "stripslashes",
 		value: function stripslashes(str) {
-			return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+			return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
 		}
 
 		/**
@@ -7004,6 +7004,9 @@ var data = function () {
 
 			if (STR.is_json(json_name)) {
 				$.each(JSON.parse(json_name), function (lang, name) {
+					if ($.isArray(name)) {
+						name = name.join(", ");
+					}
 					term = STR.ucfirst(name);
 				});
 			} else {
@@ -7251,7 +7254,7 @@ var data = function () {
      */
 				$.ajax({
 					type: "GET",
-					url: "common/get-ontologies.json",
+					url: "http://www.cropontology.org/get-ontologies",
 					data: {
 						alt: "json"
 					},
@@ -7347,10 +7350,8 @@ var data = function () {
 					success: function success(data) {
 						var d = {};
 						$.each(data, function (k, v) {
-							if (v.key == "name" || v.key == "xref") {
-								v.value = _this.extract_name(v.value);
-							}
-							d[v.key] = v.value;
+							v.value = _this.extract_name(v.value);
+							d[v.key] = STR.stripslashes(v.value);
 						});
 						resolve(d);
 					},
@@ -7724,6 +7725,21 @@ var layout = function () {
 			$(".tabs").tabs();
 
 			$("textarea.autoresize").trigger("autoresize");
+
+			/**
+    * Behaviours after page build
+    * ---------------------------------------------------------------------
+    */
+			switch (page) {
+				case "home":
+					// Add the loader for news and info contents
+					LOADER.create({ target: ".help", type: "progress" });
+					break;
+				case "ontology":
+					// Add the loader for news and info contents
+					LOADER.create({ target: "#contents", type: "progress" });
+					break;
+			}
 		}
 
 		/**
@@ -7934,7 +7950,7 @@ var layout = function () {
 					return $('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
 					// Loader
 					// ---------------------------------
-					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)).append(LOADER.create({ type: "progress" }))
+					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text))
 					// ---------------------------------
 					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }));
 					/**
@@ -7980,6 +7996,7 @@ var layout = function () {
       */
 					DATA.get_help_content().then(function (data) {
 						if (settings.home.sections.help.visible) {
+							// LOADER.hide("#help");
 							$("#info_container .card-title").append($('<small>', { "class": "far fa-question-circle grey-text" })).append(" " + settings.home.sections.help.title);
 							$("#info_container .card-content .help").html(data[0].content.replace("<ul>", '<ul class="browser-default">'));
 							// return data[0].content;
@@ -8418,15 +8435,28 @@ var loader = function () {
 
 			switch (data.type) {
 				case "progress":
-					$(data.target).prepend($('<div>', { "class": "progress" }).append($('<div>', {
-						"class": data.determinate ? "determinate" : "indeterminate",
-						"style": data.size !== "" ? "width: " + data.size + "%" : ""
-					})));
+					if ($(data.target + " .progress").length > 0) {
+						this.show(data.target + " .progress");
+					} else {
+						$(data.target).prepend($('<div>', { "class": "progress" }).append($('<div>', {
+							"class": data.determinate ? "determinate" : "indeterminate",
+							"style": data.size !== "" ? "width: " + data.size + "%" : ""
+						})));
+					}
 					break;
 				case "circular":
-					$(data.target).prepend($('<div>', { "class": "preloader-wrapper " + data.size + " active" }).append($('<div>', { "class": "spinner-layer spinner-" + data.colour + "-only" }).append($('<div>', { "class": "circle-clipper left" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "gap-patch" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "circle-clipper right" }).append($('<div>', { "class": "circle" })))));
+					if ($(data.target + " .preloader-wrapper").length > 0) {
+						this.show(data.target + " .preloader-wrapper");
+					} else {
+						$(data.target).prepend($('<div>', { "class": "preloader-wrapper " + data.size + " active" }).append($('<div>', { "class": "spinner-layer spinner-" + data.colour + "-only" }).append($('<div>', { "class": "circle-clipper left" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "gap-patch" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "circle-clipper right" }).append($('<div>', { "class": "circle" })))));
+					}
 					break;
 			}
+		}
+	}, {
+		key: "show",
+		value: function show(item) {
+			$(item).animate({ "opacity": 1 });
 		}
 	}, {
 		key: "hide",

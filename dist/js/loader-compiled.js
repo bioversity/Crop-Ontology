@@ -58,15 +58,28 @@ var loader = function () {
 
 			switch (data.type) {
 				case "progress":
-					$(data.target).prepend($('<div>', { "class": "progress" }).append($('<div>', {
-						"class": data.determinate ? "determinate" : "indeterminate",
-						"style": data.size !== "" ? "width: " + data.size + "%" : ""
-					})));
+					if ($(data.target + " .progress").length > 0) {
+						this.show(data.target + " .progress");
+					} else {
+						$(data.target).prepend($('<div>', { "class": "progress" }).append($('<div>', {
+							"class": data.determinate ? "determinate" : "indeterminate",
+							"style": data.size !== "" ? "width: " + data.size + "%" : ""
+						})));
+					}
 					break;
 				case "circular":
-					$(data.target).prepend($('<div>', { "class": "preloader-wrapper " + data.size + " active" }).append($('<div>', { "class": "spinner-layer spinner-" + data.colour + "-only" }).append($('<div>', { "class": "circle-clipper left" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "gap-patch" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "circle-clipper right" }).append($('<div>', { "class": "circle" })))));
+					if ($(data.target + " .preloader-wrapper").length > 0) {
+						this.show(data.target + " .preloader-wrapper");
+					} else {
+						$(data.target).prepend($('<div>', { "class": "preloader-wrapper " + data.size + " active" }).append($('<div>', { "class": "spinner-layer spinner-" + data.colour + "-only" }).append($('<div>', { "class": "circle-clipper left" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "gap-patch" }).append($('<div>', { "class": "circle" }))).append($('<div>', { "class": "circle-clipper right" }).append($('<div>', { "class": "circle" })))));
+					}
 					break;
 			}
+		}
+	}, {
+		key: "show",
+		value: function show(item) {
+			$(item).animate({ "opacity": 1 });
 		}
 	}, {
 		key: "hide",
