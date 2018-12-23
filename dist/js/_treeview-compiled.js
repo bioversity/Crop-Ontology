@@ -89,6 +89,9 @@ var treeview = function () {
       */
 
 					toggleIcon(e);
+					/**
+      * Highlight the label on the right
+      */
 					// $(".treeview a.selected").removeClass("selected");
 					// $li.find("a").first().addClass("selected");
 
@@ -243,12 +246,12 @@ var treeview = function () {
 	}, {
 		key: "disable_info",
 		value: function disable_info() {
-			$("#ontology_info .card").addClass("disabled");
+			$(this).removeClass("disabled");
 		}
 	}, {
 		key: "enable_info",
 		value: function enable_info() {
-			$("#ontology_info .card").removeClass("disabled");
+			$(this).addClass("disabled");
 		}
 	}, {
 		key: "get_tree_items",

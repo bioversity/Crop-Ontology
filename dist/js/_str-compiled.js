@@ -124,6 +124,11 @@ var str = function () {
 			return true;
 		}
 	}, {
+		key: "is_url",
+		value: function is_url(string) {
+			return string.startsWith("http");
+		}
+	}, {
 		key: "camel_case_2_text",
 		value: function camel_case_2_text(string) {
 			return string.replace(/([a-z])([A-Z])/g, "$1 $2");

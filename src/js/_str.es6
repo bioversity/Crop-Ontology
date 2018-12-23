@@ -81,6 +81,10 @@ class str {
 	    return true;
 	}
 
+	is_url(string) {
+		return string.startsWith("http");
+	}
+
 	camel_case_2_text(string) {
 		return string.replace(/([a-z])([A-Z])/g, "$1 $2");
 	}

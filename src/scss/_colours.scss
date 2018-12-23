@@ -46,8 +46,13 @@ $text-blue: #3f83b9;
   font-weight: bold;
   height: 25px;
   line-height: 25px;
+  max-width: 380px;
+  overflow: hidden !important;
   padding: 0px 10px;
+  text-align: left;
+  text-overflow: ellipsis;
   text-transform: none;
+  white-space: nowrap;
 
   &:hover, &.selected { background-color: $highlight-very-clear !important; }
 }

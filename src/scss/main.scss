@@ -540,7 +540,7 @@ ul {
   #ontology_tree {
     border-radius: 6px;
     border: $grey 1px solid;
-    min-height: 400px;
+    min-height: 655px;
 
     nav {
       background: $white;
@@ -560,7 +560,7 @@ ul {
       padding: 0;
 
       .progress {
-        margin: -24px -24px 24px 0px
+        margin: -24px -24px 24px 0px;
       }
       #treeview {
         padding: 25px;
@@ -621,6 +621,17 @@ ul {
             width: 66%;
           }
         }
+      }
+    }
+    #graph {
+      min-height: 450px;
+      text-align: center;
+      color: $grey;
+
+      h1 { width: 100%; }
+      svg {
+        width: 100px;
+        opacity: 0.2;
       }
     }
   }

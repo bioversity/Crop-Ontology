@@ -66,6 +66,9 @@ class treeview {
 
 
 					toggleIcon(e);
+					/**
+					 * Highlight the label on the right
+					 */
 					// $(".treeview a.selected").removeClass("selected");
 					// $li.find("a").first().addClass("selected");
 
@@ -256,11 +259,11 @@ class treeview {
 	}
 
 	disable_info() {
-		$("#ontology_info .card").addClass("disabled");
+		$(this).removeClass("disabled");
 	}
 
 	enable_info() {
-		$("#ontology_info .card").removeClass("disabled");
+		$(this).addClass("disabled");
 	}
 
 	get_tree_items(options) {
