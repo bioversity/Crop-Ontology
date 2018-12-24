@@ -245,6 +245,66 @@ class treeview {
 					});
 				});
 
+				console.log(option);
+				/**
+				 * Get term data and build graph
+				 */
+				DATA.get_term_parents(option.id).then((data) => {
+					// buildGraph($graph, data);
+					var render = (r, n) => {
+						/* the Raphael set is obligatory, containing all you want to display */
+						let id = n.id,
+							label = n.label,
+							biggest;
+
+						if(id.length > label.length) {
+							biggest = id;
+						} else {
+							biggest = label;
+						}
+
+						var set = r.set().push(
+							/* custom objects go here */
+							r.rect(n.point[0], n.point[1]-13, biggest.length + 120, 44).attr({"fill": "#feb", r : "12px", "stroke-width" : n.distance == 0 ? "3px" : "1px" })
+						).push(
+							r.text(n.point[0] + (biggest.length / 2) + 60, n.point[1] + 10, (n.label || n.id) + "\n(" + (n.id) + ")")
+						);
+						return set;
+					};
+
+					$("#graph").html("");
+					let width = $("#graph").width(),
+						height = $("#graph").height(),
+						g = new Graph();
+
+					g.edgeFactory.template.style.directed = true;
+
+					$.each(data, (idx, el) => {
+						for(let i = 0; i < el.length; i++) {
+							g.addNode(el[i].id, {
+								render: render,
+								label: STR.get_ontology_term(el[i].name)
+							});
+						}
+					});
+					$.each(data, (idx, el) => {
+						for(let i = 0; i < el.length; i++) {
+							let next = el[i+1];
+							if(next) {
+								g.addEdge(next.id, el[i].id, {label: next.relationship});
+								//g.addEdge(next.id, el[i].id);
+							}
+						}
+					});
+
+					let layouter = new Graph.Layout.Spring(g),
+						renderer = new Graph.Renderer.Raphael("graph", g, width, height);
+
+					layouter.layout();
+					renderer.draw();
+
+					$("#graph").removeClass("disabled");
+				});
 			}
 		});
 

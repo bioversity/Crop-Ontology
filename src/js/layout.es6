@@ -990,7 +990,7 @@ class layout {
 					$("#new-comments a").text("Comments (" + comments_count + ")");
 					$("#comments").append();
 				});
-
+				
 				// Place the external html page
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").append(

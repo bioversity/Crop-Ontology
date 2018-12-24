@@ -370,6 +370,26 @@ class data {
 		});
 	}
 
+	get_term_parents(term_id) {
+		return new Promise((resolve, reject) => {
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-term-parents/" + term_id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	get_terms_comments(term_id) {
 		return new Promise((resolve, reject) => {
 			/**

@@ -415,27 +415,6 @@ var data = function () {
 			});
 		}
 	}, {
-		key: "get_term_parents",
-		value: function get_term_parents(term_id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
-				/**
-     * @see http://www.cropontology.org/api
-     */
-				$.ajax({
-					type: "GET",
-					url: "http://www.cropontology.org/get-term-parents/" + term_id,
-					async: true,
-					dataType: "json",
-					success: function success(data) {
-						resolve(data);
-					},
-					error: function error(jqXHR, textStatus, errorThrown) {
-						reject(errorThrown);
-					}
-				});
-			});
-		}
-	}, {
 		key: "get_terms_comments",
 		value: function get_terms_comments(term_id) {
 			return new _es6Promise.Promise(function (resolve, reject) {

@@ -628,10 +628,12 @@ ul {
       text-align: center;
       color: $grey;
 
-      h1 { width: 100%; }
-      svg {
-        width: 100px;
-        opacity: 0.2;
+      &.disabled {
+        h1 { width: 100%; }
+        svg {
+          width: 100px;
+          opacity: 0.2;
+        }
       }
     }
   }
