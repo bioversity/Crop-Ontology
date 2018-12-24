@@ -146,6 +146,22 @@ var layout = function () {
 					LOADER.create({ target: "#contents", type: "progress" });
 					break;
 			}
+
+			$(document).bind("fscreenchange", function (e, state, elem) {
+				if ($(elem).attr("id") == "graph") {
+					if (state) {
+						$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
+
+						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click(function (e) {
+							$.fullscreen.exit();
+						});
+					} else {
+						$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
+
+						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Show fullscreen");
+					}
+				}
+			});
 		}
 
 		/**

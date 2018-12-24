@@ -318,14 +318,6 @@ class treeview {
 									toggleClass: "fullscreen"
 								})
 								$(".btn.fullscreen").blur();
-								if($("#graph").hasClass("fullscreen")) {
-									$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
-
-									$(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click((e) => {
-										$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
-										$.fullscreen.exit();
-									});
-								}
 							}).tooltip({delay: 50})
 						)
 					}

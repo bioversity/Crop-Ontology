@@ -6955,18 +6955,6 @@ var treeview = function () {
 									toggleClass: "fullscreen"
 								});
 								$(".btn.fullscreen").blur();
-								if ($("#graph").hasClass("fullscreen")) {
-									$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
-
-									$(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click(function (e) {
-										$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
-										$.fullscreen.exit();
-									});
-									// } else {
-									// 	console.log($(".btn.fullscreen"));
-									// 	$(".btn.fullscreen").attr("data-tooltip", "Show fullscreen");
-									// 	$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
-								}
 							}).tooltip({ delay: 50 }));
 						}
 						$("#graph").removeClass("disabled");
@@ -7868,6 +7856,22 @@ var layout = function () {
 					LOADER.create({ target: "#contents", type: "progress" });
 					break;
 			}
+
+			$(document).bind("fscreenchange", function (e, state, elem) {
+				if ($(elem).attr("id") == "graph") {
+					if (state) {
+						$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
+
+						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click(function (e) {
+							$.fullscreen.exit();
+						});
+					} else {
+						$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
+
+						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Show fullscreen");
+					}
+				}
+			});
 		}
 
 		/**
