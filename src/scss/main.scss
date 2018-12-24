@@ -635,6 +635,34 @@ ul {
           opacity: 0.2;
         }
       }
+      .progress {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        z-index: 1;
+      }
+      #graph_content {
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        z-index: 0;
+
+        .btn {
+          &.fullscreen {
+            box-sizing: border-box;
+            padding: 0 1rem;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+          }
+        }
+      }
+      &.fullscreen {
+        svg {
+          height: 100%;
+          width: 100%;
+        }
+      }
     }
   }
 }

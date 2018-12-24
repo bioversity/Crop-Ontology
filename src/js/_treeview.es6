@@ -245,7 +245,7 @@ class treeview {
 					});
 				});
 
-				console.log(option);
+				LOADER.create({target: "#graph", type: "progress"});
 				/**
 				 * Get term data and build graph
 				 */
@@ -272,9 +272,9 @@ class treeview {
 						return set;
 					};
 
-					$("#graph").html("");
-					let width = $("#graph").width(),
-						height = $("#graph").height(),
+					$("#graph_content").html("");
+					let width = $("#graph_content").width(),
+						height = $("#graph_content").height(),
 						g = new Graph();
 
 					g.edgeFactory.template.style.directed = true;
@@ -298,11 +298,37 @@ class treeview {
 					});
 
 					let layouter = new Graph.Layout.Spring(g),
-						renderer = new Graph.Renderer.Raphael("graph", g, width, height);
+						renderer = new Graph.Renderer.Raphael("graph_content", g, width, height);
 
 					layouter.layout();
 					renderer.draw();
 
+					LOADER.hide("#graph .progress");
+					if($.fullscreen.isNativelySupported()) {
+						$("#graph_content").prepend(
+							$('<a>', {
+								"href": "javascript:;",
+								"class": "btn btn-flat fullscreen tooltipped",
+								"data-position": "left",
+								"data-tooltip": "Show fullscreen"
+							}).append(
+								$('<span>', {"class": "fas fa-expand"})
+							).click((e) => {
+								$("#graph").fullscreen({
+									toggleClass: "fullscreen"
+								})
+								$(".btn.fullscreen").blur();
+								if($("#graph").hasClass("fullscreen")) {
+									$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
+
+									$(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click((e) => {
+										$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
+										$.fullscreen.exit();
+									});
+								}
+							}).tooltip({delay: 50})
+						)
+					}
 					$("#graph").removeClass("disabled");
 				});
 			}
