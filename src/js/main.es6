@@ -14,7 +14,7 @@ var
 	NAV = new navigation(),
 
 	page = NAV.get_page(),
-    
+
 	settings = require("../../common/settings/contents.json")
 ;
 
@@ -41,6 +41,8 @@ $(document).ready(() => {
 	// Build the footer
 	LAYOUT.build_footer();
 
+	// Load scripts
+	LAYOUT.load_scripts();
 
 
 	LAYOUT.activate();

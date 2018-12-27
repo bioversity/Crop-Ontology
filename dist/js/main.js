@@ -401,6 +401,9 @@ $(document).ready(function () {
 	// Build the footer
 	LAYOUT.build_footer();
 
+	// Load scripts
+	LAYOUT.load_scripts();
+
 	LAYOUT.activate();
 });
 
@@ -6634,15 +6637,16 @@ var str = function () {
 		value: function get_ontology_term(string, language) {
 			var _this2 = this;
 
-			language = language == undefined ? settings.general.language : language;
+			language = language == undefined || language == "undefined" ? settings.general.language : language;
 
 			var strings = {};
 			if (this.is_json(string)) {
 				$.each(JSON.parse(string), function (lang, term) {
+					lang = lang == undefined || lang == "undefined" ? settings.general.language : lang;
 					strings[lang] = _this2.ucfirst(term);
 				});
 			} else {
-				strings[language] = "?";
+				strings[language] = string;
 			}
 			return strings[language];
 		}
@@ -6897,7 +6901,7 @@ var treeview = function () {
 						var render = function render(r, n) {
 							/* the Raphael set is obligatory, containing all you want to display */
 							var id = n.id,
-							    label = n.label,
+							    label = STR.get_ontology_term(n.label),
 							    biggest = void 0;
 
 							if (id.length > label.length) {
@@ -6906,9 +6910,19 @@ var treeview = function () {
 								biggest = label;
 							}
 
+							// if(n.point[0] > 500) {
+							// 	n.point[0] = n.point[0]-300;
+							// } else {
+							// 	n.point[0] = n.point[0]+300;
+							// }
 							var set = r.set().push(
 							/* custom objects go here */
-							r.rect(n.point[0], n.point[1] - 13, biggest.length + 120, 44).attr({ "fill": "#feb", r: "12px", "stroke-width": n.distance == 0 ? "3px" : "1px" })).push(r.text(n.point[0] + biggest.length / 2 + 60, n.point[1] + 10, (n.label || n.id) + "\n(" + n.id + ")"));
+							r.rect(n.point[0], n.point[1] - 13, biggest.length + 120, 44).attr({
+								"fill": "#feb",
+								r: "12px",
+								"stroke-width": n.distance == 0 ? "3px" : "1px"
+							})).push(r.text(n.point[0] + biggest.length / 2 + 60, n.point[1] + 10, (label || n.id) + "\n(" + n.id + ")"));
+							console.log(n.point[0]);
 							return set;
 						};
 
@@ -6937,11 +6951,13 @@ var treeview = function () {
 							}
 						});
 
-						var layouter = new Graph.Layout.Spring(g),
-						    renderer = new Graph.Renderer.Raphael("graph_content", g, width, height);
-
+						var layouter = new Graph.Layout.Spring(g);
+						console.log(layouter);
 						layouter.layout();
+						var renderer = new Graph.Renderer.Raphael("graph_content", g, parseInt(width), parseInt(height));
 						renderer.draw();
+
+						$("#graph").removeClass("disabled");
 
 						LOADER.hide("#graph .progress");
 						if ($.fullscreen.isNativelySupported()) {
@@ -6957,7 +6973,6 @@ var treeview = function () {
 								$(".btn.fullscreen").blur();
 							}).tooltip({ delay: 50 }));
 						}
-						$("#graph").removeClass("disabled");
 					});
 				}
 			});
@@ -8463,7 +8478,6 @@ var layout = function () {
 						$("#comments").append();
 					});
 
-					// Place the external html page
 					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" })).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
 						if (user.logged) {
 							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
@@ -8504,6 +8518,15 @@ var layout = function () {
    */
 			this.build_menu("bottom_links");
 			// this.build_menu("owner");
+		}
+	}, {
+		key: "load_scripts",
+		value: function load_scripts() {
+			if (page == "ontology") {
+				$("head").append("<!-- Main style -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen" }));
+
+				$("#scripts").append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" })).append("<!--  The Raphael JavaScript library for vector graphics display  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/raphael-min.js" })).append("<!--  Dracula  -->").append("<!--  An extension of Raphael for connecting shapes -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graffle.js" })).append("<!--  Graphs  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graph.js" })).append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_algorithms.js" }));
+			}
 		}
 	}]);
 

@@ -141,15 +141,16 @@ class str {
 	 * @return string															The extracted string
 	 */
 	get_ontology_term(string, language) {
-		language = (language == undefined) ? settings.general.language : language;
+		language = (language == undefined || language == "undefined") ? settings.general.language : language;
 
 		let strings = {};
 		if(this.is_json(string)) {
 			$.each(JSON.parse(string), (lang, term) => {
+				lang = (lang == undefined || lang == "undefined") ? settings.general.language : lang;
 				strings[lang] = this.ucfirst(term);
 			});
 		} else {
-			strings[language] = "?";
+			strings[language] = string;
 		}
 		return strings[language];
 	}

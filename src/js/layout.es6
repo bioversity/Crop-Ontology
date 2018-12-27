@@ -1007,7 +1007,6 @@ class layout {
 					$("#comments").append();
 				});
 
-				// Place the external html page
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").append(
 						$('<div>', {"class": "row"}).append(
@@ -1164,6 +1163,38 @@ class layout {
 		*/
 		this.build_menu("bottom_links");
 		// this.build_menu("owner");
+	}
+
+	load_scripts() {
+		if(page == "ontology") {
+			$("head").append(
+		        "<!-- Main style -->"
+			).append(
+				$('<link>', {"rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen"})
+			);
+
+			$("#scripts").append(
+				"<!-- Fullscreen feature -->"
+			).append(
+	            $('<script>', {"type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js"})
+			).append(
+	            "<!--  The Raphael JavaScript library for vector graphics display  -->"
+			).append(
+				$('<script>', {"type": "text/javascript", "src": "dist/js/raphael-min.js"})
+			).append(
+	            "<!--  Dracula  -->"
+			).append(
+	            "<!--  An extension of Raphael for connecting shapes -->"
+			).append(
+				$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_graffle.js"})
+			).append(
+	            "<!--  Graphs  -->"
+			).append(
+				$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_graph.js"})
+			).append(
+				$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_algorithms.js"})
+			);
+		}
 	}
 }
 

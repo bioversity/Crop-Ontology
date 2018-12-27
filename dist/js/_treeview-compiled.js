@@ -241,7 +241,7 @@ var treeview = function () {
 						var render = function render(r, n) {
 							/* the Raphael set is obligatory, containing all you want to display */
 							var id = n.id,
-							    label = n.label,
+							    label = STR.get_ontology_term(n.label),
 							    biggest = void 0;
 
 							if (id.length > label.length) {
@@ -250,9 +250,19 @@ var treeview = function () {
 								biggest = label;
 							}
 
+							// if(n.point[0] > 500) {
+							// 	n.point[0] = n.point[0]-300;
+							// } else {
+							// 	n.point[0] = n.point[0]+300;
+							// }
 							var set = r.set().push(
 							/* custom objects go here */
-							r.rect(n.point[0], n.point[1] - 13, biggest.length + 120, 44).attr({ "fill": "#feb", r: "12px", "stroke-width": n.distance == 0 ? "3px" : "1px" })).push(r.text(n.point[0] + biggest.length / 2 + 60, n.point[1] + 10, (n.label || n.id) + "\n(" + n.id + ")"));
+							r.rect(n.point[0], n.point[1] - 13, biggest.length + 120, 44).attr({
+								"fill": "#feb",
+								r: "12px",
+								"stroke-width": n.distance == 0 ? "3px" : "1px"
+							})).push(r.text(n.point[0] + biggest.length / 2 + 60, n.point[1] + 10, (label || n.id) + "\n(" + n.id + ")"));
+							console.log(n.point[0]);
 							return set;
 						};
 
@@ -281,11 +291,13 @@ var treeview = function () {
 							}
 						});
 
-						var layouter = new Graph.Layout.Spring(g),
-						    renderer = new Graph.Renderer.Raphael("graph_content", g, width, height);
-
+						var layouter = new Graph.Layout.Spring(g);
+						console.log(layouter);
 						layouter.layout();
+						var renderer = new Graph.Renderer.Raphael("graph_content", g, parseInt(width), parseInt(height));
 						renderer.draw();
+
+						$("#graph").removeClass("disabled");
 
 						LOADER.hide("#graph .progress");
 						if ($.fullscreen.isNativelySupported()) {
@@ -301,7 +313,6 @@ var treeview = function () {
 								$(".btn.fullscreen").blur();
 							}).tooltip({ delay: 50 }));
 						}
-						$("#graph").removeClass("disabled");
 					});
 				}
 			});

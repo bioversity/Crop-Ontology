@@ -45,5 +45,8 @@ $(document).ready(function () {
 	// Build the footer
 	LAYOUT.build_footer();
 
+	// Load scripts
+	LAYOUT.load_scripts();
+
 	LAYOUT.activate();
 });

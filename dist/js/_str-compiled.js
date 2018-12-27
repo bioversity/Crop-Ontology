@@ -200,15 +200,16 @@ var str = function () {
 		value: function get_ontology_term(string, language) {
 			var _this2 = this;
 
-			language = language == undefined ? settings.general.language : language;
+			language = language == undefined || language == "undefined" ? settings.general.language : language;
 
 			var strings = {};
 			if (this.is_json(string)) {
 				$.each(JSON.parse(string), function (lang, term) {
+					lang = lang == undefined || lang == "undefined" ? settings.general.language : lang;
 					strings[lang] = _this2.ucfirst(term);
 				});
 			} else {
-				strings[language] = "?";
+				strings[language] = string;
 			}
 			return strings[language];
 		}
