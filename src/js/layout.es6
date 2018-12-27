@@ -869,6 +869,8 @@ class layout {
 					term = "",
 					language = "english";
 
+				MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
+
 				DATA.get_ontologies_data(NAV.get_ontology_id()).then((ontologies_data) => {
 					$('<div>', {"id": "ontology_card", "class": "row container"}).append(
 						$('<div>', {"class": "col s2"}).append(
@@ -1021,7 +1023,9 @@ class layout {
 									).append(
 										$('<ul>', {"class": "right"}).append(
 											$('<li>').append(
-												$('<a>', {"href": "javascript:;", "class": ""}).text("Download")
+												$('<a>', {"href": "#download_ontology_modal", "class": "modal-trigger"}).append(
+													$('<span>', {"class": "fa fa-download"})
+												).append(" Download")
 											)
 										)
 									)

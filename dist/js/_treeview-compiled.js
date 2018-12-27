@@ -242,27 +242,14 @@ var treeview = function () {
 							/* the Raphael set is obligatory, containing all you want to display */
 							var id = n.id,
 							    label = STR.get_ontology_term(n.label),
-							    biggest = void 0;
-
-							if (id.length > label.length) {
-								biggest = id;
-							} else {
-								biggest = label;
-							}
-
-							// if(n.point[0] > 500) {
-							// 	n.point[0] = n.point[0]-300;
-							// } else {
-							// 	n.point[0] = n.point[0]+300;
-							// }
-							var set = r.set().push(
+							    biggest = id.length > label.length ? id : label,
+							    set = r.set().push(
 							/* custom objects go here */
 							r.rect(n.point[0], n.point[1] - 13, biggest.length + 120, 44).attr({
 								"fill": "#feb",
 								r: "12px",
 								"stroke-width": n.distance == 0 ? "3px" : "1px"
 							})).push(r.text(n.point[0] + biggest.length / 2 + 60, n.point[1] + 10, (label || n.id) + "\n(" + n.id + ")"));
-							console.log(n.point[0]);
 							return set;
 						};
 
@@ -292,7 +279,6 @@ var treeview = function () {
 						});
 
 						var layouter = new Graph.Layout.Spring(g);
-						console.log(layouter);
 						layouter.layout();
 						var renderer = new Graph.Renderer.Raphael("graph_content", g, parseInt(width), parseInt(height));
 						renderer.draw();
@@ -300,19 +286,43 @@ var treeview = function () {
 						$("#graph").removeClass("disabled");
 
 						LOADER.hide("#graph .progress");
-						if ($.fullscreen.isNativelySupported()) {
-							$("#graph_content").prepend($('<a>', {
-								"href": "javascript:;",
-								"class": "btn btn-flat fullscreen tooltipped",
-								"data-position": "left",
-								"data-tooltip": "Show fullscreen"
-							}).append($('<span>', { "class": "fas fa-expand" })).click(function (e) {
-								$("#graph").fullscreen({
-									toggleClass: "fullscreen"
-								});
-								$(".btn.fullscreen").blur();
-							}).tooltip({ delay: 50 }));
-						}
+						// Add fullscreen button
+						// if($.fullscreen.isNativelySupported()) {
+						// 	$("#graph_content").prepend(
+						// 		$('<a>', {
+						// 			"href": "javascript:;",
+						// 			"class": "btn btn-flat fullscreen tooltipped",
+						// 			"data-position": "left",
+						// 			"data-tooltip": "Show fullscreen"
+						// 		}).append(
+						// 			$('<span>', {"class": "fas fa-expand"})
+						// 		).click((e) => {
+						// 			// Get current svg and renderer measurments
+						// 			let r = renderer,
+						// 				svg = $("#graph_content svg");
+						//
+						// 			$("#graph").fullscreen({
+						// 				toggleClass: "fullscreen"
+						// 			})
+						// 			$(".btn.fullscreen").blur();
+						// 					// $("#graph_content svg").attr("width", parseInt($(document).width()));
+						// 					// $("#graph_content svg").attr("height", parseInt($(document).height()));
+						// 					// renderer.width = parseInt($(document).width());
+						// 					// renderer.height = parseInt($(document).height());
+						// 					// renderer.r.width = parseInt($(document).width());
+						// 					// renderer.r.height = parseInt($(document).height());
+						// 					// console.log(renderer);
+						// 				// 	var renderer = new Graph.Renderer.Raphael(
+						// 				// 		"graph_content",
+						// 				// 		g,
+						// 				// 		parseInt($(document).width() - 100),
+						// 				// 		parseInt($(document).height() - 100)
+						// 				// 	);
+						// 					// renderer.draw();
+						// 				// }, 10);
+						// 		}).tooltip({delay: 50})
+						// 	)
+						// }
 					});
 				}
 			});

@@ -6902,27 +6902,14 @@ var treeview = function () {
 							/* the Raphael set is obligatory, containing all you want to display */
 							var id = n.id,
 							    label = STR.get_ontology_term(n.label),
-							    biggest = void 0;
-
-							if (id.length > label.length) {
-								biggest = id;
-							} else {
-								biggest = label;
-							}
-
-							// if(n.point[0] > 500) {
-							// 	n.point[0] = n.point[0]-300;
-							// } else {
-							// 	n.point[0] = n.point[0]+300;
-							// }
-							var set = r.set().push(
+							    biggest = id.length > label.length ? id : label,
+							    set = r.set().push(
 							/* custom objects go here */
 							r.rect(n.point[0], n.point[1] - 13, biggest.length + 120, 44).attr({
 								"fill": "#feb",
 								r: "12px",
 								"stroke-width": n.distance == 0 ? "3px" : "1px"
 							})).push(r.text(n.point[0] + biggest.length / 2 + 60, n.point[1] + 10, (label || n.id) + "\n(" + n.id + ")"));
-							console.log(n.point[0]);
 							return set;
 						};
 
@@ -6952,7 +6939,6 @@ var treeview = function () {
 						});
 
 						var layouter = new Graph.Layout.Spring(g);
-						console.log(layouter);
 						layouter.layout();
 						var renderer = new Graph.Renderer.Raphael("graph_content", g, parseInt(width), parseInt(height));
 						renderer.draw();
@@ -6960,19 +6946,43 @@ var treeview = function () {
 						$("#graph").removeClass("disabled");
 
 						LOADER.hide("#graph .progress");
-						if ($.fullscreen.isNativelySupported()) {
-							$("#graph_content").prepend($('<a>', {
-								"href": "javascript:;",
-								"class": "btn btn-flat fullscreen tooltipped",
-								"data-position": "left",
-								"data-tooltip": "Show fullscreen"
-							}).append($('<span>', { "class": "fas fa-expand" })).click(function (e) {
-								$("#graph").fullscreen({
-									toggleClass: "fullscreen"
-								});
-								$(".btn.fullscreen").blur();
-							}).tooltip({ delay: 50 }));
-						}
+						// Add fullscreen button
+						// if($.fullscreen.isNativelySupported()) {
+						// 	$("#graph_content").prepend(
+						// 		$('<a>', {
+						// 			"href": "javascript:;",
+						// 			"class": "btn btn-flat fullscreen tooltipped",
+						// 			"data-position": "left",
+						// 			"data-tooltip": "Show fullscreen"
+						// 		}).append(
+						// 			$('<span>', {"class": "fas fa-expand"})
+						// 		).click((e) => {
+						// 			// Get current svg and renderer measurments
+						// 			let r = renderer,
+						// 				svg = $("#graph_content svg");
+						//
+						// 			$("#graph").fullscreen({
+						// 				toggleClass: "fullscreen"
+						// 			})
+						// 			$(".btn.fullscreen").blur();
+						// 					// $("#graph_content svg").attr("width", parseInt($(document).width()));
+						// 					// $("#graph_content svg").attr("height", parseInt($(document).height()));
+						// 					// renderer.width = parseInt($(document).width());
+						// 					// renderer.height = parseInt($(document).height());
+						// 					// renderer.r.width = parseInt($(document).width());
+						// 					// renderer.r.height = parseInt($(document).height());
+						// 					// console.log(renderer);
+						// 				// 	var renderer = new Graph.Renderer.Raphael(
+						// 				// 		"graph_content",
+						// 				// 		g,
+						// 				// 		parseInt($(document).width() - 100),
+						// 				// 		parseInt($(document).height() - 100)
+						// 				// 	);
+						// 					// renderer.draw();
+						// 				// }, 10);
+						// 		}).tooltip({delay: 50})
+						// 	)
+						// }
 					});
 				}
 			});
@@ -8392,6 +8402,8 @@ var layout = function () {
 					    term = "",
 					    language = "english";
 
+					MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
+
 					DATA.get_ontologies_data(NAV.get_ontology_id()).then(function (ontologies_data) {
 						$('<div>', { "id": "ontology_card", "class": "row container" }).append($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>').append(function () {
 							if (ontologies_data.ontology_title.link !== "") {
@@ -8478,7 +8490,7 @@ var layout = function () {
 						$("#comments").append();
 					});
 
-					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "javascript:;", "class": "" }).text("Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" })).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
+					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "#download_ontology_modal", "class": "modal-trigger" }).append($('<span>', { "class": "fa fa-download" })).append(" Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" })).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
 						if (user.logged) {
 							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
 						} else {
@@ -8668,8 +8680,10 @@ var modals = function () {
 		value: function build_modal(options) {
 			var defaults = {
 				id: "modal",
+				class: "",
 				title: "Modal Header",
 				content: "Modal Content",
+				display_buttons: true,
 				ok_button: "Ok",
 				cancel_button: "Cancel",
 				fixed_footer: true,
@@ -8680,9 +8694,13 @@ var modals = function () {
 
 			$("body").prepend($('<div>', {
 				"id": settings.id,
-				"class": "modal" + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : ""),
+				"class": "modal " + settings.class + " " + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : ""),
 				"style": settings.width ? "width: " + settings.width : ""
-			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').text(settings.title)).append(settings.content)).append($('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat right" }).text(settings.ok_button))));
+			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').text(settings.title)).append(settings.content)).append(function () {
+				if (settings.display_buttons) {
+					return $('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat right" }).text(settings.ok_button));
+				}
+			}));
 		}
 	}, {
 		key: "add_filter_row",
@@ -8772,6 +8790,22 @@ var modals = function () {
 				content: $user_modal_content,
 				fixed_footer: false,
 				bottom_sheet: false
+			});
+		}
+	}, {
+		key: "download_ontology_modal",
+		value: function download_ontology_modal(id, title) {
+			var $download_ontology_modal = $('<div>', { "class": "container" }).append($('<div>', { class: "row" }).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "href": "https://www.cropontology.org/report?ontology_id=" + id, "class": "center dowload_item", "download": id + ".csv" }).append($('<h4>').append($('<span>', { "class": "picol_document_text" }))).append($('<h6>').text("Trait dictionary")))).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "href": "https://www.cropontology.org/ontology/" + id + "/" + title + "/nt", "class": "center dowload_item", "download": id + ".nt" }).append($('<h4>').append($('<span>', { "class": "picol_rdf_document" }))).append($('<h6>').text("RDF N-Triples")))).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "href": "https://www.cropontology.org/obo/" + id, "class": "center dowload_item", "download": id + ".obo" }).append($('<h4>').append($('<span>', { "class": "picol_owl_lite_document" }))).append($('<h6>').text("OBO File")))));
+
+			this.build_modal({
+				id: "download_ontology_modal",
+				width: "35%",
+				class: "centered",
+				title: "Download ontology",
+				content: $download_ontology_modal,
+				fixed_footer: false,
+				bottom_sheet: false,
+				display_buttons: false
 			});
 		}
 	}]);

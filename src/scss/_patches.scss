@@ -72,3 +72,28 @@ nav {
 .full-height {
   height: 100vh;
 }
+
+.modal {
+  &.centered {
+    .modal-content {
+      & > h4 {
+        font-size: 2em;
+        margin-bottom: 75px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+#download_ontology_modal {
+  .dowload_item {
+    color: $dark-grey;
+
+    span:before {
+      margin-right: 0;
+    }
+    h6 {
+      text-transform: capitalize;
+    }
+  }
+}
