@@ -445,7 +445,21 @@ ul {
 
         a {
           &.download {
-            font-size: 12px;
+            border: transparent 1px solid;
+            border-radius: 3px;
+            color: $dark-grey;
+            font-size: 16px !important;
+            // padding: 5px;
+
+            // &:hover {
+            //   background-color: $white-grey;
+            //   border: $grey 1px solid;
+            // }
+            .fa-rss-square {
+              color: $rss;
+              font-size: 19px;
+              vertical-align: text-bottom;
+            }
           }
         }
         .items_count {
