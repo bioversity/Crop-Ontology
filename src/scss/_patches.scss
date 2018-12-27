@@ -78,7 +78,14 @@ nav {
     .modal-content {
       & > h4 {
         font-size: 2em;
+        margin-bottom: 0;
+        text-align: center;
+      }
+      & > h5 {
+        color: $medium-grey;
+        font-family: "Roboto Condensed";
         margin-bottom: 75px;
+        margin-top: 0;
         text-align: center;
       }
     }

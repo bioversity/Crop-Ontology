@@ -20,6 +20,7 @@ class modals {
 			id: "modal",
 			class: "",
 			title: "Modal Header",
+			subtitle: "",
 			content: "Modal Content",
 			display_buttons: true,
 			ok_button: "Ok",
@@ -38,7 +39,11 @@ class modals {
 			}).append(
 				$('<div>', {"class": "modal-content"}).append(
 					$('<h4>').text(settings.title)
-				).append(settings.content)
+				).append(() => {
+					if(settings.subtitle) {
+						return $('<h5>').text(settings.subtitle);
+					}
+				}).append(settings.content)
 			).append(() => {
 				if(settings.display_buttons) {
 					return $('<div>', {"class": "modal-footer"}).append(
@@ -178,7 +183,7 @@ class modals {
 		let $download_ontology_modal = $('<div>', {"class": "container"}).append(
     		$('<div>', {class: "row"}).append(
 				$('<div>', {"class": "col s4 m4 l4 xl4"}).append(
-					$('<a>', {"href": "https://www.cropontology.org/report?ontology_id=" + id, "class": "center dowload_item", "download": id + ".csv"}).append(
+					$('<a>', {"target": "_blank", "href": "https://www.cropontology.org/report?ontology_id=" + id, "class": "center dowload-item", "download": id + ".csv"}).append(
 						$('<h4>').append(
 							$('<span>', {"class": "picol_document_text"})
 						)
@@ -188,7 +193,7 @@ class modals {
 				)
 			).append(
 				$('<div>', {"class": "col s4 m4 l4 xl4"}).append(
-					$('<a>', {"href": "https://www.cropontology.org/ontology/" + id + "/" + title + "/nt", "class": "center dowload_item", "download": id + ".nt"}).append(
+					$('<a>', {"target": "_blank", "href": "https://www.cropontology.org/ontology/" + id + "/" + title + "/nt", "class": "center dowload-item", "download": id + ".nt"}).append(
 						$('<h4>').append(
 							$('<span>', {"class": "picol_rdf_document"})
 						)
@@ -198,7 +203,7 @@ class modals {
 				)
 			).append(
 				$('<div>', {"class": "col s4 m4 l4 xl4"}).append(
-					$('<a>', {"href": "https://www.cropontology.org/obo/" + id, "class": "center dowload_item", "download": id + ".obo"}).append(
+					$('<a>', {"target": "_blank", "href": "https://www.cropontology.org/obo/" + id, "class": "center dowload-item", "download": id + ".obo"}).append(
 						$('<h4>').append(
 							$('<span>', {"class": "picol_owl_lite_document"})
 						)
@@ -214,6 +219,7 @@ class modals {
 			width: "35%",
 			class: "centered",
 			title: "Download ontology",
+			subtitle: id + ":" + title,
 			content: $download_ontology_modal,
 			fixed_footer: false,
 			bottom_sheet: false,

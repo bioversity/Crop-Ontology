@@ -70,3 +70,16 @@ $rss: #f26522;
 
   &.is_a { background-color: $tag-light-green; }
 }
+
+.dowload-item {
+  background-color: #fefefe;
+  border-radius: 6px;
+  border: $grey 1px dotted;
+  color: $dark-grey;
+  display: block;
+  padding: 10px;
+
+  &:hover {
+    box-shadow: 0 0 6px $grey;
+  }
+}

@@ -683,6 +683,7 @@ class layout {
 																"data-position": "top",
 																"data-tooltip": "Ontology RSS",
 																"data-delay": "0",
+																"target": "_blank",
 																"href": "http://www.cropontology.org/ontology/" + vv.ontology_id + "/" + vv.ontology_name.replace("/", "-") + "/rss"
 															}).append(
 																$('<span>', {"class": "fa fa-rss-square"})
@@ -693,6 +694,7 @@ class layout {
 																"data-position": "top",
 																"data-tooltip": "RDF N-Triples",
 																"data-delay": "0",
+																"target": "_blank",
 																"href": "https://www.cropontology.org/ontology/" + vv.ontology_id + "/" + vv.ontology_name.replace("/", "-") + "/nt"
 															}).append(
 																$('<span>', {"class": "picol_rdf_document"})
