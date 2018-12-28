@@ -598,7 +598,13 @@ ul {
         // min-height: 250px;
 
         .filters {
-          #term_info_name { color: $dark-grey; }
+          #term_info_name {
+            color: $dark-grey;
+            max-width: 350px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
         }
         .sorts {
           li {

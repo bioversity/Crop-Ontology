@@ -74,7 +74,7 @@ var navigation = function () {
 		key: "get_ontology_id",
 		value: function get_ontology_id() {
 			var path = this.get_url_path();
-			if (path[0] == "ontology") {
+			if (path[0] == "ontology" || path[0] == "terms") {
 				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
 			}
 		}
@@ -90,7 +90,7 @@ var navigation = function () {
 		key: "get_ontology_label",
 		value: function get_ontology_label() {
 			var path = this.get_url_path();
-			if (path[0] == "ontology") {
+			if (path[0] == "ontology" || path[0] == "terms") {
 				if (path[2] !== undefined) {
 					return path[2];
 				} else {

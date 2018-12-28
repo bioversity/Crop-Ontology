@@ -684,6 +684,11 @@ var layout = function () {
 
 					MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
 
+					if (page == "term") {}
+
+					/**
+      * Ontology card
+      */
 					DATA.get_ontologies_data(NAV.get_ontology_id()).then(function (ontologies_data) {
 						$('<div>', { "id": "ontology_card", "class": "row container" }).append($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>').append(function () {
 							if (ontologies_data.ontology_title.link !== "") {
@@ -755,7 +760,7 @@ var layout = function () {
 							langs: langs
 						});
 
-						var permalink = "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
+						var permalink = "./ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
 						    ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
 
 						$("#term_permalink").attr("href", ext_permalink);
@@ -827,7 +832,7 @@ var layout = function () {
 	}, {
 		key: "load_scripts",
 		value: function load_scripts() {
-			if (page == "ontology") {
+			if (page == "ontology" || page == "terms") {
 				$("head").append("<!-- Main style -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen" }));
 
 				$("#scripts").append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" })).append("<!--  The Raphael JavaScript library for vector graphics display  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/raphael-min.js" })).append("<!--  Dracula  -->").append("<!--  An extension of Raphael for connecting shapes -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graffle.js" })).append("<!--  Graphs  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graph.js" })).append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_algorithms.js" }));

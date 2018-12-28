@@ -892,6 +892,13 @@ class layout {
 
 				MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
 
+				if(page == "term") {
+
+				}
+
+				/**
+				 * Ontology card
+				 */
 				DATA.get_ontologies_data(NAV.get_ontology_id()).then((ontologies_data) => {
 					$('<div>', {"id": "ontology_card", "class": "row container"}).append(
 						$('<div>', {"class": "col s2"}).append(
@@ -1017,7 +1024,7 @@ class layout {
 						langs: langs
 					});
 
-					let permalink = "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
+					let permalink = "./ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
 						ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
 
 					$("#term_permalink").attr("href", ext_permalink);
@@ -1206,7 +1213,7 @@ class layout {
 	}
 
 	load_scripts() {
-		if(page == "ontology") {
+		if(page == "ontology" || page == "terms") {
 			$("head").append(
 		        "<!-- Main style -->"
 			).append(

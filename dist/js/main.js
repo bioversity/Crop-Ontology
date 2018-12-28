@@ -6369,7 +6369,7 @@ var navigation = function () {
 		key: "get_ontology_id",
 		value: function get_ontology_id() {
 			var path = this.get_url_path();
-			if (path[0] == "ontology") {
+			if (path[0] == "ontology" || path[0] == "terms") {
 				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
 			}
 		}
@@ -6385,7 +6385,7 @@ var navigation = function () {
 		key: "get_ontology_label",
 		value: function get_ontology_label() {
 			var path = this.get_url_path();
-			if (path[0] == "ontology") {
+			if (path[0] == "ontology" || path[0] == "terms") {
 				if (path[2] !== undefined) {
 					return path[2];
 				} else {
@@ -6856,7 +6856,6 @@ var treeview = function () {
 	}, {
 		key: "add_info",
 		value: function add_info(source, remote) {
-			$("#term_info_name").text(source.name);
 			if (remote) {
 				var name = void 0,
 				    $dl = $("#page_info dl");
@@ -6865,6 +6864,7 @@ var treeview = function () {
 						$dl.append($('<dt>').append(STR.ucfirst(k))).append($('<dd>').append(v));
 					}
 				});
+				$("#term_info_name").text(source.name);
 				$("#page_info").html($dl);
 			} else {
 				$("#page_info").html(source);
@@ -6895,11 +6895,11 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
-
-				var permalink = "https://www.cropontology.org/terms/" + option.id + "/" + STR.get_ontology_term(option.term),
+				console.log(options);
+				var permalink = "./terms/" + option.id + "/" + STR.get_ontology_term(option.source.name),
 				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
-				history.pushState("", option.term, "/terms/" + option.id + "/" + option.term);
-				$("#term_info_name").attr("href", permalink);
+				history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
+				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 
 				if (option.is_root) {
@@ -7440,6 +7440,15 @@ var data = function () {
 				});
 			});
 		}
+
+		/**
+   * Get and parse the Ontology data (for the Ontology card)
+   * @NOTE This is an async function
+   * 
+   * @param  string 							id								Tho Ontology ID
+   * @return object 															The ontologies data JSON object
+   */
+
 	}, {
 		key: "get_ontologies_data",
 		value: function get_ontologies_data(id) {
@@ -7468,6 +7477,7 @@ var data = function () {
    * Get and parse all ontologies from the Crop Ontology website
    * @NOTE This is an async function
    *
+   * @param  string 							id								Tho Ontology ID
    * @return object 															The ontologies data JSON object
    */
 
@@ -8457,6 +8467,11 @@ var layout = function () {
 
 					MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
 
+					if (page == "term") {}
+
+					/**
+      * Ontology card
+      */
 					DATA.get_ontologies_data(NAV.get_ontology_id()).then(function (ontologies_data) {
 						$('<div>', { "id": "ontology_card", "class": "row container" }).append($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>').append(function () {
 							if (ontologies_data.ontology_title.link !== "") {
@@ -8528,7 +8543,7 @@ var layout = function () {
 							langs: langs
 						});
 
-						var permalink = "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
+						var permalink = "./ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
 						    ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
 
 						$("#term_permalink").attr("href", ext_permalink);
@@ -8600,7 +8615,7 @@ var layout = function () {
 	}, {
 		key: "load_scripts",
 		value: function load_scripts() {
-			if (page == "ontology") {
+			if (page == "ontology" || page == "terms") {
 				$("head").append("<!-- Main style -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen" }));
 
 				$("#scripts").append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" })).append("<!--  The Raphael JavaScript library for vector graphics display  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/raphael-min.js" })).append("<!--  Dracula  -->").append("<!--  An extension of Raphael for connecting shapes -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graffle.js" })).append("<!--  Graphs  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graph.js" })).append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_algorithms.js" }));

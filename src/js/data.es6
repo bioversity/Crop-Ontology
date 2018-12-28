@@ -278,6 +278,13 @@ class data {
 		});
 	}
 
+	/**
+	 * Get and parse the Ontology data (for the Ontology card)
+	 * @NOTE This is an async function
+	 * 
+	 * @param  string 							id								Tho Ontology ID
+	 * @return object 															The ontologies data JSON object
+	 */
 	get_ontologies_data(id) {
 		return new Promise((resolve, reject) => {
 			/**
@@ -304,6 +311,7 @@ class data {
 	 * Get and parse all ontologies from the Crop Ontology website
 	 * @NOTE This is an async function
 	 *
+	 * @param  string 							id								Tho Ontology ID
 	 * @return object 															The ontologies data JSON object
 	 */
 	get_ontology(id) {
