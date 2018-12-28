@@ -885,6 +885,7 @@ class layout {
 			 * -----------------------------------------------------------------
 			 */
 			case "ontology":
+			case "terms":
 				let name = "",
 					term = "",
 					language = "english";
@@ -1016,7 +1017,11 @@ class layout {
 						langs: langs
 					});
 
-					$("#term_permalink").attr("data-permalink", "http://www.cropontology.org/terms/" + data.id + "/" + term)
+					let permalink = "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
+						ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
+
+					$("#term_permalink").attr("href", ext_permalink);
+					$("#term_info_name").attr("href", permalink);
 					$("#ontology_tree, #ontology_info").removeClass("disabled");
 				});
 
@@ -1077,9 +1082,20 @@ class layout {
 											$('<div>', {"class": "filterbar nav-wrapper"}).append(
 												$('<ul>', {"class": "filters left"}).append(
 													$('<li>', {"data-filter": "read"}).append(
-														$('<span>', {"id": "term_info_name"})
-													).append(
-														$('<a>', {"href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink"}).append(
+														$('<a>', {
+															"href": "javascript:;",
+															"id": "term_info_name"
+														})
+													)
+												).append(
+													$('<li>', {"data-filter": "read"}).append(
+														$('<a>', {
+															"href": "javascript:;",
+															"target": "_blank",
+															"id": "term_permalink",
+															"class": "right tooltipped",
+															"data-tooltip": "Permalink"
+														}).append(
 															$('<span>', {"class": "fa fa-link"})
 														)
 													)

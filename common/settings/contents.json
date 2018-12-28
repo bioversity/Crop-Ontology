@@ -87,5 +87,9 @@
     "ontology": {
         "title": "%s",
         "visible": true
+    },
+    "terms": {
+        "title": "%s",
+        "visible": true
     }
 }

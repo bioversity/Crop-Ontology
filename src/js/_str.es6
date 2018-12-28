@@ -154,5 +154,29 @@ class str {
 		}
 		return strings[language];
 	}
+
+	/**
+	 * Extract the language from a JSON string
+	 * The Crop Onlogy API often provide a JSON language string.
+	 * This method extract the string value from that JSON string
+	 * @example `{"english": "Text in english"}`
+	 *
+	 * @param  string 							string							The string to analyze
+	 * @return string															The language string
+	 */
+	get_ontology_term_language(string) {
+		let langs = [],
+			language = settings.general.language;
+
+		let strings = {};
+		if(this.is_json(string)) {
+			$.each(JSON.parse(string), (lang, term) => {
+				langs.push((lang == undefined || lang == "undefined") ? language : lang);
+			});
+		} else {
+			langs.push(language);
+		}
+		return langs[0];
+	}
 }
 export default str;

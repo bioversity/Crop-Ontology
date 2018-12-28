@@ -64,7 +64,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the Ontology ID from current URL
+   * Get the Ontology ID from the current URL
    * @uses get_url_path()
    *
    * @return string															The current page
@@ -80,7 +80,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the Ontology ID from current URL
+   * Get the Ontology label from the current URL
    * @uses get_url_path()
    *
    * @return string															The current page

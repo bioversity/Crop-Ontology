@@ -27,7 +27,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var DATA = new _data2.default(),
     LOADER = new _loader2.default(),
     STR = new _str2.default(),
-    moment = require("moment");
+    moment = require("moment"),
+    settings = require("../../common/settings/contents.json");
 
 var treeview = function () {
 	function treeview() {
@@ -203,6 +204,12 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
+
+				var permalink = "https://www.cropontology.org/terms/" + option.id + "/" + STR.get_ontology_term(option.term),
+				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
+				history.pushState("", option.term, "/terms/" + option.id + "/" + option.term);
+				$("#term_info_name").attr("href", permalink);
+				$("#term_permalink").attr("href", ext_permalink);
 
 				if (option.is_root) {
 					_this2.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {

@@ -10,7 +10,9 @@ var
 	LOADER = new loader(),
 	STR = new str(),
 
-	moment = require("moment")
+	moment = require("moment"),
+
+	settings = require("../../common/settings/contents.json")
 ;
 
 class treeview {
@@ -193,6 +195,12 @@ class treeview {
 			// Item selection in treeview
 			$(".treeview a.selected").removeClass("selected");
 			$(e.currentTarget).addClass("selected");
+
+			let permalink = "https://www.cropontology.org/terms/" + option.id + "/" + STR.get_ontology_term(option.term),
+				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + ((option.langs.length == 0) ? settings.general.language : option.langs[0]);
+			history.pushState("", option.term, "/terms/" + option.id + "/" + option.term);
+			$("#term_info_name").attr("href", permalink);
+			$("#term_permalink").attr("href", ext_permalink);
 
 			if(option.is_root) {
 				this.add_info(

@@ -88,6 +88,10 @@ module.exports={
     "ontology": {
         "title": "%s",
         "visible": true
+    },
+    "terms": {
+        "title": "%s",
+        "visible": true
     }
 }
 
@@ -6355,7 +6359,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the Ontology ID from current URL
+   * Get the Ontology ID from the current URL
    * @uses get_url_path()
    *
    * @return string															The current page
@@ -6371,7 +6375,7 @@ var navigation = function () {
 		}
 
 		/**
-   * Get the Ontology ID from current URL
+   * Get the Ontology label from the current URL
    * @uses get_url_path()
    *
    * @return string															The current page
@@ -6650,6 +6654,33 @@ var str = function () {
 			}
 			return strings[language];
 		}
+
+		/**
+   * Extract the language from a JSON string
+   * The Crop Onlogy API often provide a JSON language string.
+   * This method extract the string value from that JSON string
+   * @example `{"english": "Text in english"}`
+   *
+   * @param  string 							string							The string to analyze
+   * @return string															The language string
+   */
+
+	}, {
+		key: "get_ontology_term_language",
+		value: function get_ontology_term_language(string) {
+			var langs = [],
+			    language = settings.general.language;
+
+			var strings = {};
+			if (this.is_json(string)) {
+				$.each(JSON.parse(string), function (lang, term) {
+					langs.push(lang == undefined || lang == "undefined" ? language : lang);
+				});
+			} else {
+				langs.push(language);
+			}
+			return langs[0];
+		}
 	}]);
 
 	return str;
@@ -6687,7 +6718,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var DATA = new _data2.default(),
     LOADER = new _loader2.default(),
     STR = new _str2.default(),
-    moment = require("moment");
+    moment = require("moment"),
+    settings = require("../../common/settings/contents.json");
 
 var treeview = function () {
 	function treeview() {
@@ -6863,6 +6895,12 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
+
+				var permalink = "https://www.cropontology.org/terms/" + option.id + "/" + STR.get_ontology_term(option.term),
+				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
+				history.pushState("", option.term, "/terms/" + option.id + "/" + option.term);
+				$("#term_info_name").attr("href", permalink);
+				$("#term_permalink").attr("href", ext_permalink);
 
 				if (option.is_root) {
 					_this2.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
@@ -7085,7 +7123,7 @@ var treeview = function () {
 
 exports.default = treeview;
 
-},{"../../src/js/_str.es6":10,"../../src/js/data.es6":12,"../../src/js/loader.es6":15,"moment":6}],12:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/js/_str.es6":10,"../../src/js/data.es6":12,"../../src/js/loader.es6":15,"moment":6}],12:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8412,6 +8450,7 @@ var layout = function () {
      * -----------------------------------------------------------------
      */
 				case "ontology":
+				case "terms":
 					var name = "",
 					    term = "",
 					    language = "english";
@@ -8489,7 +8528,11 @@ var layout = function () {
 							langs: langs
 						});
 
-						$("#term_permalink").attr("data-permalink", "http://www.cropontology.org/terms/" + data.id + "/" + term);
+						var permalink = "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
+						    ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
+
+						$("#term_permalink").attr("href", ext_permalink);
+						$("#term_info_name").attr("href", permalink);
 						$("#ontology_tree, #ontology_info").removeClass("disabled");
 					});
 
@@ -8504,7 +8547,16 @@ var layout = function () {
 						$("#comments").append();
 					});
 
-					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "#download_ontology_modal", "class": "modal-trigger" }).append($('<span>', { "class": "picol_arrow_full_down" })).append(" Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<span>', { "id": "term_info_name" })).append($('<a>', { "href": "javascript:;", "id": "term_permalink", "class": "right tooltipped", "data-tooltip": "Permalink" }).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
+					$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s5" }).append($('<h6>').text("Traits, methods and scales")).append($('<div>', { "id": "ontology_tree", "class": "card z-depth-0 disabled" }).append($('<nav>').append($('<div>', { "class": "languages_refresh left" }).append($('<select>', { "name": "language" }))).append($('<ul>', { "class": "right" }).append($('<li>').append($('<a>', { "href": "#download_ontology_modal", "class": "modal-trigger" }).append($('<span>', { "class": "picol_arrow_full_down" })).append(" Download"))))).append($('<div>', { "id": "treeview_container", "class": "card-content" }).append($('<ul>', { "id": "treeview", "class": "treeview" }))))).append($('<div>', { "class": "col s7" }).append($('<h6>').text("Term information")).append($('<div>', { "id": "ontology_info", "class": "disabled" }).append($('<div>', { "class": "card z-depth-1 browser-content browser" }).append($('<nav>', { "class": "nav-extended" }).append($('<div>', { "class": "nav-content" }).append($('<ul>', { "class": "tabs" }).append($('<li>', { "id": "general", "class": "tab" }).append($('<a>', { "href": "#page_info", "class": "active" }).text("General"))).append($('<li>', { "id": "new-comments", "class": "tab" }).append($('<a>', { "href": "#page_comments" }).text("Comments"))))).append($('<div>', { "class": "filterbar nav-wrapper" }).append($('<ul>', { "class": "filters left" }).append($('<li>', { "data-filter": "read" }).append($('<a>', {
+						"href": "javascript:;",
+						"id": "term_info_name"
+					}))).append($('<li>', { "data-filter": "read" }).append($('<a>', {
+						"href": "javascript:;",
+						"target": "_blank",
+						"id": "term_permalink",
+						"class": "right tooltipped",
+						"data-tooltip": "Permalink"
+					}).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
 						if (user.logged) {
 							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
 						} else {
