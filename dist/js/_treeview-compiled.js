@@ -12,6 +12,10 @@ var _data = require("../../src/js/data.es6");
 
 var _data2 = _interopRequireDefault(_data);
 
+var _navigation = require("../../src/js/_navigation.es6");
+
+var _navigation2 = _interopRequireDefault(_navigation);
+
 var _loader = require("../../src/js/loader.es6");
 
 var _loader2 = _interopRequireDefault(_loader);
@@ -25,6 +29,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DATA = new _data2.default(),
+    NAV = new _navigation2.default(),
     LOADER = new _loader2.default(),
     STR = new _str2.default(),
     moment = require("moment"),
@@ -195,7 +200,7 @@ var treeview = function () {
 
 			var $a = $('<a>', {
 				"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
-				"class": "btn btn-mini tooltipped" + (option.is_root ? " selected" : ""),
+				"class": "btn btn-mini tooltipped" + (option.is_root || NAV.get_term_id() == option.id ? " selected" : ""),
 				"data-id": option.id
 			}).append($('<span>').html(STR.camel_case_2_text(option.term))).click(function (e) {
 				$("#page_info dl").html("");
@@ -204,7 +209,7 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
-				console.log(options);
+
 				var permalink = "./terms/" + option.id + "/" + STR.get_ontology_term(option.source.name),
 				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
 				history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
@@ -333,6 +338,16 @@ var treeview = function () {
 					});
 				}
 			});
+
+			if (NAV.get_page() && NAV.get_term_id() == option.id) {
+				setTimeout(function () {
+					$a.click();
+					$a.prev().click();
+					// console.log($a.closest("li").first());
+					// this.toggleIcon();
+					_this2.tree_icon(true, option.id);
+				}, 100);
+			}
 
 			if (option.source.relationship !== undefined) {
 				$a.tooltip({

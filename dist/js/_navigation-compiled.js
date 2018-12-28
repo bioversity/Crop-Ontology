@@ -80,6 +80,22 @@ var navigation = function () {
 		}
 
 		/**
+   * Get the Ontology Term ID from the current URL
+   * @uses get_url_path()
+   *
+   * @return string															The current page
+   */
+
+	}, {
+		key: "get_term_id",
+		value: function get_term_id() {
+			var path = this.get_url_path();
+			if (path[0] == "ontology" || path[0] == "terms") {
+				return path[1];
+			}
+		}
+
+		/**
    * Get the Ontology label from the current URL
    * @uses get_url_path()
    *

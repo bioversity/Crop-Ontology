@@ -2,11 +2,13 @@
 "strict mode";
 
 import data from "../../src/js/data.es6";
+import navigation from "../../src/js/_navigation.es6";
 import loader from "../../src/js/loader.es6";
 import str from "../../src/js/_str.es6";
 
 var
 	DATA = new data(),
+	NAV = new navigation(),
 	LOADER = new loader(),
 	STR = new str(),
 
@@ -181,10 +183,9 @@ class treeview {
 		},
 		option = $.extend({}, defaults, options);
 
-
 		let $a = $('<a>', {
 			"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
-			"class": "btn btn-mini tooltipped" + ((option.is_root) ? " selected" : ""),
+			"class": "btn btn-mini tooltipped" + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : ""),
 			"data-id": option.id
 		}).append(
 			$('<span>').html(STR.camel_case_2_text(option.term))
@@ -195,7 +196,7 @@ class treeview {
 			// Item selection in treeview
 			$(".treeview a.selected").removeClass("selected");
 			$(e.currentTarget).addClass("selected");
-console.log(options);
+
 			let permalink = "./terms/" + option.id + "/" + STR.get_ontology_term(option.source.name),
 				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + ((option.langs.length == 0) ? settings.general.language : option.langs[0]);
 			history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
@@ -351,6 +352,16 @@ console.log(options);
 				});
 			}
 		});
+
+		if(NAV.get_page() && NAV.get_term_id() == option.id) {
+			setTimeout(() => {
+				$a.click();
+				$a.prev().click();
+				// console.log($a.closest("li").first());
+				// this.toggleIcon();
+				this.tree_icon(true, option.id)
+			}, 100);
+		}
 
 		if(option.source.relationship !== undefined) {
 			$a.tooltip({
