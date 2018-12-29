@@ -212,7 +212,12 @@ var treeview = function () {
 
 				var permalink = "./terms/" + option.id + "/" + STR.get_ontology_term(option.source.name),
 				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
-				history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
+
+				if (option.is_root) {
+					history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + "/" + STR.get_ontology_term(option.source.name));
+				} else {
+					history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
+				}
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 
@@ -220,6 +225,8 @@ var treeview = function () {
 					_this2.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
+					$("#graph_content").html("");
+					$("#graph").addClass("disabled");
 				} else {
 					// Info
 					_this2.disable_info();
@@ -343,8 +350,6 @@ var treeview = function () {
 				setTimeout(function () {
 					$a.click();
 					$a.prev().click();
-					// console.log($a.closest("li").first());
-					// this.toggleIcon();
 					_this2.tree_icon(true, option.id);
 				}, 100);
 			}

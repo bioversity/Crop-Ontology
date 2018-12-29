@@ -1,0 +1,252 @@
+
+@import "../../colours";
+
+#ontologies_container {
+  padding: 0 0 22px 30px;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $highlight;
+    font-weight: 300;
+  }
+  & > h5:first-child {
+    text-transform: uppercase;
+    margin-top: -37px;
+  }
+  .collapsible {
+    margin-top: 15px;
+
+    .collapsible-header {
+      font-size: 16px;
+
+      span {
+        font-size: 24px;
+        margin-right: 12px;
+        margin-top: -6px;
+      }
+      .collapsible-secondary {
+        &.help-text {
+          padding: 10px;
+
+          span {
+            font-size: inherit;
+            margin: 0;
+
+            &.fa, &.far {
+              font-size: 16px;
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+    }
+    .collapsible-body {
+      padding: 0px;
+
+      h2 {
+        color: $text-blue;
+        display: inline-block;
+        font-size: 22px;
+        margin: 0;
+
+        a {
+          &.right {
+            color: $black;
+            font-size: 11px;
+            text-decoration: none;
+            &:hover { text-decoration: underline; }
+          }
+        }
+      }
+
+      a {
+        &.download {
+          border: transparent 1px solid;
+          border-radius: 3px;
+          color: $dark-grey;
+          font-size: 16px !important;
+          // padding: 5px;
+
+          // &:hover {
+          //   background-color: $white-grey;
+          //   border: $grey 1px solid;
+          // }
+          .fa-rss-square {
+            color: $rss;
+            font-size: 19px;
+            vertical-align: text-bottom;
+          }
+        }
+      }
+      .items_count {
+        color: $medium-grey;
+        display: block;
+        font-size: 12px;
+      }
+      &.paginated {
+        box-shadow: 3px 3px 12px $white-grey inset;
+        // background: linear-gradient(to right, $very-light-grey 2px, white 3px);
+      }
+      .collection, .pagination-content {
+        // box-shadow: 0 0 6px $very-light-grey inset;
+        border-bottom: $very-light-grey 1px solid;
+        padding: 10px;
+
+        a {
+          font-size: 0.9em;
+        }
+        .help-text {
+          font-size: 0.9em;
+          line-height: 2.2em;
+        }
+      }
+      .content {
+        border-bottom: $very-light-grey 1px solid;
+        padding: 30px;
+      }
+    }
+  }
+}
+
+.all-ontologies {
+  margin-top: 70px;
+  font-size: 20px;
+  font-weight: 300;
+
+  &:hover { text-decoration: underline; }
+}
+
+#ontology_tree {
+  border-radius: 6px;
+  border: $grey 1px solid;
+  min-height: 655px;
+
+  nav {
+    background: $white;
+    color: $dark-grey;
+
+    a { color: $dark-grey; }
+
+    .languages_refresh {
+      .select-wrapper {
+        height: 64px;
+        padding: 5px 15px;
+      }
+    }
+  }
+  #treeview_container {
+    background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
+    padding: 0;
+
+    .progress {
+      margin: -24px -24px 24px 0px;
+    }
+    #treeview {
+      padding: 25px;
+    }
+  }
+}
+
+#ontology_info {
+  nav {
+    background: white;
+    color: $dark-grey;
+    // padding: 5px 15px;
+
+    a {
+      color: $grey;
+      &:hover { color: $medium-light-grey; }
+    }
+
+    .filterbar {
+      position: absolute;
+      top: 0;
+      // min-height: 250px;
+
+      .filters {
+        #term_info_name {
+          color: $dark-grey;
+          max-width: 350px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      .sorts {
+        li {
+          display: inline-block;
+          &:not(:last-child) { margin-right: 5px; }
+
+          a { font-size: 12px; }
+          span {
+            font-size: 12px;
+            padding: 0 15px;
+          }
+        }
+      }
+    }
+  }
+  #pages {
+    background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
+
+    .progress {
+      margin-top: 1px;
+      margin-bottom: -5px;
+    }
+    #page_info {
+      dl {
+        display: flex;
+        flex-wrap: wrap;
+
+        dt {
+          font-weight: bold;
+          width: 33%;
+        }
+        dd {
+          margin-left: auto;
+          width: 66%;
+        }
+      }
+    }
+  }
+  #graph {
+    min-height: 450px;
+    text-align: center;
+    color: $grey;
+
+    &.disabled {
+      h1 { width: 100%; }
+      svg {
+        width: 100px;
+        opacity: 0.2;
+      }
+    }
+    .progress {
+      margin: 0;
+      position: absolute;
+      top: 0;
+      z-index: 1;
+    }
+    #graph_content {
+      height: 100%;
+      position: absolute;
+      width: 100%;
+      z-index: 0;
+
+      .btn {
+        &.fullscreen {
+          box-sizing: border-box;
+          padding: 0 1rem;
+          position: absolute;
+          right: 10px;
+          top: 10px;
+        }
+      }
+    }
+    &.fullscreen {
+      svg {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+}

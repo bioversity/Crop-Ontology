@@ -1,0 +1,17 @@
+
+@import "../colours";
+
+
+#top_menu {
+  a {
+    color: $highlight;
+    font-weight: bold;
+  }
+
+  .separator {
+    background-color: #ccc;
+    display: block;
+    height: 64px;
+    width: 2px;
+  }
+}

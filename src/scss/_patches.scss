@@ -91,16 +91,3 @@ nav {
     }
   }
 }
-
-#download_ontology_modal {
-  .dowload_item {
-    color: $dark-grey;
-
-    span:before {
-      margin-right: 0;
-    }
-    h6 {
-      text-transform: capitalize;
-    }
-  }
-}

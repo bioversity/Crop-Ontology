@@ -1,0 +1,69 @@
+
+@import "../colours";
+
+
+#ontology_card {
+  // border-radius: 3px;
+  // border: $grey 1px solid;
+  // margin-bottom: 30px;
+  // margin-top: -30px;
+  // padding: 10px;
+  margin-bottom: 5em;
+  margin-top: 5em;
+
+  h1 { margin-top: 0; }
+
+  #page_subtitle {
+    color: $medium-light-grey;
+    font-family: "Roboto Condensed";
+    font-size: 2.8em;
+    margin-bottom: 0;
+    text-align: left;
+    text-shadow: 0 0 1px $dark-grey;
+  }
+  #page_title {
+    color: $dark-grey;
+    font-family: "Roboto";
+    font-size: 3em;
+    margin: 1em 0;
+    text-align: left;
+    text-shadow: 0 0 1px $black;
+  }
+  #page_subtitle + #page_title {
+    margin-top: 0;
+  }
+
+  a {
+    &[rel="external"], &[target="_blank"]  {
+      &:after {
+        color: $grey;
+        content: url("../../common/img/ext.png");
+        font-size: .83em;
+        font-weight: 400;
+        vertical-align: super;
+        margin-left: 2px;
+        margin-right: -2px;
+      }
+    }
+  }
+  table {
+    tbody {
+      ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      a {
+        display: block;
+
+        &[target="_blank"]::after { display: none; }
+      }
+      img {
+        max-width: 100px;
+        max-height: 50px;
+      }
+      td {
+        &.center { vertical-align: top; }
+      }
+    }
+  }
+}

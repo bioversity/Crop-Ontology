@@ -1,0 +1,100 @@
+
+@import "../colours";
+
+
+// Search bar
+#searchbar {
+    width: 50%;
+
+    .bar {
+        border-radius: 6px;
+        border: #aaa 1px solid;
+        display: flex;
+        margin-bottom: 10px;
+
+        #search_input {}
+        #tags_list {
+            // padding: 0;
+            // font-family: monospace;
+            // font-size: 12px;
+            // color: $medium-grey;
+
+            // &:hover { border-left: $very-light-grey 1px solid; }
+            .tags {
+                margin: 10px 0;
+                text-align: right;
+
+                li {
+                    display: inline-block;
+
+                    &.tag {
+                        background-color: brown;
+                        border-radius: 4.5px;
+                        color: $white;
+                        font-size: 11px;
+                        margin: 0 2px;
+                        padding: 3px 6px;
+
+                        &.type { background-color: $tag-green; }
+                        &.user { background-color: $tag-blue; }
+                        a {
+                            color: $white;
+                            margin-left: 5px;
+                        }
+                    }
+                }
+            }
+        }
+        .input-field {
+            margin: 0;
+
+            input {
+                background-color: transparent !important;
+                border: 0px none;
+                box-shadow: none !important;
+                margin: 0;
+                padding: 0px 10px;
+            }
+            .btn-text {
+                margin-top: 10px;
+            }
+        }
+    }
+}
+
+#navbar {
+  margin-top: -30px;
+  margin-bottom: -80px;
+
+  // Breadcrumb
+  #breadcrumb {
+    background-color: transparent;
+    box-shadow: 0 0 0 transparent;
+    height: 47px;
+
+    nav {
+      height: 47px;
+      line-height: 47px;
+
+      .breadcrumb {
+        font-size: 14px;
+
+        &:before {
+          color: $medium-light-grey;
+          content: "›";
+          font-family: "Roboto", sans-serif;
+          vertical-align: -3px;
+        }
+
+        tt {
+          background-color: $white-grey;
+          font-size: 1.05em;
+          margin-right: 5px;
+          padding: 5px;
+        }
+      }
+      a { color: $dark-grey; }
+      span { color: $medium-grey; }
+    }
+  }
+}

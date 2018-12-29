@@ -80,7 +80,7 @@ module.exports = function(grunt) {
 				tasks: ["babel", "browserify", "uglify"]
 			},
 			sass: {
-				files: "src/scss/*.scss",
+				files: "src/scss/**/*.scss",
 				tasks: ["sass"]
 			}
 		}

@@ -1,0 +1,40 @@
+
+@import "../colours";
+
+
+#contents {
+  margin: 100px 0 90px 0;
+  padding: 100px 20px;
+
+  &.coloured {
+    margin-bottom: 0;
+    padding: 60px 0;
+  }
+  & > .container {
+    h1, h2, h3, h4 { font-weight: 300; }
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 2.2rem; }
+    h3 { font-size: 2rem; }
+    h4 { font-size: 1.8rem; }
+    h5 { font-size: 1.6rem; }
+    h6 { font-size: 1.4rem; }
+
+    div.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+  & > .progress {
+    margin-bottom: 60px;
+    margin-top: -60px;
+  }
+
+  // Content container
+  @import "contents/info_container";
+  // Feed container
+  @import "contents/feed_container";
+  // Ontologies container
+  @import "contents/ontologies_container";
+  // Ontologies container
+  @import "contents/static_contents";
+}

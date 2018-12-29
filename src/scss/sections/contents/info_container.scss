@@ -1,0 +1,32 @@
+
+@import "../../colours";
+
+
+#info_container {
+  .card-title {
+    .fa, .far { vertical-align: 3px; }
+  }
+  .help {
+    *:not(ul) {
+      margin: 0;
+      padding: 0;
+    }
+    h1 { font-size: 24px; }
+    h2 { font-size: 22px; }
+    h3 { font-size: 20px; }
+    h4 { font-size: 18px; }
+    h5 { font-size: 16px; }
+    h6 { font-size: 14px; }
+    a {
+      color: $medium-grey;
+      text-decoration: underline;
+      &:hover { text-decoration: none; }
+    }
+    ul + p {
+      font-style: italic;
+      border-top: $light-light-grey 1px solid;
+      padding-top: 15px;
+      margin-top: 20px;
+    }
+  }
+}

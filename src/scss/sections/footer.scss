@@ -1,0 +1,77 @@
+
+@import "../colours";
+
+
+footer {
+  // background-color: $dark-grey;
+  // background: url("../../common/img/footer-background_399395-PCOQ5H-624.png") top left no-repeat;
+  color: $white;
+  height: 300px !important;
+  padding: 20px 40px;
+  width: 100%;
+
+  .description {
+    font-size: 14px;
+    font-weight: 300;
+    margin-left: 30px;
+    margin-top: 50px;
+  }
+  h2 {
+    color: $medium-light-grey;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 300;
+    margin: 25px 0 10px 0;
+  }
+  a {
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+  ul.horizontal {
+    li { display: inline-block; padding: 0 5px; }
+  }
+}
+
+#bottom_links {
+  margin: 70px 0;
+  height: 75px;
+
+  img {
+    height: 75px;
+    width: auto;
+    margin-right: 20px;
+  }
+}
+
+.license {
+  border-top: $very-light-grey 1px solid;
+  margin: 20px auto;
+  padding: 20px 0 10px 0;
+  width: 80%;
+
+  p {
+    color: $medium-light-grey;
+    font-size: 12px;
+
+    a {
+      color: $dark-grey;
+      &:hover { text-decoration: underline; }
+      &[rel="external"], &[target="_blank"]  {
+        &:after {
+          color: $grey;
+          // content: "\f35d";
+          // font-family: "Font Awesome 5 Free";
+          content: url("../../common/img/ext.png");
+          font-size: .83em;
+          font-weight: 400;
+          vertical-align: super;
+          margin-left: 2px;
+          margin-right: -2px;
+        }
+      }
+    }
+  }
+}

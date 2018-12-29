@@ -83,8 +83,13 @@ var loader = function () {
 		}
 	}, {
 		key: "hide",
-		value: function hide(item) {
-			$(item).animate({ "opacity": 0 });
+		value: function hide(item, remove) {
+			remove = remove == undefined ? false : remove;
+			$(item).animate({ "opacity": 0 }, 300, function () {
+				if (remove) {
+					$(item).remove();
+				}
+			});
 		}
 	}]);
 

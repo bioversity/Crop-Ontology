@@ -1,0 +1,27 @@
+
+@import "../colours";
+
+// Halfway menu
+#halfway {
+  margin: 60px 0 60px 0;
+
+  #halfway_menu {
+    li {
+      font-size: 14px;
+
+      &:not(:first-child) {
+        &:before {
+          content: "-";
+          margin-right: 12px;
+        }
+      }
+      &:not(:last-child) { margin-right: 12px; }
+
+      a {
+        color: $medium-grey;
+
+        &:hover { text-decoration: underline; }
+      }
+    }
+  }
+}

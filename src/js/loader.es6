@@ -86,8 +86,13 @@ class loader {
 		$(item).animate({"opacity": 1});
 	}
 
-	hide(item) {
-		$(item).animate({"opacity": 0});
+	hide(item, remove) {
+		remove = (remove == undefined) ? false : remove;
+		$(item).animate({"opacity": 0}, 300, () => {
+			if(remove) {
+				$(item).remove();
+			}
+		});
 	}
 }
 

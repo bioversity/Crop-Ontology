@@ -1,0 +1,77 @@
+
+@import "../../colours";
+
+
+#feed_container {
+  display: none;
+  // padding-right: 30px;
+  .card-title { margin: 0; }
+  .feed {
+    min-height: 120px;
+    // padding: 10px 0;
+
+    &.visible:not(:first-child) {
+      border-top: $white-grey 2px dashed;
+    }
+
+    a {
+      &:hover { text-decoration: none; }
+      text-decoration: underline;
+    }
+    h1 {
+      color: $highlight;
+      font-size: 16px;
+      font-weight: 300;
+      margin-bottom: 20px;
+
+      a {
+        text-decoration: none;
+        &:hover { text-decoration: underline; }
+      }
+    }
+    .preview {
+      border: $very-light-grey 1px solid;
+      float: left;
+      height: 80px;
+      margin-right: 10px;
+      overflow: hidden;
+      text-align: center;
+      width: 80px;
+
+      a {
+        display: block;
+        height: 100%;
+        line-height: 100px;
+
+        iframe { pointer-events: none; }
+        img { height: 100%; }
+      }
+    }
+    .card-title {
+      display: contents;
+      line-height: 22px;
+
+      a {
+        font-size: 16px;
+        text-decoration: none;
+        &:hover { text-decoration: underline; }
+      }
+    }
+    .release {
+      color: $medium-light-grey;
+      font-size: 12px;
+      // margin-bottom: 20px;
+
+      a {
+        color: $medium-light-grey;
+      }
+    }
+  }
+  .pagination {
+    a { font-size: 13px; }
+
+    .active {
+      background-color: $highlight;
+    }
+  }
+}

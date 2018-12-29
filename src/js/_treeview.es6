@@ -199,7 +199,12 @@ class treeview {
 
 			let permalink = "./terms/" + option.id + "/" + STR.get_ontology_term(option.source.name),
 				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + ((option.langs.length == 0) ? settings.general.language : option.langs[0]);
-			history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
+
+			if(option.is_root) {
+				history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + "/" + STR.get_ontology_term(option.source.name));
+			} else {
+				history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
+			}
 			$("#term_info_name").attr("href", permalink).html(option.term);
 			$("#term_permalink").attr("href", ext_permalink);
 
@@ -218,6 +223,8 @@ class treeview {
 					),
 					false
 				);
+				$("#graph_content").html("");
+				$("#graph").addClass("disabled");
 			} else {
 				// Info
 				this.disable_info();
@@ -357,8 +364,6 @@ class treeview {
 			setTimeout(() => {
 				$a.click();
 				$a.prev().click();
-				// console.log($a.closest("li").first());
-				// this.toggleIcon();
 				this.tree_icon(true, option.id)
 			}, 100);
 		}

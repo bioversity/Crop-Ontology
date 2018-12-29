@@ -1,0 +1,52 @@
+
+@import "../colours";
+
+
+#top_carousel {
+  margin: 60px 0 60px 0;
+  // border: $light-light-grey 1px dashed;
+
+  .carousel {
+    height: 450px !important;
+    opacity: 0;
+
+    .carousel-item {
+      min-height: 300px !important;
+      pointer-events: none;
+      display: flex !important;
+    }
+    .carousel-fixed-item {
+        #page_subtitle {
+          color: $medium-light-grey;
+          font-family: "Roboto Condensed";
+          font-size: 2.8em;
+          text-align: left;
+          text-shadow: 0 0 3px $dark-grey;
+        }
+        #page_title {
+          color: white;
+          font-family: "Roboto";
+          font-size: 3em;
+          margin: 1em 0;
+          text-align: left;
+          text-shadow: 0 0 3px $black;
+        }
+        #page_subtitle + #page_title {
+          margin-top: 0;
+        }
+    }
+    h1 {
+      color: $medium-grey;
+      font-size: 36px;
+      font-weight: 300;
+      margin: 0;
+      text-align: center;
+      width: 100%;
+    }
+    img + h1 {
+      color: white;
+      position: absolute;
+      text-shadow: 0 0 3px $black;
+    }
+  }
+}

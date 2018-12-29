@@ -235,57 +235,61 @@ class layout {
 	build_carousel() {
 		let path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]);
 
-		$("body").append(
-			$('<section>', {"id": "top_carousel", "class": ""}).append(
-				$('<div>', {"class": "carousel carousel-slider center"}).append(
-					$('<div>', {"class": "carousel-fixed-item container"}).append(() => {
-						if(page == "ontology") {
-							return $('<div>', {"class": "left"}).append(
-								$('<h1>', {"id": "page_subtitle"}).text(NAV.get_ontology_id())
-							).append(
-								$('<h2>', {"id": "page_title"}).text(NAV.get_ontology_label())
-							);
-						} else {
-							return $('<div>', {"class": "left"}).append(
-								$('<h1>', {"id": "page_title"}).text(settings[page].title)
-							);
-						}
-					})
-				).append(
-					$.map(top_carousel.messages, (v) => {
-						v.message = v.message.replace(/\n/gm, "<br />");
-						v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
-						return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"}).append(() => {
-							if(v.image !== "") {
-								return $('<img>', {"src": v.image, "class": "responsive-img"});
-							}
-						}).append(
-							$('<h1>').html(v.message)
-						)
-					})
+		if(page == "ontology" || page == "term") {
+			$("body").append(
+				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
+					// $('<div>', {"class": "left"}).append(
+						$('<h1>', {"id": "page_subtitle"}).text(NAV.get_ontology_id())
+					).append(
+						$('<h2>', {"id": "page_title"}).text(NAV.get_ontology_label())
+					// )
 				)
 			)
-		);
+		} else {
+			$("body").append(
+				$('<section>', {"id": "top_carousel", "class": ""}).append(
+					$('<div>', {"class": "carousel carousel-slider center"}).append(
+						$('<div>', {"class": "carousel-fixed-item container"}).append(
+ 							$('<div>', {"class": "left"}).append(
+								$('<h1>', {"id": "page_title"}).text(settings[page].title)
+							)
+						)
+					).append(
+						$.map(top_carousel.messages, (v) => {
+							v.message = v.message.replace(/\n/gm, "<br />");
+							v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
+							return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"}).append(() => {
+								if(v.image !== "") {
+									return $('<img>', {"src": v.image, "class": "responsive-img"});
+								}
+							}).append(
+								$('<h1>').html(v.message)
+							)
+						})
+					)
+				)
+			);
 
-		// Instantiate Materialize carousel
-		$(".carousel").carousel({
-			duration: 50,
-			// dist: 0,
-			// noWrap: true,
-			fullWidth: true,
-			indicators: false
-		}).animate({"opacity": 1}, 300).css("pointer-events", "none");
+			// Instantiate Materialize carousel
+			$(".carousel").carousel({
+				duration: 50,
+				// dist: 0,
+				// noWrap: true,
+				fullWidth: true,
+				indicators: false
+			}).animate({"opacity": 1}, 300).css("pointer-events", "none");
 
-		/**
-		* Animate the carousel
-		* @param integer						time							The delay after carousel change (default is 10'000)
-		*/
-		// setInterval(() => {
-		// 	// $(".carousel .carousel-item").fadeOut(300, () => {
-		// 		$(".carousel").carousel("next");
-		// 		// $(".carousel .carousel-item").delay(300).fadeIn();
-		// 	// })
-		// }, 10000);
+			/**
+			* Animate the carousel
+			* @param integer						time							The delay after carousel change (default is 10'000)
+			*/
+			// setInterval(() => {
+			// 	// $(".carousel .carousel-item").fadeOut(300, () => {
+			// 		$(".carousel").carousel("next");
+			// 		// $(".carousel .carousel-item").delay(300).fadeIn();
+			// 	// })
+			// }, 10000);
+		}
 	}
 
 	/**
@@ -585,7 +589,11 @@ class layout {
 				 * Ontologies
 				 * -------------------------------------------------------------
 				 */
+				LOADER.create({target: "#ontologies_container", type: "progress"});
+
 				DATA.get_ontologies().then((data) => {
+					LOADER.hide("#ontologies_container .progress", true);
+
 					if(settings.home.sections.ontologies.visible) {
 						$("#ontologies_container").append(
 							$('<h5>').text("Ontologies")
@@ -892,21 +900,19 @@ class layout {
 
 				MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
 
-				if(page == "term") {
-
-				}
-
 				/**
 				 * Ontology card
 				 */
 				DATA.get_ontologies_data(NAV.get_ontology_id()).then((ontologies_data) => {
-					$('<div>', {"id": "ontology_card", "class": "row container"}).append(
+					$("#ontology_card").html(
 						$('<div>', {"class": "col s2"}).append(
 							$('<img>', {"class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture})
 						)
 					).append(
 						$('<div>', {"class": "col s10"}).append(
-							$('<h1>').append(() => {
+							$('<h1>', {"id": "page_subtitle"}).text(NAV.get_ontology_id())
+						).append(
+							$('<h2>', {"id": "page_title"}).append(() => {
 								if(ontologies_data.ontology_title.link !== "") {
 									return $('<a>', {"href": ontologies_data.ontology_title.link, "target": "_blank"}).text(ontologies_data.ontology_title.title);
 								} else {
@@ -997,7 +1003,7 @@ class layout {
 								)
 							)
 						)
-					).insertAfter("#contents .progress");
+					)
 				});
 
 				DATA.get_ontology(NAV.get_ontology_id()).then((data) => {
