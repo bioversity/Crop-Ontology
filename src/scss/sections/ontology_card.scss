@@ -20,6 +20,11 @@
     margin-bottom: 0;
     text-align: left;
     text-shadow: 0 0 1px $dark-grey;
+
+    small {
+        color: $grey;
+        text-shadow: 0 0 1px $grey;
+    }
   }
   #page_title {
     color: $dark-grey;
@@ -37,7 +42,7 @@
     &[rel="external"], &[target="_blank"]  {
       &:after {
         color: $grey;
-        content: url("../../common/img/ext.png");
+        content: url("../../common/media/img/ext.png");
         font-size: .83em;
         font-weight: 400;
         vertical-align: super;

@@ -210,13 +210,13 @@ var treeview = function () {
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
 
-				var permalink = "./terms/" + option.id + "/" + STR.get_ontology_term(option.source.name),
+				var permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
 				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
 
 				if (option.is_root) {
-					history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + "/" + STR.get_ontology_term(option.source.name));
+					history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
 				} else {
-					history.pushState("", option.term, "/terms/" + option.id + "/" + STR.get_ontology_term(option.source.name));
+					history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
 				}
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);

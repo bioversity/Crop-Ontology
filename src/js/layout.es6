@@ -148,7 +148,7 @@ class layout {
 								if(iv.display) {
 									$("#" + position + " ." + item.position).append(
 										$('<a>', {"class": "tooltipped", "href": iv.link, "target": iv.target, "data-tooltip": iv.label}).append(
-											$('<img>', {"src": "common/img/" + iv.image})
+											$('<img>', {"src": "common/media/img/" + iv.image})
 										)
 									)
 								}
@@ -212,7 +212,7 @@ class layout {
 				$('<nav>', {"class": "transparent z-depth-0"}).append(
 					$('<div>', {"class": "nav-wrapper"}).append(
 						$('<a>', {"href": "./", "class": "brand-logo"}).append(
-	                        $('<img>', {"src": "common/img/crop_ontology.png"})
+	                        $('<img>', {"src": "common/media/img/crop_ontology.png"})
 						)
 					).append(
 						// Top menu container
@@ -235,13 +235,13 @@ class layout {
 	build_carousel() {
 		let path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]);
 
-		if(page == "ontology" || page == "term") {
+		if(page == "ontology" || page == "terms") {
 			$("body").append(
 				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
 					// $('<div>', {"class": "left"}).append(
-						$('<h1>', {"id": "page_subtitle"}).text(NAV.get_ontology_id())
+						$('<h1>', {"id": "page_subtitle"}).html((page == "terms") ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id())
 					).append(
-						$('<h2>', {"id": "page_title"}).text(NAV.get_ontology_label())
+						$('<h2>', {"id": "page_title"}).text(STR.camel_case_2_text(NAV.get_ontology_label()))
 					// )
 				)
 			)
@@ -319,21 +319,40 @@ class layout {
 						).append(() => {
 							if(NAV.get_url_path().length > 1) {
 								let path = [];
-								return $.map(NAV.get_url_path(), (v, k) => {
-									path.push(v);
-									if(k < (NAV.get_url_path().length - 1)) {
-										return $('<a>', {"href": "./" + path.join("/"), "class": "breadcrumb"}).text(STR.ucfirst(v))
-									} else {
-										return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(v).replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))
+								$.each(NAV.get_url_path(), (k, v) => {
+									switch(page) {
+										case "ontology":
+											if(k > 0) {
+												path.push(v);
+											}
+											break;
+										case "terms":
+											path = [NAV.get_url_path()[1] + ":" + NAV.get_url_path()[2]];
+											break;
+										default:
+											path.push(v);
+											break;
 									}
-								})
+								});
+								return $.map(path, (v, k) => {
+									if(k < (path.length - 1)) {
+										return $('<a>', {"href": "./" + path.join("/"), "class": "breadcrumb"}).text(STR.ucfirst(v));
+									} else {
+										if(page == "terms") {
+											let p = v.split(":");
+											v = '<tt>' + p[0] + ' &rsaquo; <small>' + p[1] + '</small></tt>' + STR.ucfirst(STR.camel_case_2_text(p[2]));
+											return $('<span>', {"class": "breadcrumb"}).html(v);
+										} else {
+											return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
+										}
+									}
+								});
 							} else {
-								return $('<span>', {"class": "breadcrumb"}).text(STR.ucfirst(NAV.get_page()))
+								return $('<span>', {"class": "breadcrumb"}).text(STR.ucfirst(NAV.get_page()));
 							}
 						})
 					)
-				)
-            ;
+				);
 
 			if(page == "home") {
 				$("body").append(
@@ -962,7 +981,7 @@ class layout {
 											return $('<div>').append(
 												$.map(ontologies_data.lead_centers, (v, k) => {
 													if(v.image) {
-														let image = (!STR.is_url(v.image)) ? "common/img/" + v.image : v.image;
+														let image = (!STR.is_url(v.image)) ? "common/media/img/" + v.image : v.image;
 														return $('<a>', {"href": v.link, "target": "_blank"}).append(
 															$('<img>', {"src": image})
 														)
@@ -978,9 +997,9 @@ class layout {
 											return $('<div>').append(
 												$.map(ontologies_data.partners, (v, k) => {
 													if(v.image) {
-														let image = (!STR.is_url(v.image)) ? "common/img/" + v.image : v.image;
+														let image = (!STR.is_url(v.image)) ? "common/media/img/" + v.image : v.image;
 														return $('<a>', {"href": v.link, "target": "_blank"}).append(
-															$('<img>', {"src": "common/img/" + image})
+															$('<img>', {"src": "common/media/img/" + image})
 														)
 													}
 												})
@@ -994,7 +1013,7 @@ class layout {
 											return $('<div>').append(
 												$.map(ontologies_data.cgiar_research_program, (v, k) => {
 													return $('<a>', {"href": v.link, "target": "_blank"}).append(
-														$('<img>', {"src": "common/img/" + v.image})
+														$('<img>', {"src": "common/media/img/" + v.image})
 													)
 												})
 											).html();
@@ -1030,7 +1049,7 @@ class layout {
 						langs: langs
 					});
 
-					let permalink = "./ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label(),
+					let permalink = "./ontology/" + NAV.get_ontology_id() + ":" + NAV.get_ontology_label(),
 						ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
 
 					$("#term_permalink").attr("href", ext_permalink);
@@ -1170,13 +1189,13 @@ class layout {
 			$("body").append(
 				$("<footer>", {"class": "parallax-container"}).append(
 					$("<div>", {"class": "parallax"}).append(
-						$("<img>", {"src": "common/img/" + settings.general.footer.background})
+						$("<img>", {"src": "common/media/img/" + settings.general.footer.background})
 					)
 				).append(
 					$("<div>", {"class": "row"}).append(
 						$("<div>", {"class": "col s12 m3 l3 xl2"}).append(
 							$('<a>', {"href": "./", "class": "brand-logo"}).append(
-								$('<img>', {"class": "responsive-img", "src": "common/img/" + settings.general.footer.logo})
+								$('<img>', {"class": "responsive-img", "src": "common/media/img/" + settings.general.footer.logo})
 							)
 						).append(
 							$('<p>', {"class": "description"}).html(settings.general.footer.description)
