@@ -5,6 +5,11 @@ module.exports={
         "loader": {
             "text": "Getting data..."
         },
+        "carousel": {
+            "visible": true,
+            "animate": true,
+            "time": 10000
+        },
         "search": {
             "tags": {
                 "visible": false
@@ -28,9 +33,23 @@ module.exports={
         }
     },
     "404": {
-        "title": "Page not found"
+        "title": "Page not found",
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "home": {
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        },
         "sections": {
             "help": {
                 "title": "Instructions to develop a new ontology",
@@ -63,35 +82,92 @@ module.exports={
     },
     "about": {
         "title": "About the Project",
-        "visible": true
+        "subtitle": "",
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "privacy-policy": {
         "title": "Privacy policy",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "credit_Bioversity International_J.van de Gevel.jpg"
+            }]
+        }
     },
     "API": {
         "title": "API",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "contact-us": {
         "title": "Contact us",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "feedback": {
         "title": "Feedback",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "add-ontology": {
         "title": "Add new terms",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "ontology": {
-        "title": "%s",
-        "visible": true
+        "title": "",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "terms": {
-        "title": "%s",
-        "visible": true
+        "title": "",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     }
 }
 
@@ -6532,8 +6608,8 @@ var str = function () {
 
 	}, {
 		key: "addslashes",
-		value: function addslashes(str) {
-			return str.replace(/\\/g, '\\\\').replace(/\'/g, '\\\'').replace(/\"/g, '\\"').replace(/\0/g, '\\0');
+		value: function addslashes(string) {
+			return string.replace(/\\/g, '\\\\').replace(/\'/g, '\\\'').replace(/\"/g, '\\"').replace(/\0/g, '\\0');
 		}
 
 		/**
@@ -6547,8 +6623,23 @@ var str = function () {
 
 	}, {
 		key: "stripslashes",
-		value: function stripslashes(str) {
-			return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+		value: function stripslashes(string) {
+			return string.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+		}
+
+		/**
+   * Inserts HTML line breaks before all newlines in a string
+   * This function is very similar to PHP nl2br()
+   * @see http://php.net/manual/en/function.nl2br.php
+   *
+   * @param  string 							string							The input string
+   * @return string															The converted string
+   */
+
+	}, {
+		key: "nl2br",
+		value: function nl2br(string) {
+			return string.replace(/(\r\n|\n\r|\r|\n)/g, "<br />");
 		}
 
 		/**
@@ -6916,6 +7007,7 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
+				console.log(option);
 
 				var permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
 				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
@@ -6928,7 +7020,7 @@ var treeview = function () {
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 
-				if (option.is_root) {
+				if (option.is_root || option.id.split(":")[1] == "0000000") {
 					_this2.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
@@ -8065,44 +8157,55 @@ var layout = function () {
 	}, {
 		key: "build_carousel",
 		value: function build_carousel() {
-			var path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]);
+			var path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]),
+			    title = "",
+			    subtitle = "";
 
-			if (page == "ontology" || page == "terms") {
-				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append(
-				// $('<div>', {"class": "left"}).append(
-				$('<h1>', { "id": "page_subtitle" }).html(page == "terms" ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id())).append($('<h2>', { "id": "page_title" }).text(STR.camel_case_2_text(NAV.get_ontology_label()))
-				// )
-				));
-			} else {
-				$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($('<div>', { "class": "carousel-fixed-item container" }).append($('<div>', { "class": "left" }).append($('<h1>', { "id": "page_title" }).text(settings[page].title)))).append($.map(top_carousel.messages, function (v) {
-					v.message = v.message.replace(/\n/gm, "<br />");
-					v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
+			if (settings.general.carousel.visible && settings[page].carousel.visible) {
+				$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($('<div>', { "class": "carousel-fixed-item container" }).append($('<div>', { "class": "left" }).append($('<h1>', { "id": "page_title" }).text(settings[page].title)))).append($.map(settings[page].carousel.items, function (v) {
 					return $('<div>', { "class": "carousel-item valign-wrapper", "href": "#one" }).append(function () {
 						if (v.image !== "") {
-							return $('<img>', { "src": v.image, "class": "responsive-img" });
+							return $('<img>', { "src": "common/media/img/carousel_images/" + v.image, "class": "responsive-img" });
 						}
-					}).append($('<h1>').html(v.message));
+					}).append($('<h1>').html(STR.nl2br(v.message).replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>')));
 				}))));
 
 				// Instantiate Materialize carousel
 				$(".carousel").carousel({
 					duration: 50,
-					// dist: 0,
-					// noWrap: true,
 					fullWidth: true,
 					indicators: false
-				}).animate({ "opacity": 1 }, 300).css("pointer-events", "none");
+				}).animate({ "opacity": 1 }, 300);
+
+				if (settings[page].carousel.items.length == 1) {
+					$(".carousel").css("pointer-events", "none");
+				}
 
 				/**
     * Animate the carousel
-    * @param integer						time							The delay after carousel change (default is 10'000)
+    * @param integer						time						The delay after carousel change (default is 10'000)
     */
-				// setInterval(() => {
-				// 	// $(".carousel .carousel-item").fadeOut(300, () => {
-				// 		$(".carousel").carousel("next");
-				// 		// $(".carousel .carousel-item").delay(300).fadeIn();
-				// 	// })
-				// }, 10000);
+				if (settings.general.carousel.animate && settings[page].carousel.items.length > 1) {
+					setInterval(function () {
+						// $(".carousel .carousel-item").fadeOut(300, () => {
+						$(".carousel").carousel("next");
+						// $(".carousel .carousel-item").delay(300).fadeIn();
+						// })
+					}, settings.general.carousel.time);
+				}
+			} else {
+				if (page == "ontology" || page == "terms") {
+					title = page == "terms" ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
+					subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
+				} else {
+					title = settings[page].title;
+					subtitle = settings[page].subtitle;
+				}
+				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append($('<h1>', { "id": "page_subtitle" }).html(title)).append(function () {
+					if (subtitle !== undefined && subtitle.length > 0) {
+						return $('<h2>', { "id": "page_title" }).text(subtitle);
+					}
+				}));
 			}
 		}
 
@@ -8338,7 +8441,7 @@ var layout = function () {
 						LOADER.hide("#ontologies_container .progress", true);
 
 						if (settings.home.sections.ontologies.visible) {
-							$("#ontologies_container").append($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" })).append($('<h5>', { "class": "all-ontologies" }).append($('<a>', { "href": "" }).text("All ontologies ›")));
+							$("#ontologies_container").append($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" }));
 
 							var current_page = 1,
 							    page_limit = parseInt(settings.home.sections.ontologies.items_per_page),

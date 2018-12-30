@@ -233,19 +233,11 @@ class layout {
 	 * Build the carousel messages slider
 	 */
 	build_carousel() {
-		let path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]);
+		let path = STR.ucfirst(NAV.get_url_path()[NAV.get_url_path().length - 1]),
+			title = "",
+			subtitle = "";
 
-		if(page == "ontology" || page == "terms") {
-			$("body").append(
-				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
-					// $('<div>', {"class": "left"}).append(
-						$('<h1>', {"id": "page_subtitle"}).html((page == "terms") ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id())
-					).append(
-						$('<h2>', {"id": "page_title"}).text(STR.camel_case_2_text(NAV.get_ontology_label()))
-					// )
-				)
-			)
-		} else {
+		if(settings.general.carousel.visible && settings[page].carousel.visible) {
 			$("body").append(
 				$('<section>', {"id": "top_carousel", "class": ""}).append(
 					$('<div>', {"class": "carousel carousel-slider center"}).append(
@@ -255,40 +247,61 @@ class layout {
 							)
 						)
 					).append(
-						$.map(top_carousel.messages, (v) => {
-							v.message = v.message.replace(/\n/gm, "<br />");
-							v.message = v.message.replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>');
-							return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"}).append(() => {
+						$.map(settings[page].carousel.items, (v) => {
+							return $('<div>', {"class": "carousel-item valign-wrapper", "href": "#one"})
+							.append(() => {
 								if(v.image !== "") {
-									return $('<img>', {"src": v.image, "class": "responsive-img"});
+									return $('<img>', {"src": "common/media/img/carousel_images/" + v.image, "class": "responsive-img"});
 								}
 							}).append(
-								$('<h1>').html(v.message)
+								$('<h1>').html(STR.nl2br(v.message).replace(/\[(.*?)\]/gm, '<span class="highlight">$1</span>'))
 							)
 						})
 					)
 				)
 			);
 
+
 			// Instantiate Materialize carousel
 			$(".carousel").carousel({
 				duration: 50,
-				// dist: 0,
-				// noWrap: true,
 				fullWidth: true,
 				indicators: false
-			}).animate({"opacity": 1}, 300).css("pointer-events", "none");
+			}).animate({"opacity": 1}, 300);
+
+			if(settings[page].carousel.items.length == 1) {
+				$(".carousel").css("pointer-events", "none");
+			}
 
 			/**
 			* Animate the carousel
-			* @param integer						time							The delay after carousel change (default is 10'000)
+			* @param integer						time						The delay after carousel change (default is 10'000)
 			*/
-			// setInterval(() => {
-			// 	// $(".carousel .carousel-item").fadeOut(300, () => {
-			// 		$(".carousel").carousel("next");
-			// 		// $(".carousel .carousel-item").delay(300).fadeIn();
-			// 	// })
-			// }, 10000);
+			if(settings.general.carousel.animate && settings[page].carousel.items.length > 1) {
+				setInterval(() => {
+					// $(".carousel .carousel-item").fadeOut(300, () => {
+						$(".carousel").carousel("next");
+						// $(".carousel .carousel-item").delay(300).fadeIn();
+					// })
+				}, settings.general.carousel.time);
+			}
+		} else {
+			if(page == "ontology" || page == "terms") {
+				title = (page == "terms") ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
+				subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
+			} else {
+				title = settings[page].title;
+				subtitle = settings[page].subtitle;
+			}
+			$("body").append(
+				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
+					$('<h1>', {"id": "page_subtitle"}).html(title)
+				).append(() => {
+					if(subtitle !== undefined && subtitle.length > 0) {
+						return $('<h2>', {"id": "page_title"}).text(subtitle);
+					}
+				})
+			)
 		}
 	}
 
@@ -618,10 +631,6 @@ class layout {
 							$('<h5>').text("Ontologies")
 						).append(
 							$('<ul>', {"class": "collapsible z-depth-0", "data-collapsible": "accordion"})
-						).append(
-							$('<h5>', {"class": "all-ontologies"}).append(
-								$('<a>', {"href": ""}).text("All ontologies ›")
-							)
 						)
 
 						var current_page = 1,

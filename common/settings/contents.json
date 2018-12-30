@@ -4,6 +4,11 @@
         "loader": {
             "text": "Getting data..."
         },
+        "carousel": {
+            "visible": true,
+            "animate": true,
+            "time": 10000
+        },
         "search": {
             "tags": {
                 "visible": false
@@ -27,9 +32,23 @@
         }
     },
     "404": {
-        "title": "Page not found"
+        "title": "Page not found",
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "home": {
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        },
         "sections": {
             "help": {
                 "title": "Instructions to develop a new ontology",
@@ -62,34 +81,91 @@
     },
     "about": {
         "title": "About the Project",
-        "visible": true
+        "subtitle": "",
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "privacy-policy": {
         "title": "Privacy policy",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "credit_Bioversity International_J.van de Gevel.jpg"
+            }]
+        }
     },
     "API": {
         "title": "API",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "contact-us": {
         "title": "Contact us",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "feedback": {
         "title": "Feedback",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "add-ontology": {
         "title": "Add new terms",
-        "visible": true
+        "visible": true,
+        "carousel": {
+            "visible": true,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "ontology": {
-        "title": "%s",
-        "visible": true
+        "title": "",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     },
     "terms": {
-        "title": "%s",
-        "visible": true
+        "title": "",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     }
 }

@@ -45,8 +45,8 @@ class str {
 	 * @param  string 							string							The input string
 	 * @return string															The converted string
 	 */
-	addslashes(str) {
-	    return str.replace(/\\/g, '\\\\').replace(/\'/g, '\\\'').replace(/\"/g, '\\"').replace(/\0/g, '\\0');
+	addslashes(string) {
+	    return string.replace(/\\/g, '\\\\').replace(/\'/g, '\\\'').replace(/\"/g, '\\"').replace(/\0/g, '\\0');
 	}
 
 	/**
@@ -57,8 +57,20 @@ class str {
 	 * @param  string 							string							The input string
 	 * @return string															The converted string
 	 */
-	stripslashes(str) {
-	    return str.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+	stripslashes(string) {
+	    return string.replace(/\\'/g, '\'').replace(/\\"/g, '"').replace(/\\:/g, ':').replace(/\\0/g, '\0').replace(/\\\\/g, '\\');
+	}
+
+	/**
+	 * Inserts HTML line breaks before all newlines in a string
+	 * This function is very similar to PHP nl2br()
+	 * @see http://php.net/manual/en/function.nl2br.php
+	 *
+	 * @param  string 							string							The input string
+	 * @return string															The converted string
+	 */
+	nl2br(string) {
+	    return string.replace(/(\r\n|\n\r|\r|\n)/g, "<br />");
 	}
 
 	/**

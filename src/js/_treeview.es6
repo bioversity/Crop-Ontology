@@ -196,6 +196,7 @@ class treeview {
 			// Item selection in treeview
 			$(".treeview a.selected").removeClass("selected");
 			$(e.currentTarget).addClass("selected");
+			console.log(option);
 
 			let permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
 				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + ((option.langs.length == 0) ? settings.general.language : option.langs[0]);
@@ -208,7 +209,7 @@ class treeview {
 			$("#term_info_name").attr("href", permalink).html(option.term);
 			$("#term_permalink").attr("href", ext_permalink);
 
-			if(option.is_root) {
+			if(option.is_root || option.id.split(":")[1] == "0000000") {
 				this.add_info(
 					$('<dl>').append(
 						$('<dt>').text("Ontology type:")

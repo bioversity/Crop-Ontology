@@ -209,6 +209,7 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
+				console.log(option);
 
 				var permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
 				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
@@ -221,7 +222,7 @@ var treeview = function () {
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 
-				if (option.is_root) {
+				if (option.is_root || option.id.split(":")[1] == "0000000") {
 					_this2.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
