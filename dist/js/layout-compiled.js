@@ -284,7 +284,7 @@ var layout = function () {
 				}
 			} else {
 				if (page == "ontology" || page == "terms") {
-					title = page == "terms" ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
+					title = page == "terms" ? NAV.get_term_id().replace(NAV.get_terms_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
 					subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
 				} else {
 					title = settings[page].title;

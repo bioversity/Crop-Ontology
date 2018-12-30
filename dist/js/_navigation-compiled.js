@@ -64,6 +64,19 @@ var navigation = function () {
 		}
 
 		/**
+   * The ontology url performed by regex
+   * @see https://regex101.com/r/S4gNgj/4
+   */
+
+	}, {
+		key: "get_terms_url_regex",
+		value: function get_terms_url_regex(separator) {
+			var id = "([\\w]+\\_[\\w\\d]+)",
+			    label = "(.*)";
+			return new RegExp(id + "\\" + separator + label + separator + label, "g");
+		}
+
+		/**
    * Get the Ontology ID from the current URL
    * @uses get_url_path()
    *

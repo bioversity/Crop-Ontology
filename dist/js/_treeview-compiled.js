@@ -209,16 +209,17 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
-				console.log(option);
 
-				var permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
-				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
-
-				if (option.is_root) {
-					history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
+				var permalink = void 0,
+				    ext_permalink = void 0;
+				if (option.is_root || option.id.split(":")[1] == "0000000") {
+					console.log(option);
+					permalink = "./ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
 				} else {
-					history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
+					permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
 				}
+				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
+
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 

@@ -6435,6 +6435,19 @@ var navigation = function () {
 		}
 
 		/**
+   * The ontology url performed by regex
+   * @see https://regex101.com/r/S4gNgj/4
+   */
+
+	}, {
+		key: "get_terms_url_regex",
+		value: function get_terms_url_regex(separator) {
+			var id = "([\\w]+\\_[\\w\\d]+)",
+			    label = "(.*)";
+			return new RegExp(id + "\\" + separator + label + separator + label, "g");
+		}
+
+		/**
    * Get the Ontology ID from the current URL
    * @uses get_url_path()
    *
@@ -7007,16 +7020,16 @@ var treeview = function () {
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
-				console.log(option);
 
-				var permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
-				    ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
-
-				if (option.is_root) {
-					history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
+				var permalink = void 0,
+				    ext_permalink = void 0;
+				if (option.is_root || option.id.split(":")[1] == "0000000") {
+					permalink = "./ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
 				} else {
-					history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
+					permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
 				}
+				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
+
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 
@@ -8195,7 +8208,7 @@ var layout = function () {
 				}
 			} else {
 				if (page == "ontology" || page == "terms") {
-					title = page == "terms" ? NAV.get_term_id().replace(NAV.get_ontology_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
+					title = page == "terms" ? NAV.get_term_id().replace(NAV.get_terms_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
 					subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
 				} else {
 					title = settings[page].title;
