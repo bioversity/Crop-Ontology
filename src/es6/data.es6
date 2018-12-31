@@ -2,8 +2,8 @@
 "strict mode";
 
 import { Promise } from 'es6-promise'
-import str from "../../src/js/_str.es6";
-import obj from "../../src/js/_obj.es6";
+import str from "../../src/es6/_str.es6";
+import obj from "../../src/es6/_obj.es6";
 var STR = new str();
 var OBJ = new obj();
 
@@ -281,7 +281,7 @@ class data {
 	/**
 	 * Get and parse the Ontology data (for the Ontology card)
 	 * @NOTE This is an async function
-	 * 
+	 *
 	 * @param  string 							id								Tho Ontology ID
 	 * @return object 															The ontologies data JSON object
 	 */
@@ -460,6 +460,24 @@ class data {
 							resolve(data);
 						}
 					});
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	register_user(user_data) {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				type: "POST",
+				url: "http://www.cropontology.org/register",
+				data: user_data,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
 				},
 				error: (jqXHR, textStatus, errorThrown) => {
 					reject(errorThrown);

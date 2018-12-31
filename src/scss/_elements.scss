@@ -61,3 +61,43 @@
     }
   }
 }
+
+.input-field {
+  input[type=text]:focus, input[type=email]:focus, input[type=password]:focus   {
+    border-bottom: $highlight 1px solid !important;
+    box-shadow: 0 1px 0 0 $highlight !important;
+
+    & + label {
+      color: $highlight-dark !important;
+
+      &.active {
+        width: 100%;
+      }
+    }
+  }
+  input[type=text], input[type=email], input[type=password]   {
+    & + label {
+      &.active {
+        width: 100%;
+      }
+    }
+  }
+  // &.required {
+  //   label {
+  //     &:after {
+  //       color: #aa0000 !important;
+  //       content: "*" !important;
+  //       display: inline !important;
+  //       left: unset !important;
+  //       margin-left: 5px;
+  //       opacity: 0.5 !important;
+  //       top: unset !important;
+  //       transform: none !important;
+  //       vertical-align: super !important;
+  //     }
+  //     &.active{
+  //       &:after { opacity: 1 !important; }
+  //     }
+  //   }
+  // }
+}

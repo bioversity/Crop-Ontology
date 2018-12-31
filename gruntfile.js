@@ -48,7 +48,7 @@ module.exports = function(grunt) {
 			dist: {
 				files: [{
 					"expand": true,
-					"cwd": "src/js",
+					"cwd": "src/es6",
 					"src": ["**/*.es6"],
 					"dest": "dist/js/",
 					"ext": "-compiled.js"
@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			es6: {
-				files: "src/js/*.es6",
+				files: "src/es6/*.es6",
 				tasks: ["babel", "browserify", "uglify"]
 			},
 			sass: {

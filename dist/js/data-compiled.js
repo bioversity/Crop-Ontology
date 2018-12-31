@@ -10,11 +10,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _es6Promise = require("es6-promise");
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
-var _obj = require("../../src/js/_obj.es6");
+var _obj = require("../../src/es6/_obj.es6");
 
 var _obj2 = _interopRequireDefault(_obj);
 
@@ -318,7 +318,7 @@ var data = function () {
 		/**
    * Get and parse the Ontology data (for the Ontology card)
    * @NOTE This is an async function
-   * 
+   *
    * @param  string 							id								Tho Ontology ID
    * @return object 															The ontologies data JSON object
    */
@@ -511,6 +511,25 @@ var data = function () {
 								resolve(data);
 							}
 						});
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
+		key: "register_user",
+		value: function register_user(user_data) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				$.ajax({
+					type: "POST",
+					url: "http://www.cropontology.org/register",
+					data: user_data,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
 					},
 					error: function error(jqXHR, textStatus, errorThrown) {
 						reject(errorThrown);

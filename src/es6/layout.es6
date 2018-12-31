@@ -1,14 +1,14 @@
 /* jshint esversion: 6 */
 "strict mode";
 
-import data from "../../src/js/data.es6";
-import navigation from "../../src/js/_navigation.es6";
-import pagination from "../../src/js/pagination.es6";
-import treeview from "../../src/js/_treeview.es6";
-import filters from "../../src/js/filters.es6";
-import modals from "../../src/js/modals.es6";
-import str from "../../src/js/_str.es6";
-import loader from "../../src/js/loader.es6";
+import data from "../../src/es6/data.es6";
+import navigation from "../../src/es6/_navigation.es6";
+import pagination from "../../src/es6/pagination.es6";
+import treeview from "../../src/es6/_treeview.es6";
+import filters from "../../src/es6/filters.es6";
+import modals from "../../src/es6/modals.es6";
+import str from "../../src/es6/_str.es6";
+import loader from "../../src/es6/loader.es6";
 /**
 * Static pages
 */
@@ -111,9 +111,84 @@ class layout {
 				// Add the loader for news and info contents
 				LOADER.create({target: "#contents", type: "progress"});
 				break;
+			case "register":
+				$.validator.setDefaults({
+					errorClass: 'invalid',
+					validClass: "valid",
+					errorPlacement: (error, element) => {
+						$(element)
+						.closest("form")
+						.find("label[for='" + element.attr("id") + "']")
+						.attr('data-error', error.text());
+					},
+					submitHandler: (form) => {
+						if(grecaptcha.getResponse().length == 0) {
+							DATA.register_user($("#register_form").serializeObject()).then((response) => {
+								if(response.message !== undefined) {
+									Materialize.toast('<span class="fa fa-2x fa-check grey-text"></span> ' + response.message, 2000, "", () => {
+										location.reload();
+									});
+								} else {
+									$("#register_form :input").blur().removeClass("invalid").removeClass("valid");
+									Materialize.toast('<span class="fa fa-2x fa-times grey-text"></span> ' + response.error, 4000);
+								}
+							});
+						}
+					}
+				});
+				$("#register_form").validate({
+					rules: {
+						first_name: {
+							required: true
+						},
+						sirname: {
+							required: true
+						},
+						email: {
+							required: true,
+							email: true
+						},
+						username: {
+							required: true,
+							minlength: 2
+						},
+						password: {
+							required: true,
+							minlength: 5
+						},
+						confirm_password: {
+							required: true,
+							minlength: 5,
+							equalTo: "#password"
+						},
+					},
+					messages: {
+						first_name: "Please specify your name",
+						sirname: "Please specify your last name",
+						email: {
+							required: "Please specify an e-mail address",
+							email: "Your email address must be in the format of name@domain.com"
+						},
+						username: {
+							required: "Please insert an username",
+							minlength: "Your username must consist of at least 2 characters"
+						},
+						password: {
+							required: "Please insert a password",
+							minlength: "Your password must be at least 5 characters long",
+						},
+						confirm_password: {
+							required: "Please insert a password",
+							minlength: "Your password must be at least 5 characters long",
+							equalTo: "Please enter the same password as before"
+						}
+					}
+				});
+				break;
 		}
 
-		$(document).bind("fscreenchange", function(e, state, elem) {
+		// Adapt graph on fullscreen mode
+		$(document).bind("fscreenchange", (e, state, elem) => {
 			if($(elem).attr("id") == "graph") {
 				if(state) {
 					$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
@@ -301,7 +376,6 @@ class layout {
 					subtitle = settings[page].subtitle;
 					break;
 			}
-			console.info(title, subtitle, NAV.get_term_id());
 
 			$("body").append(
 				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
@@ -1253,34 +1327,48 @@ class layout {
 	}
 
 	load_scripts() {
-		if(page == "ontology" || page == "terms") {
-			$("head").append(
-		        "<!-- Main style -->"
-			).append(
-				$('<link>', {"rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen"})
-			);
+		switch(page) {
+			case "ontology":
+			case "terms":
+				$("head").append(
+			        "<!-- Main style -->"
+				).append(
+					$('<link>', {"rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen"})
+				);
 
-			$("#scripts").append(
-				"<!-- Fullscreen feature -->"
-			).append(
-	            $('<script>', {"type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js"})
-			).append(
-	            "<!--  The Raphael JavaScript library for vector graphics display  -->"
-			).append(
-				$('<script>', {"type": "text/javascript", "src": "dist/js/raphael-min.js"})
-			).append(
-	            "<!--  Dracula  -->"
-			).append(
-	            "<!--  An extension of Raphael for connecting shapes -->"
-			).append(
-				$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_graffle.js"})
-			).append(
-	            "<!--  Graphs  -->"
-			).append(
-				$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_graph.js"})
-			).append(
-				$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_algorithms.js"})
-			);
+				$("#scripts").append(
+					"<!-- Fullscreen feature -->"
+				).append(
+		            $('<script>', {"type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js"})
+				).append(
+		            "<!--  The Raphael JavaScript library for vector graphics display  -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "dist/js/raphael-min.js"})
+				).append(
+		            "<!--  Dracula  -->"
+				).append(
+		            "<!--  An extension of Raphael for connecting shapes -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_graffle.js"})
+				).append(
+		            "<!--  Graphs  -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_graph.js"})
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_algorithms.js"})
+				);
+				break;
+			case "register":
+				$("#scripts").append(
+					"<!-- jquery-validation -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "bower_components/jquery-validation/dist/jquery.validate.min.js"})
+				).append(
+					"<!-- Google reCAPTCHA -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "https://www.google.com/recaptcha/api.js"})
+				)
+				break;
 		}
 	}
 }

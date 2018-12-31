@@ -168,6 +168,17 @@ module.exports={
                 "image": "cowpea.jpg"
             }]
         }
+    },
+    "register": {
+        "title": "Register",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     }
 }
 
@@ -426,11 +437,11 @@ module.exports={
 /* jshint esversion: 6 */
 "strict mode";
 
-var _layout = require("../../src/js/layout.es6");
+var _layout = require("../../src/es6/layout.es6");
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _navigation = require("../../src/js/_navigation.es6");
+var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
@@ -438,11 +449,11 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-// // import ColorCanvas from "../../src/js/ColorCanvas.es6";
-// import ColorPicker from "../../src/js/ColorPicker.es6";
-// import Pantone from "../../src/js/PANTONE.es6";
+// // import ColorCanvas from "../../src/es6/ColorCanvas.es6";
+// import ColorPicker from "../../src/es6/ColorPicker.es6";
+// import Pantone from "../../src/es6/PANTONE.es6";
 
-require("../../src/js/_obj.es6");
+require("../../src/es6/_obj.es6");
 
 var LAYOUT = new _layout2.default(),
     NAV = new _navigation2.default(),
@@ -477,7 +488,7 @@ $(document).ready(function () {
 	LAYOUT.activate();
 });
 
-},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":7,"../../src/js/_obj.es6":8,"../../src/js/layout.es6":13}],4:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/es6/_navigation.es6":7,"../../src/es6/_obj.es6":8,"../../src/es6/layout.es6":13}],4:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -6461,7 +6472,6 @@ var navigation = function () {
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
-			console.warn(this.get_url_path());
 			return this.get_url_path()[2];
 		}
 
@@ -6811,19 +6821,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _data = require("../../src/js/data.es6");
+var _data = require("../../src/es6/data.es6");
 
 var _data2 = _interopRequireDefault(_data);
 
-var _navigation = require("../../src/js/_navigation.es6");
+var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
-var _loader = require("../../src/js/loader.es6");
+var _loader = require("../../src/es6/loader.es6");
 
 var _loader2 = _interopRequireDefault(_loader);
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
@@ -7257,7 +7267,7 @@ var treeview = function () {
 
 exports.default = treeview;
 
-},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":7,"../../src/js/_str.es6":9,"../../src/js/data.es6":11,"../../src/js/loader.es6":14,"moment":5}],11:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/es6/_navigation.es6":7,"../../src/es6/_str.es6":9,"../../src/es6/data.es6":11,"../../src/es6/loader.es6":14,"moment":5}],11:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7270,11 +7280,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _es6Promise = require("es6-promise");
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
-var _obj = require("../../src/js/_obj.es6");
+var _obj = require("../../src/es6/_obj.es6");
 
 var _obj2 = _interopRequireDefault(_obj);
 
@@ -7578,7 +7588,7 @@ var data = function () {
 		/**
    * Get and parse the Ontology data (for the Ontology card)
    * @NOTE This is an async function
-   * 
+   *
    * @param  string 							id								Tho Ontology ID
    * @return object 															The ontologies data JSON object
    */
@@ -7778,6 +7788,25 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "register_user",
+		value: function register_user(user_data) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				$.ajax({
+					type: "POST",
+					url: "http://www.cropontology.org/register",
+					data: user_data,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 	}]);
 
 	return data;
@@ -7785,7 +7814,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/js/_obj.es6":8,"../../src/js/_str.es6":9,"es6-promise":4}],12:[function(require,module,exports){
+},{"../../src/es6/_obj.es6":8,"../../src/es6/_str.es6":9,"es6-promise":4}],12:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7925,35 +7954,35 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _data = require("../../src/js/data.es6");
+var _data = require("../../src/es6/data.es6");
 
 var _data2 = _interopRequireDefault(_data);
 
-var _navigation = require("../../src/js/_navigation.es6");
+var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
-var _pagination = require("../../src/js/pagination.es6");
+var _pagination = require("../../src/es6/pagination.es6");
 
 var _pagination2 = _interopRequireDefault(_pagination);
 
-var _treeview = require("../../src/js/_treeview.es6");
+var _treeview = require("../../src/es6/_treeview.es6");
 
 var _treeview2 = _interopRequireDefault(_treeview);
 
-var _filters = require("../../src/js/filters.es6");
+var _filters = require("../../src/es6/filters.es6");
 
 var _filters2 = _interopRequireDefault(_filters);
 
-var _modals = require("../../src/js/modals.es6");
+var _modals = require("../../src/es6/modals.es6");
 
 var _modals2 = _interopRequireDefault(_modals);
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
-var _loader = require("../../src/js/loader.es6");
+var _loader = require("../../src/es6/loader.es6");
 
 var _loader2 = _interopRequireDefault(_loader);
 
@@ -7969,7 +7998,7 @@ var page_privacy_policy = "\n\n<h2>Photo credit</h2>\n<ul>\n    <li>Neil Palmer,
 var page_api = "<style>\nli {\n    margin-left: 15px;\n    list-style: none;\n}\n.api_left h2 {\n    margin-top: 30px !important;\n    padding-top: 30px !important;\n    color: #f28021 !important;\n}\n</style>\n<script>\n\n$(function(){\n\n    // replaces API urls for examples\n    $(\".example\").each(function() {\n        var $this = $(this);\n\n        var url = $this.parent().siblings().first().find(\"code\").text();\n\n        var parameters = url.match(/{(.*?)}/g);\n\n        if(parameters) {\n            for(var i=0; i<parameters.length; i++) {\n                var par = parameters[i];\n                var clean = par.substring(1, par.length-1);\n                url = url.replace(par, $this.attr(clean));\n            }\n        }\n\n        $this.html(\"<a href='\"+url+\"' target='_blank'>\"+url+\"</a>\");\n\n    });\n\n});\n\n</script>\n\n<div class=\"api_left\">\n\n<p>\nThis is the official API for the Ontology Curation Tool. It allows you to programmatically retrieve and interact with Ontology data.\n</p>\n<p>\nTo let us gather feedback you can leave a comment using the form on the right.\n</p>\n<h2>Statistics on collected ontologies</h2>\n<li><strong>URL:</strong> <a target=\"_blank\" href=\"http://www.cropontology.org/ontos_stats\">http://www.cropontology.org/ontos_stats</a></li>\n<li><strong>Returns:</strong> JSON object with statistics about collected ontologies</li>\n\n<h2>API Data Types</h2>\n<p>\nData can be requested in JSON.<br> API calls follow the <a href=\"http://en.wikipedia.org/wiki/Create,_read,_update_and_delete\">CRUD</a> semantics: create, retrieve, update and delete.\n</p>\n\n<!--\n<h2>Retrieve all traits given an Ontology Name</h2>\n<ul>\n    <li>Here's a little code snippet written in <b>PHP</b> to show you how you can leverage this API to retrieve all the traits of a specific Ontology: <a href=\"https://gist.github.com/1322511\">https://gist.github.com/1322511</a></li>\n</ul>\n-->\n<h2>JSON DUMP</h2>\n<ul>\n    <li><strong>URL:</strong> <a target=\"_blank\" href=\"https://github.com/bioversity/Crop-Ontology/blob/master/public/dump.json\">https://github.com/bioversity/Crop-Ontology/blob/master/public/dump.json</a></li>\n    <li><strong>Returns:</strong> JSON array of *raw* objects inside database</li>\n</ul>\n\n<h2>Search Terms</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/search?q={query}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects matching the search query - each object being a term</li>\n    <li><strong>Example:</strong> <span class=\"example\" query=\"stem rust\"></span></li>\n</ul>\n\n<h2>Retrieve all Ontologies</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontologies</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> JSON Hierarchy of the Ontologies under each category</li>\n    <li><strong>Example:</strong> <span class=\"example\"></span></li>\n</ul>\n<h2>Retrieve a specific Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontology/{ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n\t<li><strong>Returns:</strong> JSON representation of the ontology. </br><span style=\"font-style:italic;\">NB: This call does not retrieve the variables that are present in TD template v5 (and in the OBO files derived from the TDv5)</span></li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_334\"></span></li>\n</ul>\n<h2>Retrieve Ontology ID by its Name</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-id?ontology_name={ontology_name}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> ID of the ontology, to be used with <code>/get-ontology-roots/{id}</code></li>\n    <li><strong>Example:</strong> <span class=\"example\" ontology_name=\"cassava\"></span></li>\n</ul>\n\n<h2>Retrieve Categories</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-categories</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of strings - string being the name of the category that you pass to the <code>/ontologies</code> API call</li>\n    <li><strong>Example:</strong> <span class=\"example\"></span></li>\n</ul>\n\n<h2>Retrieve Ontologies By Category</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/ontologies?category={category}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects; each one representing an ontology</li>\n    <li><strong>Example:</strong> <span class=\"example\" category=\"010-089 General Germplasm Ontology\"></span></li>\n</ul>\n\n<a name=\"rdf\"></a>\n<h2>Retrieve Terms in RDF</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/rdf/{termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> XML related RDF</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Retrieve Root Terms of an Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-roots/{ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects; each one representing a term</li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_020\"></span></li>\n</ul>\n\n<h2>Retrieve Child Terms of parent Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of terms</li>\n    <li><strong>Example:</strong> <span class=\"example\" parentId=\"CO_020:0000000\"></span></li>\n</ul>\n<h2>Retrieve Parents of Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-term-parents/{termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of the paths from the parent to child</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_020:0000000\"></span></li>\n</ul>\n\n<h2>Retrieve Properties/Attributes of a Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-attributes/{termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects representing the terms property</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Retrieve Comments of a Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-comments?termId={termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects representing a comment</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Login - Retrieve a user's auth token (used for adding and editing ontologies)</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. {username}, {password}</li>\n    <li><strong>Returns:</strong> HTTP response with a <code>user</code> cookie in the header that contains a <code>token</code>. You'll need to pass this cookie to subsequent requests that require authentication</li>\n</ul>\n\n<h2>Retrieve Logged-in User information</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>\n    <li><strong>Method:</strong> <code>GET</code>. Pass <code>user</code> cookie in request</li>\n    <li><strong>Returns:</strong> Object of the currently logged in user</li>\n</ul>\n\n<h2>Create Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/add-ontology</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. Pass <code>user</code> cookie in request. {json} a JSON string representing a list of objects; each object being a term. {ontology_name}, {ontology_id}, {ontology_summary}</li>\n    <li><strong>Returns:</strong> HTTP error if something went wrong</li>\n</ul>\n\n<!--\n<h2>Create Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/create-term</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. {jsonTerm} a JSON representation of the term. You can call this method as many times as you need to build the structure of an ontology. Example: <code>{\"ontology_id: \"CO_22\", \"ontology_name\": \"Sorghum Trait\", \"parent\": \"CO_222:1122\" ...}</code>. As you can see the <strong>parent</strong> property describes the relationship between terms. If parent is <i>null</i> then the term is a ROOT term</li>\n    <li><strong>Returns:</strong> HTTP error if something went wrong</li>\n</ul>\n-->\n\n<h2>Delete Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/delete-ontology</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. {ontologyID}</li>\n    <li><strong>Returns:</strong> HTTP error if something went wrong</li>\n</ul>\n\n<h2>Retrieve IB Fieldbook Default List</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/default-list/?ontologyId={ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> JSON of the default list of traits, methods and scales of an ontology ID</li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_334\"></span></li>\n</ul>\n\n<h2>Retrieve Term Information</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-term/?id={termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Object representing a term information. Can be used to update the information of a given term when it is updated</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Retrieve all Comments from an Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-comments-onto/?ontoId={ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> a JSON object that lists the comments and the details about the comments' authors. Comments are grouped by terms</li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_321\"></span></li>\n</ul>\n\n</div><!-- /api_left -->\n<div class=\"api_right\" style=\"margin-top:40px\">\n    <div id=\"disqus_thread\"></div>\n    <script type=\"text/javascript\">\n        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */\n        var disqus_shortname = 'cropontologycurationtool'; // required: replace example with your forum shortname\n\n        // The following are highly recommended additional parameters. Remove the slashes in front to use.\n        // var disqus_identifier = 'unique_dynamic_id_1234';\n        // var disqus_url = 'http://example.com/permalink-to-page.html';\n\n        /* * * DON'T EDIT BELOW THIS LINE * * */\n        (function() {\n            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;\n            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';\n            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);\n        })();\n    </script>\n    <noscript>Please enable JavaScript to view the <a href=\"http://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>\n</div><!-- //api_right -->\n";
 var page_help = "\n<h2>Video Tutorials</h2>\n<style type=\"text/css\"> \n    \n \n    \n \n#ytvideo,\n#ytvideo2 {\n    float: left;\n    margin-right:10px;\n}\n \n \n.yt_holder {\n    background: #f3f3f3;\n    padding: 10px;\n    float: left;\n    border: 1px solid #e3e3e3;\n    margin-bottom:15px;\n}\n \n \nul {\n    float: left;\n    margin: 0;\n    padding: 0;\n    width: 220px;\n}\n \nul li {\n    list-style-type: none;\n    display:block;\n    background: #f1f1f1;\n    float: left;\n    width: 216px;\n    margin-bottom: 5px;\n    padding:2px;\n \n}\n \nul li img {\n    width: 120px;\n    float: left;\n    margin-right: 5px;\n    border: 1px solid #999;\n}\n \nul li a {\n    text-decoration: none;\n    display: block;\n    color: #000;\n}\n \n.currentvideo {\n    background: #e6e6e6;\n}\n    \n \n    \n</style> \n<script>\n//-------------------------------------------------\n//      youtube playlist jquery plugin\n//      Created by dan@geckonm.com\n//      www.geckonewmedia.com\n//\n//      v1.1 - updated to allow fullscreen \n//           - thanks Ashraf for the request\n//-------------------------------------------------\n\njQuery.fn.ytplaylist = function(options) {\n \n  // default settings\n  var options = jQuery.extend( {\n    holderId: 'ytvideo',\n    playerHeight: '300',\n    playerWidth: '450',\n    addThumbs: false,\n    thumbSize: 'small',\n    showInline: false,\n    autoPlay: true,\n    showRelated: true,\n    allowFullScreen: false\n  },options);\n \n  return this.each(function() {\n                            \n        var selector = $(this);\n        \n        var autoPlay = \"\", autoHide = \"\", hd = \"\", modestBranding = \"\", showInfo = \"&showinfo=0\";\n        var showRelated = \"&rel=0\";\n        var fullScreen = \"\";\n        if(options.autoPlay) autoPlay = \"&autoplay=1\"; \n        if(options.showRelated) showRelated = \"&rel=1\"; \n        if(options.allowFullScreen) fullScreen = \"&fs=1\"; \n        if(options.autoHide) autoHide = \"&autohide=1\";\n        if(options.hd) hd = \"&hd=1\";\n        if(options.modestBranding) modestBranding = \"&modestbranding=1\";\n        if(options.showInfo) showInfo = \"&showinfo=1\";\n\n        var params = autoPlay+showRelated+fullScreen+autoHide+hd+modestBranding+showInfo;\n        \n        //throw a youtube player in\n        function play(id)\n        {\n           var html  = '';\n    \n           html += '<object height=\"'+options.playerHeight+'\" width=\"'+options.playerWidth+'\">';\n           html += '<param name=\"movie\" value=\"http://www.youtube.com/v/'+id+params+'\"> </param>';\n           html += '<param name=\"wmode\" value=\"transparent\"> </param>';\n           if(options.allowFullScreen) { \n                html += '<param name=\"allowfullscreen\" value=\"true\"> </param>'; \n           }\n           html += '<embed src=\"http://www.youtube.com/v/'+id+params+'\"';\n           if(options.allowFullScreen) { \n                html += ' allowfullscreen=\"true\" '; \n            }\n           html += 'type=\"application/x-shockwave-flash\" wmode=\"transparent\"  height=\"'+options.playerHeight+'\" width=\"'+options.playerWidth+'\"></embed>';\n           html += '</object>';\n            \n           return html;\n           \n        };\n        \n        \n        //grab a youtube id from a (clean, no querystring) url (thanks to http://jquery-howto.blogspot.com/2009/05/jyoutube-jquery-youtube-thumbnail.html)\n        function youtubeid(url) {\n            var ytid = url.match(\"[\\\\?&]v=([^&#]*)\");\n            ytid = ytid[1];\n            return ytid;\n        };\n        \n        \n        //load inital video\n        var firstVid = selector.children(\"li:first-child\").addClass(\"currentvideo\").children(\"a\").attr(\"href\");\n        $(\"#\"+options.holderId+\"\").html(play(youtubeid(firstVid)));\n        \n        //load video on request\n        selector.children(\"li\").children(\"a\").click(function() {\n            \n            if(options.showInline) {\n                $(\"li.currentvideo\").removeClass(\"currentvideo\");\n                $(this).parent(\"li\").addClass(\"currentvideo\").html(play(youtubeid($(this).attr(\"href\"))));\n            }\n            else {\n                $(\"#\"+options.holderId+\"\").html(play(youtubeid($(this).attr(\"href\"))));\n                $(this).parent().parent(\"ul\").find(\"li.currentvideo\").removeClass(\"currentvideo\");\n                $(this).parent(\"li\").addClass(\"currentvideo\");\n            }\n                                                             \n            \n            \n            return false;\n        });\n        \n        //do we want thumns with that?\n        if(options.addThumbs) {\n            \n            selector.children().each(function(i){\n                                              \n                var replacedText = $(this).text();\n                \n                if(options.thumbSize == 'small') {\n                    var thumbUrl = \"http://img.youtube.com/vi/\"+youtubeid($(this).children(\"a\").attr(\"href\"))+\"/2.jpg\";\n                }\n                else {\n                    var thumbUrl = \"http://img.youtube.com/vi/\"+youtubeid($(this).children(\"a\").attr(\"href\"))+\"/0.jpg\";\n                }\n                \n                \n                $(this).children(\"a\").empty().html(\"<img src='\"+thumbUrl+\"' alt='\"+replacedText+\"' />\"+replacedText).attr(\"title\", replacedText);\n                \n            }); \n            \n        }\n            \n        \n   \n  });\n \n};\n\n</script>\n\n<script type=\"text/ecmascript\"> \n    \n        $(function() {\n            $(\"ul.demo2\").ytplaylist({\n                addThumbs:true, \n                autoPlay: false, \n                holderId: 'ytvideo2',\n                playerWidth: 660,\n                playerHeight: 500,\n                autoHide: true,\n                allowFullScreen: true,\n                hd: true,\n                modestBranding: true,\n                showRelated: false\n\n            });\n        });\n    \n</script> \n <div class=\"yt_holder\"> \n    <div id=\"ytvideo2\"></div> \n    <ul class=\"demo2\"> \n        <li><a href=\"http://www.youtube.com/watch?v=ani1SWy1N-g\">Homepage Navigation</a></li> \n        <li><a href=\"http://www.youtube.com/watch?v=GiADgYlwmGI\">Login & Registration</a></li> \n        <li><a href=\"http://www.youtube.com/watch?v=E67xYagMYe0\">Search</a></li> \n        <li><a href=\"http://www.youtube.com/watch?v=-5j7AeuFT1A\">OBO Upload</a></li> \n        <li><a href=\"http://www.youtube.com/watch?v=HMaQgKPrpwo\">Create New Ontology</a></li> \n        <li><a href=\"http://www.youtube.com/watch?v=-aLr_E-JuSM\">API & Feedback</a></li> \n        <li><a href=\"http://www.youtube.com/watch?v=TLo4GpuXHn4\">General Navigation</a></li> \n    </ul> \n</div>\n\n";
 var page_login = "\n<form method=\"post\" id=\"login_form\" action=\"http://www.cropontology.org/login\">\n    <div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col s6 offset-s2\">\n                <div class=\"context-loader\" style=\"display: none; top:0px;\">Sending Request...</div>\n                <div class=\"error_box\" style=\"display: none;\">Incorrect login or password.</div>\n                <h1>Login</h1>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"text\" value=\"\" tabindex=\"1\" name=\"username\" id=\"log_username\" class=\"text\">\n                <label for=\"log_username\">Username</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"password\" value=\"\" tabindex=\"2\" name=\"password\" id=\"log_password\" class=\"text\">\n                <label for=\"log_password\">Password</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <a href=\"./forgot-password\">Forgot Password?</a>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"submit\" value=\"Log in\" tabindex=\"3\" name=\"commit\" class=\"btn btn-flat green white-text waves-effect waves-light right\">\n            </div>\n        </div>\n    </div>\n</form>\n";
-var page_register = "\n<form method=\"post\" id=\"register_form\" action=\"http://www.cropontology.org/\">\n    <div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col s6 offset-s2\">\n                <div class=\"context-loader\" style=\"display: none; top:0px;\">Sending Request...</div>\n                <div class=\"error_box\" style=\"display: none;\">Incorrect login or password.</div>\n                <h1>Register</h1>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"input-field col s4 offset-s2\">\n                <input type=\"text\" value=\"\" tabindex=\"1\" name=\"username\" id=\"reg_username\" class=\"text\">\n                <label for=\"reg_username\">Username</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"email\" value=\"\" tabindex=\"2\" style=\"width: 21em;\" name=\"email\" id=\"reg_email\" class=\"text\">\n                <label for=\"reg_email\">Please enter your Email</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s4 offset-s2\">\n                <input type=\"password\" value=\"\" tabindex=\"3\" name=\"password\" id=\"reg_password\" class=\"text\">\n                <label for=\"reg_password\">Password</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s3 offset-s2\">\n                <input type=\"text\" value=\"\" tabindex=\"4\" name=\"first_name\" id=\"reg_name\" class=\"text\">\n                <label for=\"reg_name\">First name</label>\n            </div>\n            <div class=\"input-field col s3\">\n                <input type=\"text\" value=\"\" tabindex=\"5\" name=\"sirname\" id=\"reg_lastname\" class=\"text\">\n                <label for=\"reg_lastname\">Last name</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"text\" value=\"\" tabindex=\"6\" name=\"institution\" id=\"reg_institution\" class=\"text\">\n                <label for=\"reg_institution\">Host institution</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"submit\" value=\"Register\" tabindex=\"7\" name=\"commit\" class=\"btn btn-flat green white-text waves-effect waves-light right\">\n            </div>\n        </div>\n    </div>\n</form>\n";
+var page_register = "\n<form id=\"register_form\" action=\"\" novalidate=\"novalidate\">\n    <div class=\"container\">\n        <div class=\"row\">\n            <div class=\"input-field col s6 required\">\n                <input type=\"text\" value=\"\" tabindex=\"1\" name=\"first_name\" id=\"first_name\" class=\"text\">\n                <label for=\"first_name\">First name</label>\n            </div>\n            <div class=\"input-field col s6 required\">\n                <input type=\"text\" value=\"\" tabindex=\"2\" name=\"sirname\" id=\"sirname\" class=\"text\">\n                <label for=\"sirname\">Last name</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s12\">\n                <input type=\"text\" value=\"\" tabindex=\"3\" name=\"institution\" id=\"institution\" class=\"text\">\n                <label for=\"institution\">Host institution</label>\n            </div>\n        </div>\n        <br />\n        <div class=\"row\">\n            <div class=\"input-field col s11 required\">\n                <input type=\"email\" value=\"\" tabindex=\"4\" name=\"email\" id=\"email\" class=\"text\">\n                <label for=\"email\">Email address</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s4 required\">\n                <input type=\"text\" value=\"\" tabindex=\"5\" name=\"username\" id=\"reg_username\" class=\"text\">\n                <label for=\"reg_username\">Username</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s4 required\">\n                <input type=\"password\" value=\"\" tabindex=\"6\" name=\"password\" id=\"password\" class=\"text\">\n                <label for=\"password\">Password</label>\n            </div>\n            <div class=\"input-field col s4 required\">\n                <input type=\"password\" value=\"\" tabindex=\"6\" name=\"confirm_password\" id=\"confirm_password\" class=\"text\">\n                <label for=\"confirm_password\">Repeat password</label>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"input-field col s10\">\n                <center>\n                    <div class=\"g-recaptcha\" data-sitekey=\"6LdssoIUAAAAAIQYYHDi_jMiGHylKTm7JpPiq1GY\"></div>\n                </center>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"input-field col s10\">\n                <button type=\"submit\" tabindex=\"7\" name=\"commit\" class=\"btn btn-flat green white-text waves-effect waves-light right\">Register</button>\n            </div>\n        </div>\n    </div>\n</form>\n";
 var page_forgot_password = "\n<form method=\"post\" id=\"login_form\" action=\"http://www.cropontology.org/forgot-password\">\n    <div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col s6 offset-s2\">\n                <h1>Forgot Password?</h1>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"email\" value=\"\" tabindex=\"1\" style=\"width: 21em;\" name=\"email\" id=\"email\" class=\"text\">\n                <label for=\"email\">Please enter your Email</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"submit\" value=\"Recover\" tabindex=\"3\" name=\"commit\" class=\"btn btn-flat green white-text waves-effect waves-light right\">\n            </div>\n        </div>\n    </div>\n</form>\n";
 var page_feedback = "    <div id=\"disqus_thread\"></div>\n    <script type=\"text/javascript\">\n        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */\n        var disqus_shortname = 'cropontologycurationtool'; // required: replace example with your forum shortname\n\n        // The following are highly recommended additional parameters. Remove the slashes in front to use.\n        // var disqus_identifier = 'unique_dynamic_id_1234';\n        // var disqus_url = 'http://example.com/permalink-to-page.html';\n\n        /* * * DON'T EDIT BELOW THIS LINE * * */\n        (function() {\n            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;\n            dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';\n            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);\n        })();\n    </script>\n    <noscript>Please enable JavaScript to view the <a href=\"http://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>\n";
 var page_add_ontology = "<!-- <script type=\"text/javascript\" src=\"http://www.cropontology.org/js/add.js\"></script> -->\n\n<h1>Add Ontology</h1>\n<div class=\"row\">\n    <div class=\"col s12\">\n        <ul class=\"tabs\">\n            <li class=\"tab col s4\"><a class=\"active\" href=\"#upload_excel\">Upload Excel Trait Template</a></li>\n            <li class=\"tab col s4\"><a href=\"#upload_obo\">Upload an OBO File</a></li>\n            <li class=\"tab col s4\"><a href=\"#create_ontology\">Create an Ontology</a></li>\n        </ul>\n    </div>\n\n    <div id=\"upload_excel\" class=\"col s12\">\n        <div class=\"tab-content\">\n            <div id=\"upload_excel_cont\" style=\"display: block;\">\n                <p><b>Note:</b> be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href=\"/TD_template_v5.xls\">Trait Dictionary template version 5</a></p>\n\n                <div class=\"container\">\n                    <form action=\"http://www.cropontology.org/_ah/upload/AMmfu6a1eYV4CYvzrvEcawtsLnaD6RsCSPKXE3XH0KApNyrrVgiZDpwsHr29BvURxfLyWenQKKv4lvoCPw8ZMWhKRF2JJxGHh7bG7B7hQZdJNxu21m0HG4l7OCQmR3nEnfuZDWImA1rmAeOIOBLYQNNLTmw_4NNfl5fYGZQ2hV814SRsR20Dhfy9_gC5fAy-szjFSjVwOkWClmyyJNyPzfyLo34juhn_bEeZAF2mdHe6KAKPdqtDRNGLkDomtIG2yPKOQtHTITtbtmzFJtMAvIQbsFJX1O-l3w/ALBNUaYAAAAAXBjRYyQntu0Z_pC_qhEG5S6ssJ-jJtoU/\" method=\"post\" enctype=\"multipart/form-data\" target=\"excel_upload_iframe\">\n                        <div class=\"row\">\n                            <div class=\"input-field col s8\">\n                                Category:\n                                <select name=\"category\">\n                                    <option value=\"010-089 General Germplasm Ontology\">010-089 General Germplasm Ontology</option>\n                                    <option value=\"090-099 Taxonomic Ontology\">090-099 Taxonomic Ontology</option>\n                                    <option value=\"100-299 Plant Anatomy &amp; Development Ontology\">100-299 Plant Anatomy &amp; Development Ontology</option>\n                                    <option value=\"300-499 Phenotype and Trait Ontology\" selected=\"\">300-499 Phenotype and Trait Ontology</option>\n                                    <option value=\"500-699 Structural and Functional Genomic Ontology\">500-699 Structural and Functional Genomic Ontology</option>\n                                    <option value=\"700-799 Location and Environmental Ontology\">700-799 Location and Environmental Ontology</option><option value=\"800-899 General Science Ontology\">800-899 General Science Ontology</option><option value=\"900-999 Other (Sub-domain or Site-Specific) Ontology\">900-999 Other (Sub-domain or Site-Specific) Ontology</option>\n                                </select>\n                            </div>\n                            <div class=\"input-field col s5\">\n                                <input type=\"text\" name=\"ontology_id\" id=\"ontology_id\">\n                                <label for=\"ontology_id\">Ontology ID</label>\n                            </div>\n                            <div class=\"input-field col s7\">\n                                <input type=\"text\" name=\"ontology_name\" id=\"ontology_name\">\n                                <label for=\"ontology_name\">Ontology Name</label>\n                            </div>\n                            <div class=\"input-field col s10\">\n                                <textarea class=\"materialize-textarea\" name=\"ontology_summary\" id=\"ontology_summary\"></textarea>\n                                <label for=\"ontology_summary\">Ontology Summary</label>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"input-field col s8\">\n                                <div class=\"file-field input-field\">\n                                    <div class=\"btn btn-flat highlight-btn\">\n                                        <span>Browse...</span>\n                                        <input name=\"excelfile\" type=\"file\">\n                                    </div>\n                                    <div class=\"file-path-wrapper\">\n                                        <input class=\"file-path validate\" type=\"text\">\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"input-field col s12\">\n                                <input class=\"btn btn-flat right\" type=\"submit\" value=\"Upload Excel\">\n                            </div>\n                        </div>\n                    </form>\n                    <iframe name=\"excel_upload_iframe\" style=\"display: none\"></iframe>\n                </div>\n            </div>\n        </div>\n    </div>\n\n\n    <div id=\"upload_obo\" class=\"col s12\">\n        <div class=\"tab-content\">\n            <div id=\"upload_obo_cont\" style=\"display: block;\">\n                <div class=\"container\">\n                    <form action=\"http://www.cropontology.org/_ah/upload/AMmfu6bl0ADuyfF6yRKROyXN3tj11FUWSGHPqetqOwIM9kF0sEvq0lnGaxAAN0XkaaOoqAzHPr3EHziY6i3aLLT2NAXLMQA0iUsq_kXMYdTLnF6lWVHyJfpIM1ZDu8K7tquXmOEYAHFw15zrTV5uh_Z3PUi5Jt_KioKcoUudS4ZpwGCTbBPJLfSxBcny_pA_H4fBrw0zUTrN9xlcx416PNFq72K4opFo5VY1GwtvzqzkUG-pIXjtSyoPIuSLqd_UQnHFpKCP71VV/ALBNUaYAAAAAXBjRY5Re_rSvfiDUUBOgLbdYphczz4nQ/\" method=\"post\" enctype=\"multipart/form-data\" target=\"obo_upload_iframe\">\n                        <div class=\"row\">\n                            <div class=\"input-field col s8\">\n                                Category:\n                                <select name=\"category\">\n                                    <option value=\"010-089 General Germplasm Ontology\">010-089 General Germplasm Ontology</option>\n                                    <option value=\"090-099 Taxonomic Ontology\">090-099 Taxonomic Ontology</option>\n                                    <option value=\"100-299 Plant Anatomy &amp; Development Ontology\">100-299 Plant Anatomy &amp; Development Ontology</option>\n                                    <option value=\"300-499 Phenotype and Trait Ontology\" selected=\"\">300-499 Phenotype and Trait Ontology</option>\n                                    <option value=\"500-699 Structural and Functional Genomic Ontology\">500-699 Structural and Functional Genomic Ontology</option>\n                                    <option value=\"700-799 Location and Environmental Ontology\">700-799 Location and Environmental Ontology</option>\n                                    <option value=\"800-899 General Science Ontology\">800-899 General Science Ontology</option>\n                                    <option value=\"900-999 Other (Sub-domain or Site-Specific) Ontology\">900-999 Other (Sub-domain or Site-Specific) Ontology</option>\n                                </select>\n                            </div>\n                            <div class=\"input-field col s5\">\n                                <input type=\"text\" name=\"ontology_name\" id=\"ontology_name\">\n                                <label for=\"ontology_name\">Ontology Name</label>\n                            </div>\n                            <div class=\"input-field col s10\">\n                                <textarea class=\"materialize-textarea\" name=\"ontology_summary\" id=\"ontology_summary\"></textarea>\n                                <label for=\"ontology_summary\">Ontology Summary</label>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"input-field col s8\">\n                                <div class=\"file-field input-field\">\n                                    <div class=\"btn btn-flat highlight-btn\">\n                                        <span>Browse...</span>\n                                        <input name=\"obofile\" type=\"file\">\n                                    </div>\n                                    <div class=\"file-path-wrapper\">\n                                        <input class=\"file-path validate\" type=\"text\">\n                                    </div>\n                                </div>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"input-field col s12\">\n                                <input class=\"btn btn-flat right\" type=\"submit\" value=\"Upload OBO\">\n                            </div>\n                        </div>\n                    </form>\n                    <iframe name=\"obo_upload_iframe\" style=\"display: none\"></iframe>\n                </div>\n            </div>\n        </div>\n    </div>\n\n\n    <div id=\"create_ontology\" class=\"col s12\">\n        <div class=\"tab-content\">\n            <div id=\"create_ontology_cont\" style=\"\">\n                <p><b>Note:</b> this feature is not fully supported. For instance, deleting terms or term attributes is not possible.</p>\n\n                <div class=\"container\">\n                    <form>\n                        <div class=\"row\">\n                            <div class=\"input-field col s8\">\n                                Category:\n                                <select name=\"category\">\n                                    <option value=\"010-089 General Germplasm Ontology\">010-089 General Germplasm Ontology</option>\n                                    <option value=\"090-099 Taxonomic Ontology\">090-099 Taxonomic Ontology</option>\n                                    <option value=\"100-299 Plant Anatomy &amp; Development Ontology\">100-299 Plant Anatomy &amp; Development Ontology</option>\n                                    <option value=\"300-499 Phenotype and Trait Ontology\" selected=\"\">300-499 Phenotype and Trait Ontology</option>\n                                    <option value=\"500-699 Structural and Functional Genomic Ontology\">500-699 Structural and Functional Genomic Ontology</option>\n                                    <option value=\"700-799 Location and Environmental Ontology\">700-799 Location and Environmental Ontology</option>\n                                    <option value=\"800-899 General Science Ontology\">800-899 General Science Ontology</option>\n                                    <option value=\"900-999 Other (Sub-domain or Site-Specific) Ontology\">900-999 Other (Sub-domain or Site-Specific) Ontology</option>\n                                </select>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"col s12\">\n                                <ul class=\"treeview\" id=\"cont\">\n                                    <li class=\"last\" id=\"ontology\">\n                                        <div class=\"row valign-wrapper\">\n                                            <div class=\"input-field col s4\">\n                                                <input type=\"text\" id=\"ontology_name\" name=\"name\">\n                                                <label for=\"ontology_name\">Ontology Name</label>\n                                            </div>\n                                            <div class=\"input-field col s4\">\n                                                <input type=\"text\" id=\"ontology_id\" name=\"id\">\n                                                <label for=\"ontology_id\">Ontology ID</label>\n                                            </div>\n                                            <div class=\"col s3\">\n                                                <div class=\"row\">\n                                                    <div class=\"input-field col s12\">\n                                                        <textarea class=\"materialize-textarea autoresize\" name=\"ontology_summary\" id=\"ontology_summary\"></textarea>\n                                                        <label for=\"ontology_summary\">Ontology Summary</label>\n                                                    </div>\n                                                </div>\n                                            </div>\n                                            <div class=\"input-field col s1\">\n                                                <a title=\"Add\" class=\"btn btn-flat btn-small btn-floating waves-effect waves-light highlight-btn\"><span class=\"fa fa-plus\"></span></a>\n                                            </div>\n                                        </div>\n                                    </li>\n                                </ul>\n                            </div>\n                        </div>\n                        <div class=\"row\">\n                            <div class=\"input-field col s12\">\n                                <a id=\"save\" class=\"btn btn-flat right\">Save</a>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
@@ -8061,8 +8090,80 @@ var layout = function () {
 					// Add the loader for news and info contents
 					LOADER.create({ target: "#contents", type: "progress" });
 					break;
+				case "register":
+					$.validator.setDefaults({
+						errorClass: 'invalid',
+						validClass: "valid",
+						errorPlacement: function errorPlacement(error, element) {
+							$(element).closest("form").find("label[for='" + element.attr("id") + "']").attr('data-error', error.text());
+						},
+						submitHandler: function submitHandler(form) {
+							if (grecaptcha.getResponse().length == 0) {
+								DATA.register_user($("#register_form").serializeObject()).then(function (response) {
+									if (response.message !== undefined) {
+										Materialize.toast('<span class="fa fa-2x fa-check grey-text"></span> ' + response.message, 2000, "", function () {
+											location.reload();
+										});
+									} else {
+										$("#register_form :input").blur().removeClass("invalid").removeClass("valid");
+										Materialize.toast('<span class="fa fa-2x fa-times grey-text"></span> ' + response.error, 4000);
+									}
+								});
+							}
+						}
+					});
+					$("#register_form").validate({
+						rules: {
+							first_name: {
+								required: true
+							},
+							sirname: {
+								required: true
+							},
+							email: {
+								required: true,
+								email: true
+							},
+							username: {
+								required: true,
+								minlength: 2
+							},
+							password: {
+								required: true,
+								minlength: 5
+							},
+							confirm_password: {
+								required: true,
+								minlength: 5,
+								equalTo: "#password"
+							}
+						},
+						messages: {
+							first_name: "Please specify your name",
+							sirname: "Please specify your last name",
+							email: {
+								required: "Please specify an e-mail address",
+								email: "Your email address must be in the format of name@domain.com"
+							},
+							username: {
+								required: "Please insert an username",
+								minlength: "Your username must consist of at least 2 characters"
+							},
+							password: {
+								required: "Please insert a password",
+								minlength: "Your password must be at least 5 characters long"
+							},
+							confirm_password: {
+								required: "Please insert a password",
+								minlength: "Your password must be at least 5 characters long",
+								equalTo: "Please enter the same password as before"
+							}
+						}
+					});
+					break;
 			}
 
+			// Adapt graph on fullscreen mode
 			$(document).bind("fscreenchange", function (e, state, elem) {
 				if ($(elem).attr("id") == "graph") {
 					if (state) {
@@ -8215,7 +8316,6 @@ var layout = function () {
 						_subtitle = settings[page].subtitle;
 						break;
 				}
-				console.info(_title, _subtitle, NAV.get_term_id());
 
 				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append($('<h1>', { "id": "page_subtitle" }).html(_title)).append(function () {
 					if (_subtitle !== undefined && _subtitle.length > 0) {
@@ -8780,10 +8880,16 @@ var layout = function () {
 	}, {
 		key: "load_scripts",
 		value: function load_scripts() {
-			if (page == "ontology" || page == "terms") {
-				$("head").append("<!-- Main style -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen" }));
+			switch (page) {
+				case "ontology":
+				case "terms":
+					$("head").append("<!-- Main style -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen" }));
 
-				$("#scripts").append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" })).append("<!--  The Raphael JavaScript library for vector graphics display  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/raphael-min.js" })).append("<!--  Dracula  -->").append("<!--  An extension of Raphael for connecting shapes -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graffle.js" })).append("<!--  Graphs  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graph.js" })).append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_algorithms.js" }));
+					$("#scripts").append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" })).append("<!--  The Raphael JavaScript library for vector graphics display  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/raphael-min.js" })).append("<!--  Dracula  -->").append("<!--  An extension of Raphael for connecting shapes -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graffle.js" })).append("<!--  Graphs  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graph.js" })).append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_algorithms.js" }));
+					break;
+				case "register":
+					$("#scripts").append("<!-- jquery-validation -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jquery-validation/dist/jquery.validate.min.js" })).append("<!-- Google reCAPTCHA -->").append($('<script>', { "type": "text/javascript", "src": "https://www.google.com/recaptcha/api.js" }));
+					break;
 			}
 		}
 	}]);
@@ -8793,7 +8899,7 @@ var layout = function () {
 
 exports.default = layout;
 
-},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../src/js/_navigation.es6":7,"../../src/js/_str.es6":9,"../../src/js/_treeview.es6":10,"../../src/js/data.es6":11,"../../src/js/filters.es6":12,"../../src/js/loader.es6":14,"../../src/js/modals.es6":15,"../../src/js/pagination.es6":16,"moment":5}],14:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../src/es6/_navigation.es6":7,"../../src/es6/_str.es6":9,"../../src/es6/_treeview.es6":10,"../../src/es6/data.es6":11,"../../src/es6/filters.es6":12,"../../src/es6/loader.es6":14,"../../src/es6/modals.es6":15,"../../src/es6/pagination.es6":16,"moment":5}],14:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8905,7 +9011,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _navigation = require("../../src/js/_navigation.es6");
+var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
@@ -9100,7 +9206,7 @@ var modals = function () {
 
 exports.default = modals;
 
-},{"../../src/js/_navigation.es6":7}],16:[function(require,module,exports){
+},{"../../src/es6/_navigation.es6":7}],16:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -9111,7 +9217,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
@@ -9188,7 +9294,6 @@ var pagination = function () {
 
 				$("." + context_class).find("li.active").removeClass("active");
 				$("#" + context_class + " " + items).addClass("hide");
-				console.log(context_class + " " + items);
 				switch (page) {
 					case "prev":
 						$("." + context_class).find("li.page_" + prev_page).addClass("active");
@@ -9231,4 +9336,4 @@ var pagination = function () {
 
 exports.default = pagination;
 
-},{"../../src/js/_str.es6":9}]},{},[3]);
+},{"../../src/es6/_str.es6":9}]},{},[3]);

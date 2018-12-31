@@ -1,10 +1,10 @@
 /* jshint esversion: 6 */
 "strict mode";
 
-import data from "../../src/js/data.es6";
-import navigation from "../../src/js/_navigation.es6";
-import loader from "../../src/js/loader.es6";
-import str from "../../src/js/_str.es6";
+import data from "../../src/es6/data.es6";
+import navigation from "../../src/es6/_navigation.es6";
+import loader from "../../src/es6/loader.es6";
+import str from "../../src/es6/_str.es6";
 
 var
 	DATA = new data(),

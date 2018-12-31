@@ -1,51 +1,57 @@
 
-<form method="post" id="register_form" action="http://www.cropontology.org/">
+<form id="register_form" action="" novalidate="novalidate">
     <div class="container">
         <div class="row">
-            <div class="col s6 offset-s2">
-                <div class="context-loader" style="display: none; top:0px;">Sending Request...</div>
-                <div class="error_box" style="display: none;">Incorrect login or password.</div>
-                <h1>Register</h1>
+            <div class="input-field col s6 required">
+                <input type="text" value="" tabindex="1" name="first_name" id="first_name" class="text">
+                <label for="first_name">First name</label>
+            </div>
+            <div class="input-field col s6 required">
+                <input type="text" value="" tabindex="2" name="sirname" id="sirname" class="text">
+                <label for="sirname">Last name</label>
             </div>
         </div>
-
         <div class="row">
-            <div class="input-field col s4 offset-s2">
-                <input type="text" value="" tabindex="1" name="username" id="reg_username" class="text">
+            <div class="input-field col s12">
+                <input type="text" value="" tabindex="3" name="institution" id="institution" class="text">
+                <label for="institution">Host institution</label>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="input-field col s11 required">
+                <input type="email" value="" tabindex="4" name="email" id="email" class="text">
+                <label for="email">Email address</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s4 required">
+                <input type="text" value="" tabindex="5" name="username" id="reg_username" class="text">
                 <label for="reg_username">Username</label>
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s6 offset-s2">
-                <input type="email" value="" tabindex="2" style="width: 21em;" name="email" id="reg_email" class="text">
-                <label for="reg_email">Please enter your Email</label>
+            <div class="input-field col s4 required">
+                <input type="password" value="" tabindex="6" name="password" id="password" class="text">
+                <label for="password">Password</label>
+            </div>
+            <div class="input-field col s4 required">
+                <input type="password" value="" tabindex="6" name="confirm_password" id="confirm_password" class="text">
+                <label for="confirm_password">Repeat password</label>
             </div>
         </div>
+
         <div class="row">
-            <div class="input-field col s4 offset-s2">
-                <input type="password" value="" tabindex="3" name="password" id="reg_password" class="text">
-                <label for="reg_password">Password</label>
+            <div class="input-field col s10">
+                <center>
+                    <div class="g-recaptcha" data-sitekey="6LdssoIUAAAAAIQYYHDi_jMiGHylKTm7JpPiq1GY"></div>
+                </center>
             </div>
         </div>
+
         <div class="row">
-            <div class="input-field col s3 offset-s2">
-                <input type="text" value="" tabindex="4" name="first_name" id="reg_name" class="text">
-                <label for="reg_name">First name</label>
-            </div>
-            <div class="input-field col s3">
-                <input type="text" value="" tabindex="5" name="sirname" id="reg_lastname" class="text">
-                <label for="reg_lastname">Last name</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s6 offset-s2">
-                <input type="text" value="" tabindex="6" name="institution" id="reg_institution" class="text">
-                <label for="reg_institution">Host institution</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s6 offset-s2">
-                <input type="submit" value="Register" tabindex="7" name="commit" class="btn btn-flat green white-text waves-effect waves-light right">
+            <div class="input-field col s10">
+                <button type="submit" tabindex="7" name="commit" class="btn btn-flat green white-text waves-effect waves-light right">Register</button>
             </div>
         </div>
     </div>

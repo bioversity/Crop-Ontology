@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 "strict mode";
 
-import navigation from "../../src/js/_navigation.es6";
+import navigation from "../../src/es6/_navigation.es6";
 var NAV = new navigation();
 
 class modals {

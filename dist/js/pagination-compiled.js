@@ -8,7 +8,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 
@@ -85,7 +85,6 @@ var pagination = function () {
 
 				$("." + context_class).find("li.active").removeClass("active");
 				$("#" + context_class + " " + items).addClass("hide");
-				console.log(context_class + " " + items);
 				switch (page) {
 					case "prev":
 						$("." + context_class).find("li.page_" + prev_page).addClass("active");

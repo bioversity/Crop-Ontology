@@ -2,21 +2,21 @@
 /* jshint esversion: 6 */
 "strict mode";
 
-var _layout = require("../../src/js/layout.es6");
+var _layout = require("../../src/es6/layout.es6");
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _navigation = require("../../src/js/_navigation.es6");
+var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// // import ColorCanvas from "../../src/js/ColorCanvas.es6";
-// import ColorPicker from "../../src/js/ColorPicker.es6";
-// import Pantone from "../../src/js/PANTONE.es6";
+// // import ColorCanvas from "../../src/es6/ColorCanvas.es6";
+// import ColorPicker from "../../src/es6/ColorPicker.es6";
+// import Pantone from "../../src/es6/PANTONE.es6";
 
-require("../../src/js/_obj.es6");
+require("../../src/es6/_obj.es6");
 
 var LAYOUT = new _layout2.default(),
     NAV = new _navigation2.default(),

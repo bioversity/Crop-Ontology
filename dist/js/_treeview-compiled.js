@@ -8,19 +8,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _data = require("../../src/js/data.es6");
+var _data = require("../../src/es6/data.es6");
 
 var _data2 = _interopRequireDefault(_data);
 
-var _navigation = require("../../src/js/_navigation.es6");
+var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
-var _loader = require("../../src/js/loader.es6");
+var _loader = require("../../src/es6/loader.es6");
 
 var _loader2 = _interopRequireDefault(_loader);
 
-var _str = require("../../src/js/_str.es6");
+var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
 

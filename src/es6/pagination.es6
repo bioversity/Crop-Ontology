@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 "strict mode";
 
-import str from "../../src/js/_str.es6";
+import str from "../../src/es6/_str.es6";
 var STR = new str();
 
 class pagination {
@@ -76,7 +76,6 @@ class pagination {
 
 			$("." + context_class).find("li.active").removeClass("active");
 			$("#" + context_class + " " + items).addClass("hide");
-			console.log(context_class + " " + items);
 			switch(page) {
 				case "prev":
 					$("." + context_class).find("li.page_" + prev_page).addClass("active");

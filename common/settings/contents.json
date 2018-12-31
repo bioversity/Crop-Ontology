@@ -167,5 +167,16 @@
                 "image": "cowpea.jpg"
             }]
         }
+    },
+    "register": {
+        "title": "Register",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
     }
 }
