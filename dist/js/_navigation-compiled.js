@@ -23,8 +23,9 @@ var navigation = function () {
   * @return array															The page path
   */
 		value: function get_url_path() {
-			var url = window.location.pathname.split("/").splice(1),
+			var url = window.location.pathname.split(/(?:\/|\:)+/).splice(1),
 			    path = [];
+
 			$.each(url, function (k, v) {
 				path.push(decodeURIComponent(v));
 			});
@@ -65,7 +66,7 @@ var navigation = function () {
 
 		/**
    * The ontology url performed by regex
-   * @see https://regex101.com/r/S4gNgj/4
+   * @see https://regex101.com/r/S4gNgj/5
    */
 
 	}, {
@@ -86,10 +87,7 @@ var navigation = function () {
 	}, {
 		key: "get_ontology_id",
 		value: function get_ontology_id() {
-			var path = this.get_url_path();
-			if (path[0] == "ontology" || path[0] == "terms") {
-				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
-			}
+			return this.get_url_path()[1];
 		}
 
 		/**
@@ -102,10 +100,7 @@ var navigation = function () {
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
-			var path = this.get_url_path();
-			if (path[0] == "ontology" || path[0] == "terms") {
-				return path[1];
-			}
+			return this.get_url_path()[2];
 		}
 
 		/**
@@ -118,14 +113,20 @@ var navigation = function () {
 	}, {
 		key: "get_ontology_label",
 		value: function get_ontology_label() {
-			var path = this.get_url_path();
-			if (path[0] == "ontology" || path[0] == "terms") {
-				if (path[2] !== undefined) {
-					return path[2];
-				} else {
-					return path[1].replace(this.get_ontology_url_regex(":"), "$2");
-				}
-			}
+			return this.get_url_path()[2];
+		}
+
+		/**
+   * Get the Ontology Term label from the current URL
+   * @uses get_url_path()
+   *
+   * @return string															The current page
+   */
+
+	}, {
+		key: "get_term_label",
+		value: function get_term_label() {
+			return this.get_url_path()[3];
 		}
 	}]);
 

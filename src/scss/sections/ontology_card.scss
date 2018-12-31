@@ -17,6 +17,7 @@
     color: $medium-light-grey;
     font-family: "Roboto Condensed";
     font-size: 2.8em;
+    height: 50px;
     margin-bottom: 0;
     text-align: left;
     text-shadow: 0 0 1px $dark-grey;
@@ -33,6 +34,10 @@
     margin: 1em 0;
     text-align: left;
     text-shadow: 0 0 1px $black;
+
+    small {
+        display: block;
+    }
   }
   #page_subtitle + #page_title {
     margin-top: 0;

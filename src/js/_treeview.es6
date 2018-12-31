@@ -197,7 +197,7 @@ class treeview {
 			$(".treeview a.selected").removeClass("selected");
 			$(e.currentTarget).addClass("selected");
 
-
+			// Permalink
 			let permalink, ext_permalink;
 			if(option.is_root || option.id.split(":")[1] == "0000000") {
 				permalink = "./ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name),

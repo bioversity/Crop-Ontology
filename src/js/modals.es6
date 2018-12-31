@@ -1,6 +1,9 @@
 /* jshint esversion: 6 */
 "strict mode";
 
+import navigation from "../../src/js/_navigation.es6";
+var NAV = new navigation();
+
 class modals {
 	/**
 	 * Build a modal popup
@@ -38,10 +41,10 @@ class modals {
 				"style": (settings.width) ? "width: " + settings.width : ""
 			}).append(
 				$('<div>', {"class": "modal-content"}).append(
-					$('<h4>').text(settings.title)
+					$('<h4>').html(settings.title)
 				).append(() => {
 					if(settings.subtitle) {
-						return $('<h5>').text(settings.subtitle);
+						return $('<h5>').html(settings.subtitle);
 					}
 				}).append(settings.content)
 			).append(() => {
@@ -179,11 +182,16 @@ class modals {
 		});
 	}
 
-	download_ontology_modal(id, title) {
-		let $download_ontology_modal = $('<div>', {"class": "container"}).append(
+	download_ontology_modal() {
+		let $download_ontology_modal = $('<div>', {"class": ""}).append(
     		$('<div>', {class: "row"}).append(
-				$('<div>', {"class": "col s4 m4 l4 xl4"}).append(
-					$('<a>', {"target": "_blank", "href": "https://www.cropontology.org/report?ontology_id=" + id, "class": "center dowload-item", "download": id + ".csv"}).append(
+				$('<div>', {"class": "col s3 m3 l3 xl3"}).append(
+					$('<a>', {
+						"target": "_blank",
+						"href": "https://www.cropontology.org/report?ontology_id=" + NAV.get_ontology_id(),
+						"class": "center dowload-item",
+						"download": NAV.get_ontology_id() + ".csv"
+					}).append(
 						$('<h4>').append(
 							$('<span>', {"class": "picol_document_text"})
 						)
@@ -192,8 +200,28 @@ class modals {
 					)
 				)
 			).append(
-				$('<div>', {"class": "col s4 m4 l4 xl4"}).append(
-					$('<a>', {"target": "_blank", "href": "https://www.cropontology.org/ontology/" + id + "/" + title + "/nt", "class": "center dowload-item", "download": id + ".nt"}).append(
+				$('<div>', {"class": "col s3 m3 l3 xl3"}).append(
+					$('<a>', {
+						"target": "_blank",
+						"href": "https://www.cropontology.org/rdf/" + NAV.get_ontology_id() + ((NAV.get_term_id() !== undefined) ? ":" + NAV.get_term_id() : "") + "/" + NAV.get_ontology_label(),
+						"class": "center dowload-item",
+						"download": NAV.get_ontology_id() + ".nt"
+					}).append(
+						$('<h4>').append(
+							$('<span>', {"class": "picol_rdf"})
+						)
+					).append(
+						$('<h6>').text("RDF")
+					)
+				)
+			).append(
+				$('<div>', {"class": "col s3 m3 l3 xl3"}).append(
+					$('<a>', {
+						"target": "_blank",
+						"href": "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label() + "/nt",
+						"class": "center dowload-item",
+						"download": NAV.get_ontology_id() + ".nt"
+					}).append(
 						$('<h4>').append(
 							$('<span>', {"class": "picol_rdf_document"})
 						)
@@ -202,8 +230,13 @@ class modals {
 					)
 				)
 			).append(
-				$('<div>', {"class": "col s4 m4 l4 xl4"}).append(
-					$('<a>', {"target": "_blank", "href": "https://www.cropontology.org/obo/" + id, "class": "center dowload-item", "download": id + ".obo"}).append(
+				$('<div>', {"class": "col s3 m3 l3 xl3"}).append(
+					$('<a>', {
+						"target": "_blank",
+						"href": "https://www.cropontology.org/obo/" + NAV.get_ontology_id(),
+						"class": "center dowload-item",
+						"download": NAV.get_ontology_id() + ".obo"
+					}).append(
 						$('<h4>').append(
 							$('<span>', {"class": "picol_owl_lite_document"})
 						)
@@ -218,8 +251,8 @@ class modals {
 			id: "download_ontology_modal",
 			width: "35%",
 			class: "centered",
-			title: "Download ontology",
-			subtitle: id + ":" + title,
+			title: "Download",
+			subtitle: "<tt>" + NAV.get_ontology_id() + ((NAV.get_term_id() !== undefined) ? "<small>:" + NAV.get_term_id() + "</small>" : "") + "</tt> &rsaquo; " + ((NAV.get_term_label() !== undefined) ? NAV.get_term_label() : NAV.get_ontology_label()),
 			content: $download_ontology_modal,
 			fixed_footer: false,
 			bottom_sheet: false,

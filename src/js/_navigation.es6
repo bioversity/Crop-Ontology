@@ -8,8 +8,9 @@ class navigation {
 	* @return array															The page path
 	*/
 	get_url_path() {
-		let url = window.location.pathname.split("/").splice(1),
+		let url = window.location.pathname.split(/(?:\/|\:)+/).splice(1),
 			path = [];
+
 		$.each(url, (k, v) => {
 			path.push(decodeURIComponent(v));
 		})
@@ -44,7 +45,7 @@ class navigation {
 
 	/**
 	 * The ontology url performed by regex
-	 * @see https://regex101.com/r/S4gNgj/4
+	 * @see https://regex101.com/r/S4gNgj/5
 	 */
 	get_terms_url_regex(separator) {
 		let id = "([\\w]+\\_[\\w\\d]+)",
@@ -59,10 +60,7 @@ class navigation {
 	 * @return string															The current page
 	 */
 	get_ontology_id() {
-		let path = this.get_url_path();
-		if(path[0] == "ontology" || path[0] == "terms") {
-			return path[1].replace(this.get_ontology_url_regex(":"), "$1");
-		}
+		return this.get_url_path()[1];
 	}
 
 	/**
@@ -72,10 +70,7 @@ class navigation {
 	 * @return string															The current page
 	 */
 	get_term_id() {
-		let path = this.get_url_path();
-		if(path[0] == "ontology" || path[0] == "terms") {
-			return path[1];
-		}
+		return this.get_url_path()[2];
 	}
 
 	/**
@@ -85,14 +80,17 @@ class navigation {
 	 * @return string															The current page
 	 */
 	get_ontology_label() {
-		let path = this.get_url_path();
-		if(path[0] == "ontology" || path[0] == "terms") {
-			if(path[2] !== undefined) {
-				return path[2];
-			} else {
-				return path[1].replace(this.get_ontology_url_regex(":"), "$2");
-			}
-		}
+		return this.get_url_path()[2];
+	}
+
+	/**
+	 * Get the Ontology Term label from the current URL
+	 * @uses get_url_path()
+	 *
+	 * @return string															The current page
+	 */
+	get_term_label() {
+		return this.get_url_path()[3];
 	}
 }
 

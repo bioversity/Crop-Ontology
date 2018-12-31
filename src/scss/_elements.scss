@@ -43,6 +43,13 @@
 }
 
 #download_ontology_modal {
+  h5 {
+    tt {
+      font-family: inherit;
+
+      small { color: #aaa; }
+    }
+  }
   .dowload_item {
     color: $dark-grey;
 

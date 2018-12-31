@@ -6394,8 +6394,9 @@ var navigation = function () {
   * @return array															The page path
   */
 		value: function get_url_path() {
-			var url = window.location.pathname.split("/").splice(1),
+			var url = window.location.pathname.split(/(?:\/|\:)+/).splice(1),
 			    path = [];
+
 			$.each(url, function (k, v) {
 				path.push(decodeURIComponent(v));
 			});
@@ -6436,7 +6437,7 @@ var navigation = function () {
 
 		/**
    * The ontology url performed by regex
-   * @see https://regex101.com/r/S4gNgj/4
+   * @see https://regex101.com/r/S4gNgj/5
    */
 
 	}, {
@@ -6457,10 +6458,7 @@ var navigation = function () {
 	}, {
 		key: "get_ontology_id",
 		value: function get_ontology_id() {
-			var path = this.get_url_path();
-			if (path[0] == "ontology" || path[0] == "terms") {
-				return path[1].replace(this.get_ontology_url_regex(":"), "$1");
-			}
+			return this.get_url_path()[1];
 		}
 
 		/**
@@ -6473,10 +6471,7 @@ var navigation = function () {
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
-			var path = this.get_url_path();
-			if (path[0] == "ontology" || path[0] == "terms") {
-				return path[1];
-			}
+			return this.get_url_path()[2];
 		}
 
 		/**
@@ -6489,14 +6484,20 @@ var navigation = function () {
 	}, {
 		key: "get_ontology_label",
 		value: function get_ontology_label() {
-			var path = this.get_url_path();
-			if (path[0] == "ontology" || path[0] == "terms") {
-				if (path[2] !== undefined) {
-					return path[2];
-				} else {
-					return path[1].replace(this.get_ontology_url_regex(":"), "$2");
-				}
-			}
+			return this.get_url_path()[2];
+		}
+
+		/**
+   * Get the Ontology Term label from the current URL
+   * @uses get_url_path()
+   *
+   * @return string															The current page
+   */
+
+	}, {
+		key: "get_term_label",
+		value: function get_term_label() {
+			return this.get_url_path()[3];
 		}
 	}]);
 
@@ -7021,6 +7022,7 @@ var treeview = function () {
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
 
+				// Permalink
 				var permalink = void 0,
 				    ext_permalink = void 0;
 				if (option.is_root || option.id.split(":")[1] == "0000000") {
@@ -8207,16 +8209,26 @@ var layout = function () {
 					}, settings.general.carousel.time);
 				}
 			} else {
-				if (page == "ontology" || page == "terms") {
-					title = page == "terms" ? NAV.get_term_id().replace(NAV.get_terms_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
-					subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
-				} else {
-					title = settings[page].title;
-					subtitle = settings[page].subtitle;
+				var _title = "",
+				    _subtitle = "";
+				switch (page) {
+					case "ontology":
+						_title = NAV.get_ontology_id();
+						_subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
+						break;
+					case "terms":
+						_title = NAV.get_ontology_id() + "<small>:" + NAV.get_term_id() + "</small>";
+						_subtitle = STR.camel_case_2_text(NAV.get_term_label());
+						break;
+					default:
+						_title = settings[page].title;
+						_subtitle = settings[page].subtitle;
+						break;
 				}
-				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append($('<h1>', { "id": "page_subtitle" }).html(title)).append(function () {
-					if (subtitle !== undefined && subtitle.length > 0) {
-						return $('<h2>', { "id": "page_title" }).text(subtitle);
+
+				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append($('<h1>', { "id": "page_subtitle" }).html(_title)).append(function () {
+					if (_subtitle !== undefined && _subtitle.length > 0) {
+						return $('<h2>', { "id": "page_title" }).text(_subtitle);
 					}
 				}));
 			}
@@ -8241,35 +8253,17 @@ var layout = function () {
 				}))),
 				    $breadcrumbs = $('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "./", "class": "breadcrumb" }).append($('<span>', { "class": "fas fa-home grey-text" }))).append(function () {
 					if (NAV.get_url_path().length > 1) {
-						var path = [];
-						$.each(NAV.get_url_path(), function (k, v) {
-							switch (page) {
-								case "ontology":
-									if (k > 0) {
-										path.push(v);
-									}
-									break;
-								case "terms":
-									path = [NAV.get_url_path()[1] + ":" + NAV.get_url_path()[2]];
-									break;
-								default:
-									path.push(v);
-									break;
-							}
-						});
-						return $.map(path, function (v, k) {
-							if (k < path.length - 1) {
-								return $('<a>', { "href": "./" + path.join("/"), "class": "breadcrumb" }).text(STR.ucfirst(v));
-							} else {
-								if (page == "terms") {
-									var p = v.split(":");
-									v = '<tt>' + p[0] + ' &rsaquo; <small>' + p[1] + '</small></tt>' + STR.ucfirst(STR.camel_case_2_text(p[2]));
-									return $('<span>', { "class": "breadcrumb" }).html(v);
-								} else {
-									return $('<span>', { "class": "breadcrumb" }).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
-								}
-							}
-						});
+						switch (page) {
+							case "terms":
+								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id()).append($('<small>').append(":" + NAV.get_term_id()))).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label())));
+								break;
+							case "ontology":
+								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id())).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label())));
+								break;
+							default:
+								return $('<span>', { "class": "breadcrumb" }).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
+								break;
+						}
 					} else {
 						return $('<span>', { "class": "breadcrumb" }).text(STR.ucfirst(NAV.get_page()));
 					}
@@ -8643,17 +8637,17 @@ var layout = function () {
 					    term = "",
 					    language = "english";
 
-					MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
+					MODALS.download_ontology_modal();
 
 					/**
       * Ontology card
       */
 					DATA.get_ontologies_data(NAV.get_ontology_id()).then(function (ontologies_data) {
-						$("#ontology_card").html($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>', { "id": "page_subtitle" }).text(NAV.get_ontology_id())).append($('<h2>', { "id": "page_title" }).append(function () {
+						$("#ontology_card").html($('<div>', { "class": "col s2" }).append($('<img>', { "class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture }))).append($('<div>', { "class": "col s10" }).append($('<h1>', { "id": "page_subtitle" }).append(NAV.get_ontology_id()).append(NAV.get_term_id() !== undefined ? "<small>:" + NAV.get_term_id() + "</small>" : "")).append($('<h2>', { "id": "page_title" }).append(function () {
 							if (ontologies_data.ontology_title.link !== "") {
-								return $('<a>', { "href": ontologies_data.ontology_title.link, "target": "_blank" }).text(ontologies_data.ontology_title.title);
+								return $('<a>', { "href": ontologies_data.ontology_title.link, "target": "_blank" }).append(ontologies_data.ontology_title.title).append(NAV.get_term_id() !== undefined ? NAV.get_term_label() : "");
 							} else {
-								return ontologies_data.ontology_title.title;
+								return ontologies_data.ontology_title.title + (NAV.get_term_id() !== undefined ? "<small>" + NAV.get_term_label() + "</small>" : "");
 							}
 						})).append($('<table>').append($('<thead>').append($('<tr>').append($('<th>').text("Ontology curators")).append($('<th>').text("Scientists")).append($('<th>', { "class": "center" }).text("Crop Lead Center")).append($('<th>', { "class": "center" }).text("Partners")).append($('<th>', { "class": "center" }).text("CGIAR research program")))).append($('<tbody>').append($('<td>').append(function () {
 							if (ontologies_data.ontology_curators.length > 0 && ontologies_data.ontology_curators[0] !== "") {
@@ -8916,7 +8910,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _navigation = require("../../src/js/_navigation.es6");
+
+var _navigation2 = _interopRequireDefault(_navigation);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NAV = new _navigation2.default();
 
 var modals = function () {
 	function modals() {
@@ -8959,9 +8961,9 @@ var modals = function () {
 				"id": settings.id,
 				"class": "modal " + settings.class + " " + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : ""),
 				"style": settings.width ? "width: " + settings.width : ""
-			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').text(settings.title)).append(function () {
+			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').html(settings.title)).append(function () {
 				if (settings.subtitle) {
-					return $('<h5>').text(settings.subtitle);
+					return $('<h5>').html(settings.subtitle);
 				}
 			}).append(settings.content)).append(function () {
 				if (settings.display_buttons) {
@@ -9061,15 +9063,35 @@ var modals = function () {
 		}
 	}, {
 		key: "download_ontology_modal",
-		value: function download_ontology_modal(id, title) {
-			var $download_ontology_modal = $('<div>', { "class": "container" }).append($('<div>', { class: "row" }).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/report?ontology_id=" + id, "class": "center dowload-item", "download": id + ".csv" }).append($('<h4>').append($('<span>', { "class": "picol_document_text" }))).append($('<h6>').text("Trait dictionary")))).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/ontology/" + id + "/" + title + "/nt", "class": "center dowload-item", "download": id + ".nt" }).append($('<h4>').append($('<span>', { "class": "picol_rdf_document" }))).append($('<h6>').text("RDF N-Triples")))).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/obo/" + id, "class": "center dowload-item", "download": id + ".obo" }).append($('<h4>').append($('<span>', { "class": "picol_owl_lite_document" }))).append($('<h6>').text("OBO File")))));
+		value: function download_ontology_modal() {
+			var $download_ontology_modal = $('<div>', { "class": "" }).append($('<div>', { class: "row" }).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/report?ontology_id=" + NAV.get_ontology_id(),
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".csv"
+			}).append($('<h4>').append($('<span>', { "class": "picol_document_text" }))).append($('<h6>').text("Trait dictionary")))).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/rdf/" + NAV.get_ontology_id() + (NAV.get_term_id() !== undefined ? ":" + NAV.get_term_id() : "") + "/" + NAV.get_ontology_label(),
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".nt"
+			}).append($('<h4>').append($('<span>', { "class": "picol_rdf" }))).append($('<h6>').text("RDF")))).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label() + "/nt",
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".nt"
+			}).append($('<h4>').append($('<span>', { "class": "picol_rdf_document" }))).append($('<h6>').text("RDF N-Triples")))).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/obo/" + NAV.get_ontology_id(),
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".obo"
+			}).append($('<h4>').append($('<span>', { "class": "picol_owl_lite_document" }))).append($('<h6>').text("OBO File")))));
 
 			this.build_modal({
 				id: "download_ontology_modal",
 				width: "35%",
 				class: "centered",
-				title: "Download ontology",
-				subtitle: id + ":" + title,
+				title: "Download",
+				subtitle: "<tt>" + NAV.get_ontology_id() + (NAV.get_term_id() !== undefined ? "<small>:" + NAV.get_term_id() + "</small>" : "") + "</tt> &rsaquo; " + (NAV.get_term_label() !== undefined ? NAV.get_term_label() : NAV.get_ontology_label()),
 				content: $download_ontology_modal,
 				fixed_footer: false,
 				bottom_sheet: false,
@@ -9083,7 +9105,7 @@ var modals = function () {
 
 exports.default = modals;
 
-},{}],17:[function(require,module,exports){
+},{"../../src/js/_navigation.es6":8}],17:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";

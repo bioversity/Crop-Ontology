@@ -286,13 +286,23 @@ class layout {
 				}, settings.general.carousel.time);
 			}
 		} else {
-			if(page == "ontology" || page == "terms") {
-				title = (page == "terms") ? NAV.get_term_id().replace(NAV.get_terms_url_regex(":"), '$1<small>$2</small>') : NAV.get_ontology_id();
-				subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
-			} else {
-				title = settings[page].title;
-				subtitle = settings[page].subtitle;
+			let title = "",
+				subtitle = "";
+			switch(page) {
+				case "ontology":
+					title = NAV.get_ontology_id();
+					subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
+					break;
+				case "terms":
+					title = NAV.get_ontology_id() + "<small>:" + NAV.get_term_id() + "</small>";
+					subtitle = STR.camel_case_2_text(NAV.get_term_label());
+					break;
+				default:
+					title = settings[page].title;
+					subtitle = settings[page].subtitle;
+					break;
 			}
+
 			$("body").append(
 				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
 					$('<h1>', {"id": "page_subtitle"}).html(title)
@@ -331,35 +341,27 @@ class layout {
 							)
 						).append(() => {
 							if(NAV.get_url_path().length > 1) {
-								let path = [];
-								$.each(NAV.get_url_path(), (k, v) => {
-									switch(page) {
-										case "ontology":
-											if(k > 0) {
-												path.push(v);
-											}
-											break;
-										case "terms":
-											path = [NAV.get_url_path()[1] + ":" + NAV.get_url_path()[2]];
-											break;
-										default:
-											path.push(v);
-											break;
-									}
-								});
-								return $.map(path, (v, k) => {
-									if(k < (path.length - 1)) {
-										return $('<a>', {"href": "./" + path.join("/"), "class": "breadcrumb"}).text(STR.ucfirst(v));
-									} else {
-										if(page == "terms") {
-											let p = v.split(":");
-											v = '<tt>' + p[0] + ' &rsaquo; <small>' + p[1] + '</small></tt>' + STR.ucfirst(STR.camel_case_2_text(p[2]));
-											return $('<span>', {"class": "breadcrumb"}).html(v);
-										} else {
-											return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
-										}
-									}
-								});
+								switch(page) {
+									case "terms":
+										return $('<span>', {"class": "breadcrumb"}).html(
+											$('<tt>').append(NAV.get_ontology_id()).append(
+												$('<small>').append(":" + NAV.get_term_id())
+											)
+										).append(
+											STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label()))
+										);
+										break;
+									case "ontology":
+										return $('<span>', {"class": "breadcrumb"}).html(
+											$('<tt>').append(NAV.get_ontology_id())
+										).append(
+											STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label()))
+										);
+										break;
+									default:
+										return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
+										break;
+								}
 							} else {
 								return $('<span>', {"class": "breadcrumb"}).text(STR.ucfirst(NAV.get_page()));
 							}
@@ -926,7 +928,7 @@ class layout {
 					term = "",
 					language = "english";
 
-				MODALS.download_ontology_modal(NAV.get_ontology_id(), NAV.get_ontology_label());
+				MODALS.download_ontology_modal();
 
 				/**
 				 * Ontology card
@@ -938,13 +940,13 @@ class layout {
 						)
 					).append(
 						$('<div>', {"class": "col s10"}).append(
-							$('<h1>', {"id": "page_subtitle"}).text(NAV.get_ontology_id())
+							$('<h1>', {"id": "page_subtitle"}).append(NAV.get_ontology_id()).append((NAV.get_term_id() !== undefined) ? "<small>:" + NAV.get_term_id() + "</small>" : "")
 						).append(
 							$('<h2>', {"id": "page_title"}).append(() => {
 								if(ontologies_data.ontology_title.link !== "") {
-									return $('<a>', {"href": ontologies_data.ontology_title.link, "target": "_blank"}).text(ontologies_data.ontology_title.title);
+									return $('<a>', {"href": ontologies_data.ontology_title.link, "target": "_blank"}).append(ontologies_data.ontology_title.title).append((NAV.get_term_id() !== undefined) ? NAV.get_term_label() : "");
 								} else {
-									return ontologies_data.ontology_title.title;
+									return ontologies_data.ontology_title.title + ((NAV.get_term_id() !== undefined) ? "<small>" + NAV.get_term_label() + "</small>" : "");
 								}
 							})
 						).append(

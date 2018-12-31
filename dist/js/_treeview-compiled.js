@@ -210,10 +210,10 @@ var treeview = function () {
 				$(".treeview a.selected").removeClass("selected");
 				$(e.currentTarget).addClass("selected");
 
+				// Permalink
 				var permalink = void 0,
 				    ext_permalink = void 0;
 				if (option.is_root || option.id.split(":")[1] == "0000000") {
-					console.log(option);
 					permalink = "./ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
 				} else {
 					permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));

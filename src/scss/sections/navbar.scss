@@ -91,6 +91,8 @@
           font-size: 1.05em;
           margin-right: 5px;
           padding: 5px;
+
+          small { color: $medium-light-grey; }
         }
       }
       a { color: $dark-grey; }

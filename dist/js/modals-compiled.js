@@ -8,7 +8,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _navigation = require("../../src/js/_navigation.es6");
+
+var _navigation2 = _interopRequireDefault(_navigation);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NAV = new _navigation2.default();
 
 var modals = function () {
 	function modals() {
@@ -51,9 +59,9 @@ var modals = function () {
 				"id": settings.id,
 				"class": "modal " + settings.class + " " + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : ""),
 				"style": settings.width ? "width: " + settings.width : ""
-			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').text(settings.title)).append(function () {
+			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').html(settings.title)).append(function () {
 				if (settings.subtitle) {
-					return $('<h5>').text(settings.subtitle);
+					return $('<h5>').html(settings.subtitle);
 				}
 			}).append(settings.content)).append(function () {
 				if (settings.display_buttons) {
@@ -153,15 +161,35 @@ var modals = function () {
 		}
 	}, {
 		key: "download_ontology_modal",
-		value: function download_ontology_modal(id, title) {
-			var $download_ontology_modal = $('<div>', { "class": "container" }).append($('<div>', { class: "row" }).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/report?ontology_id=" + id, "class": "center dowload-item", "download": id + ".csv" }).append($('<h4>').append($('<span>', { "class": "picol_document_text" }))).append($('<h6>').text("Trait dictionary")))).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/ontology/" + id + "/" + title + "/nt", "class": "center dowload-item", "download": id + ".nt" }).append($('<h4>').append($('<span>', { "class": "picol_rdf_document" }))).append($('<h6>').text("RDF N-Triples")))).append($('<div>', { "class": "col s4 m4 l4 xl4" }).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/obo/" + id, "class": "center dowload-item", "download": id + ".obo" }).append($('<h4>').append($('<span>', { "class": "picol_owl_lite_document" }))).append($('<h6>').text("OBO File")))));
+		value: function download_ontology_modal() {
+			var $download_ontology_modal = $('<div>', { "class": "" }).append($('<div>', { class: "row" }).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/report?ontology_id=" + NAV.get_ontology_id(),
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".csv"
+			}).append($('<h4>').append($('<span>', { "class": "picol_document_text" }))).append($('<h6>').text("Trait dictionary")))).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/rdf/" + NAV.get_ontology_id() + (NAV.get_term_id() !== undefined ? ":" + NAV.get_term_id() : "") + "/" + NAV.get_ontology_label(),
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".nt"
+			}).append($('<h4>').append($('<span>', { "class": "picol_rdf" }))).append($('<h6>').text("RDF")))).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/ontology/" + NAV.get_ontology_id() + "/" + NAV.get_ontology_label() + "/nt",
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".nt"
+			}).append($('<h4>').append($('<span>', { "class": "picol_rdf_document" }))).append($('<h6>').text("RDF N-Triples")))).append($('<div>', { "class": "col s3 m3 l3 xl3" }).append($('<a>', {
+				"target": "_blank",
+				"href": "https://www.cropontology.org/obo/" + NAV.get_ontology_id(),
+				"class": "center dowload-item",
+				"download": NAV.get_ontology_id() + ".obo"
+			}).append($('<h4>').append($('<span>', { "class": "picol_owl_lite_document" }))).append($('<h6>').text("OBO File")))));
 
 			this.build_modal({
 				id: "download_ontology_modal",
 				width: "35%",
 				class: "centered",
-				title: "Download ontology",
-				subtitle: id + ":" + title,
+				title: "Download",
+				subtitle: "<tt>" + NAV.get_ontology_id() + (NAV.get_term_id() !== undefined ? "<small>:" + NAV.get_term_id() + "</small>" : "") + "</tt> &rsaquo; " + (NAV.get_term_label() !== undefined ? NAV.get_term_label() : NAV.get_ontology_label()),
 				content: $download_ontology_modal,
 				fixed_footer: false,
 				bottom_sheet: false,
