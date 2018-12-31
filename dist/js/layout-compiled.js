@@ -78,7 +78,6 @@ var DATA = new _data2.default(),
     PAGE_ADD_ONTOLOGY = page_add_ontology,
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json"),
-    top_carousel = require("../../common/settings/top_carousel.json"),
     moment = require("moment"),
     user = {
 	logged: false
@@ -299,6 +298,7 @@ var layout = function () {
 						_subtitle = settings[page].subtitle;
 						break;
 				}
+				console.info(_title, _subtitle, NAV.get_term_id());
 
 				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append($('<h1>', { "id": "page_subtitle" }).html(_title)).append(function () {
 					if (_subtitle !== undefined && _subtitle.length > 0) {
@@ -328,11 +328,11 @@ var layout = function () {
 				    $breadcrumbs = $('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "./", "class": "breadcrumb" }).append($('<span>', { "class": "fas fa-home grey-text" }))).append(function () {
 					if (NAV.get_url_path().length > 1) {
 						switch (page) {
-							case "terms":
-								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id()).append($('<small>').append(":" + NAV.get_term_id()))).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label())));
-								break;
 							case "ontology":
 								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id())).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label())));
+								break;
+							case "terms":
+								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id()).append($('<small>').append(":" + NAV.get_term_id()))).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label())));
 								break;
 							default:
 								return $('<span>', { "class": "breadcrumb" }).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
@@ -397,9 +397,11 @@ var layout = function () {
 					return $('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
 					// Loader
 					// ---------------------------------
-					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text))
+					$('<div>', { "class": "help" }).append()
+					// $('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+
 					// ---------------------------------
-					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }));
+					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)));
 					/**
       * ---------------------------------------------------------
       */
@@ -522,7 +524,7 @@ var layout = function () {
 						LOADER.hide("#ontologies_container .progress", true);
 
 						if (settings.home.sections.ontologies.visible) {
-							$("#ontologies_container").append($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" }));
+							$("#ontologies_container").html($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" }));
 
 							var current_page = 1,
 							    page_limit = parseInt(settings.home.sections.ontologies.items_per_page),
@@ -721,7 +723,7 @@ var layout = function () {
 							if (ontologies_data.ontology_title.link !== "") {
 								return $('<a>', { "href": ontologies_data.ontology_title.link, "target": "_blank" }).append(ontologies_data.ontology_title.title).append(NAV.get_term_id() !== undefined ? NAV.get_term_label() : "");
 							} else {
-								return ontologies_data.ontology_title.title + (NAV.get_term_id() !== undefined ? "<small>" + NAV.get_term_label() + "</small>" : "");
+								return ontologies_data.ontology_title.title + (page == "terms" && NAV.get_term_id() !== undefined ? "<small>" + NAV.get_term_label() + "</small>" : "");
 							}
 						})).append($('<table>').append($('<thead>').append($('<tr>').append($('<th>').text("Ontology curators")).append($('<th>').text("Scientists")).append($('<th>', { "class": "center" }).text("Crop Lead Center")).append($('<th>', { "class": "center" }).text("Partners")).append($('<th>', { "class": "center" }).text("CGIAR research program")))).append($('<tbody>').append($('<td>').append(function () {
 							if (ontologies_data.ontology_curators.length > 0 && ontologies_data.ontology_curators[0] !== "") {
@@ -777,7 +779,9 @@ var layout = function () {
 								"value": lang.toLowerCase(),
 								"selected": lang.toLowerCase() == settings.general.language ? true : false
 							}).text(lang);
-						})).attr("disabled", langs.length == 1).material_select();
+						}))
+						//.attr("disabled", (langs.length == 1))
+						.material_select();
 
 						TREEVIEW.add_items({
 							item: "#treeview",

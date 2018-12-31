@@ -70,6 +70,7 @@ class navigation {
 	 * @return string															The current page
 	 */
 	get_term_id() {
+		console.warn(this.get_url_path());
 		return this.get_url_path()[2];
 	}
 

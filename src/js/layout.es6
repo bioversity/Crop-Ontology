@@ -46,7 +46,6 @@ var
 
 	page = NAV.get_page(),
 	settings = require("../../common/settings/contents.json"),
-	top_carousel = require("../../common/settings/top_carousel.json"),
 
 	moment = require("moment"),
 
@@ -302,6 +301,7 @@ class layout {
 					subtitle = settings[page].subtitle;
 					break;
 			}
+			console.info(title, subtitle, NAV.get_term_id());
 
 			$("body").append(
 				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
@@ -342,6 +342,13 @@ class layout {
 						).append(() => {
 							if(NAV.get_url_path().length > 1) {
 								switch(page) {
+									case "ontology":
+										return $('<span>', {"class": "breadcrumb"}).html(
+											$('<tt>').append(NAV.get_ontology_id())
+										).append(
+											STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label()))
+										);
+										break;
 									case "terms":
 										return $('<span>', {"class": "breadcrumb"}).html(
 											$('<tt>').append(NAV.get_ontology_id()).append(
@@ -349,13 +356,6 @@ class layout {
 											)
 										).append(
 											STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label()))
-										);
-										break;
-									case "ontology":
-										return $('<span>', {"class": "breadcrumb"}).html(
-											$('<tt>').append(NAV.get_ontology_id())
-										).append(
-											STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label()))
 										);
 										break;
 									default:
@@ -460,7 +460,7 @@ class layout {
 											// Loader
 											// ---------------------------------
 											$('<div>', {"class": "help"}).append(
-												$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+												// $('<div>', {"class": "center-align"}).text(settings.general.loader.text)
 											)
 											// ---------------------------------
 										)
@@ -471,7 +471,9 @@ class layout {
 							)
 						)
 					).append(
-						$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"})
+						$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
+							$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+						)
 					)
 					/**
 					 * ---------------------------------------------------------
@@ -629,7 +631,7 @@ class layout {
 					LOADER.hide("#ontologies_container .progress", true);
 
 					if(settings.home.sections.ontologies.visible) {
-						$("#ontologies_container").append(
+						$("#ontologies_container").html(
 							$('<h5>').text("Ontologies")
 						).append(
 							$('<ul>', {"class": "collapsible z-depth-0", "data-collapsible": "accordion"})
@@ -946,7 +948,7 @@ class layout {
 								if(ontologies_data.ontology_title.link !== "") {
 									return $('<a>', {"href": ontologies_data.ontology_title.link, "target": "_blank"}).append(ontologies_data.ontology_title.title).append((NAV.get_term_id() !== undefined) ? NAV.get_term_label() : "");
 								} else {
-									return ontologies_data.ontology_title.title + ((NAV.get_term_id() !== undefined) ? "<small>" + NAV.get_term_label() + "</small>" : "");
+									return ontologies_data.ontology_title.title + ((page == "terms" && NAV.get_term_id() !== undefined) ? "<small>" + NAV.get_term_label() + "</small>" : "");
 								}
 							})
 						).append(
@@ -1050,7 +1052,9 @@ class layout {
 								"selected": ((lang.toLowerCase() == settings.general.language) ? true : false),
 							}).text(lang)
 						})
-					).attr("disabled", (langs.length == 1)).material_select();
+					)
+					//.attr("disabled", (langs.length == 1))
+					.material_select();
 
 					TREEVIEW.add_items({
 						item: "#treeview",

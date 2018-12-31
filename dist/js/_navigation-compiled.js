@@ -100,6 +100,7 @@ var navigation = function () {
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
+			console.warn(this.get_url_path());
 			return this.get_url_path()[2];
 		}
 

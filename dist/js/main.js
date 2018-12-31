@@ -422,16 +422,6 @@ module.exports={
 }
 
 },{}],3:[function(require,module,exports){
-module.exports={
-    "messages": [
-        {
-            "message": "",
-            "image": "common/media/img/carousel_images/cowpea.jpg"
-        }
-    ]
-}
-
-},{}],4:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -487,7 +477,7 @@ $(document).ready(function () {
 	LAYOUT.activate();
 });
 
-},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":8,"../../src/js/_obj.es6":9,"../../src/js/layout.es6":14}],5:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":7,"../../src/js/_obj.es6":8,"../../src/js/layout.es6":13}],4:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -1674,7 +1664,7 @@ return Promise$1;
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":7}],6:[function(require,module,exports){
+},{"_process":6}],5:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -6182,7 +6172,7 @@ return Promise$1;
 
 })));
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -6368,7 +6358,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6471,6 +6461,7 @@ var navigation = function () {
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
+			console.warn(this.get_url_path());
 			return this.get_url_path()[2];
 		}
 
@@ -6506,7 +6497,7 @@ var navigation = function () {
 
 exports.default = navigation;
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 /* jshint esversion: 6 */
 "strict mode";
@@ -6544,7 +6535,7 @@ var obj = function obj() {
 
 exports.default = obj;
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6809,7 +6800,7 @@ var str = function () {
 
 exports.default = str;
 
-},{"../../common/settings/contents.json":1}],11:[function(require,module,exports){
+},{"../../common/settings/contents.json":1}],10:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7266,7 +7257,7 @@ var treeview = function () {
 
 exports.default = treeview;
 
-},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":8,"../../src/js/_str.es6":10,"../../src/js/data.es6":12,"../../src/js/loader.es6":15,"moment":6}],12:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/js/_navigation.es6":7,"../../src/js/_str.es6":9,"../../src/js/data.es6":11,"../../src/js/loader.es6":14,"moment":5}],11:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7794,7 +7785,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/js/_obj.es6":9,"../../src/js/_str.es6":10,"es6-promise":5}],13:[function(require,module,exports){
+},{"../../src/js/_obj.es6":8,"../../src/js/_str.es6":9,"es6-promise":4}],12:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7923,7 +7914,7 @@ var filters = function () {
 
 exports.default = filters;
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8004,7 +7995,6 @@ var DATA = new _data2.default(),
     PAGE_ADD_ONTOLOGY = page_add_ontology,
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json"),
-    top_carousel = require("../../common/settings/top_carousel.json"),
     moment = require("moment"),
     user = {
 	logged: false
@@ -8225,6 +8215,7 @@ var layout = function () {
 						_subtitle = settings[page].subtitle;
 						break;
 				}
+				console.info(_title, _subtitle, NAV.get_term_id());
 
 				$("body").append($('<div>', { "id": "ontology_card", "class": "row container" }).append($('<h1>', { "id": "page_subtitle" }).html(_title)).append(function () {
 					if (_subtitle !== undefined && _subtitle.length > 0) {
@@ -8254,11 +8245,11 @@ var layout = function () {
 				    $breadcrumbs = $('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "./", "class": "breadcrumb" }).append($('<span>', { "class": "fas fa-home grey-text" }))).append(function () {
 					if (NAV.get_url_path().length > 1) {
 						switch (page) {
-							case "terms":
-								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id()).append($('<small>').append(":" + NAV.get_term_id()))).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label())));
-								break;
 							case "ontology":
 								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id())).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label())));
+								break;
+							case "terms":
+								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id()).append($('<small>').append(":" + NAV.get_term_id()))).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label())));
 								break;
 							default:
 								return $('<span>', { "class": "breadcrumb" }).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
@@ -8323,9 +8314,11 @@ var layout = function () {
 					return $('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
 					// Loader
 					// ---------------------------------
-					$('<div>', { "class": "help" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text))
+					$('<div>', { "class": "help" }).append()
+					// $('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+
 					// ---------------------------------
-					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }));
+					)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)));
 					/**
       * ---------------------------------------------------------
       */
@@ -8448,7 +8441,7 @@ var layout = function () {
 						LOADER.hide("#ontologies_container .progress", true);
 
 						if (settings.home.sections.ontologies.visible) {
-							$("#ontologies_container").append($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" }));
+							$("#ontologies_container").html($('<h5>').text("Ontologies")).append($('<ul>', { "class": "collapsible z-depth-0", "data-collapsible": "accordion" }));
 
 							var current_page = 1,
 							    page_limit = parseInt(settings.home.sections.ontologies.items_per_page),
@@ -8647,7 +8640,7 @@ var layout = function () {
 							if (ontologies_data.ontology_title.link !== "") {
 								return $('<a>', { "href": ontologies_data.ontology_title.link, "target": "_blank" }).append(ontologies_data.ontology_title.title).append(NAV.get_term_id() !== undefined ? NAV.get_term_label() : "");
 							} else {
-								return ontologies_data.ontology_title.title + (NAV.get_term_id() !== undefined ? "<small>" + NAV.get_term_label() + "</small>" : "");
+								return ontologies_data.ontology_title.title + (page == "terms" && NAV.get_term_id() !== undefined ? "<small>" + NAV.get_term_label() + "</small>" : "");
 							}
 						})).append($('<table>').append($('<thead>').append($('<tr>').append($('<th>').text("Ontology curators")).append($('<th>').text("Scientists")).append($('<th>', { "class": "center" }).text("Crop Lead Center")).append($('<th>', { "class": "center" }).text("Partners")).append($('<th>', { "class": "center" }).text("CGIAR research program")))).append($('<tbody>').append($('<td>').append(function () {
 							if (ontologies_data.ontology_curators.length > 0 && ontologies_data.ontology_curators[0] !== "") {
@@ -8703,7 +8696,9 @@ var layout = function () {
 								"value": lang.toLowerCase(),
 								"selected": lang.toLowerCase() == settings.general.language ? true : false
 							}).text(lang);
-						})).attr("disabled", langs.length == 1).material_select();
+						}))
+						//.attr("disabled", (langs.length == 1))
+						.material_select();
 
 						TREEVIEW.add_items({
 							item: "#treeview",
@@ -8798,7 +8793,7 @@ var layout = function () {
 
 exports.default = layout;
 
-},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../common/settings/top_carousel.json":3,"../../src/js/_navigation.es6":8,"../../src/js/_str.es6":10,"../../src/js/_treeview.es6":11,"../../src/js/data.es6":12,"../../src/js/filters.es6":13,"../../src/js/loader.es6":15,"../../src/js/modals.es6":16,"../../src/js/pagination.es6":17,"moment":6}],15:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../src/js/_navigation.es6":7,"../../src/js/_str.es6":9,"../../src/js/_treeview.es6":10,"../../src/js/data.es6":11,"../../src/js/filters.es6":12,"../../src/js/loader.es6":14,"../../src/js/modals.es6":15,"../../src/js/pagination.es6":16,"moment":5}],14:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8899,7 +8894,7 @@ var loader = function () {
 
 exports.default = loader;
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -9105,7 +9100,7 @@ var modals = function () {
 
 exports.default = modals;
 
-},{"../../src/js/_navigation.es6":8}],17:[function(require,module,exports){
+},{"../../src/js/_navigation.es6":7}],16:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -9236,4 +9231,4 @@ var pagination = function () {
 
 exports.default = pagination;
 
-},{"../../src/js/_str.es6":10}]},{},[4]);
+},{"../../src/js/_str.es6":9}]},{},[3]);
