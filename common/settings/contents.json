@@ -81,7 +81,6 @@
     },
     "about": {
         "title": "About the Project",
-        "subtitle": "",
         "visible": true,
         "carousel": {
             "visible": true,

@@ -82,7 +82,6 @@ module.exports={
     },
     "about": {
         "title": "About the Project",
-        "subtitle": "",
         "visible": true,
         "carousel": {
             "visible": true,
@@ -8268,7 +8267,13 @@ var layout = function () {
 			    subtitle = "";
 
 			if (settings.general.carousel.visible && settings[page].carousel.visible) {
-				$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($('<div>', { "class": "carousel-fixed-item container" }).append($('<div>', { "class": "left" }).append($('<h1>', { "id": "page_title" }).text(settings[page].title)))).append($.map(settings[page].carousel.items, function (v) {
+				$("body").append($('<section>', { "id": "top_carousel", "class": "" }).append($('<div>', { "class": "carousel carousel-slider center" }).append($('<div>', { "class": "carousel-fixed-item container" }).append($('<div>', { "class": "left" }).append(function () {
+					if (page == "404") {
+						return $('<h1>', { "id": "page_subtitle" }).text(page);
+					} else if (settings[page].subtitle !== undefined && settings[page].subtitle !== "") {
+						return $('<h1>', { "id": "page_subtitle" }).text(settings[page].subtitle);
+					}
+				}).append($('<h1>', { "id": "page_title" }).text(settings[page].title)))).append($.map(settings[page].carousel.items, function (v) {
 					return $('<div>', { "class": "carousel-item valign-wrapper", "href": "#one" }).append(function () {
 						if (v.image !== "") {
 							return $('<img>', { "src": "common/media/img/carousel_images/" + v.image, "class": "responsive-img" });

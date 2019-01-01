@@ -316,7 +316,13 @@ class layout {
 				$('<section>', {"id": "top_carousel", "class": ""}).append(
 					$('<div>', {"class": "carousel carousel-slider center"}).append(
 						$('<div>', {"class": "carousel-fixed-item container"}).append(
- 							$('<div>', {"class": "left"}).append(
+ 							$('<div>', {"class": "left"}).append(() => {
+								if(page == "404") {
+									return $('<h1>', {"id": "page_subtitle"}).text(page);
+								} else if(settings[page].subtitle !== undefined && settings[page].subtitle !== "") {
+									return $('<h1>', {"id": "page_subtitle"}).text(settings[page].subtitle);
+								}
+							}).append(
 								$('<h1>', {"id": "page_title"}).text(settings[page].title)
 							)
 						)
