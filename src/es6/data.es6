@@ -24,6 +24,29 @@ class data {
 		return term;
 	}
 
+	search(string) {
+		return new Promise((resolve, reject) => {
+			/**
+			* @see http://www.cropontology.org/api
+			*/
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/search",
+				data: {
+					q: string
+				},
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	/**
 	 * Get and parse the CropOntology Community website feed
 	 * @NOTE This is an async function

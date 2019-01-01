@@ -91,3 +91,16 @@ nav {
     }
   }
 }
+
+.autocomplete-content {
+  margin-top: 0px;
+  position: absolute;
+  width: 100%;
+}
+
+.preloader-wrapper {
+  &.micro {
+    height: 24px;
+    width: 24px;
+  }
+}

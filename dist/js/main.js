@@ -7316,6 +7316,30 @@ var data = function () {
 			}
 			return term;
 		}
+	}, {
+		key: "search",
+		value: function search(string) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/search",
+					data: {
+						q: string
+					},
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse the CropOntology Community website feed
@@ -8064,6 +8088,33 @@ var layout = function () {
 				}
 			});
 
+			var search_data = {};
+			$("input.autocomplete").on("keypress", function (e) {
+				if (e.which === 13) {
+					LOADER.create({
+						type: "circular",
+						size: "micro",
+						colour: "yellow",
+						target: "#search_loader"
+					});
+					DATA.search($("input.autocomplete").val()).then(function (data) {
+						LOADER.hide("#search_loader", true);
+						$.each(data, function (k, v) {
+							search_data["<small><tt>" + v.id + "</tt></small> - " + v.ontology_name + " - " + STR.get_ontology_term(JSON.stringify(v.name))] = null;
+						});
+
+						$("input.autocomplete").autocomplete({
+							data: search_data,
+							minLength: 1,
+							limit: 50,
+							onAutocomplete: function onAutocomplete(val) {
+								location.href = "./terms/" + val.replace(/ \- (.*?) \- /g, "/");
+							}
+						}).blur().focus();
+					});
+				}
+			});
+
 			$(".collapsible").collapsible();
 
 			$(".tooltipped").tooltip({ html: true });
@@ -8341,12 +8392,17 @@ var layout = function () {
 			// MODALS.filters_modal();
 
 			if (settings.general.search.visible) {
-				var $searchbar = $('<div>', { "class": "bar" }).append($('<div>', { "id": "search_input", "class": "input-field col s8 m8 l8 xl8" }).append($('<input>', {
+				var $searchbar = $('<div>', { "class": "bar" }).append(
+				// Layout for search with tags
+				// $('<div>', {"id": "search_input", "class": "input-field col s8 m8 l8 xl8"}).append(
+				$('<div>', { "id": "search_input", "class": "input-field", "style": "width:100%;" }).append($('<input>', {
 					"type": "search",
 					"id": "search",
+					"autocomplete": "off",
+					"class": "autocomplete",
 					"placeholder": "Search...",
 					"name": "q"
-				}))),
+				}))).append($('<div>', { "id": "search_loader" })),
 				    $breadcrumbs = $('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "./", "class": "breadcrumb" }).append($('<span>', { "class": "fas fa-home grey-text" }))).append(function () {
 					if (NAV.get_url_path().length > 1) {
 						switch (page) {

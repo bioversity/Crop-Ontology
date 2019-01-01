@@ -47,6 +47,30 @@ var data = function () {
 			}
 			return term;
 		}
+	}, {
+		key: "search",
+		value: function search(string) {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/search",
+					data: {
+						q: string
+					},
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse the CropOntology Community website feed

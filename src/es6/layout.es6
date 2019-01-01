@@ -86,6 +86,34 @@ class layout {
 			}
 		});
 
+		let search_data = {};
+		$("input.autocomplete").on("keypress", (e) => {
+			if(e.which === 13) {
+				LOADER.create({
+					type: "circular",
+					size: "micro",
+					colour: "yellow",
+					target: "#search_loader"
+				});
+				DATA.search($("input.autocomplete").val()).then((data) => {
+					LOADER.hide("#search_loader", true);
+					$.each(data, (k, v) => {
+						search_data["<small><tt>" + v.id + "</tt></small> - " + v.ontology_name + " - " + STR.get_ontology_term(JSON.stringify(v.name))] = null;
+					});
+
+					$("input.autocomplete").autocomplete({
+						data: search_data,
+						minLength: 1,
+						limit: 50,
+						onAutocomplete: function(val) {
+							location.href = "./terms/" + val.replace(/ \- (.*?) \- /g, "/");
+						},
+					}).blur().focus();
+				});
+			}
+	    });
+
+
 		$(".collapsible").collapsible();
 
 		$(".tooltipped").tooltip({html: true});
@@ -404,14 +432,20 @@ class layout {
 
 		if(settings.general.search.visible) {
 			let $searchbar = $('<div>', {"class": "bar"}).append(
-					$('<div>', {"id": "search_input", "class": "input-field col s8 m8 l8 xl8"}).append(
+                    // Layout for search with tags
+					// $('<div>', {"id": "search_input", "class": "input-field col s8 m8 l8 xl8"}).append(
+					$('<div>', {"id": "search_input", "class": "input-field", "style": "width:100%;"}).append(
 						$('<input>', {
 							"type": "search",
 							"id": "search",
+							"autocomplete": "off",
+							"class": "autocomplete",
 							"placeholder": "Search...",
 							"name": "q"
 						})
 					)
+				).append(
+					$('<div>', {"id": "search_loader"})
 				),
 				$breadcrumbs = $('<nav>', {"class": "transparent z-depth-0"}).append(
     				$('<div>', {"class": "nav-wrapper"}).append(
