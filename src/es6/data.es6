@@ -461,6 +461,37 @@ class data {
 		});
 	}
 
+	/**
+	 * Get and parse the Ontology data (for the Ontology card)
+	 * @NOTE This is an async function
+	 *
+	 * @param  string 							id								Tho Ontology ID
+	 * @return object 															The ontologies data JSON object
+	 */
+	get_login() {
+		return new Promise((resolve, reject) => {
+			/**
+			* @see http://www.cropontology.org/api
+			*/
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/login",
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					if(data.username !== undefined && data.username !== "") {
+						resolve(data);
+					} else {
+						resolve(false);
+					}
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	get_user(id) {
 		return new Promise((resolve, reject) => {
 			/**

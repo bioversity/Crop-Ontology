@@ -233,6 +233,23 @@ class layout {
 		});
 	}
 
+	get_user_logged() {
+		if(!user.logged) {
+			// Check if user is logged
+			DATA.get_login().then((login_data) => {
+				if(login_data) {
+					user = login_data;
+					user.logged = true;
+				} else {
+					user.logged = false;
+				}
+				return user.logged;
+			});
+		} else {
+			return true;
+		}
+	}
+
 	/**
 	 * Build a menu
 	 * @param  string 						position							The menu position
@@ -608,6 +625,8 @@ class layout {
 	 * Build pages contents
 	 */
 	build_page_contents() {
+		this.get_user_logged();
+
 		// Build the user account modal
 		MODALS.user_modal("Login");
 
@@ -1276,25 +1295,36 @@ class layout {
 															$('<i>').text("Please log in to comment")
 														)
 													} else {
-														return $('<form>', {"method": "post", "action": "http://www.cropontology.org/add-comment"}).append(
-															$('<div>', {"class": "row"}).append(
-																$('<input>', {"type": "hidden", "name": "termId"}).val((page == "terms") ? NAV.get_term_id() : "")
-															).append(
-																$('<input>', {"type": "hidden", "name": "ontologyId"}).val(NAV.get_ontology_id())
-															).append(
-																$('<div>', {"class": "input-field col s12"}).append(
-																	$("<textarea>", {
-																		"name": "comment",
-																		"class": "materialize-textarea",
-																		"id": "comment_input"
-																	})
+														if(this.get_user_logged()) {
+															return $('<form>', {"method": "post", "action": "http://www.cropontology.org/add-comment"}).append(
+																$('<div>', {"class": "row"}).append(
+																	$('<input>', {"type": "hidden", "name": "termId"}).val((page == "terms") ? NAV.get_term_id() : "")
 																).append(
-																	$('<label>', {"for": "comment_input"}).text("Add a comment")
+																	$('<input>', {"type": "hidden", "name": "ontologyId"}).val(NAV.get_ontology_id())
+																).append(
+																	$('<div>', {"class": "input-field col s12"}).append(
+																		$("<textarea>", {
+																			"name": "comment",
+																			"class": "materialize-textarea",
+																			"id": "comment_input"
+																		})
+																	).append(
+																		$('<label>', {"for": "comment_input"}).text("Add a comment")
+																	)
+																).append(
+																	$('<input>', {"type": "submit", "class": "btn btn-flat btn-highlight waves-effect waves-light right"}).val("Comment")
 																)
-															).append(
-																$('<input>', {"type": "submit", "class": "btn btn-flat btn-highlight waves-effect waves-light right"}).val("Comment")
 															)
-														)
+														} else {
+															return $('<center>').append(
+																$('<i>')
+																	.append("Please ")
+																	.append(
+																		$('<a>', {"href": "#user_modal", "class": "modal-trigger"}).text("login")
+																	)
+																	.append(" to comment")
+															)
+														}
 													}
 												})
 											)

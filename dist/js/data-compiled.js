@@ -511,6 +511,40 @@ var data = function () {
 				});
 			});
 		}
+
+		/**
+   * Get and parse the Ontology data (for the Ontology card)
+   * @NOTE This is an async function
+   *
+   * @param  string 							id								Tho Ontology ID
+   * @return object 															The ontologies data JSON object
+   */
+
+	}, {
+		key: "get_login",
+		value: function get_login() {
+			return new _es6Promise.Promise(function (resolve, reject) {
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/login",
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						if (data.username !== undefined && data.username !== "") {
+							resolve(data);
+						} else {
+							resolve(false);
+						}
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 	}, {
 		key: "get_user",
 		value: function get_user(id) {
