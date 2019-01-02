@@ -153,7 +153,7 @@ module.exports={
             "visible": false,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": ""
             }]
         }
     },
@@ -164,7 +164,7 @@ module.exports={
             "visible": false,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": ""
             }]
         }
     },
@@ -175,7 +175,18 @@ module.exports={
             "visible": false,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": ""
+            }]
+        }
+    },
+    "forgot-password": {
+        "title": "Forgot password",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": ""
             }]
         }
     }
