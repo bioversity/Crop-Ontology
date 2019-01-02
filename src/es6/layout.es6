@@ -1276,15 +1276,23 @@ class layout {
 															$('<i>').text("Please log in to comment")
 														)
 													} else {
-														return $('<div>', {"class": "row"}).append(
-															$('<div>', {"class": "input-field col s12"}).append(
-																$("<textarea>", {
-																	"name": "comment",
-																	"class": "materialize-textarea",
-																	"id": "comment_input"
-																})
+														return $('<form>', {"method": "post", "action": "http://www.cropontology.org/add-comment"}).append(
+															$('<div>', {"class": "row"}).append(
+																$('<input>', {"type": "hidden", "name": "termId"}).val((page == "terms") ? NAV.get_term_id() : "")
 															).append(
-																$('<label>', {"for": "comment_input"}).text("Add a comment")
+																$('<input>', {"type": "hidden", "name": "ontologyId"}).val(NAV.get_ontology_id())
+															).append(
+																$('<div>', {"class": "input-field col s12"}).append(
+																	$("<textarea>", {
+																		"name": "comment",
+																		"class": "materialize-textarea",
+																		"id": "comment_input"
+																	})
+																).append(
+																	$('<label>', {"for": "comment_input"}).text("Add a comment")
+																)
+															).append(
+																$('<input>', {"type": "submit", "class": "btn btn-flat btn-highlight waves-effect waves-light right"}).val("Comment")
 															)
 														)
 													}
