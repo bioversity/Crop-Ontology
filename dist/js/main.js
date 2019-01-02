@@ -6993,13 +6993,86 @@ var treeview = function () {
 	}, {
 		key: "add_info",
 		value: function add_info(source, remote) {
+			/**
+    * Filter and order items in the `Term information` box
+    */
+			var item_id = source.id,
+			    hide = {
+				id: true,
+				comment: true,
+				"ontology id": true,
+				"ontology name": true,
+				"is a": true,
+				"Name of Trait": true,
+				language: true,
+				"Scale ID for modification, Blank for New": true,
+				"Method ID for modification, Blank for New": true,
+				"Trait ID for modification, Blank for New": true,
+				"Language of submission (only in ISO 2 letter codes)": true
+			},
+			    first = {
+				"Abbreviated name": true,
+				Synonyms: true,
+				Synonym: true,
+				Description: true,
+				"Trait class": true,
+				"How is trait": true
+			},
+			    last = {
+				"Name of submitting scientist": true,
+				"Institution": true,
+				"Date of submission": true,
+				"Bibliographic": true,
+				"Updated": true,
+				xref: true
+			},
+			    editable = {
+				name: true,
+				Synonym: true,
+				"created at": true
+			},
+			    ordered_source = {},
+			    last_data_source = {};
+
+			// Remove unwanted items
+			$.each(hide, function (k, v) {
+				if (v && source[k] !== undefined) {
+					delete source[k];
+				}
+			});
+			// Add first wanted items
+			$.each(first, function (k, v) {
+				if (v && source[k] !== undefined) {
+					ordered_source[k] = source[k];
+					delete source[k];
+				}
+			});
+			// Remove but keep last wanted items
+			$.each(last, function (k, v) {
+				if (v && source[k] !== undefined) {
+					last_data_source[k] = source[k];
+					delete source[k];
+				}
+			});
+			// Add remaining items
+			$.each(source, function (k, v) {
+				ordered_source[k] = source[k];
+			});
+			// Add last wanted items
+			$.each(last_data_source, function (k, v) {
+				ordered_source[k] = last_data_source[k];
+			});
+			/**
+    * ---------------------------------------------------------------------
+    */
+
+			console.info(source);
+			console.log(ordered_source);
 			if (remote) {
 				var name = void 0,
-				    $dl = $("#page_info dl");
-				$.each(source, function (k, v) {
-					if (k !== "comment") {
-						$dl.append($('<dt>').append(STR.ucfirst(k))).append($('<dd>').append(v));
-					}
+				    $dl = $("#page_info dl").append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(item_id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + item_id }).append($('<span>', { "class": "picol_rdf" }))));
+				$.each(ordered_source, function (k, v) {
+					$dl.append($('<dt>').append(STR.ucfirst(k) + ":")).append($('<dd>').append(v));
 				});
 				$("#term_info_name").text(source.name);
 				$("#page_info").html($dl);
@@ -7047,7 +7120,7 @@ var treeview = function () {
 				$("#term_permalink").attr("href", ext_permalink);
 
 				if (option.is_root || option.id.split(":")[1] == "0000000") {
-					_this2.add_info($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
+					_this2.add_info($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
 					$("#graph_content").html("");
@@ -7058,6 +7131,7 @@ var treeview = function () {
 					LOADER.create({ target: "#pages", type: "progress" });
 
 					DATA.get_ontology_attributes(option.source.id).then(function (data) {
+						data.id = option.source.id;
 						_this2.add_info(data, true);
 
 						// Comments
@@ -7243,7 +7317,7 @@ var treeview = function () {
      */
 				LOADER.create({ target: "#pages", type: "progress" });
 				// Default action (only for root items)
-				$("#page_info").html($('<dl>').append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
+				$("#page_info").html($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.source.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.source.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 					return option.langs.length + ": " + option.langs.join(", ");
 				})));
 				$("#term_info_name").html(option.term);

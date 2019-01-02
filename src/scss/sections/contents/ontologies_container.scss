@@ -199,19 +199,23 @@
 
         dt {
           font-weight: bold;
+          margin-bottom: 5px;
+          margin-top: 5px;
           width: 33%;
         }
         dd {
+          margin-bottom: 5px;
           margin-left: auto;
+          margin-top: 5px;
           width: 66%;
         }
       }
     }
   }
   #graph {
+    color: $grey;
     min-height: 450px;
     text-align: center;
-    color: $grey;
 
     &.disabled {
       h1 { width: 100%; }
