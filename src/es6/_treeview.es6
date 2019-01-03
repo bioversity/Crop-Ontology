@@ -155,16 +155,26 @@ class treeview {
 	}
 
 	page_info_btn__actions() {
-		$("#page_info .btn-mini").on("click", (e) => {
-			let $dd = $(e.target).closest("dd"),
-			$dd2 = $dd.clone(),
-			term_id = $dd2.find("a").data("term_id"),
-			key = $dd2.find("a").data("key"),
-			language = $dd2.find("a").data("language"),
-			old_value = $.trim($dd2.text());
+		$("#page_info .btn-mini, #page_info .card-action .btn").on("click", (e) => {
+			let $dd, $dd2,
+				$dl = $("#page_info dl"),
+				term_id = "",
+				key = "",
+				language = "",
+				old_value = "",
+				placeholder = "Attribute name";
 
-			$dd.addClass("editing").html(
-				$('<form>', {"method": "post", "enctype": "multipart/form-data", "action": "", "id": "form"}).append(
+			if(!$(e.target).hasClass("add_term")) {
+				$dd = $(e.target).closest("dd"),
+				$dd2 = $dd.clone(),
+				term_id = $dd2.find("a").data("term_id"),
+				key = $dd2.find("a").data("key"),
+				language = $dd2.find("a").data("language"),
+				old_value = $.trim($dd2.text()),
+				placeholder = old_value;
+			}
+
+			let $form = $('<form>', {"method": "post", "enctype": "multipart/form-data", "action": "", "id": "form"}).append(
 					$('<div>', {"class": "row"}).append(
 						$('<div>', {"class": "col s12 switch"}).append(
 							$('<label>').append("Text").append(
@@ -191,13 +201,13 @@ class treeview {
 						).append(
 							$('<input>', {"type": "hidden", "name": "language"}).val(language)
 						).append(
-							$('<input>', {"type": "text", "class": "text_input visible_input", "name": "value", "placeholder": old_value}).val(old_value)
+							$('<input>', {"type": "text", "class": "text_input visible_input", "name": "value", "placeholder": placeholder}).val(old_value)
 						).append(
 							$('<div>', {"class": "file-field input-field"}).append(
 								$('<div>', {"class": "btn highlight-btn btn-mini"}).append(
 									$('<span>').text("Upload file")
 								).append(
-									$('<input>', {"type": "file", "class": "visible_input disabled", "name": "value"})
+									$('<input>', {"type": "file", "class": "visible_input disabled", "name": "value", "placeholder": "Upload file from your computer"})
 								)
 							).append(
 								$('<div>', {"class": "file-path-wrapper"}).append(
@@ -210,7 +220,12 @@ class treeview {
 					$('<div>', {"class": "row"}).append(
 						$('<div>', {"class": "col s12"}).append(
 							$('<a>', {"href": "javascript:;", "class": "btn-link grey-text left"}).text("‹ Cancel").on("click", () => {
-								$dd.html($dd2.html()).removeClass("editing");
+								if($(e.target).hasClass("add_term")) {
+									$(".add_term").removeClass("disabled");
+									$form.closest(".card-content").remove();
+								} else {
+									$dd.html($dd2.html()).removeClass("editing");
+								}
 								this.page_info_btn__actions(term_id, key, language);
 							})
 						).append(
@@ -221,14 +236,30 @@ class treeview {
 							})
 						)
 					)
-				)
-			);
-			$dd.find(".visible_input").focus().on("keypress", (e) => {
-				if(e.which == 0) {
-					$dd.html($dd2.html()).removeClass("editing");
-					this.page_info_btn__actions(term_id, key, language);
-				}
-			});
+				);
+
+			if($(e.target).hasClass("add_term")) {
+				e.preventDefault();
+				$(e.target).addClass("disabled");
+				$('<div>', {"class": "card-content"}).append($form).insertAfter($dl);
+				$form.find(".visible_input").focus().on("keypress", (e) => {
+					if(e.which == 0) {
+						$(".add_term").removeClass("disabled");
+						$form.closest(".card-content").remove();
+					}
+				});
+			} else {
+				e.preventDefault();
+				let $dd = $(e.target).closest("dd");
+
+				$dd.addClass("editing").html($form);
+				$dd.find(".visible_input").focus().on("keypress", (e) => {
+					if(e.which == 0) {
+						$dd.html($dd2.html()).removeClass("editing");
+						this.page_info_btn__actions(term_id, key, language);
+					}
+				});
+			}
 			$("select").material_select();
 			$(".switch").find("input[type=checkbox]").on("change", (e) => {
 				if($(e.target).prop("checked")) {
@@ -353,7 +384,19 @@ class treeview {
 				)
 			});
 			$("#term_info_name").text(source.name);
-			$("#page_info").html($dl);
+			$("#page_info").html($dl).append(
+				$('<div>', {"class": "card-action"}).append(
+					$('<a>', {
+						"href": "javascript:;",
+						"class": "btn btn-flat white highlight-text add_term"
+					})
+					.append("Add a new attribute ")
+					.append($('<span>', {"class": "fa fa-plus"}))
+					// .click((e) => {
+					// 	$(e.target).addClass("disabled");
+					// })
+				)
+			);
 
 			this.page_info_btn__actions();
 		} else {

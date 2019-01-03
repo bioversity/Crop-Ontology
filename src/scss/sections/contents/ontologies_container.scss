@@ -240,6 +240,13 @@
           }
         }
       }
+      .card-action {
+          margin-bottom: -16px;
+          padding: 4px 0 0 0;
+          text-align: center;
+
+          a { font-size: 13px; }
+      }
     }
   }
   #graph {
