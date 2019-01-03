@@ -14,7 +14,8 @@ var
 
 	moment = require("moment"),
 
-	settings = require("../../common/settings/contents.json")
+	settings = require("../../common/settings/contents.json"),
+	languages = require("../../common/settings/languages.json")
 ;
 
 class treeview {
@@ -153,6 +154,94 @@ class treeview {
 		});
 	}
 
+	page_info_btn__actions() {
+		$("#page_info .btn-mini").on("click", (e) => {
+			let $dd = $(e.target).closest("dd"),
+			$dd2 = $dd.clone(),
+			term_id = $dd2.find("a").data("term_id"),
+			key = $dd2.find("a").data("key"),
+			language = $dd2.find("a").data("language"),
+			old_value = $.trim($dd2.text());
+
+			$dd.addClass("editing").html(
+				$('<form>', {"method": "post", "enctype": "multipart/form-data", "action": "", "id": "form"}).append(
+					$('<div>', {"class": "row"}).append(
+						$('<div>', {"class": "col s12 switch"}).append(
+							$('<label>').append("Text").append(
+								$('<input>', {"type": "checkbox"})
+							).append(
+								$('<span>', {"class": "lever"})
+							).append("File")
+						)
+					)
+				).append(
+					$('<div>', {"class": "row"}).append(
+						$('<div>', {"class": "input-field inline col s3"}).append(
+							$('<select>', {"class": "visible_input", "name": "language"}).append(
+								$.map(languages.all, (v, k) => {
+									return $('<option>', {"value": v, "selected": (v == languages.default)}).text(STR.ucfirst(v))
+								})
+							)
+						)
+					).append(
+						$('<div>', {"class": "input-field inline col s9"}).append(
+							$('<input>', {"type": "hidden", "name": "term_id"}).val(term_id)
+						).append(
+							$('<input>', {"type": "hidden", "name": "key"}).val(key)
+						).append(
+							$('<input>', {"type": "hidden", "name": "language"}).val(language)
+						).append(
+							$('<input>', {"type": "text", "class": "text_input visible_input", "name": "value", "placeholder": old_value}).val(old_value)
+						).append(
+							$('<div>', {"class": "file-field input-field"}).append(
+								$('<div>', {"class": "btn highlight-btn btn-mini"}).append(
+									$('<span>').text("Upload file")
+								).append(
+									$('<input>', {"type": "file", "class": "visible_input disabled", "name": "value"})
+								)
+							).append(
+								$('<div>', {"class": "file-path-wrapper"}).append(
+									$('<input>', {"type": "text", "name": "value", "class": "file-path validate disabled"})
+								)
+							).hide()
+						)
+					)
+				).append(
+					$('<div>', {"class": "row"}).append(
+						$('<div>', {"class": "col s12"}).append(
+							$('<a>', {"href": "javascript:;", "class": "btn-link grey-text left"}).text("‹ Cancel").on("click", () => {
+								$dd.html($dd2.html()).removeClass("editing");
+								this.page_info_btn__actions(term_id, key, language);
+							})
+						).append(
+							$('<a>', {"href": "javascript:;", "class": "btn btn-flat btn-highlight right"}).text("Save").on("click", (e) => {
+								DATA.get_attribute_upload_url().then((upload_url) => {
+									$(e.target).closest("form").attr("action", upload_url).submit();
+								});
+							})
+						)
+					)
+				)
+			);
+			$dd.find(".visible_input").focus().on("keypress", (e) => {
+				if(e.which == 0) {
+					$dd.html($dd2.html()).removeClass("editing");
+					this.page_info_btn__actions(term_id, key, language);
+				}
+			});
+			$("select").material_select();
+			$(".switch").find("input[type=checkbox]").on("change", (e) => {
+				if($(e.target).prop("checked")) {
+					$(".text_input").hide().addClass("disabled");
+					$(".file-field").show().find("input").removeClass("disabled");
+				} else {
+					$(".text_input").show().removeClass("disabled");
+					$(".file-field").hide().find("input").addClass("disabled");
+				}
+			});
+		});
+	}
+
 	add_info(source, remote) {
 		/**
 		 * Filter and order items in the `Term information` box
@@ -227,8 +316,6 @@ class treeview {
 		 * ---------------------------------------------------------------------
 		 */
 
-		console.info(source);
-		console.log(ordered_source);
 		if(remote) {
 			let name,
 				$dl = $("#page_info dl").append(
@@ -244,13 +331,31 @@ class treeview {
 				);
 			$.each(ordered_source, (k, v) => {
 				$dl.append(
-					$('<dt>').append(STR.ucfirst(k) + ":")
+					$('<dt>', {"class": "valign-wrapper"}).append(STR.ucfirst(k) + ":")
 				).append(
-					$('<dd>').append(v)
+					$('<dd>').append(() => {
+						if(!DATA.get_user_logged() && editable[k] !== undefined) {
+							return $('<span>').append(v + " ").append(
+								$('<a>', {
+									"href": "javascript:;",
+									"class": "btn btn-flat btn-mini white highlight-text",
+									"data-term_id": item_id,
+									"data-key": k,
+									"data-language": "english"
+								}).append(
+									$('<span>', {"class": "fa fa-edit"})
+								)
+							)
+						} else {
+							return v;
+						}
+					})
 				)
 			});
 			$("#term_info_name").text(source.name);
 			$("#page_info").html($dl);
+
+			this.page_info_btn__actions();
 		} else {
 			$("#page_info").html(source);
 		}

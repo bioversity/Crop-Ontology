@@ -1,6 +1,7 @@
 /* jshint esversion: 6 */
 "strict mode";
 
+import actions from "../../src/es6/_actions.es6";
 import layout from "../../src/es6/layout.es6";
 import navigation from "../../src/es6/_navigation.es6";
 // // import ColorCanvas from "../../src/es6/ColorCanvas.es6";
@@ -11,6 +12,7 @@ require("../../src/es6/_obj.es6");
 
 var
 	LAYOUT = new layout(),
+	ACTIONS = new actions(),
 	NAV = new navigation(),
 
 	page = NAV.get_page(),

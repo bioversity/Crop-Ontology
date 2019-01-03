@@ -194,6 +194,33 @@ module.exports={
 
 },{}],2:[function(require,module,exports){
 module.exports={
+	"default": "english",
+	"all": [
+		"english",
+		"french",
+		"spanish",
+		"chinese",
+		"portugese"
+	],
+	"iso": {
+		"EN": "english",
+		"FR": "french",
+		"ES": "spanish",
+		"CN": "chinese",
+		"PT": "portugese"
+	},
+	"getIso": {
+		"english":"EN",
+		"undefined":"EN",
+		"french":  "FR",
+		"spanish": "ES",
+		"chinese": "CN",
+		"portugese":"PT"
+	}
+}
+
+},{}],3:[function(require,module,exports){
+module.exports={
     "menu": {
         "top_menu": {
             "position": "right",
@@ -442,10 +469,14 @@ module.exports={
     }
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
+
+var _actions = require("../../src/es6/_actions.es6");
+
+var _actions2 = _interopRequireDefault(_actions);
 
 var _layout = require("../../src/es6/layout.es6");
 
@@ -466,6 +497,7 @@ function _interopRequireDefault(obj) {
 require("../../src/es6/_obj.es6");
 
 var LAYOUT = new _layout2.default(),
+    ACTIONS = new _actions2.default(),
     NAV = new _navigation2.default(),
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json");
@@ -498,7 +530,7 @@ $(document).ready(function () {
 	LAYOUT.activate();
 });
 
-},{"../../common/settings/contents.json":1,"../../src/es6/_navigation.es6":7,"../../src/es6/_obj.es6":8,"../../src/es6/layout.es6":13}],4:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/es6/_actions.es6":8,"../../src/es6/_navigation.es6":9,"../../src/es6/_obj.es6":10,"../../src/es6/layout.es6":15}],5:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -1685,7 +1717,7 @@ return Promise$1;
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":6}],5:[function(require,module,exports){
+},{"_process":7}],6:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -6193,7 +6225,7 @@ return Promise$1;
 
 })));
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -6379,7 +6411,81 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+"use strict";
+/* jshint esversion: 6 */
+"strict mode";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _navigation = require("../../src/es6/_navigation.es6");
+
+var _navigation2 = _interopRequireDefault(_navigation);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NAV = new _navigation2.default(),
+    page = NAV.get_page();
+
+var actions = function () {
+    function actions() {
+        _classCallCheck(this, actions);
+    }
+
+    _createClass(actions, [{
+        key: "execute",
+        value: function execute() {
+            if (page == "ontology" || page == "terms") {
+                this.edit_button_action();
+            }
+        }
+    }, {
+        key: "edit_button_action",
+        value: function edit_button_action() {
+            // Edit button action
+            $("#page_info .btn-mini").on("click", function (e) {
+                console.warn("mmm");
+                // let $dd = $(e.target).closest("dd"),
+                //     $dd2 = $dd.clone();
+                //
+                // $dd.html(
+                //     $('<form>', {"method": "post", "enctype": "multipart/form-data", "action": ""}).append(
+                //         $('<div>', {"class": "row"}).append(
+                //             $('<div>', {"class": "input-field col s12"}).append(
+                //                 $('<textarea>', {"class": "materialize-textarea", "name": "value"})
+                //             )
+                //         )
+                //     ).append(
+                //         $('<div>', {"class": "row"}).append(
+                //             $('<div>', {"class": "col s12"}).append(
+                //                 $('<a>', {"href": "javascript:;", "class": "grey-text left"}).text("‹ Cancel").on("click", () => {
+                //                     $dd.html($dd2.html());
+                //                 })
+                //             ).append(
+                //                 $('<a>', {"href": "javascript:;", "class": "btn btn-flat btn-highlight right"}).text("Save").on("click", () => {
+                //                     console.log("Okay!");
+                //                 })
+                //             )
+                //         )
+                //     )
+                // );
+                // console.log();
+            });
+        }
+    }]);
+
+    return actions;
+}();
+
+exports.default = actions;
+
+},{"../../src/es6/_navigation.es6":9}],9:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6517,7 +6623,7 @@ var navigation = function () {
 
 exports.default = navigation;
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 /* jshint esversion: 6 */
 "strict mode";
@@ -6555,7 +6661,7 @@ var obj = function obj() {
 
 exports.default = obj;
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6820,7 +6926,7 @@ var str = function () {
 
 exports.default = str;
 
-},{"../../common/settings/contents.json":1}],10:[function(require,module,exports){
+},{"../../common/settings/contents.json":1}],12:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -6856,7 +6962,8 @@ var DATA = new _data2.default(),
     LOADER = new _loader2.default(),
     STR = new _str2.default(),
     moment = require("moment"),
-    settings = require("../../common/settings/contents.json");
+    settings = require("../../common/settings/contents.json"),
+    languages = require("../../common/settings/languages.json");
 
 var treeview = function () {
 	function treeview() {
@@ -6991,6 +7098,47 @@ var treeview = function () {
 			});
 		}
 	}, {
+		key: "page_info_btn__actions",
+		value: function page_info_btn__actions() {
+			var _this2 = this;
+
+			$("#page_info .btn-mini").on("click", function (e) {
+				var $dd = $(e.target).closest("dd"),
+				    $dd2 = $dd.clone(),
+				    term_id = $dd2.find("a").data("term_id"),
+				    key = $dd2.find("a").data("key"),
+				    language = $dd2.find("a").data("language"),
+				    old_value = $.trim($dd2.text());
+
+				$dd.addClass("editing").html($('<form>', { "method": "post", "enctype": "multipart/form-data", "action": "", "id": "form" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 switch" }).append($('<label>').append("Text").append($('<input>', { "type": "checkbox" })).append($('<span>', { "class": "lever" })).append("File")))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field inline col s3" }).append($('<select>', { "class": "visible_input", "name": "language" }).append($.map(languages.all, function (v, k) {
+					return $('<option>', { "value": v, "selected": v == languages.default }).text(STR.ucfirst(v));
+				})))).append($('<div>', { "class": "input-field inline col s9" }).append($('<input>', { "type": "hidden", "name": "term_id" }).val(term_id)).append($('<input>', { "type": "hidden", "name": "key" }).val(key)).append($('<input>', { "type": "hidden", "name": "language" }).val(language)).append($('<input>', { "type": "text", "class": "text_input visible_input", "name": "value", "placeholder": old_value }).val(old_value)).append($('<div>', { "class": "file-field input-field" }).append($('<div>', { "class": "btn highlight-btn btn-mini" }).append($('<span>').text("Upload file")).append($('<input>', { "type": "file", "class": "visible_input disabled", "name": "value" }))).append($('<div>', { "class": "file-path-wrapper" }).append($('<input>', { "type": "text", "name": "value", "class": "file-path validate disabled" }))).hide()))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "javascript:;", "class": "btn-link grey-text left" }).text("‹ Cancel").on("click", function () {
+					$dd.html($dd2.html()).removeClass("editing");
+					_this2.page_info_btn__actions(term_id, key, language);
+				})).append($('<a>', { "href": "javascript:;", "class": "btn btn-flat btn-highlight right" }).text("Save").on("click", function (e) {
+					DATA.get_attribute_upload_url().then(function (upload_url) {
+						$(e.target).closest("form").attr("action", upload_url).submit();
+					});
+				})))));
+				$dd.find(".visible_input").focus().on("keypress", function (e) {
+					if (e.which == 0) {
+						$dd.html($dd2.html()).removeClass("editing");
+						_this2.page_info_btn__actions(term_id, key, language);
+					}
+				});
+				$("select").material_select();
+				$(".switch").find("input[type=checkbox]").on("change", function (e) {
+					if ($(e.target).prop("checked")) {
+						$(".text_input").hide().addClass("disabled");
+						$(".file-field").show().find("input").removeClass("disabled");
+					} else {
+						$(".text_input").show().removeClass("disabled");
+						$(".file-field").hide().find("input").addClass("disabled");
+					}
+				});
+			});
+		}
+	}, {
 		key: "add_info",
 		value: function add_info(source, remote) {
 			/**
@@ -7066,16 +7214,28 @@ var treeview = function () {
     * ---------------------------------------------------------------------
     */
 
-			console.info(source);
-			console.log(ordered_source);
 			if (remote) {
 				var name = void 0,
 				    $dl = $("#page_info dl").append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(item_id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + item_id }).append($('<span>', { "class": "picol_rdf" }))));
 				$.each(ordered_source, function (k, v) {
-					$dl.append($('<dt>').append(STR.ucfirst(k) + ":")).append($('<dd>').append(v));
+					$dl.append($('<dt>', { "class": "valign-wrapper" }).append(STR.ucfirst(k) + ":")).append($('<dd>').append(function () {
+						if (!DATA.get_user_logged() && editable[k] !== undefined) {
+							return $('<span>').append(v + " ").append($('<a>', {
+								"href": "javascript:;",
+								"class": "btn btn-flat btn-mini white highlight-text",
+								"data-term_id": item_id,
+								"data-key": k,
+								"data-language": "english"
+							}).append($('<span>', { "class": "fa fa-edit" })));
+						} else {
+							return v;
+						}
+					}));
 				});
 				$("#term_info_name").text(source.name);
 				$("#page_info").html($dl);
+
+				this.page_info_btn__actions();
 			} else {
 				$("#page_info").html(source);
 			}
@@ -7083,7 +7243,7 @@ var treeview = function () {
 	}, {
 		key: "button",
 		value: function button(options) {
-			var _this2 = this;
+			var _this3 = this;
 
 			var defaults = {
 				id: "",
@@ -7120,19 +7280,19 @@ var treeview = function () {
 				$("#term_permalink").attr("href", ext_permalink);
 
 				if (option.is_root || option.id.split(":")[1] == "0000000") {
-					_this2.add_info($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
+					_this3.add_info($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
 					$("#graph_content").html("");
 					$("#graph").addClass("disabled");
 				} else {
 					// Info
-					_this2.disable_info();
+					_this3.disable_info();
 					LOADER.create({ target: "#pages", type: "progress" });
 
 					DATA.get_ontology_attributes(option.source.id).then(function (data) {
 						data.id = option.source.id;
-						_this2.add_info(data, true);
+						_this3.add_info(data, true);
 
 						// Comments
 						DATA.get_terms_comments(option.source.id).then(function (comments) {
@@ -7146,7 +7306,7 @@ var treeview = function () {
 
 							$("#comments").append();
 							LOADER.hide("#pages .progress");
-							_this2.enable_info();
+							_this3.enable_info();
 						});
 					});
 
@@ -7249,7 +7409,7 @@ var treeview = function () {
 				setTimeout(function () {
 					$a.click();
 					$a.prev().click();
-					_this2.tree_icon(true, option.id);
+					_this3.tree_icon(true, option.id);
 				}, 100);
 			}
 
@@ -7351,7 +7511,7 @@ var treeview = function () {
 
 exports.default = treeview;
 
-},{"../../common/settings/contents.json":1,"../../src/es6/_navigation.es6":7,"../../src/es6/_str.es6":9,"../../src/es6/data.es6":11,"../../src/es6/loader.es6":14,"moment":5}],11:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/languages.json":2,"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/data.es6":13,"../../src/es6/loader.es6":16,"moment":6}],13:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7363,6 +7523,8 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _es6Promise = require("es6-promise");
+
+var _es6Promise2 = _interopRequireDefault(_es6Promise);
 
 var _str = require("../../src/es6/_str.es6");
 
@@ -7378,6 +7540,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var STR = new _str2.default();
 var OBJ = new _obj2.default();
+var user = {
+	logged: false
+};
 
 var data = function () {
 	function data() {
@@ -7386,6 +7551,12 @@ var data = function () {
 
 	_createClass(data, [{
 		key: "extract_name",
+
+		/**
+   * -------------------------------------------------------------------------
+   * 								GET
+   * -------------------------------------------------------------------------
+   */
 		value: function extract_name(json_name) {
 			var term = void 0;
 
@@ -7404,7 +7575,7 @@ var data = function () {
 	}, {
 		key: "search",
 		value: function search(string) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -7425,6 +7596,24 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "get_attribute_upload_url",
+		value: function get_attribute_upload_url() {
+			return new _es6Promise2.default(function (resolve, reject) {
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/attribute-upload-url",
+					async: true,
+					dataType: "html",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse the CropOntology Community website feed
@@ -7436,7 +7625,7 @@ var data = function () {
 	}, {
 		key: "get_community_website_feed",
 		value: function get_community_website_feed() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see https://developers.google.com/gdata/docs/json
      */
@@ -7524,7 +7713,7 @@ var data = function () {
 	}, {
 		key: "get_help_content",
 		value: function get_help_content() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see https://developers.google.com/gdata/docs/json
      */
@@ -7620,7 +7809,7 @@ var data = function () {
 	}, {
 		key: "get_ontologies",
 		value: function get_ontologies() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				function filter_categories(cat, ontologies) {
 					// if the first word contains a dash - good enough
 					var words = cat.split(" "),
@@ -7704,7 +7893,7 @@ var data = function () {
 	}, {
 		key: "get_ontologies_data",
 		value: function get_ontologies_data(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -7736,7 +7925,7 @@ var data = function () {
 	}, {
 		key: "get_ontology",
 		value: function get_ontology(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7759,7 +7948,7 @@ var data = function () {
 		value: function get_ontology_attributes(id) {
 			var _this = this;
 
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7784,7 +7973,7 @@ var data = function () {
 	}, {
 		key: "get_ontology_comments",
 		value: function get_ontology_comments(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -7805,7 +7994,7 @@ var data = function () {
 	}, {
 		key: "get_term_parents",
 		value: function get_term_parents(term_id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7826,7 +8015,7 @@ var data = function () {
 	}, {
 		key: "get_terms_comments",
 		value: function get_terms_comments(term_id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7847,7 +8036,7 @@ var data = function () {
 	}, {
 		key: "get_children",
 		value: function get_children(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7877,7 +8066,7 @@ var data = function () {
 	}, {
 		key: "get_login",
 		value: function get_login() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -7900,9 +8089,27 @@ var data = function () {
 			});
 		}
 	}, {
+		key: "get_user_logged",
+		value: function get_user_logged() {
+			if (!user.logged) {
+				// Check if user is logged
+				this.get_login().then(function (login_data) {
+					if (login_data) {
+						user = login_data;
+						user.logged = true;
+					} else {
+						user.logged = false;
+					}
+					return user.logged;
+				});
+			} else {
+				return true;
+			}
+		}
+	}, {
 		key: "get_user",
 		value: function get_user(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -7933,7 +8140,7 @@ var data = function () {
 	}, {
 		key: "register_user",
 		value: function register_user(user_data) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				$.ajax({
 					type: "POST",
 					url: "http://www.cropontology.org/register",
@@ -7949,6 +8156,13 @@ var data = function () {
 				});
 			});
 		}
+
+		/**
+   * -------------------------------------------------------------------------
+   * 								POST
+   * -------------------------------------------------------------------------
+   */
+
 	}]);
 
 	return data;
@@ -7956,7 +8170,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/es6/_obj.es6":8,"../../src/es6/_str.es6":9,"es6-promise":4}],12:[function(require,module,exports){
+},{"../../src/es6/_obj.es6":10,"../../src/es6/_str.es6":11,"es6-promise":5}],14:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8085,7 +8299,7 @@ var filters = function () {
 
 exports.default = filters;
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8166,6 +8380,7 @@ var DATA = new _data2.default(),
     PAGE_ADD_ONTOLOGY = page_add_ontology,
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json"),
+    languages = require("../../common/settings/languages.json"),
     moment = require("moment"),
     user = {
 	logged: false
@@ -8348,24 +8563,6 @@ var layout = function () {
 					}
 				}
 			});
-		}
-	}, {
-		key: "get_user_logged",
-		value: function get_user_logged() {
-			if (!user.logged) {
-				// Check if user is logged
-				DATA.get_login().then(function (login_data) {
-					if (login_data) {
-						user = login_data;
-						user.logged = true;
-					} else {
-						user.logged = false;
-					}
-					return user.logged;
-				});
-			} else {
-				return true;
-			}
 		}
 
 		/**
@@ -8638,9 +8835,7 @@ var layout = function () {
 	}, {
 		key: "build_page_contents",
 		value: function build_page_contents() {
-			var _this = this;
-
-			this.get_user_logged();
+			DATA.get_user_logged();
 
 			// Build the user account modal
 			MODALS.user_modal("Login");
@@ -9039,18 +9234,14 @@ var layout = function () {
 						"class": "right tooltipped",
 						"data-tooltip": "Permalink"
 					}).append($('<span>', { "class": "fa fa-link" }))))))).append($('<div>', { "id": "pages" }).append($('<div>', { "id": "page_info", "class": "card-content" })).append($('<div>', { "id": "page_comments", "class": "card-content" }).append($('<ul>', { "id": "comments", "class": "collection" })).append($('<div>', { "id": "comment_form" }).append(function () {
-						if (user.logged) {
-							return $('<center>', { "class": "grey-text" }).append($('<i>').text("Please log in to comment"));
+						if (DATA.get_user_logged()) {
+							return $('<form>', { "method": "post", "action": "http://www.cropontology.org/add-comment" }).append($('<div>', { "class": "row" }).append($('<input>', { "type": "hidden", "name": "termId" }).val(page == "terms" ? NAV.get_term_id() : "")).append($('<input>', { "type": "hidden", "name": "ontologyId" }).val(NAV.get_ontology_id())).append($('<div>', { "class": "input-field col s12" }).append($("<textarea>", {
+								"name": "comment",
+								"class": "materialize-textarea",
+								"id": "comment_input"
+							})).append($('<label>', { "for": "comment_input" }).text("Add a comment"))).append($('<input>', { "type": "submit", "class": "btn btn-flat btn-highlight waves-effect waves-light right" }).val("Comment")));
 						} else {
-							if (_this.get_user_logged()) {
-								return $('<form>', { "method": "post", "action": "http://www.cropontology.org/add-comment" }).append($('<div>', { "class": "row" }).append($('<input>', { "type": "hidden", "name": "termId" }).val(page == "terms" ? NAV.get_term_id() : "")).append($('<input>', { "type": "hidden", "name": "ontologyId" }).val(NAV.get_ontology_id())).append($('<div>', { "class": "input-field col s12" }).append($("<textarea>", {
-									"name": "comment",
-									"class": "materialize-textarea",
-									"id": "comment_input"
-								})).append($('<label>', { "for": "comment_input" }).text("Add a comment"))).append($('<input>', { "type": "submit", "class": "btn btn-flat btn-highlight waves-effect waves-light right" }).val("Comment")));
-							} else {
-								return $('<center>').append($('<i>').append("Please ").append($('<a>', { "href": "#user_modal", "class": "modal-trigger" }).text("login")).append(" to comment"));
-							}
+							return $('<center>').append($('<i>').append("Please ").append($('<a>', { "href": "#user_modal", "class": "modal-trigger" }).text("login")).append(" to comment"));
 						}
 					}))))).append($('<div>', { "id": "graph", "class": "card disabled" }).append($('<div>', { "id": "graph_content", "class": "valign-wrapper" }).append($('<h1>').html('<svg aria-hidden="true" data-prefix="fal" data-icon="chart-network" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-chart-network fa-w-20 fa-3x"><path fill="currentColor" d="M513.6 202.8l-19.2-25.6-48 36 19.2 25.6 48-36zM576 192c13.3 0 25.6-4 35.8-10.9 6.8-4.6 12.7-10.5 17.3-17.3C636 153.6 640 141.3 640 128c0-13.3-4-25.6-10.9-35.8-2.3-3.4-4.9-6.6-7.8-9.5-2.9-2.9-6.1-5.5-9.5-7.8C601.6 68 589.3 64 576 64s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C516 102.4 512 114.7 512 128c0 35.3 28.7 64 64 64zm0-96c17.6 0 32 14.4 32 32s-14.4 32-32 32-32-14.4-32-32 14.4-32 32-32zM99.8 250.9C89.6 244 77.3 240 64 240s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C4 278.4 0 290.7 0 304c0 35.3 28.7 64 64 64s64-28.7 64-64c0-13.3-4-25.6-10.9-35.8-4.6-6.8-10.5-12.7-17.3-17.3zM64 336c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm88-16h48v-32h-48v32zm469.3 82.7c-2.9-2.9-6.1-5.5-9.5-7.8C601.6 388 589.3 384 576 384s-25.6 4-35.8 10.9c-3.3 2.2-6.3 4.7-9.1 7.5l-91.8-55.1c5.6-13.3 8.7-28 8.7-43.3 0-61.9-50.1-112-112-112-11.3 0-21.9 2.2-32.2 5.2l-39.3-84.1C278.8 101.4 288 83.9 288 64c0-13.3-4-25.6-10.9-35.8-4.6-6.8-10.5-12.7-17.3-17.3C249.6 4 237.3 0 224 0s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C164 38.4 160 50.7 160 64c0 35.3 28.7 64 64 64 4 0 7.9-.5 11.7-1.2l39 83.6c-30.5 20-50.7 54.4-50.7 93.6 0 61.9 50.1 112 112 112 35 0 65.8-16.4 86.4-41.5l92.4 55.4c-1.7 5.8-2.7 11.8-2.7 18.1 0 35.3 28.7 64 64 64 13.3 0 25.6-4 35.8-10.9 6.8-4.6 12.7-10.5 17.3-17.3C636 473.6 640 461.3 640 448c0-13.3-4-25.6-10.9-35.8-2.3-3.4-5-6.6-7.8-9.5zM224 96c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm112 288c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80zm240 96c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32z" class=""></path></svg>')))))));
 
@@ -9105,7 +9296,7 @@ var layout = function () {
 
 exports.default = layout;
 
-},{"../../common/settings/contents.json":1,"../../common/settings/menu.json":2,"../../src/es6/_navigation.es6":7,"../../src/es6/_str.es6":9,"../../src/es6/_treeview.es6":10,"../../src/es6/data.es6":11,"../../src/es6/filters.es6":12,"../../src/es6/loader.es6":14,"../../src/es6/modals.es6":15,"../../src/es6/pagination.es6":16,"moment":5}],14:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/languages.json":2,"../../common/settings/menu.json":3,"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/_treeview.es6":12,"../../src/es6/data.es6":13,"../../src/es6/filters.es6":14,"../../src/es6/loader.es6":16,"../../src/es6/modals.es6":17,"../../src/es6/pagination.es6":18,"moment":6}],16:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -9206,7 +9397,7 @@ var loader = function () {
 
 exports.default = loader;
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -9412,7 +9603,7 @@ var modals = function () {
 
 exports.default = modals;
 
-},{"../../src/es6/_navigation.es6":7}],16:[function(require,module,exports){
+},{"../../src/es6/_navigation.es6":9}],18:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -9542,4 +9733,4 @@ var pagination = function () {
 
 exports.default = pagination;
 
-},{"../../src/es6/_str.es6":9}]},{},[3]);
+},{"../../src/es6/_str.es6":11}]},{},[4]);

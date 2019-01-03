@@ -1,13 +1,21 @@
 /* jshint esversion: 6 */
 "strict mode";
 
-import { Promise } from 'es6-promise'
+import Promise from 'es6-promise';
 import str from "../../src/es6/_str.es6";
 import obj from "../../src/es6/_obj.es6";
 var STR = new str();
 var OBJ = new obj();
+var user = {
+	logged: false
+};
 
 class data {
+	/**
+	 * -------------------------------------------------------------------------
+	 * 								GET
+	 * -------------------------------------------------------------------------
+	 */
 	extract_name(json_name) {
 		let term;
 
@@ -37,6 +45,23 @@ class data {
 				},
 				async: true,
 				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	get_attribute_upload_url() {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/attribute-upload-url",
+				async: true,
+				dataType: "html",
 				success: (data) => {
 					resolve(data);
 				},
@@ -492,6 +517,23 @@ class data {
 		});
 	}
 
+	get_user_logged() {
+		if(!user.logged) {
+			// Check if user is logged
+			this.get_login().then((login_data) => {
+				if(login_data) {
+					user = login_data;
+					user.logged = true;
+				} else {
+					user.logged = false;
+				}
+				return user.logged;
+			});
+		} else {
+			return true;
+		}
+	}
+
 	get_user(id) {
 		return new Promise((resolve, reject) => {
 			/**
@@ -539,5 +581,13 @@ class data {
 			});
 		});
 	}
+
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * 								POST
+	 * -------------------------------------------------------------------------
+	 */
+
 }
 export default data;

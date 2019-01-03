@@ -123,6 +123,7 @@
   nav {
     background: $white;
     color: $dark-grey;
+    display: inline-block;
 
     a { color: $dark-grey; }
 
@@ -136,6 +137,8 @@
   #treeview_container {
     background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
     padding: 0;
+    position: relative;
+    top: 18px;
 
     .progress {
       margin: -24px -24px 24px 0px;
@@ -201,13 +204,40 @@
           font-weight: bold;
           margin-bottom: 5px;
           margin-top: 5px;
-          width: 33%;
+          // width: 33%;
+          width: 150px;
         }
         dd {
           margin-bottom: 5px;
           margin-left: auto;
           margin-top: 5px;
-          width: 66%;
+          padding: 0 10px;
+          // width: 66%;
+          width: calc(100% - 150px);
+
+          form {
+              .row:last-child { margin-bottom: 0; }
+          }
+
+          &.editing {
+            border-left: $white-grey 3px solid;
+
+            .input-field { margin: 0; }
+
+            &:before {
+                border-bottom: $white-grey 2px solid;
+                content: "";
+                display: block;
+                height: 0;
+                margin-left: -163.5px !important;
+                position: relative;
+                top: 60%;
+                width: 153px;
+                // transform-origin: 50% 50%;
+                // transform: rotate(45deg);
+                // z-index: -1;
+            }
+          }
         }
       }
     }

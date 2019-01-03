@@ -10,6 +10,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _es6Promise = require("es6-promise");
 
+var _es6Promise2 = _interopRequireDefault(_es6Promise);
+
 var _str = require("../../src/es6/_str.es6");
 
 var _str2 = _interopRequireDefault(_str);
@@ -24,6 +26,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var STR = new _str2.default();
 var OBJ = new _obj2.default();
+var user = {
+	logged: false
+};
 
 var data = function () {
 	function data() {
@@ -32,6 +37,12 @@ var data = function () {
 
 	_createClass(data, [{
 		key: "extract_name",
+
+		/**
+   * -------------------------------------------------------------------------
+   * 								GET
+   * -------------------------------------------------------------------------
+   */
 		value: function extract_name(json_name) {
 			var term = void 0;
 
@@ -50,7 +61,7 @@ var data = function () {
 	}, {
 		key: "search",
 		value: function search(string) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -71,6 +82,24 @@ var data = function () {
 				});
 			});
 		}
+	}, {
+		key: "get_attribute_upload_url",
+		value: function get_attribute_upload_url() {
+			return new _es6Promise2.default(function (resolve, reject) {
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/attribute-upload-url",
+					async: true,
+					dataType: "html",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 
 		/**
    * Get and parse the CropOntology Community website feed
@@ -82,7 +111,7 @@ var data = function () {
 	}, {
 		key: "get_community_website_feed",
 		value: function get_community_website_feed() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see https://developers.google.com/gdata/docs/json
      */
@@ -170,7 +199,7 @@ var data = function () {
 	}, {
 		key: "get_help_content",
 		value: function get_help_content() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see https://developers.google.com/gdata/docs/json
      */
@@ -266,7 +295,7 @@ var data = function () {
 	}, {
 		key: "get_ontologies",
 		value: function get_ontologies() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				function filter_categories(cat, ontologies) {
 					// if the first word contains a dash - good enough
 					var words = cat.split(" "),
@@ -350,7 +379,7 @@ var data = function () {
 	}, {
 		key: "get_ontologies_data",
 		value: function get_ontologies_data(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -382,7 +411,7 @@ var data = function () {
 	}, {
 		key: "get_ontology",
 		value: function get_ontology(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -405,7 +434,7 @@ var data = function () {
 		value: function get_ontology_attributes(id) {
 			var _this = this;
 
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -430,7 +459,7 @@ var data = function () {
 	}, {
 		key: "get_ontology_comments",
 		value: function get_ontology_comments(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -451,7 +480,7 @@ var data = function () {
 	}, {
 		key: "get_term_parents",
 		value: function get_term_parents(term_id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -472,7 +501,7 @@ var data = function () {
 	}, {
 		key: "get_terms_comments",
 		value: function get_terms_comments(term_id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -493,7 +522,7 @@ var data = function () {
 	}, {
 		key: "get_children",
 		value: function get_children(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -523,7 +552,7 @@ var data = function () {
 	}, {
 		key: "get_login",
 		value: function get_login() {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
     * @see http://www.cropontology.org/api
     */
@@ -546,9 +575,27 @@ var data = function () {
 			});
 		}
 	}, {
+		key: "get_user_logged",
+		value: function get_user_logged() {
+			if (!user.logged) {
+				// Check if user is logged
+				this.get_login().then(function (login_data) {
+					if (login_data) {
+						user = login_data;
+						user.logged = true;
+					} else {
+						user.logged = false;
+					}
+					return user.logged;
+				});
+			} else {
+				return true;
+			}
+		}
+	}, {
 		key: "get_user",
 		value: function get_user(id) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -579,7 +626,7 @@ var data = function () {
 	}, {
 		key: "register_user",
 		value: function register_user(user_data) {
-			return new _es6Promise.Promise(function (resolve, reject) {
+			return new _es6Promise2.default(function (resolve, reject) {
 				$.ajax({
 					type: "POST",
 					url: "http://www.cropontology.org/register",
@@ -595,6 +642,13 @@ var data = function () {
 				});
 			});
 		}
+
+		/**
+   * -------------------------------------------------------------------------
+   * 								POST
+   * -------------------------------------------------------------------------
+   */
+
 	}]);
 
 	return data;

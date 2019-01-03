@@ -16,6 +16,10 @@
 
   &:hover, &.selected { background-color: $highlight-very-clear !important; }
 }
+.btn-link {
+  height: 36px;
+  line-height: 36px;
+}
 
 .relationship {
   background-color: $tag-light-blue;

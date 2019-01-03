@@ -2,6 +2,10 @@
 /* jshint esversion: 6 */
 "strict mode";
 
+var _actions = require("../../src/es6/_actions.es6");
+
+var _actions2 = _interopRequireDefault(_actions);
+
 var _layout = require("../../src/es6/layout.es6");
 
 var _layout2 = _interopRequireDefault(_layout);
@@ -19,6 +23,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 require("../../src/es6/_obj.es6");
 
 var LAYOUT = new _layout2.default(),
+    ACTIONS = new _actions2.default(),
     NAV = new _navigation2.default(),
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json");

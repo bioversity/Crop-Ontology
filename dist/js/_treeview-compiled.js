@@ -33,7 +33,8 @@ var DATA = new _data2.default(),
     LOADER = new _loader2.default(),
     STR = new _str2.default(),
     moment = require("moment"),
-    settings = require("../../common/settings/contents.json");
+    settings = require("../../common/settings/contents.json"),
+    languages = require("../../common/settings/languages.json");
 
 var treeview = function () {
 	function treeview() {
@@ -168,6 +169,47 @@ var treeview = function () {
 			});
 		}
 	}, {
+		key: "page_info_btn__actions",
+		value: function page_info_btn__actions() {
+			var _this2 = this;
+
+			$("#page_info .btn-mini").on("click", function (e) {
+				var $dd = $(e.target).closest("dd"),
+				    $dd2 = $dd.clone(),
+				    term_id = $dd2.find("a").data("term_id"),
+				    key = $dd2.find("a").data("key"),
+				    language = $dd2.find("a").data("language"),
+				    old_value = $.trim($dd2.text());
+
+				$dd.addClass("editing").html($('<form>', { "method": "post", "enctype": "multipart/form-data", "action": "", "id": "form" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 switch" }).append($('<label>').append("Text").append($('<input>', { "type": "checkbox" })).append($('<span>', { "class": "lever" })).append("File")))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field inline col s3" }).append($('<select>', { "class": "visible_input", "name": "language" }).append($.map(languages.all, function (v, k) {
+					return $('<option>', { "value": v, "selected": v == languages.default }).text(STR.ucfirst(v));
+				})))).append($('<div>', { "class": "input-field inline col s9" }).append($('<input>', { "type": "hidden", "name": "term_id" }).val(term_id)).append($('<input>', { "type": "hidden", "name": "key" }).val(key)).append($('<input>', { "type": "hidden", "name": "language" }).val(language)).append($('<input>', { "type": "text", "class": "text_input visible_input", "name": "value", "placeholder": old_value }).val(old_value)).append($('<div>', { "class": "file-field input-field" }).append($('<div>', { "class": "btn highlight-btn btn-mini" }).append($('<span>').text("Upload file")).append($('<input>', { "type": "file", "class": "visible_input disabled", "name": "value" }))).append($('<div>', { "class": "file-path-wrapper" }).append($('<input>', { "type": "text", "name": "value", "class": "file-path validate disabled" }))).hide()))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "javascript:;", "class": "btn-link grey-text left" }).text("‹ Cancel").on("click", function () {
+					$dd.html($dd2.html()).removeClass("editing");
+					_this2.page_info_btn__actions(term_id, key, language);
+				})).append($('<a>', { "href": "javascript:;", "class": "btn btn-flat btn-highlight right" }).text("Save").on("click", function (e) {
+					DATA.get_attribute_upload_url().then(function (upload_url) {
+						$(e.target).closest("form").attr("action", upload_url).submit();
+					});
+				})))));
+				$dd.find(".visible_input").focus().on("keypress", function (e) {
+					if (e.which == 0) {
+						$dd.html($dd2.html()).removeClass("editing");
+						_this2.page_info_btn__actions(term_id, key, language);
+					}
+				});
+				$("select").material_select();
+				$(".switch").find("input[type=checkbox]").on("change", function (e) {
+					if ($(e.target).prop("checked")) {
+						$(".text_input").hide().addClass("disabled");
+						$(".file-field").show().find("input").removeClass("disabled");
+					} else {
+						$(".text_input").show().removeClass("disabled");
+						$(".file-field").hide().find("input").addClass("disabled");
+					}
+				});
+			});
+		}
+	}, {
 		key: "add_info",
 		value: function add_info(source, remote) {
 			/**
@@ -243,16 +285,28 @@ var treeview = function () {
     * ---------------------------------------------------------------------
     */
 
-			console.info(source);
-			console.log(ordered_source);
 			if (remote) {
 				var name = void 0,
 				    $dl = $("#page_info dl").append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(item_id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + item_id }).append($('<span>', { "class": "picol_rdf" }))));
 				$.each(ordered_source, function (k, v) {
-					$dl.append($('<dt>').append(STR.ucfirst(k) + ":")).append($('<dd>').append(v));
+					$dl.append($('<dt>', { "class": "valign-wrapper" }).append(STR.ucfirst(k) + ":")).append($('<dd>').append(function () {
+						if (!DATA.get_user_logged() && editable[k] !== undefined) {
+							return $('<span>').append(v + " ").append($('<a>', {
+								"href": "javascript:;",
+								"class": "btn btn-flat btn-mini white highlight-text",
+								"data-term_id": item_id,
+								"data-key": k,
+								"data-language": "english"
+							}).append($('<span>', { "class": "fa fa-edit" })));
+						} else {
+							return v;
+						}
+					}));
 				});
 				$("#term_info_name").text(source.name);
 				$("#page_info").html($dl);
+
+				this.page_info_btn__actions();
 			} else {
 				$("#page_info").html(source);
 			}
@@ -260,7 +314,7 @@ var treeview = function () {
 	}, {
 		key: "button",
 		value: function button(options) {
-			var _this2 = this;
+			var _this3 = this;
 
 			var defaults = {
 				id: "",
@@ -297,19 +351,19 @@ var treeview = function () {
 				$("#term_permalink").attr("href", ext_permalink);
 
 				if (option.is_root || option.id.split(":")[1] == "0000000") {
-					_this2.add_info($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
+					_this3.add_info($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
 					$("#graph_content").html("");
 					$("#graph").addClass("disabled");
 				} else {
 					// Info
-					_this2.disable_info();
+					_this3.disable_info();
 					LOADER.create({ target: "#pages", type: "progress" });
 
 					DATA.get_ontology_attributes(option.source.id).then(function (data) {
 						data.id = option.source.id;
-						_this2.add_info(data, true);
+						_this3.add_info(data, true);
 
 						// Comments
 						DATA.get_terms_comments(option.source.id).then(function (comments) {
@@ -323,7 +377,7 @@ var treeview = function () {
 
 							$("#comments").append();
 							LOADER.hide("#pages .progress");
-							_this2.enable_info();
+							_this3.enable_info();
 						});
 					});
 
@@ -426,7 +480,7 @@ var treeview = function () {
 				setTimeout(function () {
 					$a.click();
 					$a.prev().click();
-					_this2.tree_icon(true, option.id);
+					_this3.tree_icon(true, option.id);
 				}, 100);
 			}
 
