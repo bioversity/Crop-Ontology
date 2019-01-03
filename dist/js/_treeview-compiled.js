@@ -174,47 +174,51 @@ var treeview = function () {
 			var _this2 = this;
 
 			$("#page_info .btn-mini, #page_info .card-action .btn").on("click", function (e) {
+				e.preventDefault();
+
 				var $dd = void 0,
 				    $dd2 = void 0,
 				    $dl = $("#page_info dl"),
 				    term_id = "",
 				    key = "",
-				    language = "",
+				    language = "english",
 				    old_value = "",
-				    placeholder = "Attribute name";
+				    placeholder = "Attribute name",
+				    context = "add";
 
 				if (!$(e.target).hasClass("add_term")) {
-					$dd = $(e.target).closest("dd"), $dd2 = $dd.clone(), term_id = $dd2.find("a").data("term_id"), key = $dd2.find("a").data("key"), language = $dd2.find("a").data("language"), old_value = $.trim($dd2.text()), placeholder = old_value;
+					$dd = $(e.target).closest("dd"), $dd2 = $dd.clone(), term_id = $dd2.find("a").data("term_id"), key = $dd2.find("a").data("key"), language = $dd2.find("a").data("language"), old_value = $.trim($dd2.text()), placeholder = old_value, context = "edit";
 				}
 
 				var $form = $('<form>', { "method": "post", "enctype": "multipart/form-data", "action": "", "id": "form" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 switch" }).append($('<label>').append("Text").append($('<input>', { "type": "checkbox" })).append($('<span>', { "class": "lever" })).append("File")))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field inline col s3" }).append($('<select>', { "class": "visible_input", "name": "language" }).append($.map(languages.all, function (v, k) {
 					return $('<option>', { "value": v, "selected": v == languages.default }).text(STR.ucfirst(v));
-				})))).append($('<div>', { "class": "input-field inline col s9" }).append($('<input>', { "type": "hidden", "name": "term_id" }).val(term_id)).append($('<input>', { "type": "hidden", "name": "key" }).val(key)).append($('<input>', { "type": "hidden", "name": "language" }).val(language)).append($('<input>', { "type": "text", "class": "text_input visible_input", "name": "value", "placeholder": placeholder }).val(old_value)).append($('<div>', { "class": "file-field input-field" }).append($('<div>', { "class": "btn highlight-btn btn-mini" }).append($('<span>').text("Upload file")).append($('<input>', { "type": "file", "class": "visible_input disabled", "name": "value", "placeholder": "Upload file from your computer" }))).append($('<div>', { "class": "file-path-wrapper" }).append($('<input>', { "type": "text", "name": "value", "class": "file-path validate disabled" }))).hide()))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "javascript:;", "class": "btn-link grey-text left" }).text("‹ Cancel").on("click", function () {
-					if ($(e.target).hasClass("add_term")) {
+				})))).append($('<div>', { "class": "input-field inline col s9" }).append($('<input>', { "type": "hidden", "name": "term_id" }).val(term_id)).append($('<input>', { "type": "hidden", "name": "key" }).val(key)).append($('<input>', { "type": "hidden", "name": "language" }).val(language)).append($('<input>', { "type": "text", "class": "text_input visible_input", "name": "value", "placeholder": placeholder }).val(old_value)).append($('<div>', { "class": "file-field input-field" }).append($('<div>', { "class": "btn highlight-btn btn-mini" }).append($('<span>').text("Upload file")).append($('<input>', { "type": "file", "class": "visible_input disabled", "name": "value", "placeholder": "Upload file from your computer" }))).append($('<div>', { "class": "file-path-wrapper" }).append($('<input>', { "type": "text", "name": "value", "class": "file-path validate disabled" }))).hide()))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12" }).append($('<a>', { "href": "javascript:;", "class": "btn-link grey-text left" }).text("‹ Cancel").on("click", function (e) {
+					e.preventDefault();
+					if (context == "add") {
 						$(".add_term").removeClass("disabled");
-						$form.closest(".card-content").remove();
+						$("#add_term_form").html("").hide();
 					} else {
 						$dd.html($dd2.html()).removeClass("editing");
 					}
 					_this2.page_info_btn__actions(term_id, key, language);
 				})).append($('<a>', { "href": "javascript:;", "class": "btn btn-flat btn-highlight right" }).text("Save").on("click", function (e) {
+					e.preventDefault();
 					DATA.get_attribute_upload_url().then(function (upload_url) {
 						$(e.target).closest("form").attr("action", upload_url).submit();
 					});
 				}))));
 
 				if ($(e.target).hasClass("add_term")) {
-					e.preventDefault();
 					$(e.target).addClass("disabled");
-					$('<div>', { "class": "card-content" }).append($form).insertAfter($dl);
+					$("#add_term_form").html($form).show();
+
 					$form.find(".visible_input").focus().on("keypress", function (e) {
 						if (e.which == 0) {
 							$(".add_term").removeClass("disabled");
-							$form.closest(".card-content").remove();
+							$("#add_term_form").html("").hide();
 						}
 					});
 				} else {
-					e.preventDefault();
 					var _$dd = $(e.target).closest("dd");
 
 					_$dd.addClass("editing").html($form);
@@ -332,7 +336,7 @@ var treeview = function () {
 					}));
 				});
 				$("#term_info_name").text(source.name);
-				$("#page_info").html($dl).append($('<div>', { "class": "card-action" }).append($('<a>', {
+				$("#page_info").append($dl).append($('<div>', { "class": "card-content", "id": "add_term_form" }).hide()).append($('<div>', { "class": "card-action" }).append($('<a>', {
 					"href": "javascript:;",
 					"class": "btn btn-flat white highlight-text add_term"
 				}).append("Add a new attribute ").append($('<span>', { "class": "fa fa-plus" }))

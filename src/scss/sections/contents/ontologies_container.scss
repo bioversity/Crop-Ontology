@@ -216,13 +216,12 @@
           width: calc(100% - 150px);
 
           form {
-              .row:last-child { margin-bottom: 0; }
+            .row:last-child { margin-bottom: 0; }
           }
+          .input-field { margin: 0; }
 
           &.editing {
             border-left: $white-grey 3px solid;
-
-            .input-field { margin: 0; }
 
             &:before {
                 border-bottom: $white-grey 2px solid;
@@ -233,9 +232,6 @@
                 position: relative;
                 top: 60%;
                 width: 153px;
-                // transform-origin: 50% 50%;
-                // transform: rotate(45deg);
-                // z-index: -1;
             }
           }
         }
