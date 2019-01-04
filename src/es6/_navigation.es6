@@ -34,8 +34,10 @@ class navigation {
 	 */
 
 	/**
-	 * The ontology url performed by regex
+	 * The Ontology URL performed by regex
 	 * @see https://regex101.com/r/S4gNgj/4
+	 *
+	 * @param string						separator							The string separator
 	 */
 	get_ontology_url_regex(separator) {
 		let id = "([\\w]+\\_[\\w\\d]+)",
@@ -44,8 +46,10 @@ class navigation {
 	}
 
 	/**
-	 * The ontology url performed by regex
+	 * The Ontology Term URL performed by regex
 	 * @see https://regex101.com/r/S4gNgj/5
+	 *
+	 * @param string						separator							The string separator
 	 */
 	get_terms_url_regex(separator) {
 		let id = "([\\w]+\\_[\\w\\d]+)",
@@ -57,7 +61,7 @@ class navigation {
 	 * Get the Ontology ID from the current URL
 	 * @uses get_url_path()
 	 *
-	 * @return string															The current page
+	 * @return string															The Ontology ID
 	 */
 	get_ontology_id() {
 		return this.get_url_path()[1];
@@ -67,10 +71,19 @@ class navigation {
 	 * Get the Ontology Term ID from the current URL
 	 * @uses get_url_path()
 	 *
-	 * @return string															The current page
+	 * @return string															The Term ID
 	 */
 	get_term_id() {
 		return this.get_url_path()[2];
+	}
+
+	/**
+	 * Get the Ontology and the Ontology Term ID from the current URL
+	 *
+	 * @return string															The Ontology and the Ontology Term ID
+	 */
+	get_full_id() {
+		return (this.get_page() == "terms") ? this.get_url_path()[1] + ":" + this.get_url_path()[2] : this.get_url_path()[1];
 	}
 
 	/**

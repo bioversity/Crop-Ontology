@@ -6492,8 +6492,10 @@ var navigation = function () {
    */
 
 		/**
-   * The ontology url performed by regex
+   * The Ontology URL performed by regex
    * @see https://regex101.com/r/S4gNgj/4
+   *
+   * @param string						separator							The string separator
    */
 
 	}, {
@@ -6505,8 +6507,10 @@ var navigation = function () {
 		}
 
 		/**
-   * The ontology url performed by regex
+   * The Ontology Term URL performed by regex
    * @see https://regex101.com/r/S4gNgj/5
+   *
+   * @param string						separator							The string separator
    */
 
 	}, {
@@ -6521,7 +6525,7 @@ var navigation = function () {
    * Get the Ontology ID from the current URL
    * @uses get_url_path()
    *
-   * @return string															The current page
+   * @return string															The Ontology ID
    */
 
 	}, {
@@ -6534,13 +6538,25 @@ var navigation = function () {
    * Get the Ontology Term ID from the current URL
    * @uses get_url_path()
    *
-   * @return string															The current page
+   * @return string															The Term ID
    */
 
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
 			return this.get_url_path()[2];
+		}
+
+		/**
+   * Get the Ontology and the Ontology Term ID from the current URL
+   *
+   * @return string															The Ontology and the Ontology Term ID
+   */
+
+	}, {
+		key: "get_full_id",
+		value: function get_full_id() {
+			return this.get_page() == "terms" ? this.get_url_path()[1] + ":" + this.get_url_path()[2] : this.get_url_path()[1];
 		}
 
 		/**
@@ -6913,6 +6929,7 @@ var DATA = new _data2.default(),
     NAV = new _navigation2.default(),
     LOADER = new _loader2.default(),
     STR = new _str2.default(),
+    page = NAV.get_page(),
     moment = require("moment"),
     settings = require("../../common/settings/contents.json"),
     languages = require("../../common/settings/languages.json");
@@ -6928,7 +6945,58 @@ var treeview = function () {
 			var _this = this;
 
 			var icon_class = is_subroot ? "expandable-hitarea lastExpandable-hitarea" : "",
-			    toggleIcon = function toggleIcon(e) {
+			    build_tree = function build_tree($li, id, callback) {
+				$li.append($('<ul>'));
+
+				DATA.get_children(id).then(function (child) {
+					$.each(child, function (k, v) {
+						var li_class = "",
+						    div_class = "";
+
+						if (v.has_children) {
+							if (k == child.length - 1) {
+								li_class = "last expandable lastExpandable";
+								div_class = "hitarea lastExpandable-hitarea";
+							} else {
+								li_class = "";
+								div_class = "hitarea expandable-hitarea";
+							}
+						} else {
+							if (k == child.length - 1) {
+								li_class = "last";
+								div_class = "";
+							} else {
+								li_class = "";
+								div_class = "";
+							}
+						}
+						var $tree_icon = $('<div>', { "class": div_class }).click(function (e) {
+							console.log("ok");
+							action(e, v.id);
+						});
+
+						$li.find("ul").append($('<li>', {
+							"class": li_class
+						}).append($tree_icon).append(_this.button({
+							id: v.id,
+							term: STR.ucfirst(DATA.extract_name(v.name)),
+							source: v,
+							is_root: false
+						})).append($('<span>', { "class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`" }).text(v.relationship)));
+					});
+
+					if (typeof callback == "function") {
+						callback(child);
+					}
+				});
+			},
+
+
+			/**
+    * Toggle icon status
+    * @param  object 					e								The fired button object
+    */
+			toggleIcon = function toggleIcon(e) {
 				var $li = $(e.currentTarget).closest("li"),
 				    $li_ul = $li.find("ul");
 				if ($li_ul.length == 0 || !$li_ul.is(":visible")) {
@@ -6967,9 +7035,24 @@ var treeview = function () {
 					}
 				}
 			},
-			    action = function action(e, id) {
+			    get_obj_ids = function get_obj_ids(obj) {
+				var ids = [];
+				$.each(obj, function (kk, vv) {
+					ids.push(vv.id);
+				});
+				return ids;
+			},
+
+
+			/**
+    * Buttons action
+    * @param  object 					e								The fired button object
+    * @param  string 					id								The ontology or term ID
+    */
+			action = function action(e, id) {
 				var $li = $(e.currentTarget).closest("li"),
 				    $li_ul = $li.find("ul");
+
 				if ($li_ul.length == 0 || !$li_ul.is(":visible")) {
 					/**
       * Expanded tree
@@ -6977,57 +7060,161 @@ var treeview = function () {
       */
 
 					toggleIcon(e);
-					/**
-      * Highlight the label on the right
-      */
-					// $(".treeview a.selected").removeClass("selected");
-					// $li.find("a").first().addClass("selected");
 
+					// If is the first page loading
 					if ($li_ul.length == 0) {
 						// Display loader
 						$("#treeview_container").prepend(LOADER.create({ target: "#treeview_container", type: "progress" }));
 
-						$li.append($('<ul>'));
+						// If this is a Ontology Term page
+						if (page == "terms" && NAV.get_term_id() !== undefined) {
+							/**
+       * Highlight the label on the right
+       */
+							$(".treeview a.selected").removeClass("selected");
+							DATA.get_term_parents(NAV.get_full_id()).then(function (data) {
+								$.each(data[0], function (kk, vv) {
+									var selected_ids = get_obj_ids(data[0]),
+									    first_item = data[0][kk],
+									    $item_li = $("." + first_item.id.replace(":", "-")).closest("li").last();
+									// let $button = $("." + first_item.id.replace(":", "-")),
+									// 	$prev_tree_icon = $button.prev();
+									if ($item_li.length > 0) {
+										build_tree($item_li, first_item.id, function (child_data) {
+											$.each(child_data, function (child_key, child) {
+												// console.warn(child.id, $.inArray(child.id, selected_ids));
+												if ($.inArray(child.id, selected_ids) > -1) {
+													var $child_li = $("." + child.id.replace(":", "-")).closest("li").last();
 
-						// Load childrens
-						DATA.get_children(id).then(function (child) {
-							$.each(child, function (k, v) {
-								var li_class = "",
-								    div_class = "";
+													if (selected_ids[selected_ids.length - 1] == child.id) {
+														var $button = $("." + child.id.replace(":", "-"));
 
-								if (v.has_children) {
-									if (k == child.length - 1) {
-										li_class = "last expandable lastExpandable";
-										div_class = "hitarea lastExpandable-hitarea";
-									} else {
-										li_class = "";
-										div_class = "hitarea expandable-hitarea";
+														$button.click();
+
+														// Hide the loader
+														LOADER.hide("#treeview_container .progress");
+														return false;
+													} else {
+														console.warn(selected_ids[selected_ids.length - 1], child.id);
+														build_tree($child_li, child.id, function (sub_child_data) {
+															$.each(sub_child_data, function (subchild_key, subchild) {
+																// console.warn(child.id, $.inArray(child.id, selected_ids));
+																if ($.inArray(subchild.id, selected_ids) > -1) {
+																	console.log(subchild);
+																	var $subchild_li = $("." + child.id.replace(":", "-")).closest("li").last();
+
+																	console.warn(selected_ids[selected_ids.length - 1], subchild.id);
+																	if (selected_ids[selected_ids.length - 1] == subchild.id) {
+																		var _$button = $("." + subchild.id.replace(":", "-"));
+
+																		_$button.click();
+
+																		// Hide the loader
+																		LOADER.hide("#treeview_container .progress");
+																		return false;
+																		// } else {
+																		// 	console.log("continue");
+																		// 	build_tree($child_li, child.id, (sub_child_data) => {
+																		// 		$.each(sub_child_data, (subchild_key, subchild) => {
+																		// 			console.warn(sub_child.id);
+																		// 		});
+																		// 	});
+																	}
+																} else {
+																	return false;
+																}
+																// $.each(data[0], (kk, vv) => {
+																// 	if(vv.id == kv.id) {
+																// 		console.log($li);
+																// 		console.log($("." + vv.id.replace(":", "-")).closest("li"));
+																// 	}
+																// });
+															});
+														});
+													}
+												}
+												// $.each(data[0], (kk, vv) => {
+												// 	if(vv.id == kv.id) {
+												// 		console.log($li);
+												// 		console.log($("." + vv.id.replace(":", "-")).closest("li"));
+												// 	}
+												// });
+											});
+										});
+										// $button.addClass("selected");
+										// $prev_tree_icon.click();
+
+										// if(kk == 0) {
+										// return false;
+										// }
 									}
-								} else {
-									if (k == child.length - 1) {
-										li_class = "last";
-										div_class = "";
-									} else {
-										li_class = "";
-										div_class = "";
-									}
-								}
+								});
+								// let $button = $("." + data[0][1].id.replace(":", "-")),
+								// 	$tree_icon = $button.prev();
 
-								$li.find("ul").append($('<li>', {
-									"class": li_class
-								}).append($('<div>', { "class": div_class }).click(function (e) {
-									action(e, v.id);
-								})).append(_this.button({
-									id: v.id,
-									term: STR.ucfirst(DATA.extract_name(v.name)),
-									source: v,
-									is_root: false
-								})).append($('<span>', { "class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`" }).text(v.relationship)));
+								// console.info(data[0][1]);
+
+								// $.each(data[0], (k, v) => {
+								// 	if(k > 0) {
+
+								// setTimeout(() => {
+								// console.log(e);
+								// }, 1000);
+								// return false;
+								// 	}
+								// });
+								//
+								// $.each($li.find(".btn-mini"), (k, v) => {
+								// 	let term_id = $(v).data("id"),
+								// 		$tree_icon = $(v).prev();
+								// 	console.log();
+								// })
 							});
+							// return false;
+							// $li.find("a").first().addClass("selected");
+						} else {
+							// Load childrens
+							build_tree($li, id, function () {
+								// Hide the loader
+								LOADER.hide("#treeview_container .progress");
+							});
+						}
 
-							// Hide the loader
-							LOADER.hide("#treeview_container .progress");
-						});
+						// if(page == "terms") {
+						// 	/**
+						// 	 * Highlight the label on the right
+						// 	 */
+						// 	$(".treeview a.selected").removeClass("selected");
+						// 	DATA.get_term_parents(NAV.get_full_id()).then((data) => {
+						// 		$.each(data[0], (k, v) => {
+						// 			console.log(k, v);
+						// 		});
+						// 		let $button = $("." + data[0][1].id.replace(":", "-")),
+						// 			$tree_icon = $button.prev();
+						//
+						// 		$tree_icon.click();
+						// 		$($button).addClass("selected");
+						// 		console.info(data[0][1]);
+						//
+						// 		// $.each(data[0], (k, v) => {
+						// 		// 	if(k > 0) {
+						//
+						// 				// setTimeout(() => {
+						// 				// console.log(e);
+						// 				// }, 1000);
+						// 				// return false;
+						// 		// 	}
+						// 		// });
+						//         //
+						// 		// $.each($li.find(".btn-mini"), (k, v) => {
+						// 		// 	let term_id = $(v).data("id"),
+						// 		// 		$tree_icon = $(v).prev();
+						// 		// 	console.log();
+						// 		// })
+						// 		return false;
+						// 	})
+						// 	// $li.find("a").first().addClass("selected");
+						// }
 					} else {
 						$li_ul.show();
 						// Hide the loader
@@ -7038,6 +7225,7 @@ var treeview = function () {
       * Unexpanded tree
       * ---------------------------------------------------------
       */
+
 					toggleIcon(e);
 					$(".treeview a.selected").removeClass("selected");
 					$li_ul.hide();
@@ -7045,7 +7233,10 @@ var treeview = function () {
 				}
 			};
 
-			return $('<div>', { "class": "hitarea " + icon_class }).click(function (e) {
+			return $('<div>', { "class": "hitarea " + icon_class })
+			// Simulate the click on the first "hitarea"
+			// just a first opening of the tree
+			.click(function (e) {
 				action(e, id);
 			});
 		}
@@ -7217,7 +7408,7 @@ var treeview = function () {
 					}));
 				});
 				$("#term_info_name").text(source.name);
-				$("#page_info").append($dl).append($('<div>', { "class": "card-content", "id": "add_term_form" }).hide()).append($('<div>', { "class": "card-action" }).append($('<a>', {
+				$("#page_info").html($dl).append($('<div>', { "class": "card-content", "id": "add_term_form" }).hide()).append($('<div>', { "class": "card-action" }).append($('<a>', {
 					"href": "javascript:;",
 					"class": "btn btn-flat white highlight-text add_term"
 				}).append("Add a new attribute ").append($('<span>', { "class": "fa fa-plus" }))
@@ -7247,7 +7438,7 @@ var treeview = function () {
 
 			var $a = $('<a>', {
 				"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
-				"class": "btn btn-mini tooltipped" + (option.is_root || NAV.get_term_id() == option.id ? " selected" : ""),
+				"class": "btn btn-mini tooltipped " + option.id.replace(":", "-") + (option.is_root || NAV.get_term_id() == option.id ? " selected" : ""),
 				"data-id": option.id
 			}).append($('<span>').html(STR.camel_case_2_text(option.term))).click(function (e) {
 				$("#page_info dl").html("");
