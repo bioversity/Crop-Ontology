@@ -88,8 +88,13 @@ class layout {
 		});
 
 		let search_data = {};
-		$("input.autocomplete").on("keypress", (e) => {
-			if(e.which === 13) {
+		$("input.autocomplete").on("keyup", (e) => {
+			let start_search_after = 3,
+				reg = new RegExp("[\\w\\d\\\\\/\\-\\_\\p{L}]");
+
+			// Intercept only word, digits and allowed special characters (see regex above)
+			if($("input.autocomplete").val().length > start_search_after && reg.test(e.key)) {
+				// The search loader
 				LOADER.create({
 					type: "circular",
 					size: "micro",
@@ -102,9 +107,10 @@ class layout {
 						search_data["<small><tt>" + v.id + "</tt></small> - " + v.ontology_name + " - " + STR.get_ontology_term(JSON.stringify(v.name))] = null;
 					});
 
+					console.log(search_data);
 					$("input.autocomplete").autocomplete({
 						data: search_data,
-						minLength: 1,
+						minLength: start_search_after,
 						limit: 50,
 						onAutocomplete: function(val) {
 							location.href = "./terms/" + val.replace(/ \- (.*?) \- /g, "/");
@@ -395,6 +401,10 @@ class layout {
 				}, settings.general.carousel.time);
 			}
 		} else {
+			/**
+			 * Set page title & subtitle
+			 * @note
+			 */
 			let title = "",
 				subtitle = "";
 			switch(page) {
@@ -403,7 +413,7 @@ class layout {
 					subtitle = STR.camel_case_2_text(NAV.get_ontology_label());
 					break;
 				case "terms":
-					title = NAV.get_ontology_id() + "<small>:" + NAV.get_term_id() + "</small>";
+					title = '<a href="./terms/CO_020">' + NAV.get_ontology_id() + "</a><small>:" + NAV.get_term_id() + "</small>";
 					subtitle = STR.camel_case_2_text(NAV.get_term_label());
 					break;
 				default:
@@ -415,11 +425,9 @@ class layout {
 			$("body").append(
 				$('<div>', {"id": "ontology_card", "class": "row container"}).append(
 					$('<h1>', {"id": "page_subtitle"}).html(title)
-				).append(() => {
-					if(subtitle !== undefined && subtitle.length > 0) {
-						return $('<h2>', {"id": "page_title"}).text(subtitle);
-					}
-				})
+				).append(
+					$('<h2>', {"id": "page_title"}).text(subtitle)
+				)
 			)
 		}
 	}
@@ -452,7 +460,7 @@ class layout {
     				$('<div>', {"class": "nav-wrapper"}).append(
       					$('<div>', {"class": "col s12"}).append(
         					$('<a>', {"href": "./", "class": "breadcrumb"}).append(
-								$('<span>', {"class": "fas fa-home grey-text"})
+								$('<span>', {"class": "fas fa-home"})
 							)
 						).append(() => {
 							if(NAV.get_url_path().length > 1) {
@@ -460,8 +468,8 @@ class layout {
 									case "ontology":
 										return $('<span>', {"class": "breadcrumb"}).html(
 											$('<tt>').append(NAV.get_ontology_id())
-										).append(
-											STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label()))
+										).append(" ").append(
+											$("<span>", {"class": "page_name"}).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_ontology_label())))
 										);
 										break;
 									case "terms":
@@ -469,8 +477,8 @@ class layout {
 											$('<tt>').append(NAV.get_ontology_id()).append(
 												$('<small>').append(":" + NAV.get_term_id())
 											)
-										).append(
-											STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label()))
+										).append(" ").append(
+											$("<span>", {"class": "page_name"}).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label())))
 										);
 										break;
 									default:
@@ -1062,11 +1070,11 @@ class layout {
 							$('<h1>', {"id": "page_subtitle"}).append(NAV.get_ontology_id()).append((NAV.get_term_id() !== undefined) ? "<small>:" + NAV.get_term_id() + "</small>" : "")
 						).append(
 							$('<h2>', {"id": "page_title"}).append(() => {
-								if(ontologies_data.ontology_title.link !== "") {
-									return $('<a>', {"href": ontologies_data.ontology_title.link, "target": "_blank"}).append(ontologies_data.ontology_title.title).append((NAV.get_term_id() !== undefined) ? NAV.get_term_label() : "");
-								} else {
-									return ontologies_data.ontology_title.title + ((page == "terms" && NAV.get_term_id() !== undefined) ? "<small>" + NAV.get_term_label() + "</small>" : "");
-								}
+								// if(ontologies_data.ontology_title.link !== "") {
+								// 	return $('<a>', {"href": ontologies_data.ontology_title.link, "target": "_blank"}).append(ontologies_data.ontology_title.title).append((NAV.get_term_id() !== undefined) ? NAV.get_term_label() : "");
+								// } else {
+								// 	return ontologies_data.ontology_title.title + ((page == "terms" && NAV.get_term_id() !== undefined) ? "<small>" + NAV.get_term_label() + "</small>" : "");
+								// }
 							})
 						).append(
 							$('<table>').append(
@@ -1158,9 +1166,14 @@ class layout {
 				DATA.get_ontology(NAV.get_ontology_id()).then((data) => {
 					LOADER.hide("#contents .progress");
 
+					// Set Ontology languages
 					let langs = [];
-
 					langs.push(STR.get_ontologies_languages(data.name));
+					// Set the page name
+					let page_name = STR.get_ontology_term(data.name);
+					$(".page_name").text(page_name);
+					// Reset the page title
+					$("#page_title").html(page_name);
 
 					$("#ontology_tree .languages_refresh select").append(
 						$.map(langs, (lang) => {
@@ -1187,15 +1200,6 @@ class layout {
 					$("#term_permalink").attr("href", ext_permalink);
 					$("#term_info_name").attr("href", permalink);
 					$("#ontology_tree, #ontology_info").removeClass("disabled");
-				});
-
-				DATA.get_ontology_comments(NAV.get_ontology_id()).then((data) => {
-					let comments_count = $.map(data, function(n, i) { return i; }).length;
-					if(jQuery.isEmptyObject(data)) {
-						data = {};
-					}
-					$("#new-comments a").text("Comments (" + comments_count + ")");
-					$("#comments").append();
 				});
 
 				$("#contents").addClass("coloured grey lighten-5")
@@ -1233,10 +1237,17 @@ class layout {
 										$('<nav>', {"class": "nav-extended"}).append(
 											$('<div>', {"class": "nav-content"}).append(
 												$('<ul>', {"class": "tabs"}).append(
+													// Info tab
 													$('<li>', {"id": "general", "class": "tab"}).append(
 														$('<a>', {"href": "#page_info", "class": "active"}).text("General")
 													)
 												).append(
+													// Variables tab
+													$('<li>', {"id": "variables", "class": "tab disabled"}).append(
+														$('<a>', {"href": "#item_variables"}).text("Variables")
+													)
+												).append(
+													// Comments tab
 													$('<li>', {"id": "new-comments", "class": "tab"}).append(
 														$('<a>', {"href": "#page_comments"}).text("Comments")
 													)
@@ -1268,10 +1279,15 @@ class layout {
 										)
 									).append(
 										$('<div>', {"id": "pages"}).append(
+											// Info container
 											$('<div>', {"id": "page_info", "class": "card-content"})
 										).append(
+											// Variables container
+											$('<div>', {"id": "item_variables", "class": "card-content"})
+										).append(
+											// Comments container
 											$('<div>', {"id": "page_comments", "class": "card-content"}).append(
-												$('<ul>', {"id": "comments", "class": "collection"})
+												$('<ul>', {"id": "comments", "class": "collection"}).hide()
 											).append(
 												$('<div>', {"id": "comment_form"}).append(() => {
 													if(DATA.get_user_logged()) {
@@ -1311,7 +1327,10 @@ class layout {
 								).append(
 									$('<div>', {"id": "graph", "class": "card disabled"}).append(
 										$('<div>', {"id": "graph_content", "class": "valign-wrapper"}).append(
-											$('<h1>').html('<svg aria-hidden="true" data-prefix="fal" data-icon="chart-network" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-chart-network fa-w-20 fa-3x"><path fill="currentColor" d="M513.6 202.8l-19.2-25.6-48 36 19.2 25.6 48-36zM576 192c13.3 0 25.6-4 35.8-10.9 6.8-4.6 12.7-10.5 17.3-17.3C636 153.6 640 141.3 640 128c0-13.3-4-25.6-10.9-35.8-2.3-3.4-4.9-6.6-7.8-9.5-2.9-2.9-6.1-5.5-9.5-7.8C601.6 68 589.3 64 576 64s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C516 102.4 512 114.7 512 128c0 35.3 28.7 64 64 64zm0-96c17.6 0 32 14.4 32 32s-14.4 32-32 32-32-14.4-32-32 14.4-32 32-32zM99.8 250.9C89.6 244 77.3 240 64 240s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C4 278.4 0 290.7 0 304c0 35.3 28.7 64 64 64s64-28.7 64-64c0-13.3-4-25.6-10.9-35.8-4.6-6.8-10.5-12.7-17.3-17.3zM64 336c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm88-16h48v-32h-48v32zm469.3 82.7c-2.9-2.9-6.1-5.5-9.5-7.8C601.6 388 589.3 384 576 384s-25.6 4-35.8 10.9c-3.3 2.2-6.3 4.7-9.1 7.5l-91.8-55.1c5.6-13.3 8.7-28 8.7-43.3 0-61.9-50.1-112-112-112-11.3 0-21.9 2.2-32.2 5.2l-39.3-84.1C278.8 101.4 288 83.9 288 64c0-13.3-4-25.6-10.9-35.8-4.6-6.8-10.5-12.7-17.3-17.3C249.6 4 237.3 0 224 0s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C164 38.4 160 50.7 160 64c0 35.3 28.7 64 64 64 4 0 7.9-.5 11.7-1.2l39 83.6c-30.5 20-50.7 54.4-50.7 93.6 0 61.9 50.1 112 112 112 35 0 65.8-16.4 86.4-41.5l92.4 55.4c-1.7 5.8-2.7 11.8-2.7 18.1 0 35.3 28.7 64 64 64 13.3 0 25.6-4 35.8-10.9 6.8-4.6 12.7-10.5 17.3-17.3C636 473.6 640 461.3 640 448c0-13.3-4-25.6-10.9-35.8-2.3-3.4-5-6.6-7.8-9.5zM224 96c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm112 288c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80zm240 96c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32z" class=""></path></svg>')
+											// $('<h1>').html('<svg aria-hidden="true" data-prefix="fal" data-icon="chart-network" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-chart-network fa-w-20 fa-3x"><path fill="currentColor" d="M513.6 202.8l-19.2-25.6-48 36 19.2 25.6 48-36zM576 192c13.3 0 25.6-4 35.8-10.9 6.8-4.6 12.7-10.5 17.3-17.3C636 153.6 640 141.3 640 128c0-13.3-4-25.6-10.9-35.8-2.3-3.4-4.9-6.6-7.8-9.5-2.9-2.9-6.1-5.5-9.5-7.8C601.6 68 589.3 64 576 64s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C516 102.4 512 114.7 512 128c0 35.3 28.7 64 64 64zm0-96c17.6 0 32 14.4 32 32s-14.4 32-32 32-32-14.4-32-32 14.4-32 32-32zM99.8 250.9C89.6 244 77.3 240 64 240s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C4 278.4 0 290.7 0 304c0 35.3 28.7 64 64 64s64-28.7 64-64c0-13.3-4-25.6-10.9-35.8-4.6-6.8-10.5-12.7-17.3-17.3zM64 336c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm88-16h48v-32h-48v32zm469.3 82.7c-2.9-2.9-6.1-5.5-9.5-7.8C601.6 388 589.3 384 576 384s-25.6 4-35.8 10.9c-3.3 2.2-6.3 4.7-9.1 7.5l-91.8-55.1c5.6-13.3 8.7-28 8.7-43.3 0-61.9-50.1-112-112-112-11.3 0-21.9 2.2-32.2 5.2l-39.3-84.1C278.8 101.4 288 83.9 288 64c0-13.3-4-25.6-10.9-35.8-4.6-6.8-10.5-12.7-17.3-17.3C249.6 4 237.3 0 224 0s-25.6 4-35.8 10.9c-6.8 4.6-12.7 10.5-17.3 17.3C164 38.4 160 50.7 160 64c0 35.3 28.7 64 64 64 4 0 7.9-.5 11.7-1.2l39 83.6c-30.5 20-50.7 54.4-50.7 93.6 0 61.9 50.1 112 112 112 35 0 65.8-16.4 86.4-41.5l92.4 55.4c-1.7 5.8-2.7 11.8-2.7 18.1 0 35.3 28.7 64 64 64 13.3 0 25.6-4 35.8-10.9 6.8-4.6 12.7-10.5 17.3-17.3C636 473.6 640 461.3 640 448c0-13.3-4-25.6-10.9-35.8-2.3-3.4-5-6.6-7.8-9.5zM224 96c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm112 288c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80zm240 96c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32z" class=""></path></svg>')
+											$('<h1>').append(
+												$('<span>', {"class": "fab fa-hubspot fa-3x"})
+											)
 										)
 									)
 								)

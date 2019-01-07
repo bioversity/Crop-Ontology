@@ -74,7 +74,6 @@ var treeview = function () {
 							}
 						}
 						var $tree_icon = $('<div>', { "class": div_class }).click(function (e) {
-							console.log("ok");
 							action(e, v.id);
 						});
 
@@ -189,6 +188,7 @@ var treeview = function () {
 												if ($.inArray(child.id, selected_ids) > -1) {
 													var $child_li = $("." + child.id.replace(":", "-")).closest("li").last();
 
+													console.warn(selected_ids[selected_ids.length - 1], child.id);
 													if (selected_ids[selected_ids.length - 1] == child.id) {
 														var $button = $("." + child.id.replace(":", "-"));
 
@@ -198,7 +198,8 @@ var treeview = function () {
 														LOADER.hide("#treeview_container .progress");
 														return false;
 													} else {
-														console.warn(selected_ids[selected_ids.length - 1], child.id);
+														console.info(selected_ids);
+														// console.warn(selected_ids[child_key], selected_ids[selected_ids.length - 1], child.id);
 														build_tree($child_li, child.id, function (sub_child_data) {
 															$.each(sub_child_data, function (subchild_key, subchild) {
 																// console.warn(child.id, $.inArray(child.id, selected_ids));
@@ -206,7 +207,7 @@ var treeview = function () {
 																	console.log(subchild);
 																	var $subchild_li = $("." + child.id.replace(":", "-")).closest("li").last();
 
-																	console.warn(selected_ids[selected_ids.length - 1], subchild.id);
+																	console.error(subchild.id);
 																	if (selected_ids[selected_ids.length - 1] == subchild.id) {
 																		var _$button = $("." + subchild.id.replace(":", "-"));
 
@@ -223,8 +224,6 @@ var treeview = function () {
 																		// 		});
 																		// 	});
 																	}
-																} else {
-																	return false;
 																}
 																// $.each(data[0], (kk, vv) => {
 																// 	if(vv.id == kv.id) {
@@ -278,6 +277,9 @@ var treeview = function () {
 						} else {
 							// Load childrens
 							build_tree($li, id, function () {
+								var $button = $("." + id.replace(":", "-"));
+								$button.click();
+
 								// Hide the loader
 								LOADER.hide("#treeview_container .progress");
 							});
@@ -330,7 +332,7 @@ var treeview = function () {
       */
 
 					toggleIcon(e);
-					$(".treeview a.selected").removeClass("selected");
+					// $(".treeview a.selected").removeClass("selected");
 					$li_ul.hide();
 					$(e.target).closest("ul").closest("li.expandable").find("a").first().addClass("selected");
 				}
@@ -340,6 +342,7 @@ var treeview = function () {
 			// Simulate the click on the first "hitarea"
 			// just a first opening of the tree
 			.click(function (e) {
+				console.log(_this);
 				action(e, id);
 			});
 		}
@@ -497,7 +500,7 @@ var treeview = function () {
 				    $dl = $("#page_info dl").append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(item_id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + item_id }).append($('<span>', { "class": "picol_rdf" }))));
 				$.each(ordered_source, function (k, v) {
 					$dl.append($('<dt>', { "class": "valign-wrapper" }).append(STR.ucfirst(k) + ":")).append($('<dd>').append(function () {
-						if (!DATA.get_user_logged() && editable[k] !== undefined) {
+						if (DATA.get_user_logged() && editable[k] !== undefined) {
 							return $('<span>').append(v + " ").append($('<a>', {
 								"href": "javascript:;",
 								"class": "btn btn-flat btn-mini white highlight-text",
@@ -510,15 +513,19 @@ var treeview = function () {
 						}
 					}));
 				});
-				$("#term_info_name").text(source.name);
-				$("#page_info").html($dl).append($('<div>', { "class": "card-content", "id": "add_term_form" }).hide()).append($('<div>', { "class": "card-action" }).append($('<a>', {
-					"href": "javascript:;",
-					"class": "btn btn-flat white highlight-text add_term"
-				}).append("Add a new attribute ").append($('<span>', { "class": "fa fa-plus" }))
-				// .click((e) => {
-				// 	$(e.target).addClass("disabled");
-				// })
-				));
+				// $("#term_info_name").text(source.name);
+				$("#page_info").html($dl).append($('<div>', { "class": "card-content", "id": "add_term_form" }).hide()).append(function () {
+					if (DATA.get_user_logged() && editable[k] !== undefined) {
+						return $('<div>', { "class": "card-action" }).append($('<a>', {
+							"href": "javascript:;",
+							"class": "btn btn-flat white highlight-text add_term"
+						}).append("Add a new attribute ").append($('<span>', { "class": "fa fa-plus" }))
+						// .click((e) => {
+						// 	$(e.target).addClass("disabled");
+						// })
+						);
+					}
+				});
 
 				this.page_info_btn__actions();
 			} else {
@@ -541,11 +548,11 @@ var treeview = function () {
 
 			var $a = $('<a>', {
 				"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
-				"class": "btn btn-mini tooltipped " + option.id.replace(":", "-") + (option.is_root || NAV.get_term_id() == option.id ? " selected" : ""),
-				"data-id": option.id
+				"class": "btn btn-mini tooltipped " + option.id.replace(":", "-") /* + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : "")*/
+				, "data-id": option.id
 			}).append($('<span>').html(STR.camel_case_2_text(option.term))).click(function (e) {
 				$("#page_info dl").html("");
-				$("#comments").html("");
+				$("#comments").html("").hide();
 
 				// Item selection in treeview
 				$(".treeview a.selected").removeClass("selected");
@@ -554,22 +561,78 @@ var treeview = function () {
 				// Permalink
 				var permalink = void 0,
 				    ext_permalink = void 0;
-				if (option.is_root || option.id.split(":")[1] == "0000000") {
+				if (option.is_root || option.id.split(":")[1] == "0000000" || option.id.split(":")[1] == "ROOT") {
 					permalink = "./ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
+
+					// Set page title and subtitle
+					$("#page_title").html(STR.camel_case_2_text(STR.get_ontology_term(option.source.name)));
+					$("#page_subtitle").html(NAV.get_ontology_id());
+					// Se the breadcrumb
+					$("span.breadcrumb").find("tt").html(NAV.get_ontology_id());
 				} else {
 					permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name), history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
+
+					// Set page title and subtitle
+					$("#page_title").html(STR.camel_case_2_text(STR.get_ontology_term(option.source.name)));
+					$("#page_subtitle").html('<a href="./ontology/' + NAV.get_ontology_id() + '">' + NAV.get_ontology_id() + "</a><small>:" + NAV.get_term_id() + "</small>");
+					// Se the breadcrumb
+					$("span.breadcrumb").html('<tt>' + NAV.get_ontology_id() + "<small>:" + NAV.get_term_id() + '</small></tt>' + STR.camel_case_2_text(STR.get_ontology_term(option.source.name)));
 				}
 				ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + (option.langs.length == 0 ? settings.general.language : option.langs[0]);
 
 				$("#term_info_name").attr("href", permalink).html(option.term);
 				$("#term_permalink").attr("href", ext_permalink);
 
-				if (option.is_root || option.id.split(":")[1] == "0000000") {
+				// Manage "Term information" nav
+				$("#variables").addClass("disabled").find("a").html($('<span>', { "class": "fa fa-spin fa-sync" }));
+				$("#general a").click();
+
+				// Variables
+				DATA.get_terms_variables(option.source.id).then(function (variables) {
+					// $("#new-comments a").text("Comments (" + comments.length + ")");
+					if (variables.length > 0) {
+						// Manage "Term information" nav
+						$("#variables").removeClass("disabled").find("a").text("Variables (" + variables.length + ")");
+						$("#ontology_info ul.tabs a").removeClass("active");
+						$("#general a").click();
+						// Prepare variables container
+						$("#item_variables").html($('<ul>', { "class": "collection" }));
+
+						$.each(variables, function (k, v) {
+							$("#item_variables .collection").append($('<li>', { "class": "collection-item" }).append($('<a>', { "href": "./terms/" + v.id }).append($('<div>').append(STR.get_ontology_term(v.name)).append($('<span>', { "class": "fa fa-chevron-right secondary-content grey-text" })))));
+						});
+					} else {
+						$("#variables a").addClass("disabled");
+					}
+
+					LOADER.hide("#pages .progress");
+					_this3.enable_info();
+				});
+
+				if (option.is_root || option.id.split(":")[1] == "0000000" || option.id.split(":")[1] == "ROOT") {
 					_this3.add_info($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 						return option.langs.length + ": " + option.langs.join(", ");
 					})), false);
-					$("#graph_content").html("");
+					$("#graph_content").html($('<h1>').append($('<span>', { "class": "fab fa-hubspot fa-3x" })));
 					$("#graph").addClass("disabled");
+
+					// Comments
+					DATA.get_ontology_comments(NAV.get_ontology_id()).then(function (comments) {
+						var comments_count = $.map(comments, function (n, i) {
+							return i;
+						}).length;
+						if (comments_count > 0) {
+							$("#new-comments a").text("Comments (" + comments_count + ")");
+							$("#comments").html("");
+
+							$.each(comments, function (k, c) {
+								console.log(c[0]);
+								DATA.get_user(c[0].username).then(function (user) {
+									$("#comments").append($('<li>', { "class": "collection-item avatar" }).append($('<img>', { "src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle" })).append($('<span>', { "class": "title" }).append($('<span>', { "class": "highlight" }).text(user.name + " " + user.sirname)).append("<br />").append($('<small>', { "class": "grey-text" }).text(c[0].date))).append($('<p>', { "style": "font-style:italic;" }).text(c[0].comment))).show();
+								});
+							});
+						}
+					});
 				} else {
 					// Info
 					_this3.disable_info();
@@ -578,21 +641,6 @@ var treeview = function () {
 					DATA.get_ontology_attributes(option.source.id).then(function (data) {
 						data.id = option.source.id;
 						_this3.add_info(data, true);
-
-						// Comments
-						DATA.get_terms_comments(option.source.id).then(function (comments) {
-							$("#new-comments a").text("Comments (" + comments.length + ")");
-							// Get user data
-							$.each(comments, function (k, c) {
-								DATA.get_user(c.author_id).then(function (user) {
-									$("#comments").append($('<li>', { "class": "collection-item avatar" }).append($('<img>', { "src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle" })).append($('<span>', { "class": "title" }).append($('<span>', { "class": "highlight" }).text(user.name + " " + user.sirname)).append("<br />").append($('<small>', { "class": "grey-text" }).text(c.created))).append($('<p>', { "style": "font-style:italic;" }).text(c.comment)));
-								});
-							});
-
-							$("#comments").append();
-							LOADER.hide("#pages .progress");
-							_this3.enable_info();
-						});
 					});
 
 					LOADER.create({ target: "#graph", type: "progress" });
@@ -687,6 +735,20 @@ var treeview = function () {
 						// 	)
 						// }
 					});
+
+					// Comments
+					DATA.get_terms_comments(option.source.id).then(function (comments) {
+						$("#new-comments a").text("Comments (" + comments.length + ")");
+						// Get user data
+						$.each(comments, function (k, c) {
+							DATA.get_user(c.author_id).then(function (user) {
+								$("#comments").append($('<li>', { "class": "collection-item avatar" }).append($('<img>', { "src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle" })).append($('<span>', { "class": "title" }).append($('<span>', { "class": "highlight" }).text(user.name + " " + user.sirname)).append("<br />").append($('<small>', { "class": "grey-text" }).text(c.created))).append($('<p>', { "style": "font-style:italic;" }).text(c.comment))).show();
+							});
+						});
+
+						LOADER.hide("#pages .progress");
+						_this3.enable_info();
+					});
 				}
 			});
 
@@ -765,7 +827,7 @@ var treeview = function () {
 				$("#page_info").html($('<dl>').append($('<dt>', { "class": "grey-text" }).text("Identifier:")).append($('<dd>', { "class": "grey-text" }).append($('<tt>').text(option.source.id + " ")).append($('<a>', { "target": "_blank", "href": "https://www.cropontology.org/rdf/" + option.source.id }).append($('<span>', { "class": "picol_rdf" })))).append($('<dt>').text("Ontology type:")).append($('<dd>').text(option.source.ontologyType)).append($('<dt>').append("Available languages:")).append($('<dd>').append(function () {
 					return option.langs.length + ": " + option.langs.join(", ");
 				})));
-				$("#term_info_name").html(option.term);
+				// $("#term_info_name").html(option.term);
 
 				LOADER.hide("#pages .progress");
 

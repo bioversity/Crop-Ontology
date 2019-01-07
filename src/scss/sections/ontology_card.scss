@@ -26,6 +26,20 @@
         color: $grey;
         text-shadow: 0 0 1px $grey;
     }
+    a {
+        color: inherit;
+        // padding: 2px;
+
+        &:hover {
+            &::before {
+                content: "‹";
+                line-height: 0.9em;
+                margin-left: -16px;
+                position: absolute;
+                vertical-align: 279px;
+            }
+        }
+    }
   }
   #page_title {
     color: $dark-grey;

@@ -48,7 +48,6 @@ class treeview {
 							}
 						}
 						let $tree_icon = $('<div>', {"class": div_class}).click((e) => {
-							console.log("ok");
 							action(e, v.id);
 						});
 
@@ -171,6 +170,7 @@ class treeview {
 												if($.inArray(child.id, selected_ids) > -1) {
 													let $child_li = $("." + child.id.replace(":", "-")).closest("li").last();
 
+													console.warn(selected_ids[selected_ids.length - 1], child.id);
 													if(selected_ids[selected_ids.length - 1] == child.id) {
 														let $button = $("." + child.id.replace(":", "-"))
 
@@ -180,7 +180,8 @@ class treeview {
 														LOADER.hide("#treeview_container .progress");
 														return false;
 													} else {
-														console.warn(selected_ids[selected_ids.length - 1], child.id);
+														console.info(selected_ids);
+														// console.warn(selected_ids[child_key], selected_ids[selected_ids.length - 1], child.id);
 														build_tree($child_li, child.id, (sub_child_data) => {
 															$.each(sub_child_data, (subchild_key, subchild) => {
 																// console.warn(child.id, $.inArray(child.id, selected_ids));
@@ -188,7 +189,7 @@ class treeview {
 																	console.log(subchild);
 																	let $subchild_li = $("." + child.id.replace(":", "-")).closest("li").last();
 
-																	console.warn(selected_ids[selected_ids.length - 1], subchild.id);
+																	console.error(subchild.id);
 																	if(selected_ids[selected_ids.length - 1] == subchild.id) {
 																		let $button = $("." + subchild.id.replace(":", "-"))
 
@@ -205,8 +206,6 @@ class treeview {
 																	// 		});
 																	// 	});
 																	}
-																} else {
-																	return false;
 																}
 																// $.each(data[0], (kk, vv) => {
 																// 	if(vv.id == kv.id) {
@@ -260,6 +259,9 @@ class treeview {
 						} else {
 							// Load childrens
 							build_tree($li, id, () => {
+								let $button = $("." + id.replace(":", "-"))
+								$button.click();
+
 								// Hide the loader
 								LOADER.hide("#treeview_container .progress");
 							});
@@ -313,7 +315,7 @@ class treeview {
 					 */
 
 					toggleIcon(e);
-					$(".treeview a.selected").removeClass("selected");
+					// $(".treeview a.selected").removeClass("selected");
 					$li_ul.hide();
 					$(e.target).closest("ul").closest("li.expandable").find("a").first().addClass("selected");
 				}
@@ -323,6 +325,7 @@ class treeview {
 		// Simulate the click on the first "hitarea"
 		// just a first opening of the tree
 			.click((e) => {
+				console.log(this);
 				action(e, id);
 			}
 		);
@@ -544,7 +547,7 @@ class treeview {
 					$('<dt>', {"class": "valign-wrapper"}).append(STR.ucfirst(k) + ":")
 				).append(
 					$('<dd>').append(() => {
-						if(!DATA.get_user_logged() && editable[k] !== undefined) {
+						if(DATA.get_user_logged() && editable[k] !== undefined) {
 							return $('<span>').append(v + " ").append(
 								$('<a>', {
 									"href": "javascript:;",
@@ -562,22 +565,24 @@ class treeview {
 					})
 				)
 			});
-			$("#term_info_name").text(source.name);
+			// $("#term_info_name").text(source.name);
 			$("#page_info").html($dl).append(
 				$('<div>', {"class": "card-content", "id": "add_term_form"}).hide()
-			).append(
-				$('<div>', {"class": "card-action"}).append(
-					$('<a>', {
-						"href": "javascript:;",
-						"class": "btn btn-flat white highlight-text add_term"
-					})
-					.append("Add a new attribute ")
-					.append($('<span>', {"class": "fa fa-plus"}))
-					// .click((e) => {
-					// 	$(e.target).addClass("disabled");
-					// })
-				)
-			);
+			).append(() => {
+				if(DATA.get_user_logged() && editable[k] !== undefined) {
+					return $('<div>', {"class": "card-action"}).append(
+						$('<a>', {
+							"href": "javascript:;",
+							"class": "btn btn-flat white highlight-text add_term"
+						})
+						.append("Add a new attribute ")
+						.append($('<span>', {"class": "fa fa-plus"}))
+						// .click((e) => {
+						// 	$(e.target).addClass("disabled");
+						// })
+					)
+				}
+			});
 
 			this.page_info_btn__actions();
 		} else {
@@ -597,13 +602,13 @@ class treeview {
 
 		let $a = $('<a>', {
 			"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
-			"class": "btn btn-mini tooltipped " + option.id.replace(":", "-") + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : ""),
+			"class": "btn btn-mini tooltipped " + option.id.replace(":", "-")/* + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : "")*/,
 			"data-id": option.id
 		}).append(
 			$('<span>').html(STR.camel_case_2_text(option.term))
 		).click((e) => {
 			$("#page_info dl").html("");
-			$("#comments").html("");
+			$("#comments").html("").hide();
 
 			// Item selection in treeview
 			$(".treeview a.selected").removeClass("selected");
@@ -611,19 +616,69 @@ class treeview {
 
 			// Permalink
 			let permalink, ext_permalink;
-			if(option.is_root || option.id.split(":")[1] == "0000000") {
+			if(option.is_root || option.id.split(":")[1] == "0000000" || option.id.split(":")[1] == "ROOT") {
 				permalink = "./ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name),
 				history.pushState("", option.term, "/ontology/" + NAV.get_ontology_id() + ":" + STR.get_ontology_term(option.source.name));
+
+				// Set page title and subtitle
+				$("#page_title").html(STR.camel_case_2_text(STR.get_ontology_term(option.source.name)));
+				$("#page_subtitle").html(NAV.get_ontology_id());
+				// Se the breadcrumb
+				$("span.breadcrumb").find("tt").html(NAV.get_ontology_id());
 			} else {
 				permalink = "./terms/" + option.id + ":" + STR.get_ontology_term(option.source.name),
 				history.pushState("", option.term, "/terms/" + option.id + ":" + STR.get_ontology_term(option.source.name));
+
+				// Set page title and subtitle
+				$("#page_title").html(STR.camel_case_2_text(STR.get_ontology_term(option.source.name)));
+				$("#page_subtitle").html('<a href="./ontology/' + NAV.get_ontology_id() + '">' + NAV.get_ontology_id() + "</a><small>:" + NAV.get_term_id() + "</small>");
+				// Se the breadcrumb
+				$("span.breadcrumb").html('<tt>' + NAV.get_ontology_id() + "<small>:" + NAV.get_term_id() + '</small></tt>' + STR.camel_case_2_text(STR.get_ontology_term(option.source.name)));
 			}
 			ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + ((option.langs.length == 0) ? settings.general.language : option.langs[0]);
 
 			$("#term_info_name").attr("href", permalink).html(option.term);
 			$("#term_permalink").attr("href", ext_permalink);
 
-			if(option.is_root || option.id.split(":")[1] == "0000000") {
+			// Manage "Term information" nav
+			$("#variables").addClass("disabled").find("a").html($('<span>', {"class": "fa fa-spin fa-sync"}));
+			$("#general a").click();
+
+			// Variables
+			DATA.get_terms_variables(option.source.id).then((variables) => {
+				// $("#new-comments a").text("Comments (" + comments.length + ")");
+				if(variables.length > 0) {
+					// Manage "Term information" nav
+					$("#variables").removeClass("disabled").find("a").text("Variables (" + variables.length + ")");
+					$("#ontology_info ul.tabs a").removeClass("active");
+					$("#general a").click();
+					// Prepare variables container
+					$("#item_variables").html(
+						$('<ul>', {"class": "collection"})
+					);
+
+					$.each(variables, (k, v) => {
+						$("#item_variables .collection").append(
+							$('<li>', {"class": "collection-item"}).append(
+								$('<a>', {"href": "./terms/" + v.id}).append(
+									$('<div>').append(
+										STR.get_ontology_term(v.name)
+									).append(
+										$('<span>', {"class": "fa fa-chevron-right secondary-content grey-text"})
+									)
+								)
+							)
+						);
+					});
+				} else {
+					$("#variables a").addClass("disabled");
+				}
+
+				LOADER.hide("#pages .progress");
+				this.enable_info();
+			});
+
+			if(option.is_root || option.id.split(":")[1] == "0000000" || option.id.split(":")[1] == "ROOT") {
 				this.add_info(
 					$('<dl>').append(
 						$('<dt>', {"class": "grey-text"}).text("Identifier:")
@@ -648,8 +703,40 @@ class treeview {
 					),
 					false
 				);
-				$("#graph_content").html("");
+				$("#graph_content").html(
+					$('<h1>').append(
+						$('<span>', {"class": "fab fa-hubspot fa-3x"})
+					)
+				);
 				$("#graph").addClass("disabled");
+
+				// Comments
+				DATA.get_ontology_comments(NAV.get_ontology_id()).then((comments) => {
+					let comments_count = $.map(comments, function(n, i) { return i; }).length;
+					if(comments_count > 0) {
+						$("#new-comments a").text("Comments (" + comments_count + ")");
+						$("#comments").html("");
+
+						$.each(comments, (k, c) => {
+							console.log(c[0]);
+							DATA.get_user(c[0].username).then((user) => {
+								$("#comments").append(
+									$('<li>', {"class": "collection-item avatar"}).append(
+										$('<img>', {"src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle"})
+									).append(
+										$('<span>', {"class": "title"}).append(
+											$('<span>', {"class": "highlight"}).text(user.name + " " + user.sirname)
+										).append("<br />").append(
+											$('<small>', {"class": "grey-text"}).text(c[0].date)
+										)
+									).append(
+										$('<p>', {"style": "font-style:italic;"}).text(c[0].comment)
+									)
+								).show();
+							});
+						});
+					}
+				});
 			} else {
 				// Info
 				this.disable_info();
@@ -658,33 +745,6 @@ class treeview {
 				DATA.get_ontology_attributes(option.source.id).then((data) => {
 					data.id = option.source.id;
 					this.add_info(data, true);
-
-					// Comments
-					DATA.get_terms_comments(option.source.id).then((comments) => {
-						$("#new-comments a").text("Comments (" + comments.length + ")");
-						// Get user data
-						$.each(comments, (k, c) => {
-							DATA.get_user(c.author_id).then((user) => {
-								$("#comments").append(
-									$('<li>', {"class": "collection-item avatar"}).append(
-										$('<img>', {"src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle"})
-									).append(
-										$('<span>', {"class": "title"}).append(
-											$('<span>', {"class": "highlight"}).text(user.name + " " + user.sirname)
-										).append("<br />").append(
-											$('<small>', {"class": "grey-text"}).text(c.created)
-										)
-									).append(
-										$('<p>', {"style": "font-style:italic;"}).text(c.comment)
-									)
-								);
-							});
-						});
-
-						$("#comments").append();
-						LOADER.hide("#pages .progress");
-						this.enable_info();
-					});
 				});
 
 				LOADER.create({target: "#graph", type: "progress"});
@@ -783,6 +843,32 @@ class treeview {
 					// 	)
 					// }
 				});
+
+				// Comments
+				DATA.get_terms_comments(option.source.id).then((comments) => {
+					$("#new-comments a").text("Comments (" + comments.length + ")");
+					// Get user data
+					$.each(comments, (k, c) => {
+						DATA.get_user(c.author_id).then((user) => {
+							$("#comments").append(
+								$('<li>', {"class": "collection-item avatar"}).append(
+									$('<img>', {"src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle"})
+								).append(
+									$('<span>', {"class": "title"}).append(
+										$('<span>', {"class": "highlight"}).text(user.name + " " + user.sirname)
+									).append("<br />").append(
+										$('<small>', {"class": "grey-text"}).text(c.created)
+									)
+								).append(
+									$('<p>', {"style": "font-style:italic;"}).text(c.comment)
+								)
+							).show();
+						});
+					});
+
+					LOADER.hide("#pages .progress");
+					this.enable_info();
+				});
 			}
 		});
 
@@ -879,7 +965,7 @@ class treeview {
 						})
 					)
 				);
-				$("#term_info_name").html(option.term);
+				// $("#term_info_name").html(option.term);
 
 			LOADER.hide("#pages .progress");
 

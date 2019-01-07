@@ -91,7 +91,7 @@ var navigation = function () {
 	}, {
 		key: "get_ontology_id",
 		value: function get_ontology_id() {
-			return this.get_url_path()[1];
+			return this.get_url_path()[1] !== undefined ? this.get_url_path()[1] : "";
 		}
 
 		/**
@@ -104,7 +104,7 @@ var navigation = function () {
 	}, {
 		key: "get_term_id",
 		value: function get_term_id() {
-			return this.get_url_path()[2];
+			return this.get_url_path()[2] !== undefined ? this.get_url_path()[2] : "";
 		}
 
 		/**
@@ -129,7 +129,7 @@ var navigation = function () {
 	}, {
 		key: "get_ontology_label",
 		value: function get_ontology_label() {
-			return this.get_url_path()[2];
+			return this.get_url_path()[2] !== undefined ? this.get_url_path()[2] : "...";
 		}
 
 		/**
@@ -142,7 +142,7 @@ var navigation = function () {
 	}, {
 		key: "get_term_label",
 		value: function get_term_label() {
-			return this.get_url_path()[3];
+			return this.get_url_path()[3] !== undefined ? this.get_url_path()[3] : "";
 		}
 	}]);
 

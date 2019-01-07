@@ -151,13 +151,15 @@
 
 #ontology_info {
   nav {
+    // padding: 5px 15px;
     background: white;
     color: $dark-grey;
-    // padding: 5px 15px;
+    position: relative;
+    z-index: 1;
 
     a {
-      color: $grey;
-      &:hover { color: $medium-light-grey; }
+      color: $medium-light-grey;
+      &:hover { color: $medium-grey; }
     }
 
     .filterbar {
@@ -168,7 +170,7 @@
       .filters {
         #term_info_name {
           color: $dark-grey;
-          max-width: 350px;
+          max-width: 300px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -187,9 +189,12 @@
         }
       }
     }
+    #new-comments {
+        background-image: linear-gradient(to right, $white-grey, $white-white-grey 10px);
+    }
   }
   #pages {
-    background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
+    // background: linear-gradient(to bottom, $grey, $white-grey 2px, $white 10px);
 
     .progress {
       margin-top: 1px;
@@ -244,6 +249,20 @@
           a { font-size: 13px; }
       }
     }
+
+    #item_variables {
+        max-height: 350px;
+        overflow-y: auto;
+
+        li.collection-item {
+            padding: 0;
+
+            a {
+                display: block;
+                padding: 10px 20px;
+            }
+        }
+    }
   }
   #graph {
     color: $grey;
@@ -251,12 +270,12 @@
     text-align: center;
 
     &.disabled {
-      h1 { width: 100%; }
       svg {
         width: 100px;
         opacity: 0.2;
       }
     }
+    h1 { width: 100%; }
     .progress {
       margin: 0;
       position: absolute;
@@ -277,6 +296,9 @@
           right: 10px;
           top: 10px;
         }
+      }
+      .fa-hubspot {
+          color: $white-grey;
       }
     }
     &.fullscreen {

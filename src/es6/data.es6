@@ -446,6 +446,26 @@ class data {
 		});
 	}
 
+	get_terms_variables(term_id) {
+		return new Promise((resolve, reject) => {
+			/**
+			 * @see http://www.cropontology.org/api
+			 */
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/get-variables/" + term_id,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	get_terms_comments(term_id) {
 		return new Promise((resolve, reject) => {
 			/**
@@ -537,30 +557,71 @@ class data {
 	get_user(id) {
 		return new Promise((resolve, reject) => {
 			/**
-			 * @see http://www.cropontology.org/api
-			 */
-			$.ajax({
-				type: "GET",
-				url: "http://www.cropontology.org/users/" + id,
-				async: true,
-				dataType: "json",
-				success: (data) => {
-					// Get Gravatar data
-					$.ajax({
-						type: "GET",
-						url: "https://en.gravatar.com/" + data.gravatar + ".json",
-						async: true,
-						dataType: "json",
-						success: (gravatar_data) => {
-							data.gravatar = gravatar_data.entry[0];
-							resolve(data);
-						}
-					});
-				},
-				error: (jqXHR, textStatus, errorThrown) => {
-					reject(errorThrown);
-				}
-			});
+			* @see http://www.cropontology.org/api
+			*/
+			if(!$.isNumeric(id)) {
+				// The passed identifier is not a an ID but an username
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/users",
+					async: true,
+					dataType: "json",
+					success: (users) => {
+						$.each(users, (ku, vu) => {
+							if(vu.username == id) {
+								$.ajax({
+									type: "GET",
+									url: "http://www.cropontology.org/users/" + vu.userid,
+									async: true,
+									dataType: "json",
+									success: (data) => {
+										// Get Gravatar data
+										$.ajax({
+											type: "GET",
+											url: "https://en.gravatar.com/" + data.gravatar + ".json",
+											async: true,
+											dataType: "json",
+											success: (gravatar_data) => {
+												data.gravatar = gravatar_data.entry[0];
+												resolve(data);
+											}
+										});
+									},
+									error: (jqXHR, textStatus, errorThrown) => {
+										reject(errorThrown);
+									}
+								});
+							}
+						});
+					},
+					error: (jqXHR, textStatus, errorThrown) => {
+						reject(errorThrown);
+					}
+				});
+			} else {
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/users/" + id,
+					async: true,
+					dataType: "json",
+					success: (data) => {
+						// Get Gravatar data
+						$.ajax({
+							type: "GET",
+							url: "https://en.gravatar.com/" + data.gravatar + ".json",
+							async: true,
+							dataType: "json",
+							success: (gravatar_data) => {
+								data.gravatar = gravatar_data.entry[0];
+								resolve(data);
+							}
+						});
+					},
+					error: (jqXHR, textStatus, errorThrown) => {
+						reject(errorThrown);
+					}
+				});
+			}
 		});
 	}
 

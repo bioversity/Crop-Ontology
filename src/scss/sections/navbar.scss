@@ -100,8 +100,19 @@
           small { color: $medium-light-grey; }
         }
       }
-      a { color: $dark-grey; }
-      span { color: $medium-grey; }
+      a {
+          color: $dark-grey;
+          &:hover {
+              color: $highlight;
+              span {
+                  &.fa-home { color: $highlight; }
+              }
+          }
+      }
+      span {
+          &.fa-home { color: $medium-light-grey; }
+          &:not(.fa-home) { color: $medium-grey; }
+      }
     }
   }
 }
