@@ -369,6 +369,35 @@ var data = function () {
 		}
 
 		/**
+   * Get latest ontologies
+   * @NOTE This is an async function
+   *
+   * @return object 															The ontologies data JSON object
+   */
+
+	}, {
+		key: "get_latest_ontologies",
+		value: function get_latest_ontologies() {
+			return new _es6Promise2.default(function (resolve, reject) {
+				/**
+    * @see http://www.cropontology.org/api
+    */
+				$.ajax({
+					type: "POST",
+					url: "http://www.cropontology.org/latest",
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+
+		/**
    * Get and parse the Ontology data (for the Ontology card)
    * @NOTE This is an async function
    *

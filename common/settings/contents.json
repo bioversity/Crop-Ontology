@@ -79,6 +79,17 @@
             }
         }
     },
+    "latest": {
+        "title": "Latest Ontologies and Terms",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": "cowpea.jpg"
+            }]
+        }
+    },
     "about": {
         "title": "About the Project",
         "visible": true,

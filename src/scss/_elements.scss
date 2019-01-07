@@ -105,3 +105,17 @@
   //   }
   // }
 }
+
+a {
+  &.tag {
+    &.green {
+      background-color: $tag-light-green !important;
+      border-radius: 4px;
+      color: $medium-dark-grey;
+      font-family: monospace;
+      font-size: 0.6em;
+      margin-left: 10px;
+      padding: 3px 6px;
+    }
+  }
+}

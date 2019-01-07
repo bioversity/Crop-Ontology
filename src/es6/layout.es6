@@ -567,42 +567,49 @@ class layout {
 		 */
 		$("body").append(
 			$('<section>', {"id": "contents", "class": ""}).append(() => {
-				/**
-				 * Home layout
-				 * -------------------------------------------------------------
-				 */
-				if(page == "home") {
-					return $('<div>', {"class": "row"}).append(
-						$('<div>', {"class": "col s12 m4 l4 xl4"}).append(
-							$('<div>', {"class": "row"}).append(
-								$('<div>', {"id": "info_container", "class": "col s12 m12 l12 xl12"}).append(
-									$('<div>', {"class": "card lighten-5"}).append(
-										$('<div>', {"class": "card-content"}).append(
-											$('<span>', {"class": "card-title highlight"})
-										).append(
-											// Loader
-											// ---------------------------------
-											$('<div>', {"class": "help"}).append(
-												// $('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+				switch(page) {
+					/**
+					* Home layout
+					* -------------------------------------------------------------
+					*/
+					case "home":
+						return $('<div>', {"class": "row"}).append(
+							$('<div>', {"class": "col s12 m4 l4 xl4"}).append(
+								$('<div>', {"class": "row"}).append(
+									$('<div>', {"id": "info_container", "class": "col s12 m12 l12 xl12"}).append(
+										$('<div>', {"class": "card lighten-5"}).append(
+											$('<div>', {"class": "card-content"}).append(
+												$('<span>', {"class": "card-title highlight"})
+											).append(
+												// Loader
+												// ---------------------------------
+												$('<div>', {"class": "help"}).append(
+													// $('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+												)
+												// ---------------------------------
 											)
-											// ---------------------------------
 										)
 									)
+								).append(
+									$('<div>', {"id": "feed_container", "class": "col s12 m12 l12 xl12"})
 								)
-							).append(
-								$('<div>', {"id": "feed_container", "class": "col s12 m12 l12 xl12"})
+							)
+						).append(
+							$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
+								$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
 							)
 						)
-					).append(
-						$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
-							$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
-						)
-					)
-					/**
-					 * ---------------------------------------------------------
-					 */
-				} else {
-					return $('<div>', {"id": "page_content", "class": "container"});
+						break;
+					case "latest":
+						return $('<div>', {"class": "container"}).append(
+							$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
+								$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+							)
+						);
+						break;
+					default:
+						return $('<div>', {"id": "page_content", "class": "container"});
+						break;
 				}
 			})
 		);
@@ -770,6 +777,21 @@ class layout {
 							page_limit = 1;
 						}
 
+						$("#ontologies_container .collapsible").append(
+							$('<li>').append(
+								$('<div>', {"class": "collapsible-header grey-text"}).append(
+									$('<div>', {"class": "collapsible-secondary help-text"}).append(
+										$('<span>', {"class": "fa fa-chevron-right"})
+									)
+								).append(
+									$('<div>', {"class": "left"}).append(
+										$('<span>', {"class": "picol_news"})
+									).append("See latest")
+								).click(() => {
+									window.location.href = "./latest";
+								})
+							)
+						);
 						/**
 						 * Cycle categories (5 items)
 						 */
@@ -895,7 +917,188 @@ class layout {
 					// handle the error
 				});
 				break;
-   			/**
+			/**
+   			 * 							LATEST ONTOLOGIES AND NEWS contents
+			 * -----------------------------------------------------------------
+   			 */
+			case "latest":
+				LOADER.create({target: "#ontologies_container", type: "progress"});
+
+				DATA.get_latest_ontologies().then((latest) => {
+					LOADER.hide("#ontologies_container .progress", true);
+
+					if(settings.latest.visible) {
+						$("#ontologies_container").html(
+							$('<ul>', {"class": "collapsible z-depth-0", "data-collapsible": "accordion"})
+						)
+
+						var current_page = 1,
+							page_limit = parseInt(settings.home.sections.ontologies.items_per_page),
+							page_content = [];
+
+						if(page_limit <= 0) {
+							page_limit = 1;
+						}
+
+						/**
+						 * Cycle categories (5 items)
+						 */
+						$.each(latest, (k, categories) => {
+							console.log(k);
+							// let page = 0,
+							// 	pages = (categories.ontologies.length > page_limit) ? Math.ceil(categories.ontologies.length/page_limit) : 1,
+							// 	page_count = 0,
+							// 	$pagination = $('<div>', {"class": "ontology_pagination pagination-content"}),
+							// 	$ontology_page = null;
+                            //
+							$("#ontologies_container .collapsible").append(
+								$('<li>', {
+									"class": ((k == "latestOntos") ? "active" : ""),
+									"id": k
+								}).append(
+									$('<div>', {"class": "collapsible-header " + ((k == "latestOntos") ? "active" : "")}).append(
+							// 			$('<div>', {"class": "collapsible-secondary help-text"})
+							// 				.append(categories.ontologies.length + " " + STR.pluralize(categories.ontologies.length, "item"))
+							// 				.append(() => {
+							// 					if(pages > 1) {
+							// 						let $indications = $('<span>', {
+							// 							"class": "tooltipped",
+							// 							"data-tooltip": "Displaying page " + current_page + " of " + pages + " - " + page_limit + " items per page"
+							// 						}).append(" | ")
+							// 						  .append($('<span>', {"class": "far fa-file-alt"}))
+							// 						  .append($('<span>', {"id": "page_no", "class": "grey-text"}).text(current_page))
+							// 						  .append("/" + pages)
+							// 						  .prop("outerHTML");
+                            //
+							// 						setTimeout(() => {
+							// 							$("#ontologies_container .tooltipped").tooltip({position: "left"});
+							// 						}, 1000);
+							// 						return $indications;
+							// 					}
+							// 				})
+							// 		).append(
+										$('<div>', {"class": "left"}).append(
+											// $('<span>', {"class": categories.category.icon})
+										// ).append(
+											$('<span>').text(STR.ucfirst(STR.camel_case_2_text(k.replace("Ontos", "Ontologies"))) + " (top 10)")
+										)
+									)
+								).append(
+									$('<div>', {"class": "collapsible-body"}).append(
+							// 			if(pages > 1) { return $pagination; }
+							// 		}).append(
+										$('<ul>', {"id": "ontology_container"}).append(
+											/**
+											 * Cycle all ontologies
+											 */
+											$.map(categories, (vv, kk) => {
+												let name = "",
+													href = "",
+													rss = "",
+													nt = "",
+													summary = "",
+													author = "";
+
+												console.log(kk, vv);
+												if(k == "latestOntos") {
+													name = vv.ontology_name;
+													href = "./ontology/" + vv.ontology_id + ":" + name.replace("/", "-");
+													rss = "http://www.cropontology.org/ontology/" + vv.ontology_id + "/" + name.replace("/", "-") + "/rss";
+													nt = "http://www.cropontology.org/ontology/" + vv.ontology_id + "/" + name.replace("/", "-") + "/nt";
+													summary = STR.ucfirst(vv.ontology_summary),
+													author = vv.username;
+												} else {
+													console.error(vv.id.split(":")[0]);
+													name = STR.get_ontology_term(vv.name);
+													href = "./terms/" + vv.id + ":" + name.replace("/", "-");
+													rss = "http://www.cropontology.org/ontology/" + vv.id + "/" + name.replace("/", "-") + "/rss";
+													nt = "http://www.cropontology.org/ontology/" + (vv.id.split(":")[0]) + "/" + ((vv.ontology_name == null || vv.ontology_name == "null") ? "" : vv.ontology_name.replace("/", "-")) + "/nt";
+													summary = "",
+													author = vv.author;
+												}
+							// 					page_count = (kk + 1);
+                            //
+							// 					/**
+							// 					 * Subdivide ontologies in pages
+							// 					 */
+							// 					if(page_count % page_limit == 1 || page_limit == 1) {
+							// 						page++;
+                            //
+							// 						let display = (page == 1 || pages == 1) ? "" : "hide";
+							// 						$ontology_page = $('<li>', {"class": "ontology page_" + page + " " + display}).append(
+							// 							$('<ul>', {"class": "collection"})
+							// 						);
+							// 					}
+												// $ontology_page.find(".collection").append(
+													return $('<ul>', {"class": "collection"}).append(
+														$('<li>', {"class": "collection-item"}).append(
+															$('<a>', {
+																"href": href
+															}).append(
+																$('<h2>').append(name)
+															)
+														).append(
+															$('<div>', {"class": "secondary-content"}).append(
+																$('<a>', {
+																	"class": "download tooltipped",
+																	"data-position": "top",
+																	"data-tooltip": "Ontology RSS",
+																	"data-delay": "0",
+																	"target": "_blank",
+																	"href": rss
+																}).append(
+																	$('<span>', {"class": "fa fa-rss-square"})
+																).tooltip()
+															).append(
+																$('<a>', {
+																	"class": "download tooltipped",
+																	"data-position": "top",
+																	"data-tooltip": "RDF N-Triples",
+																	"data-delay": "0",
+																	"target": "_blank",
+																	"href": nt
+																}).append(
+																	$('<span>', {"class": "picol_rdf_document"})
+																).tooltip()
+															)
+														).append(
+															$('<a>', {"href": "javascript:;", "class": "tag green"}).text(author)
+														).append(() => {
+															if(summary.length > 0) {
+																return $('<p>').html(summary);
+															}
+														})
+													)
+							// 					);
+							// 					return $ontology_page;
+											})
+										)
+							// 		).append(() => {
+							// 			if(pages > 1) { return $pagination.clone(); }
+									)
+								)
+							).collapsible();
+                            //
+							// $("#" + categories.category.id).find(".pagination-content").append(
+							// 	PAGINATION.build_pagination({
+							// 		id: "ontology_pagination",
+							// 		context_class: categories.category.id,
+							// 		content: "#ontology_container",
+							// 		items: ".ontology",
+							// 		total_pages: pages,
+							// 	})
+							// );
+						});
+					}
+
+					// $("#contents").addClass("coloured grey lighten-5")
+					// .find(".container").attr("id", "static_contents")
+					// .append(
+					// 	"ok"
+					// );
+				});
+				break;
+			/**
    			 * 							CONTACT US contents
 			 * -----------------------------------------------------------------
    			 */

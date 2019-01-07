@@ -327,6 +327,32 @@ class data {
 	}
 
 	/**
+	 * Get latest ontologies
+	 * @NOTE This is an async function
+	 *
+	 * @return object 															The ontologies data JSON object
+	 */
+	get_latest_ontologies() {
+		return new Promise((resolve, reject) => {
+			/**
+			* @see http://www.cropontology.org/api
+			*/
+			$.ajax({
+				type: "POST",
+				url: "http://www.cropontology.org/latest",
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
+	/**
 	 * Get and parse the Ontology data (for the Ontology card)
 	 * @NOTE This is an async function
 	 *
