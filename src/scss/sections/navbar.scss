@@ -4,7 +4,7 @@
 
 // Search bar
 #searchbar {
-    width: 80%;
+    // width: 80%;
     @media #{$large-and-up} {
         width: 50%;
     }
@@ -70,52 +70,52 @@
     }
 }
 
-// #navbar {
-//   margin-top: -30px;
-//   margin-bottom: -80px;
-//
-//   // Breadcrumb
-//   #breadcrumb {
-//     background-color: transparent;
-//     box-shadow: 0 0 0 transparent;
-//     height: 47px;
-//
-//     nav {
-//       height: 47px;
-//       line-height: 47px;
-//
-//       .breadcrumb {
-//         font-size: 14px;
-//
-//         &:before {
-//           color: $medium-light-grey;
-//           content: "›";
-//           font-family: "Roboto", sans-serif;
-//           vertical-align: -3px;
-//         }
-//
-//         tt {
-//           background-color: $white-grey;
-//           font-size: 1.05em;
-//           margin-right: 5px;
-//           padding: 5px;
-//
-//           small { color: $medium-light-grey; }
-//         }
-//       }
-//       a {
-//           color: $dark-grey;
-//           &:hover {
-//               color: $highlight;
-//               span {
-//                   &.fa-home { color: $highlight; }
-//               }
-//           }
-//       }
-//       span {
-//           &.fa-home { color: $medium-light-grey; }
-//           &:not(.fa-home) { color: $medium-grey; }
-//       }
-//     }
-//   }
-// }
+#navbar {
+  margin-top: -30px;
+  margin-bottom: -80px;
+
+  // Breadcrumb
+  #breadcrumb {
+    background-color: transparent;
+    box-shadow: 0 0 0 transparent;
+    height: 47px;
+
+    nav {
+      height: 47px;
+      line-height: 47px;
+
+      .breadcrumb {
+        font-size: 14px;
+
+        &:before {
+          color: $medium-light-grey;
+          content: "›";
+          font-family: "Roboto", sans-serif;
+          vertical-align: -3px;
+        }
+
+        tt {
+          background-color: $white-grey;
+          font-size: 1.05em;
+          margin-right: 5px;
+          padding: 5px;
+
+          small { color: $medium-light-grey; }
+        }
+      }
+      a {
+          color: $dark-grey;
+          &:hover {
+              color: $highlight;
+              span {
+                  &.fa-home { color: $highlight; }
+              }
+          }
+      }
+      span {
+          &.fa-home { color: $medium-light-grey; }
+          &:not(.fa-home) { color: $medium-grey; }
+      }
+    }
+  }
+}

@@ -588,11 +588,11 @@ class layout {
 				$("body").append(
 					$('<section>', {"id": "navbar", "class": "container"}).append(
 						$('<div>', {"class": "row"}).append(
-							$('<div>', {"id": "breadcrumb", "class": "col s12 m6 l6"}).append(
+							$('<div>', {"id": "breadcrumb", "class": "col s6 m4 l6"}).append(
 								$breadcrumbs
 							)
 						).append(
-							$('<div>', {"id": "searchbar", "class": "col s12 m6 l6"}).append(
+							$('<div>', {"id": "searchbar", "class": "col s6 m8 l6"}).append(
 								$searchbar
 							)
 						)
