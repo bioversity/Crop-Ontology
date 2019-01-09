@@ -1,12 +1,18 @@
-
+@import "../../_components/materialize_variables";
 @import "../../colours";
 
 
 #info_container {
+    @media #{$medium-and-down} {
+        padding: 0;
+    }
+
   .card-title {
     .fa, .far { vertical-align: 3px; }
   }
   .help {
+    overflow: auto;
+
     *:not(ul) {
       margin: 0;
       padding: 0;

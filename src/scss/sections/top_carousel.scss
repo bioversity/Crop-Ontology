@@ -1,4 +1,4 @@
-
+@import "../_components/materialize_variables";
 @import "../colours";
 
 
@@ -7,7 +7,10 @@
   // border: $light-light-grey 1px dashed;
 
   .carousel {
-    height: 450px !important;
+      @media #{$medium-and-up} {
+          height: 450px !important;
+      }
+
     opacity: 0;
 
     .carousel-item {

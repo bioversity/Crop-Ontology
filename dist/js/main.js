@@ -233,9 +233,8 @@ module.exports={
 },{}],3:[function(require,module,exports){
 module.exports={
     "menu": {
-        "top_menu": {
+        "sidenav": {
             "position": "right",
-            "class": "",
             "items": [
                 {
                     "label": "Home",
@@ -274,11 +273,76 @@ module.exports={
                     "class": "modal-trigger",
                     "display": true
                 },
-                { "separator": "or" },
                 {
                     "label": "Register",
                     "link": "./register",
                     "display": true
+                }
+            ]
+        },
+        "top_menu": {
+            "position": "right",
+            "class": "",
+            "items": [
+                {
+                    "label": "Home",
+                    "link": "./",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "About",
+                    "link": "./about",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "Add new terms",
+                    "link": "./add-ontology",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "API",
+                    "link": "./api",
+                    "display": false,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "Agtrials",
+                    "link": "./agtrials",
+                    "display": false,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "Annotation Tool",
+                    "link": "./annotation-tool",
+                    "display": false,
+                    "is_sidenav_link": false
+                },
+                { "separator": true },
+                {
+                    "label": "Login",
+                    "link": "#user_modal",
+                    "class": "modal-trigger",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                { "separator": "or" },
+                {
+                    "label": "Register",
+                    "link": "./register",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "link": "javascript:;",
+                    "data": {
+                        "activates": "sidenav"
+                    },
+                    "class": "button-collapse black-text",
+                    "display": true,
+                    "is_sidenav_link": true
                 }
             ]
         },
@@ -8768,6 +8832,9 @@ var layout = function () {
 				}
 			});
 
+			// Sidenav
+			$(".button-collapse").sideNav({ edge: "right" });
+
 			var search_data = {};
 			$("input.autocomplete").on("keyup", function (e) {
 				var start_search_after = 3,
@@ -8929,12 +8996,48 @@ var layout = function () {
 			var menus = require("../../common/settings/menu.json");
 
 			$.each(menus, function (k, v) {
-				$("#" + position).append($.map(v[position].items, function (item) {
+				$("#" + position).append($.map(v[position].items, function (item, k) {
 					switch (position) {
+						case "top_menu":
+							var display = !item.is_sidenav_link ? k >= 6 ? " hide-on-med-and-down" : " hide-on-small-only" : "";
+
+							if (item.label === undefined && item.separator) {
+								switch ($.type(item.separator)) {
+									case "boolean":
+										return $('<li>', { "class": display }).append($('<span>', { "class": "separator" }));
+										break;
+									case "string":
+										return $('<li>', { "class": "disabled black-text" + display }).append($('<span>').text(item.separator));
+										break;
+								}
+							} else {
+								if (item.display) {
+									var $li = $('<li>').append($('<a>', {
+										"href": item.link,
+										"class": item.class + display
+									}).append(function () {
+										if (!item.is_sidenav_link) {
+											return item.label;
+										} else {
+											return $('<i>', { "class": "material-icons" }).text("menu");
+										}
+									}));
+									if (item.data !== undefined) {
+										$.each(item.data, function (data_key, data_value) {
+											$li.find("a").attr("data-" + data_key, data_value);
+										});
+									}
+									if (item.is_sidenav_link) {
+										$li.addClass("right show-on-medium-and-down");
+									}
+									return $li;
+								}
+							}
+							break;
 						case "bottom_links":
 							$.each(item.items, function (ik, iv) {
 								if (iv.display) {
-									$("#" + position + " ." + item.position).append($('<a>', { "class": "tooltipped", "href": iv.link, "target": iv.target, "data-tooltip": iv.label }).append($('<img>', { "src": "common/media/img/" + iv.image })));
+									$("#" + position + " ." + item.position).append($('<a>', { "class": "tooltipped", "href": iv.link, "target": iv.target, "data-tooltip": iv.label }).append($('<img>', { "class": "", "src": "common/media/img/" + iv.image })));
 								}
 							});
 							break;
@@ -8956,7 +9059,7 @@ var layout = function () {
 							if (item.label === undefined && item.separator) {
 								switch ($.type(item.separator)) {
 									case "boolean":
-										return $('<li>').append($('<span>', { "class": "separator" }));
+										return $('<li>', { "class": "divider" }).append($('<span>', { "class": "separator" }));
 										break;
 									case "string":
 										return $('<li>', { "class": "disabled black-text" }).append($('<span>').text(item.separator));
@@ -8982,8 +9085,21 @@ var layout = function () {
 		key: "build_header",
 		value: function build_header() {
 			$("body").prepend($("<header>").append($('<nav>', { "class": "transparent z-depth-0" }).append($('<div>', { "class": "nav-wrapper" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "src": "common/media/img/crop_ontology.png" }))).append(
+			// Sidenav
+			$('<ul>', { "id": "sidenav", "class": "side-nav" }).append($('<li>', { "class": "row-control" }).append($('<a>', { "href": "javascript:;" }).append($('<i>', { "class": "material-icons" }).text("close")).append("Close").click(function () {
+				$(".button-collapse").sideNav("hide");
+			}))
+			// ).append(
+			// $('<li>', {"class": "divider"})
+			)).append(
 			// Top menu container
-			$('<ul>', { "id": "top_menu", "class": "right hide-on-med-and-down" })))));
+			$('<ul>', { "id": "top_menu", "class": "right" })))));
+
+			/**
+    * Build the top menu
+    * @uses build_menu()
+    */
+			this.build_menu("sidenav");
 
 			/**
     * Build the top menu
@@ -9159,14 +9275,14 @@ var layout = function () {
      * -------------------------------------------------------------
      */
 					case "home":
-						return $('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m4 l4 xl4" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
+						return $('<div>', { "class": "row" }).append($('<div>', { "id": "ontologies_container", "class": "col s12 m12 l8 xl8 right" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text))).append($('<div>', { "class": "col s12 m12 l4 xl4 left" }).append($('<div>', { "class": "row" }).append($('<div>', { "id": "info_container", "class": "col s12 m12 l12 xl12" }).append($('<div>', { "class": "card lighten-5" }).append($('<div>', { "class": "card-content" }).append($('<span>', { "class": "card-title highlight" })).append(
 						// Loader
 						// ---------------------------------
 						$('<div>', { "class": "help" }).append()
 						// $('<div>', {"class": "center-align"}).text(settings.general.loader.text)
 
 						// ---------------------------------
-						)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" })))).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)));
+						)))).append($('<div>', { "id": "feed_container", "class": "col s12 m12 l12 xl12" }))));
 						break;
 					case "latest":
 						return $('<div>', { "class": "container" }).append($('<div>', { "id": "ontologies_container", "class": "col s12 m8 l8 xl8" }).append($('<div>', { "class": "center-align" }).text(settings.general.loader.text)));
@@ -9303,7 +9419,7 @@ var layout = function () {
 								page_limit = 1;
 							}
 
-							$("#ontologies_container .collapsible").append($('<li>').append($('<div>', { "class": "collapsible-header grey-text" }).append($('<div>', { "class": "collapsible-secondary help-text" }).append($('<span>', { "class": "fa fa-chevron-right" }))).append($('<div>', { "class": "left" }).append($('<span>', { "class": "picol_news" })).append("See latest")).click(function () {
+							$("#ontologies_container .collapsible").append($('<li>').append($('<div>', { "class": "collapsible-header grey-text" }).append($('<div>', { "class": "collapsible-secondary help-text" }).append($('<span>', { "class": "fa fa-chevron-right" }))).append($('<div>', { "class": "truncate" }).append($('<span>', { "class": "picol_news" })).append("See latest")).click(function () {
 								window.location.href = "./latest";
 							})));
 							/**
@@ -9331,7 +9447,11 @@ var layout = function () {
 										}, 1000);
 										return $indications;
 									}
-								})).append($('<div>', { "class": "left" }).append($('<span>', { "class": categories.category.icon })).append($('<span>').text(categories.category.name)))).append($('<div>', { "class": "collapsible-body" + (pages > 0 ? " paginated" : "") }).append(function () {
+								})).append($('<div>', { "class": "truncate" }).append($('<span>', { "class": categories.category.icon })).append($('<span>', {
+									"class": "tooltipped",
+									"data-tooltip": categories.category.name,
+									"data-position": "top"
+								}).text(categories.category.name)))).append($('<div>', { "class": "collapsible-body" + (pages > 0 ? " paginated" : "") }).append(function () {
 									if (pages > 1) {
 										return $pagination;
 									}
@@ -9699,7 +9819,7 @@ var layout = function () {
 		key: "build_footer",
 		value: function build_footer() {
 			if (settings.general.footer.visible) {
-				$("body").append($("<footer>", { "class": "parallax-container" }).append($("<div>", { "class": "parallax" }).append($("<img>", { "src": "common/media/img/" + settings.general.footer.background }))).append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m3 l3 xl2" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "class": "responsive-img", "src": "common/media/img/" + settings.general.footer.logo }))).append($('<p>', { "class": "description" }).html(settings.general.footer.description))).append($("<div>", { "id": "left_menu", "class": "col s12 m2 l2 xl2 offset-xl1" })).append($("<div>", { "id": "center_menu", "class": "col s12 m2 l2 xl2" })).append($("<div>", { "id": "right_menu", "class": "col s12 m2 l2 xl2 offset-xl1" })))).append($('<section>', { "id": "bottom_links" }).append($('<div>', { "class": "row container" }).append($('<div>', { "id": "", "class": "col s12 m6 l6 xl6 left" })).append($('<div>', { "id": "owner", "class": "col s12 m6 l6 xl6 right right-align" })))).append($('<center>', { "class": "license" }).append($('<p>').html(settings.general.license.text)));
+				$("body").append($("<footer>", { "class": "parallax-container" }).append($("<div>", { "class": "parallax" }).append($("<img>", { "src": "common/media/img/" + settings.general.footer.background }))).append($("<div>", { "class": "row" }).append($("<div>", { "class": "col s12 m12 l3 xl2" }).append($('<a>', { "href": "./", "class": "brand-logo" }).append($('<img>', { "class": "responsive-img", "src": "common/media/img/" + settings.general.footer.logo }))).append($('<p>', { "class": "description" }).html(settings.general.footer.description))).append($("<div>", { "id": "left_menu", "class": "col s12 m4 l2 offset-l1 offset-xl1" })).append($("<div>", { "id": "center_menu", "class": "col s12 m4 l3" })).append($("<div>", { "id": "right_menu", "class": "col s12 m4 l3 offset-xl1" })))).append($('<section>', { "id": "bottom_links" }).append($('<div>', { "class": "row container" }).append($('<div>', { "id": "", "class": "col s12 m12 l8 xl8 left" })).append($('<div>', { "id": "owner", "class": "col s12 m12 l4 xl4 right right-align" })))).append($('<center>', { "class": "license" }).append($('<p>').html(settings.general.license.text)));
 			}
 
 			/**

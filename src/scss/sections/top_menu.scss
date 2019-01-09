@@ -1,17 +1,44 @@
-
+@import "../_components/materialize_variables";
 @import "../colours";
 
+nav {
+    .brand-logo {
+        @media #{$medium-and-down} {
+            left: 0;
+            position: relative;
+            transform: none;
+        }
+        img { max-width: 200px; }
+    }
+    #top_menu {
+        margin: 24px 0;
 
-#top_menu {
-  a {
-    color: $highlight;
-    font-weight: bold;
-  }
+        a {
+            color: $highlight;
+            font-weight: bold;
 
-  .separator {
-    background-color: #ccc;
-    display: block;
-    height: 64px;
-    width: 2px;
-  }
+            &.button-collapse { margin: 0; }
+        }
+        .separator {
+            background-color: #ccc;
+            display: block;
+            height: 64px;
+            width: 2px;
+        }
+    }
+    #sidenav {
+        .row-control {
+            background-color: $white-grey;
+            border-bottom: $light-grey 1px solid;
+            text-align: right;
+
+            .material-icons {
+                float: right;
+                margin-left: 10px;
+                margin-right: 0;
+            }
+
+            a { padding: 0 10px; }
+        }
+    }
 }

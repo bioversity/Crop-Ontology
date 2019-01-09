@@ -1,8 +1,10 @@
-
+@import "../../_components/materialize_variables";
 @import "../../colours";
 
 #ontologies_container {
-  padding: 0 0 22px 30px;
+    @media #{$large-and-up} {
+        padding: 0 0 22px 30px;
+    }
 
   h1, h2, h3, h4, h5, h6 {
     color: $highlight;
@@ -22,6 +24,11 @@
         font-size: 24px;
         margin-right: 12px;
         margin-top: -6px;
+      }
+      .truncate {
+          @media #{$large-and-up} {
+              float: left;
+          }
       }
       .collapsible-secondary {
         &.help-text {

@@ -1,8 +1,7 @@
 {
     "menu": {
-        "top_menu": {
+        "sidenav": {
             "position": "right",
-            "class": "",
             "items": [
                 {
                     "label": "Home",
@@ -41,11 +40,76 @@
                     "class": "modal-trigger",
                     "display": true
                 },
-                { "separator": "or" },
                 {
                     "label": "Register",
                     "link": "./register",
                     "display": true
+                }
+            ]
+        },
+        "top_menu": {
+            "position": "right",
+            "class": "",
+            "items": [
+                {
+                    "label": "Home",
+                    "link": "./",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "About",
+                    "link": "./about",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "Add new terms",
+                    "link": "./add-ontology",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "API",
+                    "link": "./api",
+                    "display": false,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "Agtrials",
+                    "link": "./agtrials",
+                    "display": false,
+                    "is_sidenav_link": false
+                },
+                {
+                    "label": "Annotation Tool",
+                    "link": "./annotation-tool",
+                    "display": false,
+                    "is_sidenav_link": false
+                },
+                { "separator": true },
+                {
+                    "label": "Login",
+                    "link": "#user_modal",
+                    "class": "modal-trigger",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                { "separator": "or" },
+                {
+                    "label": "Register",
+                    "link": "./register",
+                    "display": true,
+                    "is_sidenav_link": false
+                },
+                {
+                    "link": "javascript:;",
+                    "data": {
+                        "activates": "sidenav"
+                    },
+                    "class": "button-collapse black-text",
+                    "display": true,
+                    "is_sidenav_link": true
                 }
             ]
         },

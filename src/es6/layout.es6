@@ -87,6 +87,9 @@ class layout {
 			}
 		});
 
+		// Sidenav
+		$(".button-collapse").sideNav({edge: "right"});
+
 		let search_data = {};
 		$("input.autocomplete").on("keyup", (e) => {
 			let start_search_after = 3,
@@ -250,14 +253,56 @@ class layout {
 
 		$.each(menus, (k, v) => {
 			$("#" + position).append(
-				$.map(v[position].items, (item) => {
+				$.map(v[position].items, (item, k) => {
 					switch(position) {
+						case "top_menu":
+							let display = (!item.is_sidenav_link) ? (k >= 6 ? " hide-on-med-and-down" : " hide-on-small-only") : "";
+
+							if(item.label === undefined && item.separator) {
+								switch($.type(item.separator)) {
+									case "boolean":
+										return $('<li>', {"class": display}).append(
+											$('<span>', {"class": "separator"})
+										);
+										break;
+									case "string":
+										return $('<li>', {"class": "disabled black-text" + display}).append(
+											$('<span>').text(item.separator)
+										);
+										break;
+								}
+							} else {
+								if(item.display) {
+									let $li = $('<li>').append(
+										$('<a>', {
+											"href": item.link,
+											"class": item.class + display
+										}).append(() => {
+											if(!item.is_sidenav_link) {
+												return item.label;
+											} else {
+												return $('<i>', {"class": "material-icons"}).text("menu");
+											}
+										})
+									);
+									if(item.data !== undefined) {
+										$.each(item.data, (data_key, data_value) => {
+											$li.find("a").attr("data-" + data_key, data_value);
+										})
+									}
+									if(item.is_sidenav_link) {
+										$li.addClass("right show-on-medium-and-down");
+									}
+									return $li;
+								}
+							}
+							break;
 						case "bottom_links":
 							$.each(item.items, (ik, iv) => {
 								if(iv.display) {
 									$("#" + position + " ." + item.position).append(
 										$('<a>', {"class": "tooltipped", "href": iv.link, "target": iv.target, "data-tooltip": iv.label}).append(
-											$('<img>', {"src": "common/media/img/" + iv.image})
+											$('<img>', {"class": "", "src": "common/media/img/" + iv.image})
 										)
 									)
 								}
@@ -287,7 +332,7 @@ class layout {
 							if(item.label === undefined && item.separator) {
 								switch($.type(item.separator)) {
 									case "boolean":
-										return $('<li>').append(
+										return $('<li>', {"class": "divider"}).append(
 											$('<span>', {"class": "separator"})
 										);
 										break;
@@ -324,12 +369,31 @@ class layout {
 	                        $('<img>', {"src": "common/media/img/crop_ontology.png"})
 						)
 					).append(
+						// Sidenav
+						$('<ul>', {"id": "sidenav", "class": "side-nav"}).append(
+							$('<li>', {"class": "row-control"}).append(
+								$('<a>', {"href": "javascript:;"}).append(
+									$('<i>', {"class": "material-icons"}).text("close")
+								).append("Close").click(() => {
+									$(".button-collapse").sideNav("hide");
+								})
+							)
+						// ).append(
+							// $('<li>', {"class": "divider"})
+						)
+					).append(
 						// Top menu container
-						$('<ul>', {"id": "top_menu", "class": "right hide-on-med-and-down"})
+						$('<ul>', {"id": "top_menu", "class": "right"})
 					)
 				)
 			)
 		);
+
+		/**
+		 * Build the top menu
+		 * @uses build_menu()
+		 */
+		this.build_menu("sidenav");
 
 		/**
 		 * Build the top menu
@@ -574,7 +638,11 @@ class layout {
 					*/
 					case "home":
 						return $('<div>', {"class": "row"}).append(
-							$('<div>', {"class": "col s12 m4 l4 xl4"}).append(
+							$('<div>', {"id": "ontologies_container", "class": "col s12 m12 l8 xl8 right"}).append(
+								$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
+							)
+						).append(
+							$('<div>', {"class": "col s12 m12 l4 xl4 left"}).append(
 								$('<div>', {"class": "row"}).append(
 									$('<div>', {"id": "info_container", "class": "col s12 m12 l12 xl12"}).append(
 										$('<div>', {"class": "card lighten-5"}).append(
@@ -593,10 +661,6 @@ class layout {
 								).append(
 									$('<div>', {"id": "feed_container", "class": "col s12 m12 l12 xl12"})
 								)
-							)
-						).append(
-							$('<div>', {"id": "ontologies_container", "class": "col s12 m8 l8 xl8"}).append(
-								$('<div>', {"class": "center-align"}).text(settings.general.loader.text)
 							)
 						)
 						break;
@@ -784,7 +848,7 @@ class layout {
 										$('<span>', {"class": "fa fa-chevron-right"})
 									)
 								).append(
-									$('<div>', {"class": "left"}).append(
+									$('<div>', {"class": "truncate"}).append(
 										$('<span>', {"class": "picol_news"})
 									).append("See latest")
 								).click(() => {
@@ -828,10 +892,14 @@ class layout {
 												}
 											})
 									).append(
-										$('<div>', {"class": "left"}).append(
+										$('<div>', {"class": "truncate"}).append(
 											$('<span>', {"class": categories.category.icon})
 										).append(
-											$('<span>').text(categories.category.name)
+											$('<span>', {
+												"class": "tooltipped",
+												"data-tooltip": categories.category.name,
+												"data-position": "top"
+											}).text(categories.category.name)
 										)
 									)
 								).append(
@@ -1490,7 +1558,7 @@ class layout {
 					)
 				).append(
 					$("<div>", {"class": "row"}).append(
-						$("<div>", {"class": "col s12 m3 l3 xl2"}).append(
+						$("<div>", {"class": "col s12 m12 l3 xl2"}).append(
 							$('<a>', {"href": "./", "class": "brand-logo"}).append(
 								$('<img>', {"class": "responsive-img", "src": "common/media/img/" + settings.general.footer.logo})
 							)
@@ -1498,19 +1566,19 @@ class layout {
 							$('<p>', {"class": "description"}).html(settings.general.footer.description)
 						)
 					).append(
-						$("<div>", {"id": "left_menu", "class": "col s12 m2 l2 xl2 offset-xl1"})
+						$("<div>", {"id": "left_menu", "class": "col s12 m4 l2 offset-l1 offset-xl1"})
 					).append(
-						$("<div>", {"id": "center_menu", "class": "col s12 m2 l2 xl2"})
+						$("<div>", {"id": "center_menu", "class": "col s12 m4 l3"})
 					).append(
-						$("<div>", {"id": "right_menu", "class": "col s12 m2 l2 xl2 offset-xl1"})
+						$("<div>", {"id": "right_menu", "class": "col s12 m4 l3 offset-xl1"})
 					)
 				)
 			).append(
 				$('<section>', {"id": "bottom_links"}).append(
 					$('<div>', {"class": "row container"}).append(
-						$('<div>', {"id": "", "class": "col s12 m6 l6 xl6 left"})
+						$('<div>', {"id": "", "class": "col s12 m12 l8 xl8 left"})
 					).append(
-						$('<div>', {"id": "owner", "class": "col s12 m6 l6 xl6 right right-align"})
+						$('<div>', {"id": "owner", "class": "col s12 m12 l4 xl4 right right-align"})
 					)
 				)
 			).append(

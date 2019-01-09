@@ -1,10 +1,14 @@
-
+@import "../../_components/materialize_variables";
 @import "../../colours";
 
 
 #feed_container {
   display: none;
   // padding-right: 30px;
+  @media #{$medium-and-down} {
+      padding: 0;
+  }
+
   .card-title { margin: 0; }
   .feed {
     min-height: 120px;
