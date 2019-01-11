@@ -6,6 +6,9 @@
   font-size: 15px;
   line-height: 1.8em;
   text-align: justify;
+  @media #{$medium-and-down} {
+    text-align: left;
+  }
 
   a {
     text-decoration: underline;

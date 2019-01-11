@@ -83,6 +83,24 @@ var data = function () {
 			});
 		}
 	}, {
+		key: "get_ontology_upload_url",
+		value: function get_ontology_upload_url() {
+			return new _es6Promise2.default(function (resolve, reject) {
+				$.ajax({
+					type: "GET",
+					url: "http://www.cropontology.org/obo-upload-url",
+					async: true,
+					dataType: "html",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
 		key: "get_attribute_upload_url",
 		value: function get_attribute_upload_url() {
 			return new _es6Promise2.default(function (resolve, reject) {
