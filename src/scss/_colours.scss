@@ -34,6 +34,7 @@ $rss: #f26522;
 .highlight-btn, .btn-highlight {
   background-color: $highlight;
   color: white;
+  text-decoration: none !important;
 
   &:hover { background-color: $highlight-dark; }
 }

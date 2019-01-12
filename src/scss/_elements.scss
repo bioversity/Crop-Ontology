@@ -16,7 +16,7 @@
   text-transform: none;
   white-space: nowrap;
 
-  &:hover, &.selected { background-color: $highlight-very-clear !important; }
+  &:focus, &:hover, &.selected { background-color: $highlight-very-clear !important; }
 }
 .btn-link {
   height: 36px;

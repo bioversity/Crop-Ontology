@@ -64,7 +64,7 @@ class layout {
 		/* Add rel="external" to links that are external (this.hostname !== location.hostname) BUT don't add to anchors containing images */
 		$("#static_contents a, .license a").each((k, v) => {
 		    // Compare the anchor tag's host name with location's host name
-		    if($(v).prop("hostname") && $(v).prop("hostname") !== location.hostname) {
+		    if($(v).prop("hostname") && $(v).prop("hostname") !== location.hostname && $(v).prop("hostname") !== "www.cropontology.org") {
 				$(v).not("a:has(img)").attr("rel","external")
 			}
 		});
@@ -110,7 +110,6 @@ class layout {
 						search_data["<small><tt>" + v.id + "</tt></small> - " + v.ontology_name + " - " + STR.get_ontology_term(JSON.stringify(v.name))] = null;
 					});
 
-					console.log(search_data);
 					$("input.autocomplete").autocomplete({
 						data: search_data,
 						minLength: start_search_after,
@@ -132,7 +131,7 @@ class layout {
 
 		$(".parallax").parallax();
 
-		$(".tabs").tabs();
+		$(".tabs:not(.add-ontology)").tabs();
 
 		$("textarea.autoresize").trigger("autoresize");
 
@@ -588,12 +587,12 @@ class layout {
 				$("body").append(
 					$('<section>', {"id": "navbar", "class": "container"}).append(
 						$('<div>', {"class": "row"}).append(
-							$('<div>', {"id": "breadcrumb", "class": "col s6 m4 l6"}).append(
-								$breadcrumbs
+							$('<div>', {"id": "searchbar", "class": "col s12 m8 l6 right"}).append(
+								$searchbar
 							)
 						).append(
-							$('<div>', {"id": "searchbar", "class": "col s6 m8 l6"}).append(
-								$searchbar
+							$('<div>', {"id": "breadcrumb", "class": "col s12 m4 l6 left"}).append(
+								$breadcrumbs
 							)
 						)
 					)
@@ -1241,10 +1240,126 @@ class layout {
 			 * -----------------------------------------------------------------
 			 */
 			case "add-ontology":
+				var counter = 0,
+					ontoId,
+					getPars = (o, $cont, ontoId, parent) => {
+						let term = {};
+						if($cont.attr("id") !== "cont") { // we dont want to save the root
+							let name = $cont.find("input[name=name]:first").val();
+							term = {
+								id: ontoId + ":" + counter++,
+								name: name,
+								parent: parent
+							};
+							o.push(term);
+						}
+						// children() returns only the top most elements
+						$cont.children("ul").each((k, v) => {
+							getPars(o, $(v), ontoId, term.id || null);
+						});
+					};
+
 				// Place the external html page
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").attr("id", "static_contents")
 						.append(PAGE_ADD_ONTOLOGY);
+				$(".tooltipped").tooltip();
+
+				$("#add_childs_btn").on("click", (e) => {
+					let $template = $('<ul>', {"class": "treeview form"}).append(
+						$('<li>', {"class": "term"}).append(
+							$('<div>', {"class": "item valign-wrapper"}).append(
+								$('<div>', {"class": "input-field col s5"}).append(
+									$('<input>', {"type": "text", "name": "name", "placeholder": "Term Name"})
+								)
+							).append(
+								$('<div>', {"class": "input-field col s5"}).append(
+									$('<input>', {"type": "text", "name": "relation_name", "placeholder": "Relation Name"})
+								)
+							).append(
+								$('<div>', {"class": "col s1"}).append(
+									$('<a>', {"class": "btn btn-mini add", "href": "javascript:;", "tabindex": "-1"}).append(
+										$('<span>', {"class": "fa fa-plus"})
+									)
+								).append(
+									$('<a>', {"class": "btn btn-mini remove", "href": "javascript:;", "tabindex": "-1"}).append(
+										$('<span>', {"class": "fa fa-minus"})
+									)
+								)
+							)
+						)
+					);
+
+					$("#cont").append($template);
+					$("#cont").find("ul:last-child li:last-child input:first").focus();
+
+					$(".btn-mini.add").unbind().on("click", (e) => {
+						let $cloned_template = $template.clone(true);
+						$cloned_template.find("input").val("");
+						$(e.target).closest("ul").last().append($cloned_template);
+						$(e.target).closest("ul").last().find("li").last().find("input:first").focus();
+					});
+					$(".btn-mini.remove").unbind().on("click", (e) => {
+						if(!confirm("Are you sure you want to remove this term and all its children?")) return;
+						$(e.target).closest("ul").last().remove();
+					});
+
+					e.preventDefault();
+					e.stopPropagation();
+				});
+				$("#save").click((e) => {
+					let ret = [],
+						counter = 0,
+						ontoId = $.trim($("form:visible").find("#ontology_id").val());
+
+					getPars(ret, $("#cont"), ontoId);
+
+					// we need to obey the API which is a list of objects.
+					// the tree is given by referencing each id
+					// so the developer needs to give us IDs for us to know about
+					// relation logic
+					let pars = {
+						ontology_name: $.trim($("form:visible").find("#ontology_name").val()),
+						ontology_version: (data.ontology_version !== undefined) ? data.ontology_version + 1 : 1,
+						ontology_id: $.trim($("form:visible").find("#ontology_id").val()),
+						ontology_summary: $.trim($("form:visible").find("#ontology_summary").val()),
+						category: $.trim($("form:visible").find("#create_ontology_cont select[name=category]").val()),
+						json: JSON.stringify(ret)
+					};
+
+					if($.trim(pars.ontology_name) == "" || pars.ontology_name == undefined || pars.ontology_id == "" || pars.ontology_id == undefined) {
+						$("#error").text("Please insert the name of Ontology and its ID").fadeIn();
+						return;
+					}
+					DATA.get_ontology(ontoId).then((data) => {
+						$("#error").fadeOut();
+
+						DATA.add_ontology(pars).then((data) => {
+							window.location.href = "/";
+						}, (error) => {
+							$("#error").html($(error.responseText).text()).fadeIn();
+						});
+
+						e.preventDefault();
+						e.stopPropagation();
+					});
+				});
+
+
+				setTimeout(() => {
+					DATA.get_ontology_upload_url().then((upload_url) => {
+						$("#add_ontology_tab_contents .col.active form").attr("action", upload_url);
+					});
+				}, 100);
+
+				$(".tabs").tabs({
+					onShow: (e) => {
+						DATA.get_ontology_upload_url().then((upload_url) => {
+							$("#add_ontology_tab_contents .col.active form").attr("action", upload_url);
+						});
+					}
+				});
+
 				break;
 			/**
 			 * 							ONTOLOGIES contents
@@ -1604,6 +1719,13 @@ class layout {
 
 	load_scripts() {
 		switch(page) {
+			case "add-ontology":
+				$("head").append(
+					"<!-- Main style -->"
+				).append(
+					$('<link>', {"rel": "stylesheet", "href": "dist/css/jquery.treeview.css", "type": "text/css", "media": "screen"})
+				);
+				break;
 			case "ontology":
 			case "terms":
 				$("head").append(

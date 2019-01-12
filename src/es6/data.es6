@@ -55,6 +55,23 @@ class data {
 		});
 	}
 
+	get_ontology_upload_url() {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				type: "GET",
+				url: "http://www.cropontology.org/obo-upload-url",
+				async: true,
+				dataType: "html",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	get_attribute_upload_url() {
 		return new Promise((resolve, reject) => {
 			$.ajax({
@@ -651,6 +668,12 @@ class data {
 		});
 	}
 
+	/**
+	* -------------------------------------------------------------------------
+	* 								POST
+	* -------------------------------------------------------------------------
+	*/
+
 	register_user(user_data) {
 		return new Promise((resolve, reject) => {
 			$.ajax({
@@ -669,12 +692,22 @@ class data {
 		});
 	}
 
-
-	/**
-	 * -------------------------------------------------------------------------
-	 * 								POST
-	 * -------------------------------------------------------------------------
-	 */
-
+	add_ontology(pars) {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				type: "POST",
+				url: "http://www.cropontology.org/add-ontology",
+				data: pars,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
 }
 export default data;

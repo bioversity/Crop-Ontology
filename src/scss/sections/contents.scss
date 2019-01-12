@@ -41,3 +41,12 @@
   // Ontologies container
   @import "contents/static_contents";
 }
+
+#error {
+  background-color: red;
+  color: white;
+  display: none;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}

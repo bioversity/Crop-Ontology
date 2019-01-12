@@ -732,6 +732,13 @@ var data = function () {
 				}
 			});
 		}
+
+		/**
+  * -------------------------------------------------------------------------
+  * 								POST
+  * -------------------------------------------------------------------------
+  */
+
 	}, {
 		key: "register_user",
 		value: function register_user(user_data) {
@@ -751,13 +758,25 @@ var data = function () {
 				});
 			});
 		}
-
-		/**
-   * -------------------------------------------------------------------------
-   * 								POST
-   * -------------------------------------------------------------------------
-   */
-
+	}, {
+		key: "add_ontology",
+		value: function add_ontology(pars) {
+			return new _es6Promise2.default(function (resolve, reject) {
+				$.ajax({
+					type: "POST",
+					url: "http://www.cropontology.org/add-ontology",
+					data: pars,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
 	}]);
 
 	return data;

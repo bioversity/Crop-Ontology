@@ -1,7 +1,22 @@
 .treeview, .treeview ul {
-	padding: 0;
-	margin: 0;
 	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.treeview.form {
+	margin-left: 20px;
+	margin-top: 0;
+}
+.treeview.form li {
+	background: none !important;
+	display: grid;
+	padding-bottom: 0;
+}
+.treeview.form li .item {
+	border-radius: 6px;
+	border: #ccc 1px solid;
+	margin-left: 0;
 }
 
 .treeview ul {
@@ -11,11 +26,11 @@
 
 .treeview .hitarea {
 	background: url("../../../common/media/img/images/treeview-default.gif") -64px -25px no-repeat;
-	height: 16px;
-	width: 16px;
-	margin-left: -16px;
-	float: left;
 	cursor: pointer;
+	float: left;
+	height: 16px;
+	margin-left: -16px;
+	width: 16px;
 }
 /* fix for IE6 */
 * html .hitarea {
@@ -63,9 +78,9 @@
 
 .treeview .placeholder {
 	background: url("../../../common/media/img/images/ajax-loader.gif") 0 0 no-repeat;
+	display: block;
 	height: 16px;
 	width: 16px;
-	display: block;
 }
 
 .filetree li { padding: 3px 0 2px 16px; }
