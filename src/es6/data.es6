@@ -674,6 +674,24 @@ class data {
 	* -------------------------------------------------------------------------
 	*/
 
+	log_user(user_data) {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				type: "POST",
+				url: "http://www.cropontology.org/login",
+				data: user_data,
+				async: true,
+				dataType: "json",
+				success: (data) => {
+					resolve(data);
+				},
+				error: (jqXHR, textStatus, errorThrown) => {
+					reject(errorThrown);
+				}
+			});
+		});
+	}
+
 	register_user(user_data) {
 		return new Promise((resolve, reject) => {
 			$.ajax({

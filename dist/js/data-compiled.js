@@ -740,6 +740,25 @@ var data = function () {
   */
 
 	}, {
+		key: "log_user",
+		value: function log_user(user_data) {
+			return new _es6Promise2.default(function (resolve, reject) {
+				$.ajax({
+					type: "POST",
+					url: "http://www.cropontology.org/login",
+					data: user_data,
+					async: true,
+					dataType: "json",
+					success: function success(data) {
+						resolve(data);
+					},
+					error: function error(jqXHR, textStatus, errorThrown) {
+						reject(errorThrown);
+					}
+				});
+			});
+		}
+	}, {
 		key: "register_user",
 		value: function register_user(user_data) {
 			return new _es6Promise2.default(function (resolve, reject) {

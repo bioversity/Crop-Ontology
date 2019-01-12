@@ -12,11 +12,21 @@ var _navigation = require("../../src/es6/_navigation.es6");
 
 var _navigation2 = _interopRequireDefault(_navigation);
 
+var _str = require("../../src/es6/_str.es6");
+
+var _str2 = _interopRequireDefault(_str);
+
+var _data = require("../../src/es6/data.es6");
+
+var _data2 = _interopRequireDefault(_data);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var NAV = new _navigation2.default();
+var STR = new _str2.default();
+var DATA = new _data2.default();
 
 var modals = function () {
 	function modals() {
@@ -49,23 +59,27 @@ var modals = function () {
 				display_buttons: true,
 				ok_button: "Ok",
 				cancel_button: "Cancel",
+				ok_action: function ok_action() {
+					return false;
+				},
 				fixed_footer: true,
 				bottom_sheet: false,
-				width: "55%"
+				size: "medium" // Modal size. Possible options: "small", "medium", "large"
 			},
 			    settings = $.extend({}, defaults, options);
 
 			$("body").prepend($('<div>', {
 				"id": settings.id,
-				"class": "modal " + settings.class + " " + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : ""),
-				"style": settings.width ? "width: " + settings.width : ""
+				"class": "modal " + settings.class + " " + settings.size + " " + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : "")
 			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').html(settings.title)).append(function () {
 				if (settings.subtitle) {
 					return $('<h5>').html(settings.subtitle);
 				}
 			}).append(settings.content)).append(function () {
 				if (settings.display_buttons) {
-					return $('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat right" }).text(settings.ok_button));
+					return $('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action waves-effect waves-green btn-flat right" }).text(settings.ok_button).click(function () {
+						settings.ok_action();
+					}));
 				}
 			}));
 		}
@@ -136,7 +150,7 @@ var modals = function () {
 	}, {
 		key: "user_modal",
 		value: function user_modal(title) {
-			var $user_modal_content = $('<div>', { "class": "container" }).append($('<form>', { class: "col s12" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
+			var $user_modal_content = $('<div>', { "class": "" }).append($('<form>', { "class": "col s12" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
 				"type": "text",
 				"name": "username",
 				"id": "log_username"
@@ -146,17 +160,29 @@ var modals = function () {
 			// 	$('<div>', {"class": "row"}).append(
 			$('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
 				"type": "password",
-				"name": "Password",
+				"name": "password",
 				"id": "log_password"
-			})).append($('<label>', { "for": "log_password" }).text("Password")))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s10 offset-s1" }).append($('<a>', { "href": "./forgot-password" }).text("Forgot Password?")))));
+			})).append($('<label>', { "for": "log_password" }).text("Password")))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s10 offset-s1" }).append($('<a>', { "href": "./forgot-password" }).text("Forgot Password?"))))).append($('<div>', { "id": "login_error", "class": "card red white-text center-align" }));
 
 			this.build_modal({
 				id: "user_modal",
-				width: "35%",
+				size: "small",
 				title: title,
 				content: $user_modal_content,
 				fixed_footer: false,
-				bottom_sheet: false
+				bottom_sheet: false,
+				ok_action: function ok_action() {
+					DATA.log_user($user_modal_content.find("form").serialize()).then(function (data) {
+						if (data.error !== undefined) {
+							$("#login_error").html(STR.ucfirst(STR.readable_data(data.error)));
+						} else {
+							location.reload();
+						}
+					}, function (error) {
+						$("#login_error").html(error);
+						return false;
+					});
+				}
 			});
 		}
 	}, {
@@ -186,7 +212,7 @@ var modals = function () {
 
 			this.build_modal({
 				id: "download_ontology_modal",
-				width: "35%",
+				size: "small",
 				class: "centered",
 				title: "Download",
 				subtitle: "<tt>" + NAV.get_ontology_id() + (NAV.get_term_id() !== undefined ? "<small>:" + NAV.get_term_id() + "</small>" : "") + "</tt> &rsaquo; " + (NAV.get_term_label() !== undefined ? NAV.get_term_label() : NAV.get_ontology_label()),

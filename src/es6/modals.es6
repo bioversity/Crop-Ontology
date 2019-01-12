@@ -2,7 +2,11 @@
 "strict mode";
 
 import navigation from "../../src/es6/_navigation.es6";
+import str from "../../src/es6/_str.es6";
+import data from "../../src/es6/data.es6";
 var NAV = new navigation();
+var STR = new str();
+var DATA = new data();
 
 class modals {
 	/**
@@ -28,17 +32,17 @@ class modals {
 			display_buttons: true,
 			ok_button: "Ok",
 			cancel_button: "Cancel",
+			ok_action: () => { return false; },
 			fixed_footer: true,
 			bottom_sheet: false,
-			width: "55%"
+			size: "medium"					// Modal size. Possible options: "small", "medium", "large"
 		},
 		settings = $.extend( {}, defaults, options );
 
 		$("body").prepend(
 			$('<div>', {
 				"id": settings.id,
-				"class": "modal " + settings.class + " " + ((settings.fixed_footer) ? " modal-fixed-footer" : "") + ((settings.bottom_sheet) ? " bottom-sheet" : ""),
-				"style": (settings.width) ? "width: " + settings.width : ""
+				"class": "modal " + settings.class + " " + settings.size + " " + ((settings.fixed_footer) ? " modal-fixed-footer" : "") + ((settings.bottom_sheet) ? " bottom-sheet" : ""),
 			}).append(
 				$('<div>', {"class": "modal-content"}).append(
 					$('<h4>').html(settings.title)
@@ -52,7 +56,9 @@ class modals {
 					return $('<div>', {"class": "modal-footer"}).append(
 						$('<a>', {"href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left"}).text(settings.cancel_button)
 					).append(
-						$('<a>', {"href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat right"}).text(settings.ok_button)
+						$('<a>', {"href": "javascript:;", "class": "modal-action waves-effect waves-green btn-flat right"}).text(settings.ok_button).click(() => {
+							settings.ok_action();
+						})
 					)
 				}
 			})
@@ -138,8 +144,8 @@ class modals {
 	}
 
 	user_modal(title) {
-		let $user_modal_content = $('<div>', {"class": "container"}).append(
-    		$('<form>', {class: "col s12"}).append(
+		let $user_modal_content = $('<div>', {"class": ""}).append(
+    		$('<form>', {"class": "col s12"}).append(
 				$('<div>', {"class": "row"}).append(
 					$('<div>', {"class": "input-field col s10 offset-s1"}).append(
 						$('<input>', {
@@ -156,7 +162,7 @@ class modals {
 					$('<div>', {"class": "input-field col s10 offset-s1"}).append(
 						$('<input>', {
 							"type": "password",
-							"name": "Password",
+							"name": "password",
 							"id": "log_password"
 						})
 					).append(
@@ -170,15 +176,29 @@ class modals {
 					)
 				)
 			)
+		).append(
+			$('<div>', {"id": "login_error", "class": "card red white-text center-align"})
 		);
 
 		this.build_modal({
 			id: "user_modal",
-			width: "35%",
+			size: "small",
 			title: title,
 			content: $user_modal_content,
 			fixed_footer: false,
-			bottom_sheet: false
+			bottom_sheet: false,
+			ok_action: () => {
+				DATA.log_user($user_modal_content.find("form").serialize()).then((data) => {
+					if(data.error !== undefined) {
+						$("#login_error").html(STR.ucfirst(STR.readable_data(data.error)));
+					} else {
+						location.reload();
+					}
+				}, (error) => {
+					$("#login_error").html(error);
+					return false;
+				});
+			}
 		});
 	}
 
@@ -249,7 +269,7 @@ class modals {
 
 		this.build_modal({
 			id: "download_ontology_modal",
-			width: "35%",
+			size: "small",
 			class: "centered",
 			title: "Download",
 			subtitle: "<tt>" + NAV.get_ontology_id() + ((NAV.get_term_id() !== undefined) ? "<small>:" + NAV.get_term_id() + "</small>" : "") + "</tt> &rsaquo; " + ((NAV.get_term_label() !== undefined) ? NAV.get_term_label() : NAV.get_ontology_label()),

@@ -110,3 +110,18 @@ nav {
     width: 24px;
   }
 }
+
+#user_modal {
+  &.small {
+    width: 35%;
+  }
+  &.medium {
+    width: 55%;
+  }
+  &.large {
+    width: 75%;
+  }
+  @media #{$medium-and-down} {
+    width: auto !important;
+  }
+}
