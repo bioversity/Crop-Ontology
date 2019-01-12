@@ -21,6 +21,7 @@ import page_register from "../../common/statics/register.html";
 import page_forgot_password from "../../common/statics/forgot-password.html";
 import page_feedback from "../../common/statics/feedback.html";
 import page_add_ontology from "../../common/statics/add-ontology.html";
+import page_annotation_tool from "../../common/statics/annotation-tool.html";
 
 var
 	DATA = new data(),
@@ -43,6 +44,7 @@ var
 	PAGE_FORGOT_PASSWORD = page_forgot_password,
 	PAGE_FEEDBACK = page_feedback,
 	PAGE_ADD_ONTOLOGY = page_add_ontology,
+	PAGE_ANNOTATION_TOOL = page_annotation_tool,
 
 	page = NAV.get_page(),
 	settings = require("../../common/settings/contents.json"),
@@ -1669,6 +1671,16 @@ class layout {
 					$("#contents").prepend(
 						LOADER.create({type: "progress"})
 					);
+				break;
+			/**
+			 * 							Annotation Tool contents
+			 * -----------------------------------------------------------------
+			 */
+			case "annotation-tool":
+				// Place the external html page
+				$("#contents").addClass("coloured grey lighten-5")
+					.find(".container").attr("id", "static_contents")
+						.append(PAGE_ANNOTATION_TOOL);
 				break;
 		}
 	}

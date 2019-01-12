@@ -199,5 +199,16 @@
                 "image": ""
             }]
         }
+    },
+    "annotation-tool": {
+        "title": "Annotation Tool",
+        "visible": true,
+        "carousel": {
+            "visible": false,
+            "items": [{
+                "message": "",
+                "image": ""
+            }]
+        }
     }
 }
