@@ -1378,11 +1378,11 @@ class layout {
 				 */
 				DATA.get_ontologies_data(NAV.get_ontology_id()).then((ontologies_data) => {
 					$("#ontology_card").html(
-						$('<div>', {"class": "col s2"}).append(
+						$('<div>', {"class": "col s4 m3 l2"}).append(
 							$('<img>', {"class": "crop_pict responsive-img", "src": ontologies_data.ontology_picture})
 						)
 					).append(
-						$('<div>', {"class": "col s10"}).append(
+						$('<div>', {"class": "col s8 m9 l10"}).append(
 							$('<h1>', {"id": "page_subtitle"}).append(NAV.get_ontology_id()).append((NAV.get_term_id() !== undefined) ? "<small>:" + NAV.get_term_id() + "</small>" : "")
 						).append(
 							$('<h2>', {"id": "page_title"}).append(() => {
@@ -1393,7 +1393,7 @@ class layout {
 								// }
 							})
 						).append(
-							$('<table>').append(
+							$('<table>', {"class": "responsive-table hide-on-small-only"}).append(
 								$('<thead>').append(
 									$('<tr>').append(
 										$('<th>').text("Ontology curators")
@@ -1521,7 +1521,7 @@ class layout {
 				$("#contents").addClass("coloured grey lighten-5")
 					.find(".container").append(
 						$('<div>', {"class": "row"}).append(
-							$('<div>', {"class": "col s5"}).append(
+							$('<div>', {"class": "col s12 m6 l5"}).append(
 								$('<h6>').text("Traits, methods and scales")
 							).append(
 								$('<div>', {"id": "ontology_tree", "class": "card z-depth-0 disabled"}).append(
@@ -1545,7 +1545,7 @@ class layout {
 								)
 							)
 						).append(
-							$('<div>', {"class": "col s7"}).append(
+							$('<div>', {"class": "col s12 m6 l7"}).append(
 								$('<h6>').text("Term information")
 							).append(
 								$('<div>', {"id": "ontology_info", "class": "disabled"}).append(
@@ -1555,17 +1555,29 @@ class layout {
 												$('<ul>', {"class": "tabs"}).append(
 													// Info tab
 													$('<li>', {"id": "general", "class": "tab"}).append(
-														$('<a>', {"href": "#page_info", "class": "active"}).text("General")
+														$('<a>', {"href": "#page_info", "class": "active", "class": "tooltipped", "data-tooltip": "General", "data-position": "top"}).append(
+															$('<span>', {"class": "hide-on-large-only fa fa-info-circle"})
+														).append(
+															$('<span>', {"class": "hide-on-med-and-down text"}).text("General")
+														)
 													)
 												).append(
 													// Variables tab
 													$('<li>', {"id": "variables", "class": "tab disabled"}).append(
-														$('<a>', {"href": "#item_variables"}).text("Variables")
+														$('<a>', {"href": "#item_variables", "class": "tooltipped", "data-tooltip": "Variables", "data-position": "top"}).append(
+															$('<span>', {"class": "hide-on-large-only fa fa-code-branch"})
+														).append(
+															$('<span>', {"class": "hide-on-med-and-down text"}).text("Variables")
+														)
 													)
 												).append(
 													// Comments tab
 													$('<li>', {"id": "new-comments", "class": "tab"}).append(
-														$('<a>', {"href": "#page_comments"}).text("Comments")
+														$('<a>', {"href": "#page_comments", "class": "tooltipped", "data-tooltip": "Comments", "data-position": "top"}).append(
+															$('<span>', {"class": "hide-on-large-only fa fa-comments"})
+														).append(
+															$('<span>', {"class": "hide-on-med-and-down text"}).text("Comments")
+														)
 													)
 												)
 											)

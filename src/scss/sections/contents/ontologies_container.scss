@@ -216,8 +216,10 @@
           font-weight: bold;
           margin-bottom: 5px;
           margin-top: 5px;
-          // width: 33%;
           width: 150px;
+          @media #{$medium-and-down} {
+            width: 40%;
+          }
         }
         dd {
           margin-bottom: 5px;
@@ -226,6 +228,9 @@
           padding: 0 10px;
           // width: 66%;
           width: calc(100% - 150px);
+          @media #{$medium-and-down} {
+            width: 60%;
+          }
 
           form {
             .row:last-child { margin-bottom: 0; }

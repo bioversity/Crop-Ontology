@@ -546,6 +546,8 @@ var treeview = function () {
 			},
 			    option = $.extend({}, defaults, options);
 
+			var $variables = $("#variables").html(),
+			    $comments = $("#new-comments").html();
 			var $a = $('<a>', {
 				"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
 				"class": "btn btn-mini tooltipped " + option.id.replace(":", "-") /* + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : "")*/
@@ -592,7 +594,12 @@ var treeview = function () {
 					// $("#new-comments a").text("Comments (" + comments.length + ")");
 					if (variables.length > 0) {
 						// Manage "Term information" nav
-						$("#variables").removeClass("disabled").find("a").text("Variables (" + variables.length + ")");
+						$variables = $variables.replace(">Variables<", ">Variables (" + variables.length + ")<");
+						$variables = $variables.replace('data-tooltip="Variables"', 'data-tooltip="Variables (' + variables.length + ')"');
+						console.log($variables);
+						$("#variables").removeClass("disabled").html($variables);
+						$("#variables a").tooltip();
+
 						$("#ontology_info ul.tabs a").removeClass("active");
 						$("#general a").click();
 						// Prepare variables container
@@ -622,7 +629,10 @@ var treeview = function () {
 							return i;
 						}).length;
 						if (comments_count > 0) {
-							$("#new-comments a").text("Comments (" + comments_count + ")");
+							$comments = $comments.replace(">Comments<", ">Comments (" + comments_count + ")<");
+							$comments = $comments.replace('data-tooltip="Comments"', 'data-tooltip="Comments (' + comments_count + ')"');
+							$("#new-comments").html($comments);
+							$("#new-comments a").tooltip();
 							$("#comments").html("");
 
 							$.each(comments, function (k, c) {
@@ -738,7 +748,10 @@ var treeview = function () {
 
 					// Comments
 					DATA.get_terms_comments(option.source.id).then(function (comments) {
-						$("#new-comments a").text("Comments (" + comments.length + ")");
+						$comments = $comments.replace(">Comments<", ">Comments (" + comments.length + ")<");
+						$comments = $comments.replace('data-tooltip="Comments"', 'data-tooltip="Comments (' + comments.length + ')"');
+						$("#new-comments").html($comments);
+						$("#new-comments a").tooltip();
 						// Get user data
 						$.each(comments, function (k, c) {
 							DATA.get_user(c.author_id).then(function (user) {
