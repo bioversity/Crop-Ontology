@@ -523,7 +523,7 @@ class layout {
 				),
 				$breadcrumbs = $('<nav>', {"class": "transparent z-depth-0"}).append(
     				$('<div>', {"class": "nav-wrapper"}).append(
-      					$('<div>', {"class": "col s12"}).append(
+      					$('<div>', {"class": "col s12 truncate"}).append(
         					$('<a>', {"href": "./", "class": "breadcrumb"}).append(
 								$('<span>', {"class": "fas fa-home"})
 							)
@@ -1515,7 +1515,7 @@ class layout {
 					let permalink = "./ontology/" + NAV.get_ontology_id() + ":" + NAV.get_ontology_label(),
 						ext_permalink = "https://www.cropontology.org/terms/" + data.id + "/" + STR.get_ontology_term(data.name) + "/static-html?language=" + STR.get_ontology_term_language(data.name);
 
-					$("#term_permalink").attr("href", ext_permalink);
+					// $("#term_permalink").attr("href", ext_permalink);
 					$("#term_info_name").attr("href", permalink);
 					$("#ontology_tree, #ontology_info").removeClass("disabled");
 				});
@@ -1586,24 +1586,30 @@ class layout {
 										).append(
 											$('<div>', {"class": "filterbar nav-wrapper"}).append(
 												$('<ul>', {"class": "filters left"}).append(
-													$('<li>', {"data-filter": "read"}).append(
-														$('<a>', {
-															"href": "javascript:;",
-															"id": "term_info_name"
-														})
-													)
+													$('<span>', {"class": "fa fa-link grey-text"})
 												).append(
 													$('<li>', {"data-filter": "read"}).append(
 														$('<a>', {
 															"href": "javascript:;",
-															"target": "_blank",
-															"id": "term_permalink",
-															"class": "right tooltipped",
-															"data-tooltip": "Permalink"
-														}).append(
-															$('<span>', {"class": "fa fa-link"})
+															"id": "term_info_name",
+															"class": "tooltipped",
+															"data-tooltip": '<center>Permalink<br /><small>Click to refresh this page</small></center>'
+														}).html(
+															$('<span>', {"class": "getting_data"}).text("Getting data...")
 														)
 													)
+												// ).append(
+												// 	$('<li>', {"data-filter": "read"}).append(
+												// 		$('<a>', {
+												// 			"href": "javascript:;",
+												// 			"target": "_blank",
+												// 			"id": "term_permalink",
+												// 			"class": "right tooltipped",
+												// 			"data-tooltip": "Permalink"
+												// 		}).append(
+												// 			$('<span>', {"class": "fa fa-link"})
+												// 		)
+												// 	)
 												)
 											)
 										)
@@ -1779,6 +1785,13 @@ class layout {
 				).append(
 					$('<script>', {"type": "text/javascript", "src": "dist/js/dracula_algorithms.js"})
 				);
+				break;
+			case "annotation-tool":
+				$("#scripts").append(
+					"<!-- Poshy Tip -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
+				)
 				break;
 			case "register":
 				$("#scripts").append(

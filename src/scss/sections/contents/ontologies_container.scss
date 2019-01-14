@@ -146,12 +146,27 @@
     padding: 0;
     position: relative;
     top: 18px;
+    &.disabled {
+        cursor: wait;
+        pointer-events: auto;
+
+        &:after {
+            content: "";
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+    }
 
     .progress {
       margin: -24px -24px 24px 0px;
     }
     #treeview {
-      padding: 25px;
+      margin-top: -23px;
+      overflow-x: auto;
+      padding: 30px 25px 25px 25px;
     }
   }
 }
@@ -181,6 +196,11 @@
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+
+          .getting_data {
+              color: $medium-light-grey;
+              font-style: italic;
+          }
         }
       }
       .sorts {

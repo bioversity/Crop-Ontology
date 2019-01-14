@@ -20,313 +20,249 @@ var
 ;
 
 class treeview {
-	tree_icon(is_subroot, id) {
-		let icon_class = (is_subroot) ? "expandable-hitarea lastExpandable-hitarea" : "",
-			build_tree = ($li, id, callback) => {
-				$li.append($('<ul>'));
+	/**
+	 * Transform an Ontology ID or an Ontology Term ID to a DOM capable class
+	 * @param  string 						id									The ID to convert
+	 * @return string															The converted ID
+	 */
+	id2class(id) { return id.replace(":", "-"); }
 
-				DATA.get_children(id).then((child) => {
-					$.each(child, (k, v) => {
-						let li_class = "",
-						div_class = "";
+	/**
+	 * Transform an Ontology class ID or an Ontology Term class ID to a real ID
+	 * @param  string 						id									The ID to convert
+	 * @return string															The converted ID
+	 */
+	class2id(id) { return id.replace("-", ":"); }
 
-						if(v.has_children) {
-							if(k == (child.length - 1)) {
-								li_class = "last expandable lastExpandable";
-								div_class = "hitarea lastExpandable-hitarea";
-							} else {
-								li_class = "";
-								div_class = "hitarea expandable-hitarea";
-							}
-						} else {
-							if(k == (child.length - 1)) {
-								li_class = "last";
-								div_class = "";
-							} else {
-								li_class = "";
-								div_class = "";
-							}
-						}
-						let $tree_icon = $('<div>', {"class": div_class}).click((e) => {
-							action(e, v.id);
-						});
+	/**
+	 * Get all childrens of a given Ontology ID and build the tree graphically
+	 * @param  object   					$li									The target DOM object to append the tree (it starts from the `<ul>` tag)
+	 * @param  string   					id									The given Ontology or Ontology Term ID
+	 * @param  function 					callback							The function to execute onche the children is applied to the DOM
+	 */
+	build_tree($li, id, callback) {
+		$li.append($('<ul>'));
 
-						$li.find("ul").append(
-							$('<li>', {
-								"class": li_class
-							}).append($tree_icon).append(
-								this.button({
-									id: v.id,
-									term: STR.ucfirst(DATA.extract_name(v.name)),
-									source: v,
-									is_root: false
-								})
-							).append(
-								$('<span>', {"class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`"}).text(v.relationship)
-							)
-						);
-					});
+		DATA.get_children(id).then((child) => {
+			$.each(child, (k, v) => {
+				let li_class = "",
+				div_class = "hitarea_" + this.id2class(v.id);
 
-					if(typeof callback == "function") {
-						callback(child);
-					}
-				});
-			},
-
-			/**
-			 * Toggle icon status
-			 * @param  object 					e								The fired button object
-			 */
-			toggleIcon = (e) => {
-				let $li = $(e.currentTarget).closest("li"),
-					$li_ul = $li.find("ul");
-				if($li_ul.length == 0 || !$li_ul.is(":visible")) {
-	                // "expandable" to "collapsible"
-	                // -------------------------------------------------------------
-					// LI
-					if($li.hasClass("expandable")) {
-						$li.removeClass("expandable").addClass("collapsable");
-					}
-					if($li.hasClass("lastExpandable")) {
-						$li.removeClass("lastExpandable").addClass("lastCollapsable");
-					}
-					// DIV
-					if($(e.currentTarget).hasClass("expandable-hitarea")) {
-						$(e.currentTarget).removeClass("expandable-hitarea").addClass("collapsable-hitarea");
-					}
-					if($(e.currentTarget).hasClass("lastExpandable-hitarea")) {
-						$(e.currentTarget).removeClass("lastExpandable-hitarea").addClass("lastCollapsable-hitarea");
+				if(v.has_children) {
+					if(k == (child.length - 1)) {
+						li_class = "last expandable lastExpandable";
+						div_class += " hitarea lastExpandable-hitarea";
+					} else {
+						li_class = "";
+						div_class += " hitarea expandable-hitarea";
 					}
 				} else {
-	                // "collapsible" to "expandable"
-	                // -------------------------------------------------------------
-	                // LI
-					if($li.hasClass("collapsable")) {
-						$li.removeClass("collapsable").addClass("expandable");
-					}
-					if($li.hasClass("lastCollapsable")) {
-						$li.removeClass("lastCollapsable").addClass("lastExpandable");
-					}
-					// DIV
-					if($(e.currentTarget).hasClass("collapsable-hitarea")) {
-						$(e.currentTarget).removeClass("collapsable-hitarea").addClass("expandable-hitarea");
-					}
-					if($(e.currentTarget).hasClass("lastCollapsable-hitarea")) {
-						$(e.currentTarget).removeClass("lastCollapsable-hitarea").addClass("lastExpandable-hitarea");
+					if(k == (child.length - 1)) {
+						li_class = "last";
+					} else {
+						li_class = "";
 					}
 				}
-			},
-
-			get_obj_ids = (obj) => {
-				let ids = [];
-				$.each(obj, (kk, vv) => {
-					ids.push(vv.id);
+				let $tree_icon = $('<div>', {"class": div_class}).click((e) => {
+					this.action(e, v.id);
 				});
-				return ids;
-			},
 
+				$li.find("ul").append(
+					$('<li>', {
+						"class": li_class
+					}).append($tree_icon).append(
+						this.button({
+							id: v.id,
+							term: STR.ucfirst(DATA.extract_name(v.name)),
+							source: v,
+							is_root: false
+						})
+					).append(
+						$('<span>', {"class": "relationship " + v.relationship, "title": "Relationship: `" + v.relationship + "`"}).text(v.relationship)
+					)
+				);
+			});
+
+			if(typeof callback == "function") {
+				callback(child);
+			}
+		});
+	}
+
+	/**
+	* Toggle icon status
+	* @param  object 						e									The fired button object
+	*/
+	toggleIcon(e) {
+		let $li = $(e.currentTarget).closest("li"),
+			$li_ul = $li.find("ul");
+		if($li_ul.length == 0 || !$li_ul.is(":visible")) {
+			// "expandable" to "collapsible"
+			// -------------------------------------------------------------
+			// LI
+			if($li.hasClass("expandable")) {
+				$li.removeClass("expandable").addClass("collapsable");
+			}
+			if($li.hasClass("lastExpandable")) {
+				$li.removeClass("lastExpandable").addClass("lastCollapsable");
+			}
+			// DIV
+			if($(e.currentTarget).hasClass("expandable-hitarea")) {
+				$(e.currentTarget).removeClass("expandable-hitarea").addClass("collapsable-hitarea");
+			}
+			if($(e.currentTarget).hasClass("lastExpandable-hitarea")) {
+				$(e.currentTarget).removeClass("lastExpandable-hitarea").addClass("lastCollapsable-hitarea");
+			}
+		} else {
+			// "collapsible" to "expandable"
+			// -------------------------------------------------------------
+			// LI
+			if($li.hasClass("collapsable")) {
+				$li.removeClass("collapsable").addClass("expandable");
+			}
+			if($li.hasClass("lastCollapsable")) {
+				$li.removeClass("lastCollapsable").addClass("lastExpandable");
+			}
+			// DIV
+			if($(e.currentTarget).hasClass("collapsable-hitarea")) {
+				$(e.currentTarget).removeClass("collapsable-hitarea").addClass("expandable-hitarea");
+			}
+			if($(e.currentTarget).hasClass("lastCollapsable-hitarea")) {
+				$(e.currentTarget).removeClass("lastCollapsable-hitarea").addClass("lastExpandable-hitarea");
+			}
+		}
+	}
+
+	/**
+	 * Collect selected IDs
+	 * @param  object 						obj									The term parents object
+	 * @return array															An array with sequential tree IDs to open
+	 */
+	get_obj_ids(obj) {
+		let ids = [];
+		$.each(obj, (kk, vv) => {
+			ids.push(vv.id);
+		});
+		return ids;
+	}
+
+	/**
+	* Buttons action
+	* @param  object 						e									The fired button object
+	* @param  string 						id									The ontology or term ID
+	*/
+	action(e, id) {
+		let $clicked_item_li = (e.jquery == undefined) ? $(e.currentTarget).closest("li") : e,
+			$clicked_item_li__ul = $clicked_item_li.find("ul");
+
+		if($clicked_item_li__ul.length == 0 || !$clicked_item_li__ul.is(":visible")) {
 			/**
-			 * Buttons action
-			 * @param  object 					e								The fired button object
-			 * @param  string 					id								The ontology or term ID
+			 * Expand interested tree
+			 * ---------------------------------------------------------
 			 */
-			action = (e, id) => {
-				let $li = $(e.currentTarget).closest("li"),
-					$li_ul = $li.find("ul");
+			this.toggleIcon(e);
 
-				if($li_ul.length == 0 || !$li_ul.is(":visible")) {
+			// If is the first page loading
+			if($clicked_item_li__ul.length == 0) {
+				// Display loader
+				$("#treeview_container").prepend(
+					LOADER.create({target: "#treeview_container", type: "progress"})
+				);
+				$("#treeview_container").addClass("disabled");
+
+				/**
+				 * Ontology Term page
+				 * -------------------------------------------------------------
+				 */
+				if(page == "terms" && NAV.get_term_id() !== undefined) {
+					// Highlight the label on the right
+					$(".treeview a.selected").removeClass("selected");
+
+					DATA.get_term_parents(NAV.get_full_id()).then((data) => {
+						let selected_ids, first_item, last_item, $first_item_li;
+
+						// Walk the tree
+						$.each(data[0], (kk, vv) => {
+							// Collect the ids to trace the way
+							selected_ids = this.get_obj_ids(data[0]);
+
+							first_item = data[0][0];
+							$first_item_li = $(".hitarea_" + this.id2class(first_item.id)).parent("li").last();
+							last_item = data[0][(data[0].length - 1)];
+						});
+						/**
+						 * Build and open the requested tree
+						 */
+						this.build_tree($clicked_item_li, id, () => {
+							$.each(selected_ids, (k, v) => {
+								if(v == selected_ids[selected_ids.length - 1]) {
+									/**
+									* THE END
+									*/
+									// Select the button
+									$("." + this.id2class(v)).click();
+								} else {
+									/**
+									* NOT YET THE END
+									*/
+									// Only closed and expandable tree item
+									let $item_tree_control = $(".hitarea_" + this.id2class(v));
+									if(($item_tree_control.hasClass("expandable-hitarea") || $item_tree_control.hasClass("lastExpandable-hitarea"))) {
+										$item_tree_control.click();
+									}
+								}
+							});
+							return dfd.promise();
+						});
+					});
+				} else {
 					/**
-					 * Expanded tree
+					 * Ontology page
 					 * ---------------------------------------------------------
 					 */
 
+					// Load childrens
+					this.build_tree($clicked_item_li, id, () => {
+						let $button = $("." + this.id2class(id))
+						$button.click();
 
-					toggleIcon(e);
-
-					// If is the first page loading
-					if($li_ul.length == 0) {
-						// Display loader
-						$("#treeview_container").prepend(
-							LOADER.create({target: "#treeview_container", type: "progress"})
-						);
-
-						// If this is a Ontology Term page
-						if(page == "terms" && NAV.get_term_id() !== undefined) {
-							/**
-							* Highlight the label on the right
-							*/
-							$(".treeview a.selected").removeClass("selected");
-							DATA.get_term_parents(NAV.get_full_id()).then((data) => {
-								$.each(data[0], (kk, vv) => {
-									let selected_ids = get_obj_ids(data[0]),
-										first_item = data[0][kk],
-										$item_li = $("." + first_item.id.replace(":", "-")).closest("li").last();
-									// let $button = $("." + first_item.id.replace(":", "-")),
-									// 	$prev_tree_icon = $button.prev();
-									if($item_li.length > 0) {
-										build_tree($item_li, first_item.id, (child_data) => {
-											$.each(child_data, (child_key, child) => {
-												// console.warn(child.id, $.inArray(child.id, selected_ids));
-												if($.inArray(child.id, selected_ids) > -1) {
-													let $child_li = $("." + child.id.replace(":", "-")).closest("li").last();
-
-													console.warn(selected_ids[selected_ids.length - 1], child.id);
-													if(selected_ids[selected_ids.length - 1] == child.id) {
-														let $button = $("." + child.id.replace(":", "-"))
-
-														$button.click();
-
-														// Hide the loader
-														LOADER.hide("#treeview_container .progress");
-														return false;
-													} else {
-														console.info(selected_ids);
-														// console.warn(selected_ids[child_key], selected_ids[selected_ids.length - 1], child.id);
-														build_tree($child_li, child.id, (sub_child_data) => {
-															$.each(sub_child_data, (subchild_key, subchild) => {
-																// console.warn(child.id, $.inArray(child.id, selected_ids));
-																if($.inArray(subchild.id, selected_ids) > -1) {
-																	console.log(subchild);
-																	let $subchild_li = $("." + child.id.replace(":", "-")).closest("li").last();
-
-																	console.error(subchild.id);
-																	if(selected_ids[selected_ids.length - 1] == subchild.id) {
-																		let $button = $("." + subchild.id.replace(":", "-"))
-
-																		$button.click();
-
-																		// Hide the loader
-																		LOADER.hide("#treeview_container .progress");
-																		return false;
-																	// } else {
-																	// 	console.log("continue");
-																	// 	build_tree($child_li, child.id, (sub_child_data) => {
-																	// 		$.each(sub_child_data, (subchild_key, subchild) => {
-																	// 			console.warn(sub_child.id);
-																	// 		});
-																	// 	});
-																	}
-																}
-																// $.each(data[0], (kk, vv) => {
-																// 	if(vv.id == kv.id) {
-																// 		console.log($li);
-																// 		console.log($("." + vv.id.replace(":", "-")).closest("li"));
-																// 	}
-																// });
-															});
-														});
-													}
-												}
-												// $.each(data[0], (kk, vv) => {
-												// 	if(vv.id == kv.id) {
-												// 		console.log($li);
-												// 		console.log($("." + vv.id.replace(":", "-")).closest("li"));
-												// 	}
-												// });
-											});
-										});
-										// $button.addClass("selected");
-										// $prev_tree_icon.click();
-
-										// if(kk == 0) {
-											// return false;
-										// }
-									}
-								});
-								// let $button = $("." + data[0][1].id.replace(":", "-")),
-								// 	$tree_icon = $button.prev();
-
-								// console.info(data[0][1]);
-
-								// $.each(data[0], (k, v) => {
-								// 	if(k > 0) {
-
-								// setTimeout(() => {
-								// console.log(e);
-								// }, 1000);
-								// return false;
-								// 	}
-								// });
-								//
-								// $.each($li.find(".btn-mini"), (k, v) => {
-								// 	let term_id = $(v).data("id"),
-								// 		$tree_icon = $(v).prev();
-								// 	console.log();
-								// })
-							});
-							// return false;
-							// $li.find("a").first().addClass("selected");
-						} else {
-							// Load childrens
-							build_tree($li, id, () => {
-								let $button = $("." + id.replace(":", "-"))
-								$button.click();
-
-								// Hide the loader
-								LOADER.hide("#treeview_container .progress");
-							});
-						}
-
-
-						// if(page == "terms") {
-						// 	/**
-						// 	 * Highlight the label on the right
-						// 	 */
-						// 	$(".treeview a.selected").removeClass("selected");
-						// 	DATA.get_term_parents(NAV.get_full_id()).then((data) => {
-						// 		$.each(data[0], (k, v) => {
-						// 			console.log(k, v);
-						// 		});
-						// 		let $button = $("." + data[0][1].id.replace(":", "-")),
-						// 			$tree_icon = $button.prev();
-                        //
-						// 		$tree_icon.click();
-						// 		$($button).addClass("selected");
-						// 		console.info(data[0][1]);
-                        //
-						// 		// $.each(data[0], (k, v) => {
-						// 		// 	if(k > 0) {
-                        //
-						// 				// setTimeout(() => {
-						// 				// console.log(e);
-						// 				// }, 1000);
-						// 				// return false;
-						// 		// 	}
-						// 		// });
-                        //         //
-						// 		// $.each($li.find(".btn-mini"), (k, v) => {
-						// 		// 	let term_id = $(v).data("id"),
-						// 		// 		$tree_icon = $(v).prev();
-						// 		// 	console.log();
-						// 		// })
-						// 		return false;
-						// 	})
-						// 	// $li.find("a").first().addClass("selected");
-						// }
-					} else {
-						$li_ul.show();
 						// Hide the loader
 						LOADER.hide("#treeview_container .progress");
-					}
-				} else {
-					/**
-					 * Unexpanded tree
-					 * ---------------------------------------------------------
-					 */
-
-					toggleIcon(e);
-					// $(".treeview a.selected").removeClass("selected");
-					$li_ul.hide();
-					$(e.target).closest("ul").closest("li.expandable").find("a").first().addClass("selected");
+					});
 				}
-			};
 
-		return $('<div>', {"class": "hitarea " + icon_class})
+			} else {
+				$clicked_item_li__ul.show();
+				// Hide the loader
+				LOADER.hide("#treeview_container .progress");
+			}
+		} else {
+			/**
+			* Unexpanded tree
+			* ---------------------------------------------------------
+			*/
+
+			this.toggleIcon(e);
+			// $(".treeview a.selected").removeClass("selected");
+			$clicked_item_li__ul.hide();
+			$(e.target).closest("ul").closest("li.expandable").find("a").first().addClass("selected");
+		}
+	}
+
+	/**
+	 * Generate the square icon on the left
+	 * @param  bool 						is_subroot							Is a sub-root element
+	 * @param  string   					id									The given Ontology or Ontology Term ID
+	 * @return object															The DOM object of the generated "hitarea" icon
+	 */
+	tree_icon(is_subroot, id) {
+		let icon_class = "hitarea_" + this.id2class(id) + " " + ((is_subroot) ? "expandable-hitarea lastExpandable-hitarea" : "");
+
 		// Simulate the click on the first "hitarea"
-		// just a first opening of the tree
+		// just as first opening of the tree
+		return $('<div>', {"class": "hitarea " + icon_class})
 			.click((e) => {
-				console.log(this);
-				action(e, id);
+				this.action(e, id);
 			}
 		);
 	}
@@ -604,7 +540,7 @@ class treeview {
 			$comments = $("#new-comments").html();
 		let $a = $('<a>', {
 			"data-tooltip": "<b>" + STR.ucfirst(option.term) + "</b><br /><small>Relationship: <tt>" + option.source.relationship + "</tt></small>",
-			"class": "btn btn-mini tooltipped " + option.id.replace(":", "-")/* + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : "")*/,
+			"class": "btn btn-mini tooltipped " + this.id2class(option.id)/* + ((option.is_root || NAV.get_term_id() == option.id) ? " selected" : "")*/,
 			"data-id": option.id
 		}).append(
 			$('<span>').html(STR.camel_case_2_text(option.term))
@@ -639,10 +575,11 @@ class treeview {
 			}
 			ext_permalink = "https://www.cropontology.org/terms/" + option.id + "/" + option.term + "/static-html?language=" + ((option.langs.length == 0) ? settings.general.language : option.langs[0]);
 
-			$("#term_info_name").attr("href", permalink).html(option.term);
+			$("#term_info_name").attr("href", permalink).html(STR.readable_data(option.term));
 			$("#term_permalink").attr("href", ext_permalink);
 
 			// Manage "Term information" nav
+			let $variables_btn_content_bkp = $("#variables").addClass("disabled").find("a").clone();
 			$("#variables").addClass("disabled").find("a").html($('<span>', {"class": "fa fa-spin fa-sync"}));
 			$("#general a").click();
 
@@ -653,7 +590,7 @@ class treeview {
 					// Manage "Term information" nav
 					$variables = $variables.replace(">Variables<", ">Variables (" + variables.length + ")<");
 					$variables = $variables.replace('data-tooltip="Variables"', 'data-tooltip="Variables (' + variables.length + ')"');
-					console.log($variables);
+
 					$("#variables").removeClass("disabled").html($variables);
 					$("#variables a").tooltip();
 
@@ -678,7 +615,7 @@ class treeview {
 						);
 					});
 				} else {
-					$("#variables a").addClass("disabled");
+					$("#variables a").addClass("disabled").html($variables_btn_content_bkp.html());
 				}
 
 				LOADER.hide("#pages .progress");
@@ -758,6 +695,7 @@ class treeview {
 				});
 
 				LOADER.create({target: "#graph", type: "progress"});
+
 				/**
 				 * Get term data and build graph
 				 */
@@ -883,6 +821,10 @@ class treeview {
 					this.enable_info();
 				});
 			}
+
+			// Hide the loader
+			LOADER.hide("#treeview_container .progress");
+			$("#treeview_container").removeClass("disabled");
 		});
 
 		if(NAV.get_page() && NAV.get_term_id() == option.id) {
