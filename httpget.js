@@ -14,7 +14,7 @@ var httpget = function(u) {
     }
     reader.close();
 
-    return answer.toString();
+    return (answer == null) ? "" : answer.toString();
 };
 
 exports = httpget;

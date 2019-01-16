@@ -213,6 +213,10 @@ apejs.urls = {
             print(response).text(html);
         },
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var termsQuery = googlestore.query("term")
                                 .sort("created_at", "DESC")
                                 .fetch(10),
@@ -283,6 +287,10 @@ apejs.urls = {
     },
     "/ontologies": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var category = request.getParameter("category");
             var ontologies = googlestore.query("ontology");
 
@@ -326,6 +334,9 @@ apejs.urls = {
             return;
         },
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
 
             var ontoId = matches[1];
 
@@ -585,6 +596,10 @@ apejs.urls = {
     },
     "/get-ontology/([^/]*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var ontoId = matches[1];
             // try {
             //     // get this ontology data from it's id
@@ -602,6 +617,10 @@ apejs.urls = {
     },
     "/get-ontology-roots/([^/]*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -684,8 +703,8 @@ apejs.urls = {
                         "id": ""+term.getProperty("id"),
                         // "name": ""+(name instanceof Text ? name.getValue() : name),
 						"name": "" + Common.object_key_replace("undefined", "", name),
-                        // oboBlobKey: ''+term.getProperty('obo_blob_key'),
-                        oboBlobKey: "" + Common.object_key_replace("undefined", null, term.getProperty('obo_blob_key')),
+                        oboBlobKey: ''+term.getProperty('obo_blob_key'),
+                        // oboBlobKey: "" + Common.object_key_replace("undefined", null, term.getProperty('obo_blob_key')),
                         excelBlobKey: ''+excelBlobKey,
 					    ontologyType: ''+ontoType
                     });
@@ -699,6 +718,10 @@ apejs.urls = {
     },
     "/get-ontology-id": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -725,6 +748,10 @@ apejs.urls = {
     },
     "/delete-ontology": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             try {
                 var ontologyId = request.getParameter("ontologyId");
                 if(!ontologyId || ontologyId.equals(""))
@@ -784,6 +811,10 @@ apejs.urls = {
     },
     "/get-children/(.*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -869,6 +900,10 @@ apejs.urls = {
     },
     "/get-variables/(.*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -982,6 +1017,10 @@ apejs.urls = {
 	},
     "/get-attributes/([^/]*)/jsonrdf": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8")
             response.setContentType("application/rdf+json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -1094,6 +1133,10 @@ apejs.urls = {
     },
     "/get-attributes/(.*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -1185,6 +1228,10 @@ apejs.urls = {
     "/add-attribute": {
         get: function(){},
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             function err(msg) { response.getWriter().println('<script>window.top.fileupload_done("'+msg+'");</script>'); }
             // only if logged in
             var currUser = auth.getUser(request);
@@ -1234,6 +1281,10 @@ apejs.urls = {
     },
     "/remove-attribute": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             function err(msg) {
                 response.sendError(response.SC_BAD_REQUEST, msg);
             }
@@ -1266,6 +1317,10 @@ apejs.urls = {
     },
     "/obo/([^/]*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setCharacterEncoding("UTF-8");
             response.setContentType('text/plain');
@@ -1461,11 +1516,19 @@ apejs.urls = {
     },
     "/rdf/([^/]*)/(.*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             response.sendRedirect('/rdf/' + matches[1]);
         }
     },
     "/rdf/([^/]*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setCharacterEncoding("UTF-8");
             response.setContentType('text/plain');
@@ -1504,6 +1567,10 @@ apejs.urls = {
             return;
         },
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var blobKeyString = matches[1];
 
             var blobKey = new BlobKey(blobKeyString);
@@ -1549,6 +1616,10 @@ apejs.urls = {
     },
     "/terms/([^/]*)/(.*)" : {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var termId = matches[1],
                 info = matches[2];
 
@@ -1667,6 +1738,10 @@ apejs.urls = {
     */
     "/login" : {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             // find user with this key and return its data
             var user = auth.getUser(request),
                 username = "",
@@ -1685,6 +1760,10 @@ apejs.urls = {
 
 		// check that user has been activated
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var username = request.getParameter("username"),
                 password = request.getParameter("password");
 
@@ -1697,6 +1776,10 @@ apejs.urls = {
     },
     "/logout": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             // just delete it on the server
             var userEntity = auth.getUser(request);
             if(userEntity) {
@@ -1707,6 +1790,10 @@ apejs.urls = {
     },
     "/register": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var user = {
                 created: new java.util.Date(),
                 username: request.getParameter("username"),
@@ -1754,7 +1841,7 @@ apejs.urls = {
 				var userid = userDB.userid;
 
 				// does not log in the user until it has been activated by admin
-//				auth.login(response, user.username, user.password);
+                //				auth.login(response, user.username, user.password);
 
 				// send email to admin / moderator for confirmation
 				var bodyMessage	= "New user has register on " + URL + " on " + user.created  + "\n\n - Username: " + user.username  + "\n - First name: " + user.name + "\n - Last name: " + user.sirname + "\n - Host institution: " + user.institution + "\n - email: " + user.email + "\n \n Link to accept this request: " + URL + "/users_admin#" + userid
@@ -1781,6 +1868,10 @@ apejs.urls = {
     },
     "/add-comment" : {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var currUser = auth.getUser(request);
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "Please log in to comment");
@@ -1807,6 +1898,10 @@ apejs.urls = {
     },
     "/get-comments-onto" : {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var ontoId = request.getParameter("ontoId");
             if(ontoId == "" || !ontoId) {
                 response.sendError(response.SC_BAD_REQUEST, "missing paramaters");
@@ -1861,6 +1956,10 @@ apejs.urls = {
     },
     "/get-comments" : {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var termId = request.getParameter("termId");
             if(termId == "" || !termId) {
                 response.sendError(response.SC_BAD_REQUEST, "missing paramaters");
@@ -1911,6 +2010,10 @@ apejs.urls = {
             response.getWriter().println(html);
         },
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var currUser = auth.getUser(request);
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
@@ -1967,6 +2070,10 @@ apejs.urls = {
             response.getWriter().println(html);
         },
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var currUser = auth.getUser(request);
             if(!currUser)
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
@@ -2007,8 +2114,11 @@ apejs.urls = {
         }
     },
     "/serve" : {
-
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var blobKey = new BlobKey(request.getParameter("blob-key"));
 
             blobstore.blobstoreService.serve(blobKey, response);
@@ -2016,6 +2126,10 @@ apejs.urls = {
     },
     "/obo-upload" : {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 
             function err(msg) { response.sendRedirect('/attribute-redirect?msg='+JSON.stringify(''+msg)); }
 
@@ -2128,18 +2242,30 @@ apejs.urls = {
     },
     "/obo-upload-url": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var uploadUrl = blobstore.createUploadUrl("/obo-upload");
             response.getWriter().println(uploadUrl);
         }
     },
     "/excel-upload-url": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var uploadUrl = blobstore.createUploadUrl("/excel-template-upload");
             response.getWriter().println(uploadUrl);
         }
     },
     "/create-term": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             /*
             importPackage(java.util.logging);
             var logger = Logger.getLogger("org.whatever.Logtest");
@@ -2167,6 +2293,10 @@ apejs.urls = {
     },
     "/next-id": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var ontologyId = request.getParameter("ontology_id");
             if(!ontologyId || ontologyId == "")
                 return response.sendError(response.SC_BAD_REQUEST, "missing parameter");
@@ -2204,6 +2334,10 @@ apejs.urls = {
      */
     "/obo-to-json": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 
             var oboBlobKey = new BlobKey(request.getParameter("oboBlobKey"));
             if(!oboBlobKey)
@@ -2214,6 +2348,10 @@ apejs.urls = {
     },
     "/attribute-upload-url": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var uploadUrl = blobstore.createUploadUrl("/attribute-upload");
             response.getWriter().println(uploadUrl);
         }
@@ -2230,6 +2368,10 @@ apejs.urls = {
     },
     "/attribute-upload": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8")
             response.setContentType("text/html; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -2311,6 +2453,10 @@ apejs.urls = {
     },
     "/curruser-ontologies": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var currUser = auth.getUser(request);
             if(!currUser)
                 response.sendError(response.SC_BAD_REQUEST, "Not logged in");
@@ -2345,6 +2491,10 @@ apejs.urls = {
     },
     "/get-term-parents/(.*)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -2427,6 +2577,10 @@ apejs.urls = {
     },
     "/get-categories": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             // to get categories we need to get all ontologies and
             // filter the unique values
             var ontologies = googlestore.query("ontology")
@@ -2448,6 +2602,10 @@ apejs.urls = {
     },
     "/get-ontologies": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var cacheKey = "/get-ontologies";
             var data = memcache.get(cacheKey);
             if(data) return print(response).json(JSON.parse(data), request.getParameter("callback"));
@@ -2532,6 +2690,10 @@ apejs.urls = {
     },
     "/edit_profile": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 			//currUser : user from DB (google format)
             var currUser = auth.getUser(request);
 			if(!currUser){
@@ -2560,7 +2722,7 @@ apejs.urls = {
     },
     "/users_admin": {
         get: function(request, response) {
-	// only admin can access this page
+	           // only admin can access this page
             var currUser = auth.getUser(request);
             if(!currUser){
                 return response.sendError(response.SC_BAD_REQUEST, "not logged in");
@@ -2572,6 +2734,10 @@ apejs.urls = {
 			}
         },
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             try {
                 var users = googlestore.query("user")
                             .sort("username", "ASC")
@@ -2592,6 +2758,10 @@ apejs.urls = {
     },
     "/activate_user": {
 		post: function(request, response){
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 			// only admin can activate users
     	    var currUser = auth.getUser(request);
     	    if(!currUser){
@@ -2644,6 +2814,10 @@ apejs.urls = {
     },
 	"/delete_user": {
 		post: function(request, response){
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 			// only admin can activate users
     	    var currUser = auth.getUser(request);
     	    if(!currUser){
@@ -2677,6 +2851,10 @@ apejs.urls = {
 	},
     "/users": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             try {
                 var users = googlestore.query("user")
 							.sort("username")
@@ -2696,6 +2874,10 @@ apejs.urls = {
     },
     "/users/([a-zA-Z0-9_]+)": {
         get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var userid = matches[1];
 
             try {
@@ -2711,6 +2893,10 @@ apejs.urls = {
     },
     "/user-ontologies": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var userid = request.getParameter("userid");
             if(!userid || userid.equals(""))
                 return response.sendError(response.SC_BAD_REQUEST, "missing userid");
@@ -2762,6 +2948,10 @@ apejs.urls = {
     },
     "/csv-download": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             response.setContentType("text/csv");
             response.setHeader("Content-Disposition","attachment;filename=result.csv");
 
@@ -2771,6 +2961,10 @@ apejs.urls = {
     },
     "/excel-template-upload": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var UPLOAD_URL = blobstore.createUploadUrl("/excel-template-upload");
             var skin = "<form method='post' enctype='multipart/form-data' action='"+UPLOAD_URL+"'><input type='file' name='excelfile' /><input type='submit' /></form>";
             response.getWriter().println(skin);
@@ -2881,6 +3075,10 @@ apejs.urls = {
     },
     "/backup": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var kind = request.getParameter("kind");
             if(isblank(kind))
                 return error(response, "Need kind");
@@ -2907,6 +3105,10 @@ apejs.urls = {
     },
     "/report": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var ontoId = request.getParameter("ontology_id");
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
@@ -3064,7 +3266,7 @@ apejs.urls = {
             if(isblank(ontoId)) return error(response, "Invalid parameter");
 
             /*
-zz
+
             var excels = {
                 'CO_334': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Cassava%2020120524%20EN-Default%20trait%20set%20english.xlsx',
                 'CO_324': 'http://genesys.cgxchange.org/gcp-crop-ontology/m-crop-ontology-curation-tool/latest-versions-trait-sets-received/Sorghum%2020130121%20EN%20Trait%20Dicitonary%20ver%204.xls',
@@ -3107,6 +3309,10 @@ zz
     },
     "/edit-profile": {
       post: function(req, res) {
+          res.addHeader("Access-Control-Allow-Origin", "*");
+          res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+          res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
         var language = req.getParameter("language");
         var currUser = auth.getUser(req);
         if(!currUser) return error(res, "Not logged in");
@@ -3118,6 +3324,10 @@ zz
     },
     "/add-parent": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             try {
                 // only if logged in
                 var currUser = auth.getUser(req);
@@ -3183,6 +3393,10 @@ zz
     },
     "/primary": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var currUser = auth.getUser(req);
             if(!auth.isAdmin(currUser))
                 return error(res, "Not admin");
@@ -3206,6 +3420,10 @@ zz
     },
     "/ibfieldbook": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             req.setCharacterEncoding("utf-8")
             res.setContentType("text/html; charset=UTF-8");
             res.setCharacterEncoding("UTF-8");
@@ -3262,6 +3480,10 @@ zz
             print(res).text(html);
         },
         post: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var data = {};
             var emailPar = req.getParameter('email');
 
@@ -3296,6 +3518,10 @@ zz
     },
     "/reset-password": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var emailPar = req.getParameter('email');
             var secret = req.getParameter('secret');
 
@@ -3363,6 +3589,10 @@ zz
     },
     "/rebuild-search-index": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var s = new search();
             select('term')
                 .find() // do it in chunks
@@ -3380,6 +3610,10 @@ zz
     },
     "/search": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var q = req.getParameter('q');
             var s = new search();
             var regExp = /co_(\d+):(\d+)/g;
@@ -3425,11 +3659,19 @@ zz
     },
     "/memcache-clear": {
         post: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             memcache.clearAll();
         }
     },
     "/get-terms-by-property": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var property = req.getParameter('property');
 
             var terms = googlestore.query("term")
@@ -3448,6 +3690,10 @@ zz
     },
     "/dump": {
         get: function(req, res) {
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            res.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var offset = req.getParameter('offset') || 0;
             var terms = googlestore.query("term")
                             .offset(offset)
@@ -3470,6 +3716,10 @@ zz
     },
     "/default-list": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var ontologyId = request.getParameter("ontologyId");
 
             var t = traitsUtil.getDefaultList(ontologyId);
@@ -3478,6 +3728,10 @@ zz
     },
     "/get-term": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var termId = request.getParameter("id");
             var ontologyId = termId.split(":")[0];
 
@@ -3511,6 +3765,10 @@ zz
     },
 	"/brapi/v1/traits(|/([^/]*))":{
 	  get: function(request, response, matches) {
+          response.addHeader("Access-Control-Allow-Origin", "*");
+          response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+          response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 			if (matches[1].match(/:/)){
 				// retrieve 1 trait
 
@@ -3628,6 +3886,10 @@ zz
 	},
 	"/brapi/v1/variables(|/([^/]*))":{
 		get: function(request, response, matches) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
 
 			if(request.getParameter("page")){
 				var filterPage = request.getParameter("page");
@@ -3699,6 +3961,10 @@ zz
 	},
 	"/brapi/v1/ontologies":{
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             if(request.getParameter("page")){
                 var filterPage = request.getParameter("page");
             }else{
@@ -3764,6 +4030,10 @@ zz
     },
     "/brapi/v1/variables-search":{
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
               var jb = new StringBuffer();
               var line = null;
               try {
@@ -3816,6 +4086,10 @@ zz
     },
     "/brapi/v1/calls":{
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             if(request.getParameter("page")){
                 var filterPage = request.getParameter("page");
             }else{
@@ -3864,6 +4138,10 @@ zz
     },
   	"/ontos_stats":{
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -3927,7 +4205,7 @@ zz
 	                              .filter("Crop", "!=", null) // in template 4, "Crop" is a column in the trait section (=> this query tells how many traits), in template 5, "Crop" is a column in the variable section
 	                              .fetch(1);
 					if (traits_TD4.length > 0) {
-//						//TDv4
+                        //						//TDv4
 						onto_type = "TDv4";
 					} else {
 	    			    var vars_OBO = googlestore.query("term")
@@ -4004,6 +4282,8 @@ zz
 				i++;
 		  	}
 
+            files = (files == null) ? [] : files;
+            files_CO = (files_CO == null) ? [] : files_CO;
 			// export
 			var sum_all_crops = {
 			  "Total number of terms":""+terms_tot,
@@ -4014,10 +4294,10 @@ zz
 			  "Crops":crop_list,
 			  "Number of ontologies": ""+i,
 			  "Files":{
-				"TDv4": "" + (files.toString().match(/TDv4/g) || []).length,
-				"TDv5": "" + (files.toString().match(/TDv5/g) || []).length,
-				"OBOvar": "" + (files.toString().match(/OBOvar/g) || []).length,
-				"OBO": "" + (files.toString().match(/\bOBO\b/g) || []).length
+				"TDv4": "" + (files.join(" ").match(/TDv4/g) || []).length,
+				"TDv5": "" + (files.join(" ").match(/TDv5/g) || []).length,
+				"OBOvar": "" + (files.join(" ").match(/OBOvar/g) || []).length,
+				"OBO": "" + (files.join(" ").match(/\bOBO\b/g) || []).length
 			  }
 			};
 			var sum_CO_crops = {
@@ -4029,10 +4309,10 @@ zz
 			  "Crops":CO_crop_list,
 			  "Number of ontologies":""+i_CO,
 			  "Files":{
-				"TDv4": "" + (files_CO.toString().match(/TDv4/g) || []).length,
-				"TDv5": "" + (files_CO.toString().match(/TDv5/g) || []).length,
-				"OBOvar": "" + (files_CO.toString().match(/OBOvar/g) || []).length,
-				"OBO": "" + (files_CO.toString().match(/\bOBO\b/g) || []).length
+				"TDv4": "" + (files_CO.join(" ").match(/TDv4/g) || []).length,
+				"TDv5": "" + (files_CO.join(" ").match(/TDv5/g) || []).length,
+				"OBOvar": "" + (files_CO.join(" ").match(/OBOvar/g) || []).length,
+				"OBO": "" + (files_CO.join(" ").match(/\bOBO\b/g) || []).length
 			  }
 			};
 			var sum_non_CO_crops = {
@@ -4062,6 +4342,10 @@ zz
 	},
     "/ontos_stats_make_csv": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
         	try {
             var url = 'http://localhost:8080/ontos_stats.json';
                 var result = httpget(url);
@@ -4090,6 +4374,10 @@ zz
     },
      "/metadata": {
         get: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             request.setCharacterEncoding("utf-8");
             response.setContentType("application/x-yaml; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -4137,6 +4425,10 @@ zz
     },
     "/webhook": {
         post: function(request, response) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST");
+            response.addHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Content-Type");
+
             var jb = new StringBuffer();
             var line = null;
             var obj;
