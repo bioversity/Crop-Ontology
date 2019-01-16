@@ -1,0 +1,32 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /
+  static_files: /home/admin_/new_interface/index.html
+  upload: /home/admin_/new_interface/index.html
+
+- url: /(.*)
+  static_files: /home/admin_/new_interface/\1
+  upload: /home/admin_/new_interface/(.*)
+
+skip_files:
+- .babelrc
+- .editorconfig
+- .eslintrc
+- .git
+- .gitignore
+- .htaccess
+- .remote-sync.json
+- .scss-lint.yml
+- bower_components/fontawesome/.bower.json
+- bower_components/fontawesome/.github/
+- bower_components/fontawesome/*.md
+- bower_components/fontawesome/*.txt
+- bower_components/fontawesome/advanced-options/
+- bower_components/fontawesome/svg-with-js/
+- bower_components/fontawesome/use-on-desktop/
+- bower_components/jquery/src/
+- node_modules/
+- src/

@@ -98,7 +98,7 @@ module.exports={
             "visible": true,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": "Neil Palmer-CIAT - About the project.jpg"
             }]
         }
     },
@@ -109,7 +109,7 @@ module.exports={
             "visible": true,
             "items": [{
                 "message": "",
-                "image": "credit_Bioversity International_J.van de Gevel.jpg"
+                "image": "Neil Palmer-CIAT - Privacy policies.jpg"
             }]
         }
     },
@@ -120,7 +120,7 @@ module.exports={
             "visible": true,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": "Neil Palmer-CIAT - API"
             }]
         }
     },
@@ -131,7 +131,7 @@ module.exports={
             "visible": true,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": "Neil Palmer-CIAT - Contact us.jpg"
             }]
         }
     },
@@ -142,7 +142,7 @@ module.exports={
             "visible": true,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": "Neil Palmer-CIAT - Feedback..jpg"
             }]
         }
     },
@@ -153,7 +153,7 @@ module.exports={
             "visible": true,
             "items": [{
                 "message": "",
-                "image": "cowpea.jpg"
+                "image": "credit_Bioversity International- Add anew term.jpg"
             }]
         }
     },
@@ -399,7 +399,7 @@ module.exports={
                         {
                             "label": "Blog",
                             "link": "./blog",
-                            "display": true
+                            "display": false
                         },
                         {
                             "label": "API",
@@ -7585,7 +7585,6 @@ var treeview = function () {
 							$("#comments").html("");
 
 							$.each(comments, function (k, c) {
-								console.log(c[0]);
 								DATA.get_user(c[0].username).then(function (user) {
 									$("#comments").append($('<li>', { "class": "collection-item avatar" }).append($('<img>', { "src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle" })).append($('<span>', { "class": "title" }).append($('<span>', { "class": "highlight" }).text(user.name + " " + user.sirname)).append("<br />").append($('<small>', { "class": "grey-text" }).text(c[0].date))).append($('<p>', { "style": "font-style:italic;" }).text(c[0].comment))).show();
 								});
@@ -7900,6 +7899,7 @@ var data = function () {
 						q: string
 					},
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -7918,7 +7918,8 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/obo-upload-url",
 					async: true,
-					dataType: "html",
+					crossDomain: true,
+					dataType: "json",
 					success: function success(data) {
 						resolve(data);
 					},
@@ -7936,7 +7937,8 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/attribute-upload-url",
 					async: true,
-					dataType: "html",
+					crossDomain: true,
+					dataType: "json",
 					success: function success(data) {
 						resolve(data);
 					},
@@ -7969,6 +7971,7 @@ var data = function () {
 						alt: "json"
 					},
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						var
@@ -8058,6 +8061,7 @@ var data = function () {
 						alt: "json"
 					},
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						var
@@ -8181,6 +8185,31 @@ var data = function () {
 				    newCats = {},
 				    categories = [];
 
+				// this.ask({
+				// 	endpoint: "get-ontologies",
+				// 	data: {
+				// 		alt: "json"
+				// 	},
+				// 	dataType: "jsonp",
+				// 	success: (data) => {
+				// 		$.each(data, (key, ontologies) => {
+				// 			/**
+				// 			 * Filtered categories
+				// 			 * @type object
+				// 			 */
+				// 			var filtered = filter_categories(key, ontologies);
+				// 			categories.push(filtered);
+				// 		});
+				// 		// console.info(categories);
+				// 		// categories = OBJ.sort_by_key(categories, ["category", "name"])
+				// 		// console.dir(categories);
+				//
+				// 		resolve(categories);
+				// 	},
+				// 	error: (jqXHR, textStatus, errorThrown) => {
+				// 		reject(errorThrown);
+				// 	}
+				// });
 				/**
      * @see http://www.cropontology.org/api
      */
@@ -8191,6 +8220,7 @@ var data = function () {
 						alt: "json"
 					},
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						$.each(data, function (key, ontologies) {
@@ -8232,6 +8262,7 @@ var data = function () {
 					type: "POST",
 					url: "http://www.cropontology.org/latest",
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8261,7 +8292,6 @@ var data = function () {
 				$.ajax({
 					type: "GET",
 					url: "common/ontologies_data.json",
-					async: true,
 					dataType: "json",
 					success: function success(data) {
 						if (data[id] !== undefined) {
@@ -8294,6 +8324,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-ontology-roots/" + id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data[0]);
@@ -8317,6 +8348,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-attributes/" + id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						var d = {};
@@ -8342,6 +8374,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-comments-onto/?ontoId=" + id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8363,6 +8396,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-term-parents/" + term_id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8384,6 +8418,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-variables/" + term_id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8405,6 +8440,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-comments?termId=" + term_id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8426,6 +8462,7 @@ var data = function () {
 					type: "GET",
 					url: "http://www.cropontology.org/get-children/" + id,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8455,7 +8492,11 @@ var data = function () {
 				$.ajax({
 					type: "GET",
 					url: "http://www.cropontology.org/login",
+					data: {
+						alt: "json"
+					},
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						if (data.username !== undefined && data.username !== "") {
@@ -8501,6 +8542,7 @@ var data = function () {
 						type: "GET",
 						url: "http://www.cropontology.org/users",
 						async: true,
+						crossDomain: true,
 						dataType: "json",
 						success: function success(users) {
 							$.each(users, function (ku, vu) {
@@ -8509,6 +8551,7 @@ var data = function () {
 										type: "GET",
 										url: "http://www.cropontology.org/users/" + vu.userid,
 										async: true,
+										crossDomain: true,
 										dataType: "json",
 										success: function success(data) {
 											// Get Gravatar data
@@ -8516,6 +8559,7 @@ var data = function () {
 												type: "GET",
 												url: "https://en.gravatar.com/" + data.gravatar + ".json",
 												async: true,
+												crossDomain: true,
 												dataType: "json",
 												success: function success(gravatar_data) {
 													data.gravatar = gravatar_data.entry[0];
@@ -8576,6 +8620,7 @@ var data = function () {
 					url: "http://www.cropontology.org/login",
 					data: user_data,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8595,6 +8640,7 @@ var data = function () {
 					url: "http://www.cropontology.org/register",
 					data: user_data,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);
@@ -8614,6 +8660,7 @@ var data = function () {
 					url: "http://www.cropontology.org/add-ontology",
 					data: pars,
 					async: true,
+					crossDomain: true,
 					dataType: "json",
 					success: function success(data) {
 						resolve(data);

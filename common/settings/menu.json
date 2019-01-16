@@ -155,7 +155,7 @@
                         {
                             "label": "Blog",
                             "link": "./blog",
-                            "display": true
+                            "display": false
                         },
                         {
                             "label": "API",

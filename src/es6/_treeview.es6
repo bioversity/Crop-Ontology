@@ -665,7 +665,6 @@ class treeview {
 						$("#comments").html("");
 
 						$.each(comments, (k, c) => {
-							console.log(c[0]);
 							DATA.get_user(c[0].username).then((user) => {
 								$("#comments").append(
 									$('<li>', {"class": "collection-item avatar"}).append(

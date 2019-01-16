@@ -602,7 +602,6 @@ var treeview = function () {
 							$("#comments").html("");
 
 							$.each(comments, function (k, c) {
-								console.log(c[0]);
 								DATA.get_user(c[0].username).then(function (user) {
 									$("#comments").append($('<li>', { "class": "collection-item avatar" }).append($('<img>', { "src": user.gravatar.thumbnailUrl, "alt": user.username, "class": "circle" })).append($('<span>', { "class": "title" }).append($('<span>', { "class": "highlight" }).text(user.name + " " + user.sirname)).append("<br />").append($('<small>', { "class": "grey-text" }).text(c[0].date))).append($('<p>', { "style": "font-style:italic;" }).text(c[0].comment))).show();
 								});
