@@ -125,6 +125,11 @@ class str {
 		return string_part.split("\n")[0];
 	}
 
+	is_term_id(string) {
+		let regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
+		return regex.test(string);
+	}
+
 	/**
 	 * Get all languages in a JSON string
 	 * @param  string 							string							The string to analyze
@@ -153,6 +158,7 @@ class str {
 	 * @return string															The extracted string
 	 */
 	get_ontology_term(string, language) {
+		string = (typeof string == "object") ? JSON.stringify(string) : string;
 		language = (language == undefined || language == "undefined") ? settings.general.language : language;
 
 		let strings = {};

@@ -9,9 +9,10 @@ import filters from "../../src/es6/filters.es6";
 import modals from "../../src/es6/modals.es6";
 import str from "../../src/es6/_str.es6";
 import loader from "../../src/es6/loader.es6";
+
 /**
-* Static pages
-*/
+ * Static pages
+ */
 import page_about from "../../common/statics/about.html";
 import page_privacy_policy from "../../common/statics/privacy_policy.html";
 import page_api from "../../common/statics/api.html";
@@ -21,7 +22,9 @@ import page_register from "../../common/statics/register.html";
 import page_forgot_password from "../../common/statics/forgot-password.html";
 import page_feedback from "../../common/statics/feedback.html";
 import page_add_ontology from "../../common/statics/add-ontology.html";
-import page_annotation_tool from "../../common/statics/annotation-tool.html";
+
+import layout_annotation_tool from "../../src/es6/pages/annotation_tool.es6";
+
 
 var
 	DATA = new data(),
@@ -35,6 +38,9 @@ var
 
 	URL = "http://www.cropontology.org",
 
+	/**
+	 * Static pages
+	 */
 	PAGE_ABOUT = page_about,
 	PAGE_PRIVACY_POLICY = page_privacy_policy,
 	PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
@@ -44,7 +50,10 @@ var
 	PAGE_FORGOT_PASSWORD = page_forgot_password,
 	PAGE_FEEDBACK = page_feedback,
 	PAGE_ADD_ONTOLOGY = page_add_ontology,
-	PAGE_ANNOTATION_TOOL = page_annotation_tool,
+	/**
+	 * Layouts
+	 */
+	PAGE_ANNOTATION_TOOL = new layout_annotation_tool(),
 
 	page = NAV.get_page(),
 	settings = require("../../common/settings/contents.json"),
@@ -137,6 +146,7 @@ class layout {
 
 		$("textarea.autoresize").trigger("autoresize");
 
+
 		/**
 		 * Behaviours after page build
 		 * ---------------------------------------------------------------------
@@ -224,10 +234,70 @@ class layout {
 					}
 				});
 				break;
+			case "annotation-tool":
+
+				var stepperInstace = new MStepper(document.querySelector(".stepper"), {
+					firstActive: 0,
+					linearStepsNavigation: true,
+					autoFocusInput: true
+				});
+				$("#clipboard").focus();
+				function validateStepOne() {
+					return ($.trim($("#clipboard").val()) !== "") ? true : false;
+				}
+
+				/**
+				 * Drag behaviours
+				 * -------------------------------------------------------------
+				 */
+				var drag_timer, dragged_file;
+				$(window).on("dragover", (e) => {
+					e.stopPropagation();
+					e.preventDefault();
+
+					let dt = e.originalEvent.dataTransfer;
+					e.originalEvent.dataTransfer.dropEffect = "copy";
+					if(dt.types && (dt.types.indexOf ? dt.types.indexOf("Files") != -1 : dt.types.contains("Files"))) {
+						$("#drop_area").fadeIn(150);
+						window.clearTimeout(drag_timer);
+					}
+				}).on("dragleave", (e) => {
+					drag_timer = window.setTimeout(() => {
+						$("#drop_area").fadeOut(150);
+					}, 1500);
+				});
+				/**
+				 * Drop area behaviours
+				 */
+				$("#drop_area").on("dragover", (e) => {
+					e.stopPropagation();
+					e.preventDefault();
+
+					e.originalEvent.dataTransfer.dropEffect = "copy";
+				}).on("drop", (e) => {
+					dragged_file = e.originalEvent.dataTransfer.files;
+					e.stopPropagation();
+					e.preventDefault();
+
+					drag_timer = window.setTimeout(() => {
+						PAGE_ANNOTATION_TOOL.process_file(dragged_file);
+					}, 25);
+					return false;
+				});
+				/**
+				 * -------------------------------------------------------------
+				 */
+
+				$("#first_line_contains_titles").on("change", () => {
+					// $("#clipboard").val("");
+					$("#generate_btn").removeClass("disabled");
+					$("#step2 .step-title, #continue_btn").addClass("disabled");
+				});
+				break;
 		}
 
 		// Adapt graph on fullscreen mode
-		$(document).bind("fscreenchange", (e, state, elem) => {
+		$(document).on("fscreenchange", (e, state, elem) => {
 			if($(elem).attr("id") == "graph") {
 				if(state) {
 					$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
@@ -1683,10 +1753,9 @@ class layout {
 			 * -----------------------------------------------------------------
 			 */
 			case "annotation-tool":
-				// Place the external html page
-				$("#contents").addClass("coloured grey lighten-5")
-					.find(".container").attr("id", "static_contents")
-						.append(PAGE_ANNOTATION_TOOL);
+				// ANNOTATION_TOOL.layoout();
+				require("./content_layouts/annotation_tool.es6");
+
 				break;
 		}
 	}
@@ -1787,10 +1856,40 @@ class layout {
 				);
 				break;
 			case "annotation-tool":
-				$("#scripts").append(
-					"<!-- Poshy Tip -->"
+				$("head").append(
+					"<!-- Materialize Stepper -->"
 				).append(
-					$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
+					$('<link>', {"rel": "stylesheet", "href": "dist/css/mstepper.css", "type": "text/css", "media": "screen"})
+				);
+
+				$("#scripts").append(
+				// 	"<!-- Poshy Tip -->"
+				// ).append(
+				// 	$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
+				// ).append(
+					"<!-- Materialize Stepper -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "dist/js/mstepper.min.js"})
+				).append(
+					"<!-- SheetJS/js-xlsx -->"
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "bower_components/js-xlsx/dist/xlsx.core.min.js"})
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js"})
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js"})
+				).append(
+					"<!-- nodeca/mimoza -->"
+				).append(
+		            $('<script>', {"type": "text/javascript", "src": "bower_components/mimoza/dist/mimoza.min.js"})
+				).append(
+					"<!-- mholt/PapaParse -->"
+				).append(
+		            $('<script>', {"type": "text/javascript", "src": "bower_components/papaparse/papaparse.min.js"})
+				).append(
+					"<!-- Fullscreen feature -->"
+				).append(
+		            $('<script>', {"type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js"})
 				)
 				break;
 			case "register":

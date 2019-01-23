@@ -1,0 +1,53 @@
+10032	10032	Sprouting	SPROUT	Germination of stakes (Proportion of total planted) (1 month after planting)	0	0	0	AGRONOMIC
+10033	10033	Initial Vigor		Initial Vigority 3-low; 5-intermediate; and 7 high	0	0	0	AGRONOMIC
+10034	10034	Color of unexpanded apical leaves	LCOLAPC	Color of unexpanded apical leaves. 3-light green; 5-dark green; 7-green purple; 9 purple	0	0	0	AGRONOMIC
+10035	10035	Color of first fully expanded leaf	LCOLEXP	Color of first fully expanded leaf. 3-light green; 5-dark green; 7-green purple; 9 purple	0	0	0	AGRONOMIC
+10036	10036	Leaf vein color	LFVNCOL	Leaf vein color. 3-light green; 5-dark green; 7-green purple; 9 purple	0	0	0	AGRONOMIC
+10037	10037	Apical Pubescence	APUBES	Pubescence of young leaves.0-absence; 3-little; 5-moderate; 7-high pubescence	0	0	0	AGRONOMIC
+10038	10038	Length of stipules	STIPLT	Length of stipules (6 months after planting). 3-short; 5-medium; 7-long	0	0	0	AGRONOMIC
+10039	10039	Number of leaf lobes	LFLBNO	Number of leaf lobes (6 months after planting)	0	0	0	AGRONOMIC
+10040	10040	Leaf lobe position	LFLBPOS	Position in which leaf lobes are held. 1-erect; 2-horizontal; 3-deflexed; 4-retorse	0	0	0	AGRONOMIC
+10041	10041	Angle of petiole insertion	PETANG	Angle between branch and petiole. 0-no petiole; 3 15-30; 5 45-60; 7 75-90	0	0	0	AGRONOMIC
+10042	10042	Petiole length	PETLGT	Petiole length. 0-absent; 3-short; 5-medium; 7-long	0	0	0	AGRONOMIC
+10043	10043	Petiole color	PETCOL	Petiole color. 3-light green; 5-dark green; 7-green purple; 8-red; 9 purple	0	0	0	AGRONOMIC
+10044	10044	Anthocyanin pigmentation	ATHOPIG	Distribution of anthocyanin pigmentation (0-3). 0-absent; 3-totally pigmented	0	0	0	AGRONOMIC
+10045	10045	Growth habit of young stem	YSMGRHT	Growth habit of young stem. 1-Straight; 2-Zig-zag	0	0	0	AGRONOMIC
+10046	10046	Pubescence of young stem	STMPUB	Pubescence of young stem. 0-absent; 3-little; 5-moderate; 7-high pubescense	0	0	0	AGRONOMIC
+10047	10047	Stem color	STMCOL	Stem color (9 months after planting). 1-silver; 2-light brown or orange; 3-dark brown. 4-dark green	0	0	0	AGRONOMIC
+10048	10048	Leaf scar prominence	LFSCAR	Prominence of leaf scars (measured on fresh scars).3-little; 5-moderate; 7 prominent	0	0	0	AGRONOMIC
+10049	10049	Apical branching	APBRN	Time to first apical branching (associated with formation of inflorescence, in weeks from planting)	0	0	0	AGRONOMIC
+10050	10050	Branching levels	BRLEV	Number of levels of branching (Actual number of levels (at harvest)	0	0	0	AGRONOMIC
+10051	10051	Branching Angle	BRANG	Angle of branching (Angle between vertical plane and first branches (if branching). 0-no branching; 3-(15-30); 5-(45-60); 7-(75-90)	0	0	0	AGRONOMIC
+10052	10052	Height of first apical branch	FAPBRHT	Height of first apical branch if branching (ground level to point of first Apical branch, 9 months after planting) in cm	0	0	0	AGRONOMIC
+10053	10053	Height of plant	PLTHT	Height of plant (ground level to top of canopy) (at harvest) in cm	0	0	0	AGRONOMIC
+10054	10054	Total fresh weight foliage and stems	SHTWT	Total fresh weight of foliage and stems per plant (at harvest) in kg 	0	0	0	AGRONOMIC
+10055	10055	Total fresh weight foliage and stems	TYLD	Total fresh weight of foliage and stems per plant (at harvest) in t/ha	0	0	0	AGRONOMIC
+10056	10056	Number harvested	NOHAV	Number of plant stand harvest	0	0	0	AGRONOMIC
+10057	10057	Root number	RTNO	Number of storage roots per plot	0	0	0	AGRONOMIC
+10058	10058	Fresh weight of storage root	RTWT	Total fresh weight of storage roots per plant (measured in kg)	0	0	0	AGRONOMIC
+10059	10059	Fresh root yield	FYLD	Fresh root yield (t/ha)	0	0	0	AGRONOMIC
+10060	10060	Dry yield	DYLD	Dry yield (t/ha)	0	0	0	AGRONOMIC
+10061	10061	Harvest index	HI	Harvest index	0	0	0	AGRONOMIC
+10062	10062	Proportion of lodged plants	PLODPLT	Proportion of lodged plants (>45o)	0	0	0	AGRONOMIC
+10063	10063	Leaf retention	LFRET	Leaf retention (stay green) Categoricald on a 1-7 scale. 1-no stress; 3-low susceptibility; 5-medium susceptibility; 7-high susceptibility	0	0	0	AGRONOMIC
+10064	10064	Plant architecture		Plant architecture on a 1-5 scale.1-excellent; 2-good; 3-fair; 4-bad; 5-very bad	0	0	0	MORPHOLOGICAL
+10065	10065	Flowers (50%)	FLOWER	Flower 50% 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10066	10066	Sepal Color	SEPCOL	Color of sepals. 1-white or cream; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10067	10067	Disc Color	DISCOL	Color of disc. 1-white; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10068	10068	Sigma color	SIGCOL	Color of stigma. 1-white; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10069	10069	Ovary color	OVYCOL	Color of ovary. 1-white; 2-orange; 3-green; 4-red; 5-purple	0	0	0	MORPHOLOGICAL
+10070	10070	Anther color	ANTCOL	Color of anthers. 1-cream; 2-yellow; 3-other	0	0	0	MORPHOLOGICAL
+10071	10071	Female stamenoids	FSTAMEN	Female flowers without staminoids. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10072	10072	Male Sterile	MSTRL	Pollen. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10073	10073	Days to Flower	DYFL	Days to 50% flowering	0	0	0	MORPHOLOGICAL
+10074	10074	Fruit set	FRTSET	Fruit set. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10075	10075	Fruit Exocarp	FREXCAP	Exocarp of fruit (enter 0 for 3.1 is 0). 3- smooth; 7-rough	0	0	0	MORPHOLOGICAL
+10076	10076	Ploidy	PLOIDY	Ploidy level (n = 1,2,3,4 ) (by morphorlogical characteristics)	0	0	0	MORPHOLOGICAL
+10077	10077	Seed Color	SDCOL	Main color of seed. 1-brown; 3-grey; 3-mottled; 4-black; 5-dark brown	0	0	0	MORPHOLOGICAL
+10078	10078	Caruncle Color	CARCOL	Color of caruncle. 1-white or cream; 2-pink or red; 3-purple	0	0	0	MORPHOLOGICAL
+10079	10079	Storage root peduncle	RTPED	Storage root peduncle.0-absent; 3-short; 5-intermediate; 7-long	0	0	0	MORPHOLOGICAL
+10080	10080	Storage root form	RTSHP	Storage root form. 1-conical; 2-conical-cylindrical; 3-cylindrical; 4-fusiform; 5-irregular; 6-combination of above.	0	0	0	MORPHOLOGICAL
+10081	10081	Storage root constrictions	RTCONS	Storage root constrictions. 0-absent; 1-present	0	0	0	MORPHOLOGICAL
+10082	10082	Root Position	RTPOST	Position of roots. 1-tending toward vertical; 2-tending towards horizontal; 3-irregular	0	0	0	MORPHOLOGICAL
+10083	10083	Root surface color	RTSCOL	Storage root surface color. 1-white or cream; 2-light brown; 3-dark brown	0	0	0	MORPHOLOGICAL
+10084	10084	Root surface texture	RTSTEX	Storage root surface texture. 3-smooth; 5-medium; 7-rough	0	0	0	MORPHOLOGICAL

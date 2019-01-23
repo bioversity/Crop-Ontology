@@ -37,6 +37,10 @@ $rss: #f26522;
   text-decoration: none !important;
 
   &:hover { background-color: $highlight-dark; }
+  &.btn-flat {
+    background-color: white;
+    color: $highlight;
+  }
 }
 
 .help-text {

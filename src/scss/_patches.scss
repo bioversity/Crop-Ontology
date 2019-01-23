@@ -125,3 +125,12 @@ nav {
     width: auto !important;
   }
 }
+
+.chip {
+  .material-icons.icon {
+    font-size: 16px;
+    float: left;
+    line-height: 32px;
+    padding-right: 8px;
+  }
+}

@@ -576,10 +576,6 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-// // import ColorCanvas from "../../src/es6/ColorCanvas.es6";
-// import ColorPicker from "../../src/es6/ColorPicker.es6";
-// import Pantone from "../../src/es6/PANTONE.es6";
-
 require("../../src/es6/_obj.es6");
 
 var LAYOUT = new _layout2.default(),
@@ -616,7 +612,7 @@ $(document).ready(function () {
 	LAYOUT.activate();
 });
 
-},{"../../common/settings/contents.json":1,"../../src/es6/_actions.es6":8,"../../src/es6/_navigation.es6":9,"../../src/es6/_obj.es6":10,"../../src/es6/layout.es6":15}],5:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../src/es6/_actions.es6":8,"../../src/es6/_navigation.es6":9,"../../src/es6/_obj.es6":10,"../../src/es6/layout.es6":16}],5:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -6724,6 +6720,8 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -6894,6 +6892,12 @@ var str = function () {
 			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
 			return string_part.split("\n")[0];
 		}
+	}, {
+		key: "is_term_id",
+		value: function is_term_id(string) {
+			var regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
+			return regex.test(string);
+		}
 
 		/**
    * Get all languages in a JSON string
@@ -6933,6 +6937,7 @@ var str = function () {
 		value: function get_ontology_term(string, language) {
 			var _this2 = this;
 
+			string = (typeof string === "undefined" ? "undefined" : _typeof(string)) == "object" ? JSON.stringify(string) : string;
 			language = language == undefined || language == "undefined" ? settings.general.language : language;
 
 			var strings = {};
@@ -7824,7 +7829,109 @@ var treeview = function () {
 
 exports.default = treeview;
 
-},{"../../common/settings/contents.json":1,"../../common/settings/languages.json":2,"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/data.es6":13,"../../src/es6/loader.es6":16,"moment":6}],13:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/languages.json":2,"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/data.es6":14,"../../src/es6/loader.es6":17,"moment":6}],13:[function(require,module,exports){
+"use strict";
+/* jshint esversion: 6 */
+"strict mode";
+
+var _data = require("../../../src/es6/data.es6");
+
+var _data2 = _interopRequireDefault(_data);
+
+var _annotation_tool = require("../../../src/es6/pages/annotation_tool.es6");
+
+var _annotation_tool2 = _interopRequireDefault(_annotation_tool);
+
+var _loader = require("../../../src/es6/loader.es6");
+
+var _loader2 = _interopRequireDefault(_loader);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DATA = new _data2.default(),
+    PAGE_ANNOTATION_TOOL = new _annotation_tool2.default(),
+    LOADER = new _loader2.default();
+
+// class layout_annotation_tool extends PAGE_ANNOTATION_TOOL {
+// layout() {
+// Place the external html page
+$("#contents").addClass("coloured grey lighten-5").find(".container").append($('<p>', { "class": "" }).text("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.")).append($('<div>', { "class": "card" }).append($('<div>', { "class": "card-content" }).append().append($('<div>', { "id": "step_loader" })).append($('<ul>', { "class": "stepper horizontal" }).append($('<li>', { "id": "step1", "class": "step active" }).append($('<div>', {
+    "data-step-label": "Step 1",
+    "class": "step-title waves-effect waves-dark"
+}).text("Paste Excel")).append($('<div>', { "id": "annotation_tool", "class": "step-content" }).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m12 l12" }).append($('<a>', { "href": "javascript:;", "id": "generate_btn", "class": "btn white highlight-text chip right z-depth-1 right" }).append($('<i>', { "class": "icon material-icons" }).text("wrap_text")).append(" Generate an example").click(function () {
+    if (!$("#clipboard").val()) {
+        $("#columns").val("A\tB\tC\tD\tE\tF\tG\tH\tI");
+
+        DATA.get_annotation_tool_sample(function (data) {
+            $("#clipboard").val(data);
+            $("#generate_btn").addClass("disabled");
+            $("#continue_btn").removeClass("disabled");
+            $(".step:not(.active) .step-title").removeClass("disabled");
+        });
+    }
+})).append($('<div>', { "class": "title_area" }).append($('<span>', { "class": "fas fa-fw fa-3x fa-file-excel green-text left" })).append($('<h6>', { "class": "title" }).text("Upload an excel or copy the table into this section, then click to \"Continue\"").append($('<small>', { "class": "help-text" }).text("CropOntology templates will be detected automatically")))))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "col s12 m12 l8" }).append(
+// Browse...
+$('<div>', { "class": "file-field input-field" }).append($('<div>', { "class": "btn" }).append($('<span>').text("Browse...")).append($('<input>', { "type": "file", "name": "xlfile" }).on("change", function (e) {
+    $("#generate_btn").addClass("disabled");
+    $("#continue_btn").removeClass("disabled");
+    $(".step:not(.active) .step-title").removeClass("disabled");
+    PAGE_ANNOTATION_TOOL.process_file(e.target.files);
+}))).append($('<div>', { "class": "file-path-wrapper" }).append($('<input>', { "class": "file-path validate", "type": "text", "placeholder": "Select a file to upload" }))))).append($('<div>', { "class": "col s12 m12 l4" }).append($('<h6>', { "class": "options help-text" }).text("Options")).append($('<p>').append($('<input>', { "type": "checkbox", "class": "filled-in", "id": "first_line_contains_titles", "checked": "checked" })).append($('<label>', { "for": "first_line_contains_titles" }).text("The first line contains column titles"))).append())).append($('<div>', { "class": "row" }).append($('<div>', { "class": "s12" }).append($('<input>', { "type": "hidden", "id": "first_line" })).append($('<input>', { "type": "hidden", "id": "columns" }).val("A\tB\tC\tD\tE\tF\tG\tH\tI"))).append($('<div>', { "class": "s12" }).append($('<textarea>', {
+    "rows": "20",
+    "id": "clipboard",
+    "placeholder": "Copy and paste Excel data here"
+}).on("input", function () {
+    if ($.trim($("#clipboard").val()) !== "") {
+        $("#generate_btn").addClass("disabled");
+        $("#continue_btn").removeClass("disabled");
+        $(".step:not(.active) .step-title").removeClass("disabled");
+    } else {
+        $("#generate_btn").removeClass("disabled");
+        $("#continue_btn").addClass("disabled");
+        $(".step:not(.active) .step-title").addClass("disabled");
+    }
+})).append($('<div>', { "id": "drop_area", "data-content": "Drag your file here" })))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "step-actions" }).append($('<button>', { "id": "continue_btn", "class": "waves-effect waves-dark btn btn-highlight next-step right disabled" }).text("Continue")))))).append($('<li>', { "id": "step2", "class": "step" }).append($('<div>', {
+    "data-step-label": "Step 2",
+    "class": "step-title waves-effect waves-dark disabled"
+}).text("Manage data and export")).append($('<div>', { "class": "step-content" }).append($('<h5>').text("Choose your crop and select the cell in the table that you would like to annotate")).append($('<div>', { "id": "generator" }).append($('<div>', { "class": "row" }).append().append(
+// Add fullscreen button
+// if($.fullscreen && $.fullscreen.isNativelySupported()) {
+$('<a>', {
+    "href": "javascript:;",
+    "class": "btn btn-flat grey lighten-3 fullscreen tooltipped right",
+    "data-position": "left",
+    "data-tooltip": "Show fullscreen"
+}).append($('<i>', { "class": "material-icons" }).text("fullscreen")).click(function (e) {
+    $("#result").fullscreen({
+        toggleClass: "fullscreen"
+    });
+    $(".btn.fullscreen").blur();
+    // $("#graph_content svg").attr("width", parseInt($(document).width()));
+    // $("#graph_content svg").attr("height", parseInt($(document).height()));
+    // renderer.width = parseInt($(document).width());
+    // renderer.height = parseInt($(document).height());
+    // renderer.r.width = parseInt($(document).width());
+    // renderer.r.height = parseInt($(document).height());
+    // console.log(renderer);
+    // 	var renderer = new Graph.Renderer.Raphael(
+    // 		"graph_content",
+    // 		g,
+    // 		parseInt($(document).width() - 100),
+    // 		parseInt($(document).height() - 100)
+    // 	);
+    // renderer.draw();
+    // }, 10);
+}).tooltip()
+// }
+)).append($('<div>', { "class": "row" }).append($('<div>', { "id": "result" }))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "step-actions" }).append($('<button>', { "class": "waves-effect waves-dark btn-flat previous-step" }).text("Back")).append($('<button>', { "class": "waves-effect waves-dark btn btn-highlight right" }).text("Download as CSV"))))))))));
+
+PAGE_ANNOTATION_TOOL.assign_events();
+// }
+// }
+
+// export default layout_annotation_tool;
+
+},{"../../../src/es6/data.es6":14,"../../../src/es6/loader.es6":17,"../../../src/es6/pages/annotation_tool.es6":19}],14:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -7884,6 +7991,29 @@ var data = function () {
 				term = STR.ucfirst(json_name);
 			}
 			return term;
+		}
+	}, {
+		key: "get_annotation_tool_sample",
+		value: function get_annotation_tool_sample(callback) {
+			// return new Promise((resolve, reject) => {
+			/**
+   * @see http://www.cropontology.org/api
+   */
+			$.ajax({
+				type: "GET",
+				url: "/common/statics/annotation-tool_sample.txt",
+				dataType: "text",
+				success: function success(data) {
+					if (typeof callback == "function") {
+						callback(data);
+					}
+					// resolve(data);
+				}
+				// error: (jqXHR, textStatus, errorThrown) => {
+				// 	reject(errorThrown);
+				// }
+			});
+			// });
 		}
 	}, {
 		key: "search",
@@ -8678,7 +8808,7 @@ var data = function () {
 
 exports.default = data;
 
-},{"../../src/es6/_obj.es6":10,"../../src/es6/_str.es6":11,"es6-promise":5}],14:[function(require,module,exports){
+},{"../../src/es6/_obj.es6":10,"../../src/es6/_str.es6":11,"es6-promise":5}],15:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8807,7 +8937,7 @@ var filters = function () {
 
 exports.default = filters;
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -8850,6 +8980,10 @@ var _loader = require("../../src/es6/loader.es6");
 
 var _loader2 = _interopRequireDefault(_loader);
 
+var _annotation_tool = require("../../src/es6/pages/annotation_tool.es6");
+
+var _annotation_tool2 = _interopRequireDefault(_annotation_tool);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -8857,8 +8991,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
-* Static pages
-*/
+ * Static pages
+ */
 var page_about = "<p>The Crop Ontology project is the creation of the Generation Challenge Programme (GCP, <a href=\"http://www.generationcp.org/\">http://www.generationcp.org/</a> ), which understood from its inception the importance of controlled vocabularies and ontologies for the digital annotation of data.  In ontologies, terms bear a particular, logically defined relationship to each other, allowing computational reasoning on data annotated with a structured vocabulary. The volume of agriculture-related information and terminology related to phenotype, breeding, germplasm, pedigree, traits, among others, is increasing exponentially. In order to facilitate access to the data held within and/or across the databases, GCP initiated the development of Trait Dictionaries for breeders' fieldbooks and a Crop Ontology (CO) to facilitate the harmonization of the data capture and powerful manipulations of the data through ontology-driven queries. This is a development that raised interest in CGIAR Centres and other communities, like the Gramene team developing the Plant Trait Ontology, ecologists and semantic web developers holding vast quantities of agriculture-related data. The project will continue the incremental validation and refinement of the Crop Ontology, which involves adding methods of trait measurement and experiments to enable the mapping of ontology terms onto measured, stored or published variables.The Crop Ontology is a key element of the Integrated Breeding Platform <a href=\"https://www.integratedbreeding.net/\">https://www.integratedbreeding.net/</a></p>\n<a href=\"http://www.generationcp.org/\" ><img src=\"common/media/img/gcp-logo.png?{{>VERSION}}\" /></a>\n\n<h2>About the Crop Ontology</h2>\n\n<p>The Crop Ontology (CO) current objective is to compile validated concepts along with their inter-relationships on anatomy, structure and phenotype of Crops, on trait measurement and methods as well as on Germplasm with the multi-crop passport terms. The concepts of the CO are being used to curate agronomic databases and describe the data. The use of ontology terms to describe agronomic phenotypes and the accurate mapping of these descriptions into databases is important in comparative phenotypic and genotypic studies across species and gene-discovery experiments as it provides harmonized description of the data and therefore facilitates the retrieval of information.  Development of crop-specific trait ontologies and the germplasm ontologies began in 2008 for chickpea, maize, <em>Musa</em>, potato, rice and wheat, and in 2010 for cassava. The GCP Crop Ontology is a global public good, available to be used freely by all. </p>\n\n<h2>About the tool</h2>\n\n<p>This curation and annotation web site is a participatory tool that enables you to browse the Crop Ontology, search for specific terms and access the definition, as well as additional information. It is possible to post a suggestion at the level of a term and provide feedback on your experience using the site. Please, consult the video tutorials to get a visual explanation of the web site use.</p>\n\n<p>The Ontology curators are able to upload a full ontology in OBO format, create it online, add attribute information, and submit or delete terms from the Crop Ontology. Researchers can also submit/deposit trait names using the curation/annotation tool &lsquo;add an ontology&rsquo; to increment the tool&rsquo;s capacity. </p>\n\n<p>All lists can be downloaded and a web service API is available. The site is hosted on <a href=\"http://code.google.com/appengine\">Google App Engine</a> and the versioned code is hosted on <a href=\"https://github.com/bioversity/Crop-Ontology\">GitHub</a>.</p>\n\n<p>The tool is still under development, so your feedback will help to improve it. Please provide any comments or suggestions using the &lsquo;Feedback&rsquo; button.</p>\n\n<p>This work was greatly inspired by the Crop Ontology Look-up service developed by Martin Senger, consultant in Bioinformatics, and by Terminizer, online annotation tool developed by David Hancock, from the University of Manchester. </p>\n\n<p>Citation:\n&ldquo;Crop Ontology curation and annotation tool &ndash; 2011 Generation Challenge Programme, Bioversity International as project implementing agency.&rdquo;</p>\n<!--\n<h2>Project partners in 2012</h2>\n\n<p>This work is primarily coordinated and undertaken by the lead institution, Bioversity International (hereafter referred to as Bioversity), and coordinated by Elizabeth Arnaud. Rosemary Shrestha (CIMMYT, Mexico) coordinates the CO community and its implementation in crop-specific databases.</p>\n\n<p>\nPrincipal Investigator &ndash; Elizabeth Arnaud (Bioversity International)\n</p>\n\n<p>\nCurators of the Crop-specific Ontology in 2012\n</p>\n\n<ul>\n<li>Barley - Flavio Capettini (ICARDA)</li>\n<li>Cassava - Bakare Moshood Agba  (IITA) </li>\n<li>Common Beans - Fabio Alberto Gerrera (CIAT)</li>\n<li>Chikpea and Groundnut, Sorghum and pigeon pea - Prasad Peteti, Praveen Reddy, Suyash Pati (ICRISAT)</li>\n<li>Cowpea - Sam Ofodile , Ousmane Boukare (IITA)</li>\n<li>Rice - Nikki Frances Borja (IRRI)</li>\n<li>Potato - Reinhard Simon (CIP)</li>\n<li>Maize and Wheat - Rosemary Shrestha (CIMMYT) - Global Ontology Coordinator until 2011/li>\n</ul>\n\n<p>\nScientists coordinating or actively contributing to the development of crop specific Trait Dictionaries and ontologies:\n</p>\n<ul>\n<li>Bioversity - Inge van den Bergh</li>\n<li>CIRAD - Jean FRancois Rami</li>\n<li>ICARDA - Sanjaya Gyawali,</li> Adnan al-Yassin, Mohamad Maatougui, S. Rajaram., Ahmed Amri, Fawzy Nawar</li>\n<li>ICRISAT - Trushar Shah, Eva Wietzel, Tom Hash</li>\n<li>IITA - Ousmane Boukare, Peter Kulakow, Antonio Lopes Montez </li>\n<li>CIAT - Steve Beebe, Rowland Chirwa</li>\n<li>IRRI- Mauleon Ramil, Ruaraidh Sackville Hamilton</li>\n\n<li>and the Crop Communities of Practice </li>\n</ul>\n\n<p><strong>Acknowledgements to</strong>: Adriana Alercia, (Bioversity International, Crop descriptors specialist), Richard Bruskiewich (GCP Bioinformatics, former project Principle Investigator, IRRI), Guy Davenport (GCP bioinformatics, CIMMYT), Graham McLaren (GCP sub-programme on Crop information system, Leader), Martin SENGER (GCP Bioinformatics, formerly IRRI)</p>\n-->\n<h3>Articles</h3>\n<p>2012 - Shrestha Rosemary, Matteis Luca, Skofic Milko, Portugal Arlett, McLaren Graham, Hyman Glenn, Arnaud Elizabeth    - Bridging the phenotypic and genetic data useful for integrated breeding through a data annotation using the Crop Ontology developed by the crop communities of practice , in Frontiers in Physiology , vol.3, no.0326 <a href=\"http://www.frontiersin.org/Journal/Abstract.aspx?s=907&name=plant_physiology&ART_DOI=10.3389/fphys.2012.00326\"> URL=http://www.frontiersin.org/Journal/Abstract.aspx?s=907&name=plant_physiology&ART_DOI=10.3389/fphys.2012.00326</a></p>\n<p>2012 - Elizabeth Arnaud, Laurel Cooper, Rosemary Shrestha, Naama Menda, Rex T. Nelson, Luca Matteis, Milko Skofic, Ruth Bastow, Pankaj Jaiswal, Lukas Mueller, Graham McLaren:  Towards a Reference Plant Trait Ontology For Modeling Knowledge of Plant Traits and Phenotypes in: proceedings of the 4th Conference on Knowledge Engineering and Ontology Development, 4-7 October 2012 , Spain.</p>\n<p>2010 - Rosemary Shrestha, Elizabeth Arnaud, Ramil Mauleon, Martin Senger, Guy F. Davenport, David Hancock, Norman Morrison, Richard Bruskiewich, and Graham McLaren - <strong>Multifunctional crop trait ontology for breeders' data: field book, annotation, data discovery and semantic enrichment of the literature</strong>, AoB PLANTS (2010) Vol. 2010 first published online May 27, 2010 doi:10.1093/aobpla/plq008  - <a href=\"http://aobpla.oxfordjournals.org/citmgr?gca=aobpla;2010/0/plq008\">http://aobpla.oxfordjournals.org/citmgr?gca=aobpla;2010/0/plq008</a></p>\n\n<h3>Book chapter</h3>\n<p>2011 - Shrestha Rosemary, Guy F Davenport, Richard Bruskiewich and Elizabeth Arnaud in : Monneveux Philippe and Ribaut Jean-Marcel, eds (2011). Drought phenotyping in crops: from theory to practice CGIAR Generation Challenge Programme, Texcoco, Mexico. ISBN: 978-970-648-178-8. 475pp. Chapter is: Development of crop ontology for sharing crop phenotypic information .</p>\n\n<h2>Posters</h2>\n\n<style>\n.posters a img {\n  border: 1px solid #ddd;\n  vertical-align: top;\n  margin-right: 20px;\n}\n</style>\n\n<p class=\"posters\">\n  <a href=\"common/media/pdf/GRM_poster_Curation_annotation_tools.pdf\"><img class=\"responsive-img\" src=\"common/media/img/posters/GRM_poster_Curation_annotation_tools.png\" /></a>\n  <a href=\"common/media/pdf/Hyderabad_Sept_2011_CassavaTraitOntologyPoster.pdf\"><img class=\"responsive-img\" src=\"common/media/img/posters/Hyderabad_Sept_2011_CassavaTraitOntologyPoster.png\" /></a>\n  <a href=\"common/media/pdf/Poster_GCP_GRM_Musa.pdf\"><img class=\"responsive-img\" src=\"common/media/img/posters/Poster_GCP_GRM_Musa.png\" /></a>\n  <a href=\"common/media/pdf/biocuration2012-poster.pdf\"><img class=\"responsive-img\" src=\"common/media/img/posters/biocuration_thumb.png\" /></a>\n</p>\n";
 var page_privacy_policy = "\n\n<h2>Photo credit</h2>\n<ul>\n    <li>Neil Palmer, CIAT via Flickr (<a href=\"https://www.flickr.com/photos/CIAT/albums\">https://www.flickr.com/photos/CIAT/albums</a>)</li>\n    <li>Bioversity International via Flickr (<a href=\"https://www.flickr.com/photos/bioversity/albums\">https://www.flickr.com/photos/bioversity/albums</a>)</li>\n    <li>Freepik (<a href=\"https://www.freepik.com/free-photo/golden-color-wheat-ear-in-front-of-white-wooden-wall_2741083.htm#term=wheat&page=1&position=41\">https://www.freepik.com/free-photo/golden-color-wheat-ear-in-front-of-white-wooden-wall_2741083.htm#term=wheat&page=1&position=41</a>)</li>\n</ul>\n";
 var page_api = "<style>\nli {\n    margin-left: 15px;\n    list-style: none;\n}\n.api_left h2 {\n    margin-top: 30px !important;\n    padding-top: 30px !important;\n    color: #f28021 !important;\n}\n</style>\n<script>\n\n$(function(){\n\n    // replaces API urls for examples\n    $(\".example\").each(function() {\n        var $this = $(this);\n\n        var url = $this.parent().siblings().first().find(\"code\").text();\n\n        var parameters = url.match(/{(.*?)}/g);\n\n        if(parameters) {\n            for(var i=0; i<parameters.length; i++) {\n                var par = parameters[i];\n                var clean = par.substring(1, par.length-1);\n                url = url.replace(par, $this.attr(clean));\n            }\n        }\n\n        $this.html(\"<a href='\"+url+\"' target='_blank'>\"+url+\"</a>\");\n\n    });\n\n});\n\n</script>\n\n<div class=\"api_left\">\n\n<p>\nThis is the official API for the Ontology Curation Tool. It allows you to programmatically retrieve and interact with Ontology data.\n</p>\n<p>\nTo let us gather feedback you can leave a comment using the form on the right.\n</p>\n<h2>Statistics on collected ontologies</h2>\n<li><strong>URL:</strong> <a target=\"_blank\" href=\"http://www.cropontology.org/ontos_stats\">http://www.cropontology.org/ontos_stats</a></li>\n<li><strong>Returns:</strong> JSON object with statistics about collected ontologies</li>\n\n<h2>API Data Types</h2>\n<p>\nData can be requested in JSON.<br> API calls follow the <a href=\"http://en.wikipedia.org/wiki/Create,_read,_update_and_delete\">CRUD</a> semantics: create, retrieve, update and delete.\n</p>\n\n<!--\n<h2>Retrieve all traits given an Ontology Name</h2>\n<ul>\n    <li>Here's a little code snippet written in <b>PHP</b> to show you how you can leverage this API to retrieve all the traits of a specific Ontology: <a href=\"https://gist.github.com/1322511\">https://gist.github.com/1322511</a></li>\n</ul>\n-->\n<h2>JSON DUMP</h2>\n<ul>\n    <li><strong>URL:</strong> <a target=\"_blank\" href=\"https://github.com/bioversity/Crop-Ontology/blob/master/public/dump.json\">https://github.com/bioversity/Crop-Ontology/blob/master/public/dump.json</a></li>\n    <li><strong>Returns:</strong> JSON array of *raw* objects inside database</li>\n</ul>\n\n<h2>Search Terms</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/search?q={query}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects matching the search query - each object being a term</li>\n    <li><strong>Example:</strong> <span class=\"example\" query=\"stem rust\"></span></li>\n</ul>\n\n<h2>Retrieve all Ontologies</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontologies</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> JSON Hierarchy of the Ontologies under each category</li>\n    <li><strong>Example:</strong> <span class=\"example\"></span></li>\n</ul>\n<h2>Retrieve a specific Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontology/{ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n\t<li><strong>Returns:</strong> JSON representation of the ontology. </br><span style=\"font-style:italic;\">NB: This call does not retrieve the variables that are present in TD template v5 (and in the OBO files derived from the TDv5)</span></li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_334\"></span></li>\n</ul>\n<h2>Retrieve Ontology ID by its Name</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-id?ontology_name={ontology_name}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> ID of the ontology, to be used with <code>/get-ontology-roots/{id}</code></li>\n    <li><strong>Example:</strong> <span class=\"example\" ontology_name=\"cassava\"></span></li>\n</ul>\n\n<h2>Retrieve Categories</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-categories</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of strings - string being the name of the category that you pass to the <code>/ontologies</code> API call</li>\n    <li><strong>Example:</strong> <span class=\"example\"></span></li>\n</ul>\n\n<h2>Retrieve Ontologies By Category</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/ontologies?category={category}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects; each one representing an ontology</li>\n    <li><strong>Example:</strong> <span class=\"example\" category=\"010-089 General Germplasm Ontology\"></span></li>\n</ul>\n\n<a name=\"rdf\"></a>\n<h2>Retrieve Terms in RDF</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/rdf/{termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> XML related RDF</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Retrieve Root Terms of an Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-ontology-roots/{ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects; each one representing a term</li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_020\"></span></li>\n</ul>\n\n<h2>Retrieve Child Terms of parent Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-children/{parentId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of terms</li>\n    <li><strong>Example:</strong> <span class=\"example\" parentId=\"CO_020:0000000\"></span></li>\n</ul>\n<h2>Retrieve Parents of Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-term-parents/{termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of the paths from the parent to child</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_020:0000000\"></span></li>\n</ul>\n\n<h2>Retrieve Properties/Attributes of a Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-attributes/{termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects representing the terms property</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Retrieve Comments of a Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-comments?termId={termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Array of objects representing a comment</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Login - Retrieve a user's auth token (used for adding and editing ontologies)</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. {username}, {password}</li>\n    <li><strong>Returns:</strong> HTTP response with a <code>user</code> cookie in the header that contains a <code>token</code>. You'll need to pass this cookie to subsequent requests that require authentication</li>\n</ul>\n\n<h2>Retrieve Logged-in User information</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/login</code></li>\n    <li><strong>Method:</strong> <code>GET</code>. Pass <code>user</code> cookie in request</li>\n    <li><strong>Returns:</strong> Object of the currently logged in user</li>\n</ul>\n\n<h2>Create Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/add-ontology</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. Pass <code>user</code> cookie in request. {json} a JSON string representing a list of objects; each object being a term. {ontology_name}, {ontology_id}, {ontology_summary}</li>\n    <li><strong>Returns:</strong> HTTP error if something went wrong</li>\n</ul>\n\n<!--\n<h2>Create Term</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/create-term</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. {jsonTerm} a JSON representation of the term. You can call this method as many times as you need to build the structure of an ontology. Example: <code>{\"ontology_id: \"CO_22\", \"ontology_name\": \"Sorghum Trait\", \"parent\": \"CO_222:1122\" ...}</code>. As you can see the <strong>parent</strong> property describes the relationship between terms. If parent is <i>null</i> then the term is a ROOT term</li>\n    <li><strong>Returns:</strong> HTTP error if something went wrong</li>\n</ul>\n-->\n\n<h2>Delete Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/delete-ontology</code></li>\n    <li><strong>Method:</strong> <code>POST</code>. {ontologyID}</li>\n    <li><strong>Returns:</strong> HTTP error if something went wrong</li>\n</ul>\n\n<h2>Retrieve IB Fieldbook Default List</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/default-list/?ontologyId={ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> JSON of the default list of traits, methods and scales of an ontology ID</li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_334\"></span></li>\n</ul>\n\n<h2>Retrieve Term Information</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-term/?id={termId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> Object representing a term information. Can be used to update the information of a given term when it is updated</li>\n    <li><strong>Example:</strong> <span class=\"example\" termId=\"CO_321:0000118\"></span></li>\n</ul>\n\n<h2>Retrieve all Comments from an Ontology</h2>\n<ul>\n    <li><strong>URL:</strong> <code>{{URL}}/get-comments-onto/?ontoId={ontologyId}</code></li>\n    <li><strong>Method:</strong> <code>GET</code></li>\n    <li><strong>Returns:</strong> a JSON object that lists the comments and the details about the comments' authors. Comments are grouped by terms</li>\n    <li><strong>Example:</strong> <span class=\"example\" ontologyId=\"CO_321\"></span></li>\n</ul>\n\n</div><!-- /api_left -->\n<div class=\"api_right\" style=\"margin-top:40px\">\n    <div id=\"disqus_thread\"></div>\n    <script type=\"text/javascript\">\n        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */\n        var disqus_shortname = 'cropontologycurationtool'; // required: replace example with your forum shortname\n\n        // The following are highly recommended additional parameters. Remove the slashes in front to use.\n        // var disqus_identifier = 'unique_dynamic_id_1234';\n        // var disqus_url = 'http://example.com/permalink-to-page.html';\n\n        /* * * DON'T EDIT BELOW THIS LINE * * */\n        (function() {\n            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;\n            dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';\n            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);\n        })();\n    </script>\n    <noscript>Please enable JavaScript to view the <a href=\"http://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>\n</div><!-- //api_right -->\n";
@@ -8868,7 +9002,6 @@ var page_register = "\n<form id=\"register_form\" action=\"\" novalidate=\"noval
 var page_forgot_password = "\n<form method=\"post\" id=\"login_form\" action=\"http://www.cropontology.org/forgot-password\">\n    <div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col s6 offset-s2\">\n                <h1>Forgot Password?</h1>\n            </div>\n        </div>\n\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"email\" value=\"\" tabindex=\"1\" style=\"width: 21em;\" name=\"email\" id=\"email\" class=\"text\">\n                <label for=\"email\">Please enter your Email</label>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"input-field col s6 offset-s2\">\n                <input type=\"submit\" value=\"Recover\" tabindex=\"3\" name=\"commit\" class=\"btn btn-flat green white-text waves-effect waves-light right\">\n            </div>\n        </div>\n    </div>\n</form>\n";
 var page_feedback = "    <div id=\"disqus_thread\"></div>\n    <script type=\"text/javascript\">\n        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */\n        var disqus_shortname = 'cropontologycurationtool'; // required: replace example with your forum shortname\n\n        // The following are highly recommended additional parameters. Remove the slashes in front to use.\n        // var disqus_identifier = 'unique_dynamic_id_1234';\n        // var disqus_url = 'http://example.com/permalink-to-page.html';\n\n        /* * * DON'T EDIT BELOW THIS LINE * * */\n        (function() {\n            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;\n            dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';\n            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);\n        })();\n    </script>\n    <noscript>Please enable JavaScript to view the <a href=\"http://disqus.com/?ref_noscript\">comments powered by Disqus.</a></noscript>\n";
 var page_add_ontology = "<h1>Add Ontology</h1>\n\n<div id=\"error\"></div>\n\n<div class=\"row\">\n    <div class=\"col s12\">\n        <ul class=\"tabs add-ontology\">\n            <li class=\"tab col s4\">\n                <a class=\"active tooltipped\" href=\"#upload_excel\" data-tooltip=\"Upload an Excel Trait Template\" data-position=\"top\">\n                    <span class=\"hide-on-med-and-down\"><span class=\"fa fa-upload\"></span> Upload an Excel Trait Template</span>\n                    <span class=\"show-on-medium-and-up\"><span class=\"fa fa-upload\"></span> Excel</span>\n                </a>\n            </li>\n            <li class=\"tab col s4\">\n                <a class=\"tooltipped\" href=\"#upload_obo\" data-tooltip=\"Upload an OBO File\" data-position=\"top\">\n                    <span class=\"hide-on-med-and-down\"><span class=\"picol_rdf_document\"></span> Upload an OBO File</span>\n                    <span class=\"show-on-medium-and-up\"><span class=\"picol_rdf_document\"></span> OBO</span>\n                </a>\n            </li>\n            <li class=\"tab col s4\">\n                <a class=\"tooltipped\" href=\"#create_ontology\" data-tooltip=\"Create an Ontology\" data-position=\"top\">\n                    <span class=\"hide-on-med-and-down\"><span class=\"picol_rdf\"></span> Create an Ontology</span>\n                    <span class=\"show-on-medium-and-up\"><span class=\"picol_rdf\"></span> Ontology</span>\n                </a>\n            </li>\n        </ul>\n    </div>\n    <div id=\"add_ontology_tab_contents\">\n        <!-- Upload an Excel Trait Template content -->\n        <div id=\"upload_excel\" class=\"col s12\">\n            <div class=\"tab-content\">\n                <div id=\"upload_excel_cont\" style=\"display: block;\">\n                    <p><b>Note:</b> be sure your template is structured exactly like the latest standard Trait Template which can be found here: <a href=\"http://www.cropontology.org/TD_template_v5.xls\">Trait Dictionary template version 5</a></p>\n\n                    <div class=\"container\">\n                        <form action=\"\" method=\"post\" enctype=\"multipart/form-data\" target=\"excel_upload_iframe\">\n                            <div class=\"row\">\n                                <div class=\"input-field col s12 m8\">\n                                    Category:\n                                    <select name=\"category\">\n                                        <option value=\"010-089 General Germplasm Ontology\">010-089 General Germplasm Ontology</option>\n                                        <option value=\"090-099 Taxonomic Ontology\">090-099 Taxonomic Ontology</option>\n                                        <option value=\"100-299 Plant Anatomy &amp; Development Ontology\">100-299 Plant Anatomy &amp; Development Ontology</option>\n                                        <option value=\"300-499 Phenotype and Trait Ontology\" selected=\"\">300-499 Phenotype and Trait Ontology</option>\n                                        <option value=\"500-699 Structural and Functional Genomic Ontology\">500-699 Structural and Functional Genomic Ontology</option>\n                                        <option value=\"700-799 Location and Environmental Ontology\">700-799 Location and Environmental Ontology</option><option value=\"800-899 General Science Ontology\">800-899 General Science Ontology</option><option value=\"900-999 Other (Sub-domain or Site-Specific) Ontology\">900-999 Other (Sub-domain or Site-Specific) Ontology</option>\n                                    </select>\n                                </div>\n                                <div class=\"input-field col s5\">\n                                    <input type=\"text\" name=\"ontology_id\" id=\"ontology_id\">\n                                    <label for=\"ontology_id\">Ontology ID</label>\n                                </div>\n                                <div class=\"input-field col s7\">\n                                    <input type=\"text\" name=\"ontology_name\" id=\"ontology_name\">\n                                    <label for=\"ontology_name\">Ontology Name</label>\n                                </div>\n                                <div class=\"input-field col s12 m10\">\n                                    <textarea class=\"materialize-textarea\" name=\"ontology_summary\" id=\"ontology_summary\"></textarea>\n                                    <label for=\"ontology_summary\">Ontology Summary</label>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"input-field col s8\">\n                                    <div class=\"file-field input-field\">\n                                        <div class=\"btn btn-flat highlight-btn\">\n                                            <span>Browse...</span>\n                                            <input name=\"excelfile\" type=\"file\">\n                                        </div>\n                                        <div class=\"file-path-wrapper\">\n                                            <input class=\"file-path validate\" type=\"text\">\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"input-field col s12\">\n                                    <input class=\"btn btn-highlight waves-effect waves-light right\" type=\"submit\" value=\"Upload Excel\">\n                                </div>\n                            </div>\n                        </form>\n                        <iframe name=\"excel_upload_iframe\" style=\"display: none\"></iframe>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <!-- Upload an OBO File content -->\n        <div id=\"upload_obo\" class=\"col s12\">\n            <div class=\"tab-content\">\n                <div id=\"upload_obo_cont\" style=\"display: block;\">\n                    <div class=\"container\">\n                        <form action=\"\" method=\"post\" enctype=\"multipart/form-data\" target=\"obo_upload_iframe\">\n                            <div class=\"row\">\n                                <div class=\"input-field col s12 m8\">\n                                    Category:\n                                    <select name=\"category\">\n                                        <option value=\"010-089 General Germplasm Ontology\">010-089 General Germplasm Ontology</option>\n                                        <option value=\"090-099 Taxonomic Ontology\">090-099 Taxonomic Ontology</option>\n                                        <option value=\"100-299 Plant Anatomy &amp; Development Ontology\">100-299 Plant Anatomy &amp; Development Ontology</option>\n                                        <option value=\"300-499 Phenotype and Trait Ontology\" selected=\"\">300-499 Phenotype and Trait Ontology</option>\n                                        <option value=\"500-699 Structural and Functional Genomic Ontology\">500-699 Structural and Functional Genomic Ontology</option>\n                                        <option value=\"700-799 Location and Environmental Ontology\">700-799 Location and Environmental Ontology</option>\n                                        <option value=\"800-899 General Science Ontology\">800-899 General Science Ontology</option>\n                                        <option value=\"900-999 Other (Sub-domain or Site-Specific) Ontology\">900-999 Other (Sub-domain or Site-Specific) Ontology</option>\n                                    </select>\n                                </div>\n                                <div class=\"input-field col s12 m5\">\n                                    <input type=\"text\" name=\"ontology_name\" id=\"ontology_name\">\n                                    <label for=\"ontology_name\">Ontology Name</label>\n                                </div>\n                                <div class=\"input-field col s12 m10\">\n                                    <textarea class=\"materialize-textarea\" name=\"ontology_summary\" id=\"ontology_summary\"></textarea>\n                                    <label for=\"ontology_summary\">Ontology Summary</label>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"input-field col s12 m8\">\n                                    <div class=\"file-field input-field\">\n                                        <div class=\"btn btn-flat highlight-btn\">\n                                            <span>Browse...</span>\n                                            <input name=\"obofile\" type=\"file\">\n                                        </div>\n                                        <div class=\"file-path-wrapper\">\n                                            <input class=\"file-path validate\" type=\"text\">\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"input-field col s12\">\n                                    <input class=\"btn btn-highlight waves-effect waves-light right\" type=\"submit\" value=\"Upload OBO\">\n                                </div>\n                            </div>\n                        </form>\n                        <iframe name=\"obo_upload_iframe\" style=\"display: none\"></iframe>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <!-- Create an Ontology -->\n        <div id=\"create_ontology\" class=\"col s12\">\n            <div class=\"tab-content\">\n                <div id=\"create_ontology_cont\" style=\"\">\n                    <p><b>Note:</b> this feature is not fully supported. For instance, deleting terms or term attributes is not possible.</p>\n\n                    <div class=\"container\">\n                        <form>\n                            <div class=\"row\">\n                                <div class=\"input-field col s12 m8\">\n                                    Category:\n                                    <select name=\"category\">\n                                        <option value=\"010-089 General Germplasm Ontology\">010-089 General Germplasm Ontology</option>\n                                        <option value=\"090-099 Taxonomic Ontology\">090-099 Taxonomic Ontology</option>\n                                        <option value=\"100-299 Plant Anatomy &amp; Development Ontology\">100-299 Plant Anatomy &amp; Development Ontology</option>\n                                        <option value=\"300-499 Phenotype and Trait Ontology\" selected=\"\">300-499 Phenotype and Trait Ontology</option>\n                                        <option value=\"500-699 Structural and Functional Genomic Ontology\">500-699 Structural and Functional Genomic Ontology</option>\n                                        <option value=\"700-799 Location and Environmental Ontology\">700-799 Location and Environmental Ontology</option>\n                                        <option value=\"800-899 General Science Ontology\">800-899 General Science Ontology</option>\n                                        <option value=\"900-999 Other (Sub-domain or Site-Specific) Ontology\">900-999 Other (Sub-domain or Site-Specific) Ontology</option>\n                                    </select>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"col s12\">\n                                    <ul class=\"treeview form\" id=\"cont\">\n                                        <li class=\"last\" id=\"ontology\">\n                                            <div class=\"item\">\n                                                <div class=\"input-field col s8 m4 l4\">\n                                                    <input type=\"text\" id=\"ontology_name\" name=\"name\" placeholder=\"Ontology Name\">\n                                \t\t\t\t\t<input id=\"ontology_version\" name=\"ontology_version\" type=\"hidden\" min=\"1\" size=\"5\" min=\"1\" value=\"\" placeholder=\"Ontology version\" />\n                                                </div>\n                                                <div class=\"input-field col s3 m3\">\n                                                    <input type=\"text\" id=\"ontology_id\" name=\"id\", placeholder=\"Ontology ID\">\n                                                </div>\n                                                <div class=\"col s11 m4\">\n                                                    <div class=\"row\">\n                                                        <div class=\"input-field col s12\">\n                                                            <input type=\"text\" id=\"ontology_summary\" name=\"ontology_summary\" placeholder=\"Ontology Summary\">\n                                                        </div>\n                                                    </div>\n                                                </div>\n                                                <div class=\"input-field col s1\">\n                                                    <a id=\"add_childs_btn\" class=\"btn btn-highlight btn-small btn-floating waves-effect waves-circle waves-light tooltipped\" data-tooltip=\"Add childs\" data-position=\"top\">\n                                                        <span class=\"fa fa-plus\"></span>\n                                                    </a>\n                                                </div>\n                                            </div>\n                                        </li>\n                                    </ul>\n                                </div>\n                            </div>\n                            <div class=\"row\">\n                                <div class=\"input-field col s12\">\n                                    <a id=\"save\" class=\"btn btn-highlight waves-effect waves-light right\">Save</a>\n                                </div>\n                            </div>\n                        </form>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n</div>\n";
-var page_annotation_tool = "\n<div id=\"header\">\n    <div id=\"logo\">\n        <h1>Annotation Tool</h1>\n    </div>\n</div>\n<div id=\"body\">\n    <h2>1) Copy and paste some Excel cells into this section and then click on \"Generate\"</h2>\n    <h4><a href=\"#\" id=\"sample\">load a sample</a></h4>\n\n    <textarea id=\"clipboard\"></textarea>\n\n    <br />\n    <br />\n    <input id=\"generate\" type=\"button\" value=\"Generate\" />\n\n    <h2>2) Here's the generated table. Choose your crop and select the cell in the table that you would like to annotate:</h2>\n    <p>\n        <select id=\"crop\" class=\"browser-default\"></select>\n        <button onclick=\"addRadio();\">add radio button</button>\n    </p>\n\n    <!-- <input id=\"terminize\" type=\"button\" value=\"Terminize\" />-->\n    <div id=\"result\"></div>\n    <!--\n    <br />\n    <br />\n    <input id=\"suggestions\" type=\"button\" value=\"Show suggestions\" />\n    -->\n\n    <br />\n    <br />\n    <button onclick=\"getElement()\">Element selected</button>\n    <br />\n    <textarea id=\"log\"></textarea>\n\n    <br />\n    <br />\n    <input id=\"download\" type=\"button\" value=\"Download as CSV\" />\n</div>\n\n<div id=\"footer\">\n    <div class=\"sample\" style=\"display: none\">10032\t10032\tSprouting\tSPROUT\tGermination of stakes (Proportion of total planted) (1 month after planting)\t0\t0\t0\tAGRONOMIC\n10033\t10033\tInitial Vigor\t\tInitial Vigority 3-low; 5-intermediate; and 7 high\t0\t0\t0\tAGRONOMIC\n10034\t10034\tColor of unexpanded apical leaves\tLCOLAPC\tColor of unexpanded apical leaves. 3-light green; 5-dark green; 7-green purple; 9 purple\t0\t0\t0\tAGRONOMIC\n10035\t10035\tColor of first fully expanded leaf\tLCOLEXP\tColor of first fully expanded leaf. 3-light green; 5-dark green; 7-green purple; 9 purple\t0\t0\t0\tAGRONOMIC\n10036\t10036\tLeaf vein color\tLFVNCOL\tLeaf vein color. 3-light green; 5-dark green; 7-green purple; 9 purple\t0\t0\t0\tAGRONOMIC\n10037\t10037\tApical Pubescence\tAPUBES\tPubescence of young leaves.0-absence; 3-little; 5-moderate; 7-high pubescence\t0\t0\t0\tAGRONOMIC\n10038\t10038\tLength of stipules\tSTIPLT\tLength of stipules (6 months after planting). 3-short; 5-medium; 7-long\t0\t0\t0\tAGRONOMIC\n10039\t10039\tNumber of leaf lobes\tLFLBNO\tNumber of leaf lobes (6 months after planting)\t0\t0\t0\tAGRONOMIC\n10040\t10040\tLeaf lobe position\tLFLBPOS\tPosition in which leaf lobes are held. 1-erect; 2-horizontal; 3-deflexed; 4-retorse\t0\t0\t0\tAGRONOMIC\n10041\t10041\tAngle of petiole insertion\tPETANG\tAngle between branch and petiole. 0-no petiole; 3 15-30; 5 45-60; 7 75-90\t0\t0\t0\tAGRONOMIC\n10042\t10042\tPetiole length\tPETLGT\tPetiole length. 0-absent; 3-short; 5-medium; 7-long\t0\t0\t0\tAGRONOMIC\n10043\t10043\tPetiole color\tPETCOL\tPetiole color. 3-light green; 5-dark green; 7-green purple; 8-red; 9 purple\t0\t0\t0\tAGRONOMIC\n10044\t10044\tAnthocyanin pigmentation\tATHOPIG\tDistribution of anthocyanin pigmentation (0-3). 0-absent; 3-totally pigmented\t0\t0\t0\tAGRONOMIC\n10045\t10045\tGrowth habit of young stem\tYSMGRHT\tGrowth habit of young stem. 1-Straight; 2-Zig-zag\t0\t0\t0\tAGRONOMIC\n10046\t10046\tPubescence of young stem\tSTMPUB\tPubescence of young stem. 0-absent; 3-little; 5-moderate; 7-high pubescense\t0\t0\t0\tAGRONOMIC\n10047\t10047\tStem color\tSTMCOL\tStem color (9 months after planting). 1-silver; 2-light brown or orange; 3-dark brown. 4-dark green\t0\t0\t0\tAGRONOMIC\n10048\t10048\tLeaf scar prominence\tLFSCAR\tProminence of leaf scars (measured on fresh scars).3-little; 5-moderate; 7 prominent\t0\t0\t0\tAGRONOMIC\n10049\t10049\tApical branching\tAPBRN\tTime to first apical branching (associated with formation of inflorescence, in weeks from planting)\t0\t0\t0\tAGRONOMIC\n10050\t10050\tBranching levels\tBRLEV\tNumber of levels of branching (Actual number of levels (at harvest)\t0\t0\t0\tAGRONOMIC\n10051\t10051\tBranching Angle\tBRANG\tAngle of branching (Angle between vertical plane and first branches (if branching). 0-no branching; 3-(15-30); 5-(45-60); 7-(75-90)\t0\t0\t0\tAGRONOMIC\n10052\t10052\tHeight of first apical branch\tFAPBRHT\tHeight of first apical branch if branching (ground level to point of first Apical branch, 9 months after planting) in cm\t0\t0\t0\tAGRONOMIC\n10053\t10053\tHeight of plant\tPLTHT\tHeight of plant (ground level to top of canopy) (at harvest) in cm\t0\t0\t0\tAGRONOMIC\n10054\t10054\tTotal fresh weight foliage and stems\tSHTWT\tTotal fresh weight of foliage and stems per plant (at harvest) in kg \t0\t0\t0\tAGRONOMIC\n10055\t10055\tTotal fresh weight foliage and stems\tTYLD\tTotal fresh weight of foliage and stems per plant (at harvest) in t/ha\t0\t0\t0\tAGRONOMIC\n10056\t10056\tNumber harvested\tNOHAV\tNumber of plant stand harvest\t0\t0\t0\tAGRONOMIC\n10057\t10057\tRoot number\tRTNO\tNumber of storage roots per plot\t0\t0\t0\tAGRONOMIC\n10058\t10058\tFresh weight of storage root\tRTWT\tTotal fresh weight of storage roots per plant (measured in kg)\t0\t0\t0\tAGRONOMIC\n10059\t10059\tFresh root yield\tFYLD\tFresh root yield (t/ha)\t0\t0\t0\tAGRONOMIC\n10060\t10060\tDry yield\tDYLD\tDry yield (t/ha)\t0\t0\t0\tAGRONOMIC\n10061\t10061\tHarvest index\tHI\tHarvest index\t0\t0\t0\tAGRONOMIC\n10062\t10062\tProportion of lodged plants\tPLODPLT\tProportion of lodged plants (>45o)\t0\t0\t0\tAGRONOMIC\n10063\t10063\tLeaf retention\tLFRET\tLeaf retention (stay green) Categoricald on a 1-7 scale. 1-no stress; 3-low susceptibility; 5-medium susceptibility; 7-high susceptibility\t0\t0\t0\tAGRONOMIC\n10064\t10064\tPlant architecture\t\tPlant architecture on a 1-5 scale.1-excellent; 2-good; 3-fair; 4-bad; 5-very bad\t0\t0\t0\tMORPHOLOGICAL\n10065\t10065\tFlowers (50%)\tFLOWER\tFlower 50% 0-absent; 1-present\t0\t0\t0\tMORPHOLOGICAL\n10066\t10066\tSepal Color\tSEPCOL\tColor of sepals. 1-white or cream; 2-orange; 3-green; 4-red; 5-purple\t0\t0\t0\tMORPHOLOGICAL\n10067\t10067\tDisc Color\tDISCOL\tColor of disc. 1-white; 2-orange; 3-green; 4-red; 5-purple\t0\t0\t0\tMORPHOLOGICAL\n10068\t10068\tSigma color\tSIGCOL\tColor of stigma. 1-white; 2-orange; 3-green; 4-red; 5-purple\t0\t0\t0\tMORPHOLOGICAL\n10069\t10069\tOvary color\tOVYCOL\tColor of ovary. 1-white; 2-orange; 3-green; 4-red; 5-purple\t0\t0\t0\tMORPHOLOGICAL\n10070\t10070\tAnther color\tANTCOL\tColor of anthers. 1-cream; 2-yellow; 3-other\t0\t0\t0\tMORPHOLOGICAL\n10071\t10071\tFemale stamenoids\tFSTAMEN\tFemale flowers without staminoids. 0-absent; 1-present\t0\t0\t0\tMORPHOLOGICAL\n10072\t10072\tMale Sterile\tMSTRL\tPollen. 0-absent; 1-present\t0\t0\t0\tMORPHOLOGICAL\n10073\t10073\tDays to Flower\tDYFL\tDays to 50% flowering\t0\t0\t0\tMORPHOLOGICAL\n10074\t10074\tFruit set\tFRTSET\tFruit set. 0-absent; 1-present\t0\t0\t0\tMORPHOLOGICAL\n10075\t10075\tFruit Exocarp\tFREXCAP\tExocarp of fruit (enter 0 for 3.1 is 0). 3- smooth; 7-rough\t0\t0\t0\tMORPHOLOGICAL\n10076\t10076\tPloidy\tPLOIDY\tPloidy level (n = 1,2,3,4 ) (by morphorlogical characteristics)\t0\t0\t0\tMORPHOLOGICAL\n10077\t10077\tSeed Color\tSDCOL\tMain color of seed. 1-brown; 3-grey; 3-mottled; 4-black; 5-dark brown\t0\t0\t0\tMORPHOLOGICAL\n10078\t10078\tCaruncle Color\tCARCOL\tColor of caruncle. 1-white or cream; 2-pink or red; 3-purple\t0\t0\t0\tMORPHOLOGICAL\n10079\t10079\tStorage root peduncle\tRTPED\tStorage root peduncle.0-absent; 3-short; 5-intermediate; 7-long\t0\t0\t0\tMORPHOLOGICAL\n10080\t10080\tStorage root form\tRTSHP\tStorage root form. 1-conical; 2-conical-cylindrical; 3-cylindrical; 4-fusiform; 5-irregular; 6-combination of above.\t0\t0\t0\tMORPHOLOGICAL\n10081\t10081\tStorage root constrictions\tRTCONS\tStorage root constrictions. 0-absent; 1-present\t0\t0\t0\tMORPHOLOGICAL\n10082\t10082\tRoot Position\tRTPOST\tPosition of roots. 1-tending toward vertical; 2-tending towards horizontal; 3-irregular\t0\t0\t0\tMORPHOLOGICAL\n10083\t10083\tRoot surface color\tRTSCOL\tStorage root surface color. 1-white or cream; 2-light brown; 3-dark brown\t0\t0\t0\tMORPHOLOGICAL\n10084\t10084\tRoot surface texture\tRTSTEX\tStorage root surface texture. 3-smooth; 5-medium; 7-rough\t0\t0\t0\tMORPHOLOGICAL\n    </div>\n\n    <div class=\"widget\">\n        <small><i>Press esc to close this window</i></small>\n        <h4>Search for a specific trait:</h4>\n        <form class=\"widget_search\">\n            <input name=\"q\" type=\"text\" />\n            <button type=\"submit\">Search</button>\n        </form>\n        <ul class=\"widget_search_result\"></ul>\n    </div>\n</div>\n";
 
 
 var DATA = new _data2.default(),
@@ -8880,7 +9013,12 @@ var DATA = new _data2.default(),
     STR = new _str2.default(),
     LOADER = new _loader2.default(),
     URL = "http://www.cropontology.org",
-    PAGE_ABOUT = page_about,
+
+
+/**
+ * Static pages
+ */
+PAGE_ABOUT = page_about,
     PAGE_PRIVACY_POLICY = page_privacy_policy,
     PAGE_API = page_api.replace(/\{\{URL\}}/igm, window.location).replace(/((<style>)|(<style type=.+))((\s+)|(\S+)|(\r+)|(\n+))(.+)((\s+)|(\S+)|(\r+)|(\n+))(<\/style>)/g, ""),
     PAGE_HELP = page_help,
@@ -8889,7 +9027,11 @@ var DATA = new _data2.default(),
     PAGE_FORGOT_PASSWORD = page_forgot_password,
     PAGE_FEEDBACK = page_feedback,
     PAGE_ADD_ONTOLOGY = page_add_ontology,
-    PAGE_ANNOTATION_TOOL = page_annotation_tool,
+
+/**
+ * Layouts
+ */
+PAGE_ANNOTATION_TOOL = new _annotation_tool2.default(),
     page = NAV.get_page(),
     settings = require("../../common/settings/contents.json"),
     languages = require("../../common/settings/languages.json"),
@@ -9065,10 +9207,73 @@ var layout = function () {
 						}
 					});
 					break;
+				case "annotation-tool":
+
+					var stepperInstace = new MStepper(document.querySelector(".stepper"), {
+						firstActive: 0,
+						linearStepsNavigation: true,
+						autoFocusInput: true
+					});
+					$("#clipboard").focus();
+
+					var validateStepOne = function validateStepOne() {
+						return $.trim($("#clipboard").val()) !== "" ? true : false;
+					};
+
+					/**
+      * Drag behaviours
+      * -------------------------------------------------------------
+      */
+
+
+					var drag_timer, dragged_file;
+					$(window).on("dragover", function (e) {
+						e.stopPropagation();
+						e.preventDefault();
+
+						var dt = e.originalEvent.dataTransfer;
+						e.originalEvent.dataTransfer.dropEffect = "copy";
+						if (dt.types && (dt.types.indexOf ? dt.types.indexOf("Files") != -1 : dt.types.contains("Files"))) {
+							$("#drop_area").fadeIn(150);
+							window.clearTimeout(drag_timer);
+						}
+					}).on("dragleave", function (e) {
+						drag_timer = window.setTimeout(function () {
+							$("#drop_area").fadeOut(150);
+						}, 1500);
+					});
+					/**
+      * Drop area behaviours
+      */
+					$("#drop_area").on("dragover", function (e) {
+						e.stopPropagation();
+						e.preventDefault();
+
+						e.originalEvent.dataTransfer.dropEffect = "copy";
+					}).on("drop", function (e) {
+						dragged_file = e.originalEvent.dataTransfer.files;
+						e.stopPropagation();
+						e.preventDefault();
+
+						drag_timer = window.setTimeout(function () {
+							PAGE_ANNOTATION_TOOL.process_file(dragged_file);
+						}, 25);
+						return false;
+					});
+					/**
+      * -------------------------------------------------------------
+      */
+
+					$("#first_line_contains_titles").on("change", function () {
+						// $("#clipboard").val("");
+						$("#generate_btn").removeClass("disabled");
+						$("#step2 .step-title, #continue_btn").addClass("disabled");
+					});
+					break;
 			}
 
 			// Adapt graph on fullscreen mode
-			$(document).bind("fscreenchange", function (e, state, elem) {
+			$(document).on("fscreenchange", function (e, state, elem) {
 				if ($(elem).attr("id") == "graph") {
 					if (state) {
 						$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
@@ -10019,8 +10224,9 @@ var layout = function () {
      * -----------------------------------------------------------------
      */
 				case "annotation-tool":
-					// Place the external html page
-					$("#contents").addClass("coloured grey lighten-5").find(".container").attr("id", "static_contents").append(PAGE_ANNOTATION_TOOL);
+					// ANNOTATION_TOOL.layoout();
+					require("./content_layouts/annotation_tool.es6");
+
 					break;
 			}
 		}
@@ -10063,7 +10269,14 @@ var layout = function () {
 					$("#scripts").append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" })).append("<!--  The Raphael JavaScript library for vector graphics display  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/raphael-min.js" })).append("<!--  Dracula  -->").append("<!--  An extension of Raphael for connecting shapes -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graffle.js" })).append("<!--  Graphs  -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_graph.js" })).append($('<script>', { "type": "text/javascript", "src": "dist/js/dracula_algorithms.js" }));
 					break;
 				case "annotation-tool":
-					$("#scripts").append("<!-- Poshy Tip -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/jquery.poshytip.js" }));
+					$("head").append("<!-- Materialize Stepper -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/mstepper.css", "type": "text/css", "media": "screen" }));
+
+					$("#scripts").append(
+					// 	"<!-- Poshy Tip -->"
+					// ).append(
+					// 	$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
+					// ).append(
+					"<!-- Materialize Stepper -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/mstepper.min.js" })).append("<!-- SheetJS/js-xlsx -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/xlsx.core.min.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js" })).append("<!-- nodeca/mimoza -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/mimoza/dist/mimoza.min.js" })).append("<!-- mholt/PapaParse -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/papaparse/papaparse.min.js" })).append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" }));
 					break;
 				case "register":
 					$("#scripts").append("<!-- jquery-validation -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jquery-validation/dist/jquery.validate.min.js" })).append("<!-- Google reCAPTCHA -->").append($('<script>', { "type": "text/javascript", "src": "https://www.google.com/recaptcha/api.js" }));
@@ -10077,7 +10290,7 @@ var layout = function () {
 
 exports.default = layout;
 
-},{"../../common/settings/contents.json":1,"../../common/settings/languages.json":2,"../../common/settings/menu.json":3,"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/_treeview.es6":12,"../../src/es6/data.es6":13,"../../src/es6/filters.es6":14,"../../src/es6/loader.es6":16,"../../src/es6/modals.es6":17,"../../src/es6/pagination.es6":18,"moment":6}],16:[function(require,module,exports){
+},{"../../common/settings/contents.json":1,"../../common/settings/languages.json":2,"../../common/settings/menu.json":3,"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/_treeview.es6":12,"../../src/es6/data.es6":14,"../../src/es6/filters.es6":15,"../../src/es6/loader.es6":17,"../../src/es6/modals.es6":18,"../../src/es6/pages/annotation_tool.es6":19,"../../src/es6/pagination.es6":20,"./content_layouts/annotation_tool.es6":13,"moment":6}],17:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -10178,7 +10391,7 @@ var loader = function () {
 
 exports.default = loader;
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -10410,7 +10623,1185 @@ var modals = function () {
 
 exports.default = modals;
 
-},{"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/data.es6":13}],18:[function(require,module,exports){
+},{"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/data.es6":14}],19:[function(require,module,exports){
+"use strict";
+/* jshint esversion: 6 */
+"strict mode";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _data = require("../data.es6");
+
+var _data2 = _interopRequireDefault(_data);
+
+var _str = require("../../../src/es6/_str.es6");
+
+var _str2 = _interopRequireDefault(_str);
+
+var _loader = require("../../../src/es6/loader.es6");
+
+var _loader2 = _interopRequireDefault(_loader);
+
+var _sideNavs = require("../../../src/es6/side-navs.es6");
+
+var _sideNavs2 = _interopRequireDefault(_sideNavs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DATA = new _data2.default(),
+    STR = new _str2.default(),
+    LOADER = new _loader2.default(),
+    SIDE_NAV = new _sideNavs2.default();
+
+/**
+* simple module that generates CSV from DOM stuff - requires jquery
+* copyright - Luca Matteis
+*/
+// var csvGenerator = (() => {
+// converts a DOM table into csv
+//     function fromTable(domTable) {
+//         var table = $(domTable),
+//         csv = "",
+//         trs = table.find("tr");
+//         trs.each(function(){
+//             var cells = $(this).find("td");
+//             cells.each(function(i){
+//                 var text = $(this).text();
+//                 text = text.replace(/\"/g, '\\"');
+//                 text = '"' + text + '"';
+//                 csv += (i==0 ? "" :",") + text;
+//             });
+//             csv += "\n";
+//         });
+//         return csv;
+//     }
+//     return {
+//         fromTable: fromTable
+//     };
+// })(),
+var TOKENS = {};
+
+var annotation_tool = function () {
+    function annotation_tool() {
+        _classCallCheck(this, annotation_tool);
+    }
+
+    _createClass(annotation_tool, [{
+        key: "assign_events",
+        value: function assign_events() {
+            var _this = this;
+
+            // $("#clipboard").keyup(this.generate());
+
+            // $("#terminize").click(() => {
+            //     this.terminize(this, $("#clipboard").val());
+            // });
+
+            // $("#sample").click((e) => {
+            //     $("#clipboard").val($(".sample").html());
+            //     this.generate();
+            //
+            //     e.preventDefault();
+            //     e.stopPropagation();
+            // });
+            // $("#download").click(function() {
+            //     let csv = csvGenerator.fromTable($("#newspaper-b").get(0)),
+            //     $form = $('<form>', {
+            //         "style": "display: none;",
+            //         "method": "post",
+            //         "action": "http://www.cropontology.org/csv-download"
+            //     }),
+            //     $input = $('<input>', {"type": "hidden", "name": "csvString"});
+            //
+            //     $input.val(csv);
+            //
+            //     $form.append($input);
+            //     $(document.body).append($form);
+            //     form.submit();
+            //     form.remove();
+            // });
+
+            // annotation
+            // $("table tr td").live("click", (e) => {
+            //     let $this = $(this);
+            //     $("table tr td").each(() => {
+            //         $(this).removeClass("selected");
+            //     });
+            //
+            //     $this.addClass("selected");
+            //
+            //     widget.show($this.get(0));
+            //     widget.run();
+            // });
+
+            // row column selection
+            // let val = "row";
+            // $("#selection").change(function() {
+            //     val = $(this).val();
+            // });
+
+            /**
+             * Load all crops (ontologies)
+             * The interested Ontology is the first one (300-499 Phenotype and Trait Ontology)
+             * @see https://github.com/bioversity/Crop-Ontology/blob/appengine_plus_dev/skins/annotation-tool.html#L292-L304
+             */
+            DATA.get_ontologies().then(function (data) {
+                $("#crop").append($('<option>', { "value": "All Crops" }).text("Filter by crop"));
+                $.each(data[0].ontologies, function (k, term) {
+                    $("#crop").append($('<option>', { "value": term.ontology_id }).text(term.ontology_name));
+                });
+                $("#crop").on("change", function (e) {
+                    _this.set_ontology($(e.target).val());
+                }).material_select();
+
+                $("#continue_btn, #step2").on("click", function () {
+                    _this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
+                });
+            });
+            // hover
+            // let selclass = "selected";
+            // $("#newspaper-b").live("mouseout", function() {
+            //     $("." + selclass).removeClass(selclass);
+            // });
+            // $("#newspaper-b tbody tr td").live("hover", () => {
+            //     let $this = $(this);
+            //
+            //     $("." + selclass).removeClass(selclass);
+            //     $this.addClass(selclass);
+            //
+            //     if(val == "row") {
+            //         $this.siblings().addClass(selclass);
+            //     } else if (val == "column") {
+            //         // to find columns it's a bit more complex <-- USEFUL COMMENT! COMPLEXITY GIVES ME MOTIVATION
+            //         let idx = $this.index() + 1;
+            //         $("#newspaper-b tbody tr td:nth-child(" + idx + ")").addClass(selclass);
+            //     }
+            // });
+            //
+            // let keepclass = "keep";
+            // $("#newspaper-b tbody tr td").live("click", () => {
+            //     let $this = $(this);
+            //     $("." + keepclass).removeClass(keepclass);
+            //     $("." + selclass).each(() => {
+            //         $(this).addClass(keepclass);
+            //     });
+            // });
+        }
+    }, {
+        key: "parse_clipboard",
+        value: function parse_clipboard(content) {
+            var rows = content.split("\n"),
+                result = []; // array of arrays
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                if (row) {
+                    var cells = row.split("\t"); // tab delimited columns
+                    result.push(cells);
+                }
+            }
+            return result;
+        }
+
+        /**
+         * The 'result' parameter is an array of arrays
+         * rapresenting the excel copied cells
+         */
+
+    }, {
+        key: "display_parsed_clipboard",
+        value: function display_parsed_clipboard(result, first_line, columns) {
+            var $container = $("#result"),
+                $table = $('<table>', {
+                "class": "bordered highlight responsive-table",
+                "id": "newspaper-b"
+            }),
+                $thead = $("<thead>"),
+                $tbody = $('<tbody>'),
+                $tfoot = $("<tfoot>"),
+                $columns_tr = $('<tr>'),
+                $first_tr = $('<tr>');
+
+            // Columns
+            if (columns) {
+                $columns_tr.prepend($('<th>', { "class": "empty" }));
+                $.each(columns.split("\t"), function (k, v) {
+                    $columns_tr.append($('<th>').text(v));
+                });
+
+                // Excel columns (eg. "A", "B", "C", ...)
+                $thead.append($columns_tr);
+                $tfoot.append($columns_tr.clone());
+            }
+            // First line
+            if (first_line) {
+                $first_tr.prepend($('<th>', { "class": "empty" }));
+                $.each(first_line.split("\t"), function (k, v) {
+                    $first_tr.append($('<th>').text(v));
+                });
+                $tbody.prepend($first_tr);
+            }
+
+            // Data table
+            $.each(result, function (k, row) {
+                var $row_tr = $('<tr>');
+                if (k % 2) {
+                    $row_tr.addClass("odd");
+                } else {
+                    $row_tr.addClass("even");
+                }
+
+                // Row number
+                $row_tr.prepend($('<th>', { "class": "empty" }).text(k + 1));
+
+                // Tabled data
+                $.each(row, function (kk, cell) {
+                    var titles = first_line.split("\t");
+
+                    // console.warn(titles);
+                    // console.info(kk, cell);
+                    // console.log(titles[kk], cell);
+                    var regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
+
+                    $row_tr.append($('<td>', {
+                        "class": "cell_data button-collapse " + (!cell || STR.is_term_id(cell) ? "disabled" : ""),
+                        "data-activates": "annotation_tool_data",
+                        "data-item": STR.is_term_id(cell)
+                    }).html(cell).click(function (e) {
+                        if (cell && !STR.is_term_id(cell)) {
+                            LOADER.create({ type: "circular", size: "small", target: "#step_loader" });
+                            $("#step_loader").css("visibility", "visible").animate({ "opacity": "1" }, 300);
+
+                            DATA.search(cell.replace(/[^\w\d\s]+/g, "")).then(function (search_results) {
+                                if (search_results.length > 0) {
+                                    $("#annotation_tool_data").html($('<li>').append($('<div>', { "class": "user-view" }).append($('<div>', { "class": "subheader" }).text("Search results for \"" + cell + "\"")))).append($('<li>').append($('<div>', { "class": "divider" })));
+                                    $.each(search_results, function (k, v) {
+                                        $("#annotation_tool_data").append($('<li>').append($('<a>', {
+                                            "class": "waves-effect local truncate",
+                                            "href": "javascript:;",
+                                            "data-tooltip": "See details"
+                                        }).text(v.ontology_name + " - " + STR.get_ontology_term(v.name)).click(function (e) {
+                                            e.preventDefault();
+
+                                            if ($(e.target).closest("li").last().find("dl").length == 0) {
+                                                DATA.get_ontology_attributes(v.id).then(function (data) {
+                                                    $(e.target).closest("li").last().append($('<dl>').append($.map(data, function (v, k) {
+                                                        return $('<div>').append($('<dt>').text(STR.ucfirst(k) + ":")).append($('<dd>').text(v)).html();
+                                                    })));
+                                                    $(e.target).closest("li").last().find("dl").slideDown();
+                                                });
+                                            }
+                                            $(e.target).closest("li").last().find("dl").slideToggle();
+                                            return false;
+                                        }).tooltip({ delay: 0, position: "top" })).append($('<a>', {
+                                            "class": "waves-effect tooltipped link",
+                                            "href": "./terms/" + v.id + ":" + STR.get_ontology_term(v.name),
+                                            "data-tooltip": "Go to term page"
+                                        }).append($('<span>', { "class": "fa fa-chevron-right" })).tooltip({ delay: 0, position: "left" })));
+                                    });
+                                    $("#annotation_tool_sidenav_btn").sideNav("show");
+                                }
+                                $("#step_loader").animate({ "opacity": "0" }, 300, function () {
+                                    $("#step_loader").css("visibility", "hidden");
+                                });
+                            });
+                        }
+                    }));
+                });
+                $tbody.append($row_tr);
+            });
+
+            $table.append($thead);
+            $table.append($tbody);
+            $table.append($tfoot);
+            $container.html($table);
+
+            SIDE_NAV.build_side_nav({
+                id: "annotation_tool_data",
+                button_id: "annotation_tool_sidenav_btn",
+                content: "",
+                target: "#result",
+                position: "right"
+            });
+        }
+
+        // makeToken(content) {
+        //     return $('<div>').append($('<b>', {"class": "token"}).html(content)).html();
+        // }
+        //
+        // doReplace(text, key) {
+        //     text = text.replace(new RegExp("\\b" + key + "\\b", "g"), this.makeToken(key));
+        //     // search also for underscores
+        //     var underscores = key.replace(new RegExp(" ", "g"), "_");
+        //     if(underscores.indexOf("_") >= 0) {
+        //         text = text.replace(new RegExp("\\b"+underscores+"\\b", "g"), this.makeToken(underscores));
+        //     }
+        //     return text;
+        // }
+        //
+        // getOntologyId(matchedTerm) {
+        //     let jMatchedTerm = $(matchedTerm),
+        //         itemId = jMatchedTerm.find("OmixedItemID").text(),
+        //         ontologyId = itemId.split("/")[2];
+        //
+        //     ontologyId = ontologyId.split(" ")[0];
+        //
+        //     return ontologyId;
+        // }
+
+    }, {
+        key: "xw",
+        value: function xw(data, cb) {
+            var worker = new Worker(XW.worker);
+            worker.onmessage = function (e) {
+                switch (e.data.t) {
+                    case 'ready':
+                        break;
+                    case 'e':
+                        console.error(e.data.d);break;
+                    case XW.msg:
+                        cb(JSON.parse(e.data.d));break;
+                }
+            };
+            worker.postMessage({ d: data, b: rABS ? 'binary' : 'array' });
+        }
+    }, {
+        key: "process_file",
+        value: function process_file(file) {
+            var X = XLSX;
+            var XW = {
+                /* worker message */
+                msg: 'xlsx',
+                /* worker scripts */
+                worker: './xlsxworker.js'
+            };
+
+            // var OUT = $("#clipboard");
+            // var HTMLOUT = $("#clipboard");
+
+            /**
+             * Get the file extension based on the Mime type
+             */
+            var get_extension = function get_extension() {
+                return Mimoza.getExtension(file[0].type);
+            };
+
+            // JSON
+            var to_json = function to_json(workbook) {
+                var result = {},
+                    res = {},
+                    data = {};
+                $.each(workbook.SheetNames, function (sheetNumber, sheetName) {
+                    // console.warn(Object.keys(workbook.Sheets[sheetName]));
+                    var roa = X.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, range: 0, defval: "" });
+
+                    if (roa.length) result[sheetName] = {
+                        columns: Object.keys(workbook.Sheets[sheetName]),
+                        rows: roa
+                    };
+                });
+                return JSON.stringify(result, 2, 2);
+            };
+            // CSV
+            var to_csv = function to_csv(text) {
+                return Papa.parse(text);
+
+                // var result = [];
+                // workbook.SheetNames.forEach((sheetName) => {
+                // 	// if(sheetName == "Template for submission") {
+                // 		var csv = X.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+                // 		if(csv.length){
+                // 			result.push("SHEET: " + sheetName);
+                // 			result.push("");
+                // 			result.push(csv);
+                // 		}
+                // 	// }
+                // });
+                // return result.join("\n");
+            };
+            // Functions
+            // var to_fmla = function to_fmla(workbook) {
+            // 	var result = [];
+            // 	workbook.SheetNames.forEach(function(sheetName) {
+            // 		// if(sheetName == "Template for submission") {
+            // 			var formulae = X.utils.get_formulae(workbook.Sheets[sheetName]);
+            // 			if(formulae.length){
+            // 				result.push("SHEET: " + sheetName);
+            // 				result.push("");
+            // 				result.push(formulae.join("\n"));
+            // 			}
+            // 		// }
+            // 	});
+            // 	return result.join("\n");
+            // };
+            // HTML
+            // var to_html = function to_html(workbook) {
+            // 	// if(sheetName == "Template for submission") {
+            // 		HTMLOUT.innerHTML = "";
+            // 		workbook.SheetNames.forEach(function(sheetName) {
+            // 			var htmlstr = X.write(workbook, {sheet:sheetName, type:'string', bookType:'html'});
+            // 			HTMLOUT.innerHTML += htmlstr;
+            // 		});
+            // 		return "";
+            // 	// }
+            // };
+            // XML
+            var to_table = function to_table(workbook) {
+                var data = JSON.parse(to_json(workbook)),
+                    cols = [],
+                    columns = "",
+                    first_line = "",
+                    clipboard = "";
+                $.each(data, function (sheetName, sheetTable) {
+                    // Check whether the file is a Crop Ontology template
+                    if (data.hasOwnProperty("Template for submission")) {
+                        if (sheetName == "Template for submission") {
+                            // Parse and clean Excel columns
+                            // (eg. "A", "B", "C", ...)
+                            $.each(sheetTable.columns, function (k, v) {
+                                if (v.match(/[a-zA-Z]+([1])$/) !== null) {
+                                    cols.push(v.replace(/\d/, ""));
+                                }
+                            });
+                            columns = cols.filter(function (el, i, a) {
+                                return i === a.indexOf(el);
+                            }).join("\t");
+
+                            $.each(sheetTable.rows, function (row_number, row_data) {
+                                var items = [],
+                                    column_title = [];
+
+                                // console.log(row_number, row_data);
+                                $.each(row_data, function (index, item) {
+                                    item = !item ? "" : $.trim(item);
+                                    column_title.push(index);
+                                    items.push(item);
+                                });
+
+                                if ($("#first_line_contains_titles").is(":checked")) {
+                                    if (row_number == 0) {
+                                        first_line = items.join("\t") + "\n";
+                                    } else {
+                                        clipboard += items.join("\t") + "\n";
+                                    }
+                                } else {
+                                    first_line = column_title.join("\t") + "\n";
+                                    clipboard += items.join("\t") + "\n";
+                                }
+                            });
+                            return false;
+                        }
+                    } else {
+                        $.each(sheetTable.rows, function (row_number, row_data) {
+                            var items = row_data.map(function (item, index) {
+                                return $.trim(item) == "" ? "" : $.trim(item);
+                            });
+
+                            clipboard += items.join("\t") + "\n";
+                        });
+                    }
+                });
+                // if(sheetName == "Template for submission") {
+                // workbook.SheetNames.forEach(function(sheetName) {
+                // 	var htmlstr = X.write(workbook, {sheet:sheetName, type:'string', bookType:'html'});
+                // 	HTMLOUT.innerHTML += htmlstr;
+                // });
+                // return "";
+                // }
+                return {
+                    first_line: first_line,
+                    columns: columns,
+                    clipboard: clipboard
+                };
+            };
+
+            var process_wb = function process_wb(wb) {
+                var output = void 0;
+
+                if (typeof wb == "string" && get_extension() == ".txt") {
+                    $("#columns").val("");
+                    $("#clipboard").val(wb);
+                } else {
+                    if (get_extension() == ".csv") {
+                        var json_data = to_csv(wb),
+                            first_line_contains_titles = $("#first_line_contains_titles").is(":checked");
+
+                        output = json_data.data.map(function (v, k) {
+                            if (first_line_contains_titles) {
+                                if (k == 0) {
+                                    $("#first_line").val(v.join("\t"));
+                                } else {
+                                    return v.join("\t");
+                                }
+                            } else {
+                                return v.join("\t");
+                            }
+                        });
+                        if (first_line_contains_titles) {
+                            output.shift();
+                        }
+                        output = output.join("\n");
+
+                        $("#clipboard").val(output);
+                    } else {
+                        output = to_table(wb);
+
+                        $("#columns").val(output.columns);
+                        $("#first_line").val(output.first_line);
+                        $("#clipboard").val(output.clipboard);
+                    }
+                }
+                $("#step2 .step-title, #continue_btn").removeClass("disabled");
+                $("#continue_btn").click();
+                $("#drop_area").fadeOut();
+            };
+
+            console.info("Parsing file...", file[0].name);
+            $("#drop_area").attr("data-content", "Parsing\n" + file[0].name + "...");
+
+            var rABS = typeof FileReader !== "undefined" && (FileReader.prototype || {}).readAsBinaryString;
+            var use_worker = typeof Worker !== 'undefined';
+
+            var xw = function xw(data, cb) {
+                var worker = new Worker(XW.worker);
+                worker.onmessage = function (e) {
+                    switch (e.data.t) {
+                        case "ready":
+                            break;
+                        case "e":
+                            console.error(e.data.d);break;
+                        case XW.msg:
+                            cb(JSON.parse(e.data.d));break;
+                    }
+                };
+                worker.postMessage({ d: data, b: rABS ? 'binary' : 'array' });
+            };
+
+            rABS = true;
+            use_worker = false;
+            var f = file[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+                var data = e.target.result;
+                if (!rABS) data = new Uint8Array(data);
+
+                if (Mimoza.isText(file[0].type)) {
+                    // if(get_extension() == ".txt") {
+                    process_wb(data);
+                    // } else if(get_extension() == ".csv") {
+                    //     console.log(data);
+                    //     var wb = X.read(data, {type:"binary"});
+                    //     // var js = X.utils.sheet_to_json(wb.Sheets.Sheet1, {header:1, raw:true});
+                    // }
+                } else {
+                    if (use_worker) {
+                        xw(data, process_wb);
+                    } else {
+                        process_wb(X.read(data, { type: rABS ? 'binary' : 'array' }));
+                    }
+                }
+            };
+            if (rABS) {
+                reader.readAsBinaryString(f);
+            } else {
+                reader.readAsArrayBuffer(f);
+            }
+        }
+        // terminize(elem, text) {
+        //     let jel = $(elem),
+        //         old = jel.val();
+        //
+        //     jel.val("Loading...");
+        //
+        //     $.ajax({
+        //         url: "/",
+        //         data: {
+        //             sourceText: $("#clipboard").val()
+        //         },
+        //         type: "POST",
+        //         dataType: "xml",
+        //         success: function(xml){
+        //             let jxml = $(xml),
+        //                 foundTokens = jxml.find("TokenIndices"),
+        //                 clipTxt = $("#clipboard").val(),
+        //                 res = {};
+        //
+        //             foundTokens.each((i) => {
+        //                 let el = $(this),
+        //                     matchedTerm = el.parent().get(0),
+        //                     tokenIndexes = el.text().split(","),
+        //                     text = "";
+        //
+        //                 for(let i = 0; i < tokenIndexes.length; i++) {
+        //                     let foundTerm = jxml.find("Token[index="+tokenIndexes[i]+"]");
+        //                     // separate by space
+        //                     text += foundTerm.text() + " ";
+        //                 }
+        //                 text = $.trim(text);
+        //
+        //                 if(!res[text]) { // doesn't exist, just add it as a single array
+        //                     res[text] = [{
+        //                         ontologyId: this.getOntologyId(matchedTerm),
+        //                         domMatchedTerm: matchedTerm
+        //                     }];
+        //                 } else { // exists - push it inside only if it comes from a different ontology from the ones already inside
+        //                     let ontologyId = this.getOntologyId(matchedTerm);
+        //                     // check if it exists
+        //                     let found = false;
+        //                     for(let i = 0; i < res[text].length; i++) {
+        //                         if(res[text][i].ontologyId == ontologyId) {
+        //                             found = true;
+        //                             break;
+        //                         }
+        //                     }
+        //                     if(!found) {
+        //                         res[text].push({
+        //                             ontologyId: ontologyId,
+        //                             domMatchedTerm: matchedTerm
+        //                         });
+        //                     }
+        //                 }
+        //             });
+        //
+        //             // res contains an array of matched terms elements
+        //             for(let i of res) {
+        //                 clipTxt = this.doReplace(clipTxt, i);
+        //             }
+        //
+        //             TOKENS = res;
+        //
+        //             let result = this.parse_clipboard(clipTxt);
+        //             this.showParsedClipboard(result);
+        //             this.doPoshytip();
+        //             jel.val(old);
+        //         }
+        //     });
+        // }
+
+    }, {
+        key: "generate",
+        value: function generate(input, first_line, columns) {
+            if (input && typeof input == "string") {
+                var result = this.parse_clipboard(input);
+                this.display_parsed_clipboard(result, first_line, columns);
+            } else if (input && (typeof input === "undefined" ? "undefined" : _typeof(input)) == "object") {}
+        }
+
+        // doPoshytip() {
+        //     let currentHoveredDomTerm = false;
+        //
+        //     $(".token").each(() => {
+        //         let $this = $(this),
+        //             foundTerms,
+        //             title = "",
+        //             text = $this.text().replace(new RegExp("_", "g"), " ");
+        //
+        //         if(foundTerms == TOKENS[text])  {
+        //             title = foundTerms.length == 1 ? "Choose this term:" : "Choose one of these " + foundTerms.length + " terms:";
+        //             for(var i = 0; i < foundTerms.length; i++) {
+        //                 let matchedTerm = $(foundTerms[i].domMatchedTerm),
+        //                     term = matchedTerm.find("OmixedItemID").text().split("/"),
+        //                     definition = matchedTerm.find("Definition").text() || "no definition found",
+        //                     id = matchedTerm.find("Accession").text();
+        //
+        //                 term = term[term.length - 1];
+        //                 title += [
+        //                     $('<div>').append(
+        //                         $('<table>', {"class": "tip_table"}).append(
+        //                             $('<tr>').append(
+        //                                 $('<td>', {"class": "key"}).text("Term")
+        //                             ).append(
+        //                                 $('<td>').text(term)
+        //                             )
+        //                         ).append(
+        //                             $('<tr>').append(
+        //                                 $('<td>', {"class": "key"}).text("ID")
+        //                             ).append(
+        //                                 $('<td>').text(id)
+        //                             )
+        //                         ).append(
+        //                             $('<tr>').append(
+        //                                 $('<td>', {"class": "key"}).text("Definition")
+        //                             ).append(
+        //                                 $('<td>').text(definition)
+        //                             )
+        //                         ).append(
+        //                             $('<tr>').append(
+        //                                 $('<td>', {"class": "key"}).text("Actions")
+        //                             ).append(
+        //                                 $('<td>').append(
+        //                                     $('<input>', {
+        //                                         "term_name": term,
+        //                                         "term_id": id,
+        //                                         "class": "use",
+        //                                         "type": "button",
+        //                                         "value": "Use"
+        //                                     })
+        //                                 ).append(
+        //                                     $('<input>', {
+        //                                         "term_name": term,
+        //                                         "term_id": id,
+        //                                         "class": "use",
+        //                                         "type": "button",
+        //                                         "value": "Use for all"
+        //                                     })
+        //                                 )
+        //                             )
+        //                         )
+        //                     )
+        //                 ].join("");
+        //             }
+        //
+        //             $this.attr("title", title);
+        //         }
+        //     });
+        //
+        //     // using live because the "use" button gets created before we
+        //     // assing this event
+        //     $(".use").live("click", () => {
+        //         let $this = $(this),
+        //             termId = $this.attr("term_id"),
+        //             termName = $this.attr("term_name"),
+        //             curr = $(currentHoveredDomTerm),
+        //             original_text = curr.text(),
+        //             new_text = termName + " (" + termId + ")";
+        //
+        //         curr.text(new_text);
+        //         if($this.val() == "Use for all") {
+        //             $("#indexlist td b").each(() => {
+        //                 let $this = $(this);
+        //                 if($this.text() == original_text)
+        //                     $this.text(new_text);
+        //             });
+        //         }
+        //     });
+        //     $(".token").poshytip({
+        //         className: 'tip_form',
+        //         showTimeout: 1,
+        //         alignTo: 'target',
+        //         alignX: 'center',
+        //         offsetY: 5,
+        //         allowTipHover: true,
+        //         fade: false,
+        //         slide: false
+        //     }).hover(() => {
+        //         currentHoveredDomTerm = this;
+        //     });
+        // }
+
+        // set_ontology(onto) {
+        //     return onto;
+        // }
+
+        // getOntology() {
+        //     return ontology;
+        // }
+
+        // annotation_column(num, onto) {
+        //     let table =$("table#newspaper-b tr"),
+        //         count = 1;
+        //
+        //     $("table#newspaper-b tr").each(function(el){
+        //         let $tr = $(this),
+        //             td = $tr.children("td"),
+        //             currentValue = $(td[num]).context.textContent;
+        //
+        //         $.getJSON("/search?q=" + currentValue, (data) => {
+        //             let arrayApp = [];
+        //             for(let j = 0; j < data.length; j++){
+        //                 if(onto=="All Crops") {
+        //                     arrayApp.push(data[j]);
+        //                 } else if(data[j].ontology_name == onto) {
+        //                     arrayApp.push(data[j]);
+        //                 }
+        //             }
+        //             if(el > 0) {
+        //                 if(arrayApp.length==1) {
+        //                     $(td[num]).append('<p style="color:green" class="elementID">{'+arrayApp[0].id+'}</p>');
+        //                 }
+        //                 if(arrayApp.length==0) {
+        //                     $(td[num]).append('<p style="color:red">nope</p>');
+        //                 }
+        //                 if(arrayApp.length>1) {
+        //                     $(td[num]).append(implode(arrayApp));
+        //                 }
+        //             }
+        //         }).complete(() => {
+        //             if(count == $("table#newspaper-b tr").length) {
+        //                 $('#loaderImg').remove();
+        //             }
+        //             count++;
+        //         });
+        //     });
+        // }
+
+        // annotationRow(num, onto) {
+        //     let table =$("table#newspaper-b tr"),
+        //         tr = $(table[num]),
+        //         tds = tr.children("td"),
+        //         count = 1;
+        //
+        //     $(tds).each((el) => {
+        //         let currentValue = $(this).context.textContent;
+        //
+        //         $.getJSON("/search?q=" + currentValue, (data) => {
+        //             let arrayApp = [];
+        //             for(var j = 0; j < data.length; j++){
+        //                 if(onto == "All Crops") {
+        //                     arrayApp.push(data[j]);
+        //                 } else if(data[j].ontology_name == onto) {
+        //                     arrayApp.push(data[j]);
+        //                 }
+        //             }
+        //             if(el > 0){
+        //                 if(arrayApp.length==1) {
+        //                     $(tds[el]).append(
+        //                         $('<p>', {"style": "color: green", "class": "elementID"}).text("{" + arrayApp[0].id + "}")
+        //                     );
+        //                 }
+        //                 if(arrayApp.length==0) {
+        //                     $(tds[el]).append(
+        //                         $('<p>', {"style": "color: red"}).text("nope")
+        //                     );
+        //                 }
+        //                 if(arrayApp.length>1) {
+        //                     $(tds[el]).append(implode(arrayApp));
+        //                 }
+        //             }
+        //         }).complete(() => {
+        //             if(count == tds.length) {
+        //                 $("#loaderImg").remove();
+        //             }
+        //             count++;
+        //         });
+        //     });
+        // }
+
+        /**
+         * Add radio button to the generated contents
+         */
+        // add_radio() {
+        //     $(".radioButton").each(() => {
+        //         $(this).remove();
+        //         $("#radioButtonTr").remove();
+        //     });
+        //     $("table#newspaper-b td").each(() => {
+        //         $(this).children("p").remove();
+        //     });
+        //
+        //     let tr = $($.find("tr:first.even"));
+        //     tr.each(() => {
+        //         let trFirst = $('<tr>', {"id": "radioButtonTr"}).insertBefore($(this));
+        //
+        //         for(let i = 0; i < $(this).children("td").length; i++) {
+        //             let tdCol = $('<td>'),
+        //                 inputCol = $('<input>', {"type": "radio", "id": (i + 1)});
+        //
+        //             tdCol.addClass("radioButton");
+        //             inputCol.click(() => {
+        //                 $("table#newspaper-b td").each(() => {
+        //                     $(this).children("p").remove();
+        //                 });
+        //                 loaderImg.insertAfter($(this));
+        //                 var numCol = $(this).context.id;
+        //                 this.annotation_column(numCol, getOntology());
+        //             });
+        //             tdCol.append(inputCol);
+        //             tdCol.click(function(e){
+        //                 e.stopPropagation();
+        //             });
+        //             trFirst.append(tdCol);
+        //         }
+        //     });
+        //
+        //     let j = 0;
+        //     $("table#newspaper-b tr").each(() => {
+        //         let row = $(this).children("td:first"),
+        //             tdRow = $('<td>');
+        //             inputRow = $('<input>', {"type": "radio", "id": j});
+        //
+        //         tdRow.addClass("radioButton");
+        //         inputRow.click(() => {
+        //             $("table#newspaper-b td").each(() => {
+        //                 $(this).children("p").remove();
+        //             });
+        //             loaderImg.insertAfter($(this));
+        //             let numRow = $(this).context.id;
+        //             this.annotationRow(numRow, getOntology());
+        //         });
+        //         tdRow.append(inputRow);
+        //         tdRow.click((e) => {
+        //             e.stopPropagation();
+        //         });
+        //         $(tdRow).insertBefore(row);
+        //         j++;
+        //     });
+        //
+        //     // remove the radio element for the first cross
+        //     $("table#newspaper-b td:first").children("input").remove();
+        // }
+
+        // implode(array) {
+        //     let $string = $('<div>');
+        //     for(let i = 0; i < array.length; i++){
+        //         $string.append(
+        //             $('<p>', {
+        //                 "id": array[i].id.replace(".", ""),
+        //                 "onclick": "selectValue('" + array[i].id.replace(".", "") + "','" + array[i].id + "')",
+        //                 "style": "color: blue"
+        //             }).text(array[i].id + " (" + array[i].name + ")")
+        //         );
+        //     }
+        //     return $string;
+        // }
+
+        // selectValue(id, value) {
+        //     let parent = $("#" + id).parent("td");
+        //
+        //     parent.children("p").remove();
+        //     parent.append(
+        //         $('<p>', {"style": "color: green", "class": "elementID"}).text("{" + value + "}")
+        //     );
+        //     //$("#" + value).html("{" + value + "}")
+        // }
+
+        // getElement() {
+        //     let el = $(".elementID"),
+        //         returnArray = {};
+        //
+        //     for(let i = 0; i < el.length; i++){
+        //         returnArray.push(
+        //             $(el[i]).text().replace('{','').replace('}','')
+        //         );
+        //     }
+        //     $("#log").val(JSON.stringify(returnArray));
+        // }
+
+    }, {
+        key: "loadOntologies",
+        value: function loadOntologies(loaded) {
+            var _this2 = this;
+
+            if (loaded) return;
+
+            $.getJSON("/get-categories", function (data) {
+                var _loop = function _loop(i) {
+                    var c = $('<ul>').append($('<h5>').text(data[i]));
+                    $(className + " .cats").append(c);
+
+                    // now load the ontologies for this category
+                    // hrm seems like "c" isn't carried on
+                    $.getJSON("/ontologies", { category: data[i] }, function (json) {
+                        $.each(json, function () {
+                            c.append($('<li>').append($('<a>', { "href": "javascript:;" }).text(_this2.ontology_name)));
+                        });
+                    });
+                };
+
+                for (var i = 0; i < data.length; i++) {
+                    _loop(i);
+                }
+                loaded = true;
+            });
+        }
+
+        // show(clicked) {
+        //     $clicked = $(clicked);
+        //     let p = $clicked.position();
+        //
+        //     $widget.attr({
+        //         "top": p.top + "px",
+        //         "left": p.left + $clicked.width() + 20 + "px"
+        //     });
+        //
+        //     $searchResult.html("");
+        //     $widget.find("input[name=q]").val("");
+        //     $widget.show();
+        //
+        //     $(document).keyup((e) => {
+        //         if(e.keyCode == 27) { $widget.hide(); }   // esc
+        //     });
+        // }
+
+        // run() {
+        //     let $search = $(".widget_search"),
+        //         exclude = $clicked.children("p").text();
+        //     $search.find("input[name=q]").val($clicked.text().replace(exclude, ""));
+        //     $search.submit();
+        // }
+
+    }]);
+
+    return annotation_tool;
+}();
+// $(function() {
+//     this.assignEvents();
+//
+//     var ontology = 'All Crops';
+//     var loaderImg = $('<img id="loaderImg" src="/images/metabox_loader.gif" width="14" height="14" />');
+//
+//     var LogId = (function() {
+//         var ids = [];
+//         var unique = function(a) {
+//             var temp = {};
+//             for (var i = 0; i < a.length; i++)
+//                 temp[a[i]] = true;
+//             var r = [];
+//             for (var k in temp)
+//                 r.push(k);
+//             return r;
+//         };
+//
+//         return {
+//             add: function(id) {
+//                 ids.push(id);
+//                 ids = unique(ids);
+//                 return ids;
+//             }
+//         };
+//     })();
+//     /**
+//      * Widget that works with JSON API - soon to work with JSONP as well
+//      */
+//     var widget = (() => {
+//         let className = ".widget",
+//             searchResult = ".widget_search_result",
+//             $widget, $clicked, $searchResult,
+//             exclude =  $clicked.children('p').text(),
+//             loaded = false;
+//
+//         // some initialization for events
+//         $(function(){
+//             $widget = $(className);
+//             $searchResult = $(searchResult);
+//
+//             $(".widget_search").submit((e) => {
+//                 $searchResult.html("Loading...");
+//
+//                 // XXX only sending the first two words of the search
+//                 let words = $(".widget_search input[name=q]").val().split(" "),
+//                     query = [];
+//
+//                 for(let i = 0; i < words.length; i++) {
+//                     if(query.length == 2) break;
+//                     if(words[i].length <= 2) continue;
+//                     query.push(words[i]);
+//                 }
+//                 query = $.trim(query.join(" ")).replace(exclude, "");
+//
+//                 $.getJSON("/search", {q: query}, (data) => {
+//                     $searchResult.html("");
+//                     for(let i = 0; i < data.length; i++) {
+//                         let term = data[i],
+//                             $a = $('<li>').append(
+//                                 $('<a>', {
+//                                     "href": "javascript:;",
+//                                     "term_id": term.id,
+//                                     "class": "poshytip"
+//                                 }).text(term.name + " (" + term.ontology_name + ")")
+//                             );
+//
+//                         // let's check whether this specific term actually belongs to the Crop we selected above
+//                         let cropval = $("#crop").val();
+//                         if(cropval !== "Loading..." && cropval !== "All Crops") {
+//                             if(term.ontology_name !== cropval) {
+//                                 continue;
+//                             }
+//                         }
+//
+//                         $a.find("a").click((e) => {
+//                             // if there's a bracket, remove it
+//                             let oldtext = $clicked.text().match(/([^{]+)/g)[0],
+//                                 ids = LogId.add(term.id);
+//
+//                             //$("#log").val(JSON.stringify(ids));
+//                             $clicked.children("p").remove();
+//                             $clicked.append(
+//                                 $('<p>', {"style": "color: green", "class": "elementID"}).text("{" + term.id + "}")
+//                             );
+//                             //$clicked.text(oldtext + '<p style="color:green" class="elementID">'+ term.id +'</p>');
+//
+//                             e.preventDefault();
+//                             e.stopPropagation();
+//                         });
+//                         $searchResult.append($a);
+//                     }
+//                     if(!$searchResult.children().length) {
+//                         $searchResult.html("No results found");
+//                     }
+//                 });
+//
+//                 e.preventDefault();
+//                 e.stopPropagation();
+//             });
+//
+//             let table = [
+//                     $('<table>', {"class": "tip_table"}).append(
+//                         // $('<tr>').append(
+//                         //     $('<td>', {"class": "key"}).text("Term")
+//                         // ).append(
+//                         //     $('<td>', {"class": "key"}).text(term)
+//                         // )
+//                     )
+//                 ].join(""),
+//                 $table = $(table);
+//
+//             $(".poshytip").poshytip({
+//                 className: "tip_form",
+//                 showTimeout: 1,
+//                 alignTo: "target",
+//                 alignX: "center",
+//                 alignY: "bottom",
+//                 offsetY: 5,
+//                 allowTipHover: true,
+//                 fade: false,
+//                 slide: false,
+//                 liveEvents: true,
+//                 content: (updateCallback) => {
+//                     let termId = $(this).attr("term_id");
+//
+//                     $table.html("");
+//                     $.getJSON("/get-attributes/" + termId, (data) => {
+//                         $table.html("");
+//                         var $cont = $('<div>');
+//                         for(let i = 0; i < data.length; i++) {
+//                             let attribute = data[i];
+//                             $table.append(
+//                                 $('<tr>').append(
+//                                     $('<td>', {"class": "key"}).text(attribute.key)
+//                                 ).append(
+//                                     $('<td>').text(attribute.value)
+//                                 ).text(attribute.value)
+//                             );
+//                         }
+//                         $cont.append($table);
+//                         updateCallback($cont.html());
+//                     });
+//                     return "Loading...";
+//                 }
+//             });
+//         });
+//
+//         return {
+//             show: show,
+//             run: run
+//         };
+//
+//     })();
+// });
+
+exports.default = annotation_tool;
+
+},{"../../../src/es6/_str.es6":11,"../../../src/es6/loader.es6":17,"../../../src/es6/side-navs.es6":21,"../data.es6":14}],20:[function(require,module,exports){
 "use strict";
 /* jshint esversion: 6 */
 "strict mode";
@@ -10540,4 +11931,85 @@ var pagination = function () {
 
 exports.default = pagination;
 
-},{"../../src/es6/_str.es6":11}]},{},[4]);
+},{"../../src/es6/_str.es6":11}],21:[function(require,module,exports){
+"use strict";
+/* jshint esversion: 6 */
+"strict mode";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _navigation = require("../../src/es6/_navigation.es6");
+
+var _navigation2 = _interopRequireDefault(_navigation);
+
+var _str = require("../../src/es6/_str.es6");
+
+var _str2 = _interopRequireDefault(_str);
+
+var _data = require("../../src/es6/data.es6");
+
+var _data2 = _interopRequireDefault(_data);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NAV = new _navigation2.default();
+var STR = new _str2.default();
+var DATA = new _data2.default();
+
+var side_navs = function () {
+	function side_navs() {
+		_classCallCheck(this, side_navs);
+	}
+
+	_createClass(side_navs, [{
+		key: "build_side_nav",
+
+		/**
+   * Build a modal popup
+   * NOTE: Must be executed before or after creating the trigger button
+   * @see http://archives.materializecss.com/0.100.2/side-nav.html
+   *
+   * @example:
+   * ```
+   * // Trigger
+   * <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+   * ```
+   *
+   * @param object						options								Parameters passed as JSON object
+   */
+		value: function build_side_nav(options) {
+			var defaults = {
+				id: "side-nav",
+				button_id: "side-nav_btn",
+				content: "",
+				target: "body"
+			},
+			    settings = $.extend({}, defaults, options);
+			if ($("#" + settings.id).length == 0) {
+				$(settings.target).append($('<a>', {
+					"href": "javascript:;", "id": settings.button_id,
+					"data-activates": settings.id,
+					"class": "button-collapse"
+				})).append($('<ul>', { "id": settings.id, "class": "side-nav" }).append(settings.content));
+				$("#" + settings.button_id).sideNav({
+					edge: settings.position,
+					closeOnClick: false
+				});
+			} else {
+				$("#" + settings.id).html(settings.content);
+			}
+		}
+	}]);
+
+	return side_navs;
+}();
+
+exports.default = side_navs;
+
+},{"../../src/es6/_navigation.es6":9,"../../src/es6/_str.es6":11,"../../src/es6/data.es6":14}]},{},[4]);

@@ -16,10 +16,6 @@ var _navigation2 = _interopRequireDefault(_navigation);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// // import ColorCanvas from "../../src/es6/ColorCanvas.es6";
-// import ColorPicker from "../../src/es6/ColorPicker.es6";
-// import Pantone from "../../src/es6/PANTONE.es6";
-
 require("../../src/es6/_obj.es6");
 
 var LAYOUT = new _layout2.default(),

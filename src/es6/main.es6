@@ -4,9 +4,6 @@
 import actions from "../../src/es6/_actions.es6";
 import layout from "../../src/es6/layout.es6";
 import navigation from "../../src/es6/_navigation.es6";
-// // import ColorCanvas from "../../src/es6/ColorCanvas.es6";
-// import ColorPicker from "../../src/es6/ColorPicker.es6";
-// import Pantone from "../../src/es6/PANTONE.es6";
 
 require("../../src/es6/_obj.es6");
 

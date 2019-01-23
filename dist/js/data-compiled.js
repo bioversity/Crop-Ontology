@@ -59,6 +59,29 @@ var data = function () {
 			return term;
 		}
 	}, {
+		key: "get_annotation_tool_sample",
+		value: function get_annotation_tool_sample(callback) {
+			// return new Promise((resolve, reject) => {
+			/**
+   * @see http://www.cropontology.org/api
+   */
+			$.ajax({
+				type: "GET",
+				url: "/common/statics/annotation-tool_sample.txt",
+				dataType: "text",
+				success: function success(data) {
+					if (typeof callback == "function") {
+						callback(data);
+					}
+					// resolve(data);
+				}
+				// error: (jqXHR, textStatus, errorThrown) => {
+				// 	reject(errorThrown);
+				// }
+			});
+			// });
+		}
+	}, {
 		key: "search",
 		value: function search(string) {
 			return new _es6Promise2.default(function (resolve, reject) {

@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -176,6 +178,12 @@ var str = function () {
 			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
 			return string_part.split("\n")[0];
 		}
+	}, {
+		key: "is_term_id",
+		value: function is_term_id(string) {
+			var regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
+			return regex.test(string);
+		}
 
 		/**
    * Get all languages in a JSON string
@@ -215,6 +223,7 @@ var str = function () {
 		value: function get_ontology_term(string, language) {
 			var _this2 = this;
 
+			string = (typeof string === "undefined" ? "undefined" : _typeof(string)) == "object" ? JSON.stringify(string) : string;
 			language = language == undefined || language == "undefined" ? settings.general.language : language;
 
 			var strings = {};

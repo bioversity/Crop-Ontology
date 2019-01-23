@@ -76,7 +76,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			es6: {
-				files: "src/es6/*.es6",
+				files: "src/es6/**/*.es6",
 				tasks: ["babel", "browserify", "uglify"]
 			},
 			sass: {
