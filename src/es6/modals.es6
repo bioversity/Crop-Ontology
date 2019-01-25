@@ -33,6 +33,7 @@ class modals {
 			ok_button: "Ok",
 			cancel_button: "Cancel",
 			ok_action: () => { return false; },
+			cancel_action: () => { return false; },
 			fixed_footer: true,
 			bottom_sheet: false,
 			size: "medium"					// Modal size. Possible options: "small", "medium", "large"
@@ -54,7 +55,9 @@ class modals {
 			).append(() => {
 				if(settings.display_buttons) {
 					return $('<div>', {"class": "modal-footer"}).append(
-						$('<a>', {"href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left"}).text(settings.cancel_button)
+						$('<a>', {"href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left"}).text(settings.cancel_button).click(() => {
+							settings.cancel_action();
+						})
 					).append(
 						$('<a>', {"href": "javascript:;", "class": "modal-action waves-effect waves-green btn-flat right"}).text(settings.ok_button).click(() => {
 							settings.ok_action();
@@ -63,6 +66,18 @@ class modals {
 				}
 			})
 		);
+	}
+
+	confirm(options) {
+		this.build_modal({
+			id: "confirm_modal",
+			size: "small",
+			title: options.title,
+			content: options.content,
+			fixed_footer: false,
+			bottom_sheet: false,
+			ok_action: options.ok_action
+		});
 	}
 
 	add_filter_row(options) {

@@ -31,7 +31,7 @@
                 {
                     "label": "Annotation Tool",
                     "link": "./annotation-tool",
-                    "display": false
+                    "display": true
                 },
                 { "separator": true },
                 {
@@ -84,7 +84,7 @@
                 {
                     "label": "Annotation Tool",
                     "link": "./annotation-tool",
-                    "display": false,
+                    "display": true,
                     "is_sidenav_link": false
                 },
                 { "separator": true },
@@ -170,7 +170,7 @@
                         {
                             "label": "Annotation Tool",
                             "link": "./annotation-tool",
-                            "display": false
+                            "display": true
                         },
                         {
                             "label": "All ontologies",

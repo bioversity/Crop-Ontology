@@ -99,7 +99,7 @@ class layout {
 		});
 
 		// Sidenav
-		$(".button-collapse").sideNav({edge: "right"});
+		$(".button-collapse").sideNav({edge: "right", closeOnClick: false});
 
 		let search_data = {};
 		$("input.autocomplete").on("keyup", (e) => {

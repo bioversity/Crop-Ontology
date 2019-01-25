@@ -120,4 +120,26 @@ a {
       padding: 3px 6px;
     }
   }
+  &[rel="external"], &[target="_blank"]  {
+    &:after {
+      color: $grey;
+      // content: "\f35d";
+      // font-family: "Font Awesome 5 Free";
+      content: url("../../common/media/img/ext.png");
+      font-size: .83em;
+      font-weight: 400;
+      vertical-align: super;
+      margin-left: 2px;
+      margin-right: -2px;
+    }
+  }
+}
+
+small {
+  &.help-text {
+    a {
+      color: $medium-light-grey;
+      text-decoration: underline;
+    }
+  }
 }

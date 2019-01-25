@@ -137,7 +137,7 @@ var layout = function () {
 			});
 
 			// Sidenav
-			$(".button-collapse").sideNav({ edge: "right" });
+			$(".button-collapse").sideNav({ edge: "right", closeOnClick: false });
 
 			var search_data = {};
 			$("input.autocomplete").on("keyup", function (e) {

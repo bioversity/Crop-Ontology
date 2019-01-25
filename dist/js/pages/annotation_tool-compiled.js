@@ -22,46 +22,16 @@ var _loader = require("../../../src/es6/loader.es6");
 
 var _loader2 = _interopRequireDefault(_loader);
 
-var _sideNavs = require("../../../src/es6/side-navs.es6");
-
-var _sideNavs2 = _interopRequireDefault(_sideNavs);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+// import side_nav from "../../../src/es6/side-navs.es6";
+
 var DATA = new _data2.default(),
     STR = new _str2.default(),
-    LOADER = new _loader2.default(),
-    SIDE_NAV = new _sideNavs2.default();
-
-/**
-* simple module that generates CSV from DOM stuff - requires jquery
-* copyright - Luca Matteis
-*/
-// var csvGenerator = (() => {
-// converts a DOM table into csv
-//     function fromTable(domTable) {
-//         var table = $(domTable),
-//         csv = "",
-//         trs = table.find("tr");
-//         trs.each(function(){
-//             var cells = $(this).find("td");
-//             cells.each(function(i){
-//                 var text = $(this).text();
-//                 text = text.replace(/\"/g, '\\"');
-//                 text = '"' + text + '"';
-//                 csv += (i==0 ? "" :",") + text;
-//             });
-//             csv += "\n";
-//         });
-//         return csv;
-//     }
-//     return {
-//         fromTable: fromTable
-//     };
-// })(),
-var TOKENS = {};
+    LOADER = new _loader2.default();
+// SIDE_NAV = new side_nav();
 
 var annotation_tool = function () {
     function annotation_tool() {
@@ -74,53 +44,6 @@ var annotation_tool = function () {
             var _this = this;
 
             // $("#clipboard").keyup(this.generate());
-
-            // $("#terminize").click(() => {
-            //     this.terminize(this, $("#clipboard").val());
-            // });
-
-            // $("#sample").click((e) => {
-            //     $("#clipboard").val($(".sample").html());
-            //     this.generate();
-            //
-            //     e.preventDefault();
-            //     e.stopPropagation();
-            // });
-            // $("#download").click(function() {
-            //     let csv = csvGenerator.fromTable($("#newspaper-b").get(0)),
-            //     $form = $('<form>', {
-            //         "style": "display: none;",
-            //         "method": "post",
-            //         "action": "http://www.cropontology.org/csv-download"
-            //     }),
-            //     $input = $('<input>', {"type": "hidden", "name": "csvString"});
-            //
-            //     $input.val(csv);
-            //
-            //     $form.append($input);
-            //     $(document.body).append($form);
-            //     form.submit();
-            //     form.remove();
-            // });
-
-            // annotation
-            // $("table tr td").live("click", (e) => {
-            //     let $this = $(this);
-            //     $("table tr td").each(() => {
-            //         $(this).removeClass("selected");
-            //     });
-            //
-            //     $this.addClass("selected");
-            //
-            //     widget.show($this.get(0));
-            //     widget.run();
-            // });
-
-            // row column selection
-            // let val = "row";
-            // $("#selection").change(function() {
-            //     val = $(this).val();
-            // });
 
             /**
              * Load all crops (ontologies)
@@ -140,34 +63,6 @@ var annotation_tool = function () {
                     _this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
                 });
             });
-            // hover
-            // let selclass = "selected";
-            // $("#newspaper-b").live("mouseout", function() {
-            //     $("." + selclass).removeClass(selclass);
-            // });
-            // $("#newspaper-b tbody tr td").live("hover", () => {
-            //     let $this = $(this);
-            //
-            //     $("." + selclass).removeClass(selclass);
-            //     $this.addClass(selclass);
-            //
-            //     if(val == "row") {
-            //         $this.siblings().addClass(selclass);
-            //     } else if (val == "column") {
-            //         // to find columns it's a bit more complex <-- USEFUL COMMENT! COMPLEXITY GIVES ME MOTIVATION
-            //         let idx = $this.index() + 1;
-            //         $("#newspaper-b tbody tr td:nth-child(" + idx + ")").addClass(selclass);
-            //     }
-            // });
-            //
-            // let keepclass = "keep";
-            // $("#newspaper-b tbody tr td").live("click", () => {
-            //     let $this = $(this);
-            //     $("." + keepclass).removeClass(keepclass);
-            //     $("." + selclass).each(() => {
-            //         $(this).addClass(keepclass);
-            //     });
-            // });
         }
     }, {
         key: "parse_clipboard",
@@ -184,18 +79,12 @@ var annotation_tool = function () {
             }
             return result;
         }
-
-        /**
-         * The 'result' parameter is an array of arrays
-         * rapresenting the excel copied cells
-         */
-
     }, {
         key: "display_parsed_clipboard",
         value: function display_parsed_clipboard(result, first_line, columns) {
             var $container = $("#result"),
                 $table = $('<table>', {
-                "class": "bordered highlight responsive-table",
+                "class": "bordered highlight",
                 "id": "newspaper-b"
             }),
                 $thead = $("<thead>"),
@@ -240,17 +129,20 @@ var annotation_tool = function () {
                 $.each(row, function (kk, cell) {
                     var titles = first_line.split("\t");
 
-                    // console.warn(titles);
-                    // console.info(kk, cell);
-                    // console.log(titles[kk], cell);
-                    var regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
-
                     $row_tr.append($('<td>', {
-                        "class": "cell_data button-collapse " + (!cell || STR.is_term_id(cell) ? "disabled" : ""),
+                        "class": "cell_data button-collapse " + (!cell || STR.is_term_id(cell) || STR.is_date(cell) || STR.check_regex(cell, /^[\d]{1,3}$/) ? "disabled" : ""),
                         "data-activates": "annotation_tool_data",
                         "data-item": STR.is_term_id(cell)
-                    }).html(cell).click(function (e) {
-                        if (cell && !STR.is_term_id(cell)) {
+                    }).append(function () {
+                        if (STR.is_term_id(cell)) {
+                            return $('<div>').append($('<a>', { "href": "./terms/" + cell, "target": "_blank" }).text(cell)).append("&nbsp;&nbsp;").html();
+                        } else if (STR.check_regex(cell, /^[\d]{1,3}$/)) {
+                            return $('<center>').text(cell);
+                        } else {
+                            return cell;
+                        }
+                    }).click(function (e) {
+                        if (cell && !STR.is_term_id(cell) && !STR.is_date(cell) && !STR.check_regex(cell, /^[\d]{1,3}$/)) {
                             LOADER.create({ type: "circular", size: "small", target: "#step_loader" });
                             $("#step_loader").css("visibility", "visible").animate({ "opacity": "1" }, 300);
 
@@ -281,6 +173,7 @@ var annotation_tool = function () {
                                             "data-tooltip": "Go to term page"
                                         }).append($('<span>', { "class": "fa fa-chevron-right" })).tooltip({ delay: 0, position: "left" })));
                                     });
+                                    $.fullscreen.exit();
                                     $("#annotation_tool_sidenav_btn").sideNav("show");
                                 }
                                 $("#step_loader").animate({ "opacity": "0" }, 300, function () {
@@ -296,41 +189,16 @@ var annotation_tool = function () {
             $table.append($thead);
             $table.append($tbody);
             $table.append($tfoot);
-            $container.html($table);
+            $container.prepend($table);
 
-            SIDE_NAV.build_side_nav({
-                id: "annotation_tool_data",
-                button_id: "annotation_tool_sidenav_btn",
-                content: "",
-                target: "#result",
-                position: "right"
-            });
+            // SIDE_NAV.build_side_nav({
+            //     id: "annotation_tool_data",
+            //     button_id: "annotation_tool_sidenav_btn",
+            //     content: "",
+            //     target: "#result",
+            //     position: "right"
+            // });
         }
-
-        // makeToken(content) {
-        //     return $('<div>').append($('<b>', {"class": "token"}).html(content)).html();
-        // }
-        //
-        // doReplace(text, key) {
-        //     text = text.replace(new RegExp("\\b" + key + "\\b", "g"), this.makeToken(key));
-        //     // search also for underscores
-        //     var underscores = key.replace(new RegExp(" ", "g"), "_");
-        //     if(underscores.indexOf("_") >= 0) {
-        //         text = text.replace(new RegExp("\\b"+underscores+"\\b", "g"), this.makeToken(underscores));
-        //     }
-        //     return text;
-        // }
-        //
-        // getOntologyId(matchedTerm) {
-        //     let jMatchedTerm = $(matchedTerm),
-        //         itemId = jMatchedTerm.find("OmixedItemID").text(),
-        //         ontologyId = itemId.split("/")[2];
-        //
-        //     ontologyId = ontologyId.split(" ")[0];
-        //
-        //     return ontologyId;
-        // }
-
     }, {
         key: "xw",
         value: function xw(data, cb) {
@@ -416,6 +284,7 @@ var annotation_tool = function () {
             // 	});
             // 	return result.join("\n");
             // };
+
             // HTML
             // var to_html = function to_html(workbook) {
             // 	// if(sheetName == "Template for submission") {
@@ -427,6 +296,7 @@ var annotation_tool = function () {
             // 		return "";
             // 	// }
             // };
+
             // XML
             var to_table = function to_table(workbook) {
                 var data = JSON.parse(to_json(workbook)),
@@ -590,77 +460,6 @@ var annotation_tool = function () {
                 reader.readAsArrayBuffer(f);
             }
         }
-        // terminize(elem, text) {
-        //     let jel = $(elem),
-        //         old = jel.val();
-        //
-        //     jel.val("Loading...");
-        //
-        //     $.ajax({
-        //         url: "/",
-        //         data: {
-        //             sourceText: $("#clipboard").val()
-        //         },
-        //         type: "POST",
-        //         dataType: "xml",
-        //         success: function(xml){
-        //             let jxml = $(xml),
-        //                 foundTokens = jxml.find("TokenIndices"),
-        //                 clipTxt = $("#clipboard").val(),
-        //                 res = {};
-        //
-        //             foundTokens.each((i) => {
-        //                 let el = $(this),
-        //                     matchedTerm = el.parent().get(0),
-        //                     tokenIndexes = el.text().split(","),
-        //                     text = "";
-        //
-        //                 for(let i = 0; i < tokenIndexes.length; i++) {
-        //                     let foundTerm = jxml.find("Token[index="+tokenIndexes[i]+"]");
-        //                     // separate by space
-        //                     text += foundTerm.text() + " ";
-        //                 }
-        //                 text = $.trim(text);
-        //
-        //                 if(!res[text]) { // doesn't exist, just add it as a single array
-        //                     res[text] = [{
-        //                         ontologyId: this.getOntologyId(matchedTerm),
-        //                         domMatchedTerm: matchedTerm
-        //                     }];
-        //                 } else { // exists - push it inside only if it comes from a different ontology from the ones already inside
-        //                     let ontologyId = this.getOntologyId(matchedTerm);
-        //                     // check if it exists
-        //                     let found = false;
-        //                     for(let i = 0; i < res[text].length; i++) {
-        //                         if(res[text][i].ontologyId == ontologyId) {
-        //                             found = true;
-        //                             break;
-        //                         }
-        //                     }
-        //                     if(!found) {
-        //                         res[text].push({
-        //                             ontologyId: ontologyId,
-        //                             domMatchedTerm: matchedTerm
-        //                         });
-        //                     }
-        //                 }
-        //             });
-        //
-        //             // res contains an array of matched terms elements
-        //             for(let i of res) {
-        //                 clipTxt = this.doReplace(clipTxt, i);
-        //             }
-        //
-        //             TOKENS = res;
-        //
-        //             let result = this.parse_clipboard(clipTxt);
-        //             this.showParsedClipboard(result);
-        //             this.doPoshytip();
-        //             jel.val(old);
-        //         }
-        //     });
-        // }
-
     }, {
         key: "generate",
         value: function generate(input, first_line, columns) {
@@ -669,297 +468,6 @@ var annotation_tool = function () {
                 this.display_parsed_clipboard(result, first_line, columns);
             } else if (input && (typeof input === "undefined" ? "undefined" : _typeof(input)) == "object") {}
         }
-
-        // doPoshytip() {
-        //     let currentHoveredDomTerm = false;
-        //
-        //     $(".token").each(() => {
-        //         let $this = $(this),
-        //             foundTerms,
-        //             title = "",
-        //             text = $this.text().replace(new RegExp("_", "g"), " ");
-        //
-        //         if(foundTerms == TOKENS[text])  {
-        //             title = foundTerms.length == 1 ? "Choose this term:" : "Choose one of these " + foundTerms.length + " terms:";
-        //             for(var i = 0; i < foundTerms.length; i++) {
-        //                 let matchedTerm = $(foundTerms[i].domMatchedTerm),
-        //                     term = matchedTerm.find("OmixedItemID").text().split("/"),
-        //                     definition = matchedTerm.find("Definition").text() || "no definition found",
-        //                     id = matchedTerm.find("Accession").text();
-        //
-        //                 term = term[term.length - 1];
-        //                 title += [
-        //                     $('<div>').append(
-        //                         $('<table>', {"class": "tip_table"}).append(
-        //                             $('<tr>').append(
-        //                                 $('<td>', {"class": "key"}).text("Term")
-        //                             ).append(
-        //                                 $('<td>').text(term)
-        //                             )
-        //                         ).append(
-        //                             $('<tr>').append(
-        //                                 $('<td>', {"class": "key"}).text("ID")
-        //                             ).append(
-        //                                 $('<td>').text(id)
-        //                             )
-        //                         ).append(
-        //                             $('<tr>').append(
-        //                                 $('<td>', {"class": "key"}).text("Definition")
-        //                             ).append(
-        //                                 $('<td>').text(definition)
-        //                             )
-        //                         ).append(
-        //                             $('<tr>').append(
-        //                                 $('<td>', {"class": "key"}).text("Actions")
-        //                             ).append(
-        //                                 $('<td>').append(
-        //                                     $('<input>', {
-        //                                         "term_name": term,
-        //                                         "term_id": id,
-        //                                         "class": "use",
-        //                                         "type": "button",
-        //                                         "value": "Use"
-        //                                     })
-        //                                 ).append(
-        //                                     $('<input>', {
-        //                                         "term_name": term,
-        //                                         "term_id": id,
-        //                                         "class": "use",
-        //                                         "type": "button",
-        //                                         "value": "Use for all"
-        //                                     })
-        //                                 )
-        //                             )
-        //                         )
-        //                     )
-        //                 ].join("");
-        //             }
-        //
-        //             $this.attr("title", title);
-        //         }
-        //     });
-        //
-        //     // using live because the "use" button gets created before we
-        //     // assing this event
-        //     $(".use").live("click", () => {
-        //         let $this = $(this),
-        //             termId = $this.attr("term_id"),
-        //             termName = $this.attr("term_name"),
-        //             curr = $(currentHoveredDomTerm),
-        //             original_text = curr.text(),
-        //             new_text = termName + " (" + termId + ")";
-        //
-        //         curr.text(new_text);
-        //         if($this.val() == "Use for all") {
-        //             $("#indexlist td b").each(() => {
-        //                 let $this = $(this);
-        //                 if($this.text() == original_text)
-        //                     $this.text(new_text);
-        //             });
-        //         }
-        //     });
-        //     $(".token").poshytip({
-        //         className: 'tip_form',
-        //         showTimeout: 1,
-        //         alignTo: 'target',
-        //         alignX: 'center',
-        //         offsetY: 5,
-        //         allowTipHover: true,
-        //         fade: false,
-        //         slide: false
-        //     }).hover(() => {
-        //         currentHoveredDomTerm = this;
-        //     });
-        // }
-
-        // set_ontology(onto) {
-        //     return onto;
-        // }
-
-        // getOntology() {
-        //     return ontology;
-        // }
-
-        // annotation_column(num, onto) {
-        //     let table =$("table#newspaper-b tr"),
-        //         count = 1;
-        //
-        //     $("table#newspaper-b tr").each(function(el){
-        //         let $tr = $(this),
-        //             td = $tr.children("td"),
-        //             currentValue = $(td[num]).context.textContent;
-        //
-        //         $.getJSON("/search?q=" + currentValue, (data) => {
-        //             let arrayApp = [];
-        //             for(let j = 0; j < data.length; j++){
-        //                 if(onto=="All Crops") {
-        //                     arrayApp.push(data[j]);
-        //                 } else if(data[j].ontology_name == onto) {
-        //                     arrayApp.push(data[j]);
-        //                 }
-        //             }
-        //             if(el > 0) {
-        //                 if(arrayApp.length==1) {
-        //                     $(td[num]).append('<p style="color:green" class="elementID">{'+arrayApp[0].id+'}</p>');
-        //                 }
-        //                 if(arrayApp.length==0) {
-        //                     $(td[num]).append('<p style="color:red">nope</p>');
-        //                 }
-        //                 if(arrayApp.length>1) {
-        //                     $(td[num]).append(implode(arrayApp));
-        //                 }
-        //             }
-        //         }).complete(() => {
-        //             if(count == $("table#newspaper-b tr").length) {
-        //                 $('#loaderImg').remove();
-        //             }
-        //             count++;
-        //         });
-        //     });
-        // }
-
-        // annotationRow(num, onto) {
-        //     let table =$("table#newspaper-b tr"),
-        //         tr = $(table[num]),
-        //         tds = tr.children("td"),
-        //         count = 1;
-        //
-        //     $(tds).each((el) => {
-        //         let currentValue = $(this).context.textContent;
-        //
-        //         $.getJSON("/search?q=" + currentValue, (data) => {
-        //             let arrayApp = [];
-        //             for(var j = 0; j < data.length; j++){
-        //                 if(onto == "All Crops") {
-        //                     arrayApp.push(data[j]);
-        //                 } else if(data[j].ontology_name == onto) {
-        //                     arrayApp.push(data[j]);
-        //                 }
-        //             }
-        //             if(el > 0){
-        //                 if(arrayApp.length==1) {
-        //                     $(tds[el]).append(
-        //                         $('<p>', {"style": "color: green", "class": "elementID"}).text("{" + arrayApp[0].id + "}")
-        //                     );
-        //                 }
-        //                 if(arrayApp.length==0) {
-        //                     $(tds[el]).append(
-        //                         $('<p>', {"style": "color: red"}).text("nope")
-        //                     );
-        //                 }
-        //                 if(arrayApp.length>1) {
-        //                     $(tds[el]).append(implode(arrayApp));
-        //                 }
-        //             }
-        //         }).complete(() => {
-        //             if(count == tds.length) {
-        //                 $("#loaderImg").remove();
-        //             }
-        //             count++;
-        //         });
-        //     });
-        // }
-
-        /**
-         * Add radio button to the generated contents
-         */
-        // add_radio() {
-        //     $(".radioButton").each(() => {
-        //         $(this).remove();
-        //         $("#radioButtonTr").remove();
-        //     });
-        //     $("table#newspaper-b td").each(() => {
-        //         $(this).children("p").remove();
-        //     });
-        //
-        //     let tr = $($.find("tr:first.even"));
-        //     tr.each(() => {
-        //         let trFirst = $('<tr>', {"id": "radioButtonTr"}).insertBefore($(this));
-        //
-        //         for(let i = 0; i < $(this).children("td").length; i++) {
-        //             let tdCol = $('<td>'),
-        //                 inputCol = $('<input>', {"type": "radio", "id": (i + 1)});
-        //
-        //             tdCol.addClass("radioButton");
-        //             inputCol.click(() => {
-        //                 $("table#newspaper-b td").each(() => {
-        //                     $(this).children("p").remove();
-        //                 });
-        //                 loaderImg.insertAfter($(this));
-        //                 var numCol = $(this).context.id;
-        //                 this.annotation_column(numCol, getOntology());
-        //             });
-        //             tdCol.append(inputCol);
-        //             tdCol.click(function(e){
-        //                 e.stopPropagation();
-        //             });
-        //             trFirst.append(tdCol);
-        //         }
-        //     });
-        //
-        //     let j = 0;
-        //     $("table#newspaper-b tr").each(() => {
-        //         let row = $(this).children("td:first"),
-        //             tdRow = $('<td>');
-        //             inputRow = $('<input>', {"type": "radio", "id": j});
-        //
-        //         tdRow.addClass("radioButton");
-        //         inputRow.click(() => {
-        //             $("table#newspaper-b td").each(() => {
-        //                 $(this).children("p").remove();
-        //             });
-        //             loaderImg.insertAfter($(this));
-        //             let numRow = $(this).context.id;
-        //             this.annotationRow(numRow, getOntology());
-        //         });
-        //         tdRow.append(inputRow);
-        //         tdRow.click((e) => {
-        //             e.stopPropagation();
-        //         });
-        //         $(tdRow).insertBefore(row);
-        //         j++;
-        //     });
-        //
-        //     // remove the radio element for the first cross
-        //     $("table#newspaper-b td:first").children("input").remove();
-        // }
-
-        // implode(array) {
-        //     let $string = $('<div>');
-        //     for(let i = 0; i < array.length; i++){
-        //         $string.append(
-        //             $('<p>', {
-        //                 "id": array[i].id.replace(".", ""),
-        //                 "onclick": "selectValue('" + array[i].id.replace(".", "") + "','" + array[i].id + "')",
-        //                 "style": "color: blue"
-        //             }).text(array[i].id + " (" + array[i].name + ")")
-        //         );
-        //     }
-        //     return $string;
-        // }
-
-        // selectValue(id, value) {
-        //     let parent = $("#" + id).parent("td");
-        //
-        //     parent.children("p").remove();
-        //     parent.append(
-        //         $('<p>', {"style": "color: green", "class": "elementID"}).text("{" + value + "}")
-        //     );
-        //     //$("#" + value).html("{" + value + "}")
-        // }
-
-        // getElement() {
-        //     let el = $(".elementID"),
-        //         returnArray = {};
-        //
-        //     for(let i = 0; i < el.length; i++){
-        //         returnArray.push(
-        //             $(el[i]).text().replace('{','').replace('}','')
-        //         );
-        //     }
-        //     $("#log").val(JSON.stringify(returnArray));
-        // }
-
     }, {
         key: "loadOntologies",
         value: function loadOntologies(loaded) {
@@ -987,190 +495,9 @@ var annotation_tool = function () {
                 loaded = true;
             });
         }
-
-        // show(clicked) {
-        //     $clicked = $(clicked);
-        //     let p = $clicked.position();
-        //
-        //     $widget.attr({
-        //         "top": p.top + "px",
-        //         "left": p.left + $clicked.width() + 20 + "px"
-        //     });
-        //
-        //     $searchResult.html("");
-        //     $widget.find("input[name=q]").val("");
-        //     $widget.show();
-        //
-        //     $(document).keyup((e) => {
-        //         if(e.keyCode == 27) { $widget.hide(); }   // esc
-        //     });
-        // }
-
-        // run() {
-        //     let $search = $(".widget_search"),
-        //         exclude = $clicked.children("p").text();
-        //     $search.find("input[name=q]").val($clicked.text().replace(exclude, ""));
-        //     $search.submit();
-        // }
-
     }]);
 
     return annotation_tool;
 }();
-// $(function() {
-//     this.assignEvents();
-//
-//     var ontology = 'All Crops';
-//     var loaderImg = $('<img id="loaderImg" src="/images/metabox_loader.gif" width="14" height="14" />');
-//
-//     var LogId = (function() {
-//         var ids = [];
-//         var unique = function(a) {
-//             var temp = {};
-//             for (var i = 0; i < a.length; i++)
-//                 temp[a[i]] = true;
-//             var r = [];
-//             for (var k in temp)
-//                 r.push(k);
-//             return r;
-//         };
-//
-//         return {
-//             add: function(id) {
-//                 ids.push(id);
-//                 ids = unique(ids);
-//                 return ids;
-//             }
-//         };
-//     })();
-//     /**
-//      * Widget that works with JSON API - soon to work with JSONP as well
-//      */
-//     var widget = (() => {
-//         let className = ".widget",
-//             searchResult = ".widget_search_result",
-//             $widget, $clicked, $searchResult,
-//             exclude =  $clicked.children('p').text(),
-//             loaded = false;
-//
-//         // some initialization for events
-//         $(function(){
-//             $widget = $(className);
-//             $searchResult = $(searchResult);
-//
-//             $(".widget_search").submit((e) => {
-//                 $searchResult.html("Loading...");
-//
-//                 // XXX only sending the first two words of the search
-//                 let words = $(".widget_search input[name=q]").val().split(" "),
-//                     query = [];
-//
-//                 for(let i = 0; i < words.length; i++) {
-//                     if(query.length == 2) break;
-//                     if(words[i].length <= 2) continue;
-//                     query.push(words[i]);
-//                 }
-//                 query = $.trim(query.join(" ")).replace(exclude, "");
-//
-//                 $.getJSON("/search", {q: query}, (data) => {
-//                     $searchResult.html("");
-//                     for(let i = 0; i < data.length; i++) {
-//                         let term = data[i],
-//                             $a = $('<li>').append(
-//                                 $('<a>', {
-//                                     "href": "javascript:;",
-//                                     "term_id": term.id,
-//                                     "class": "poshytip"
-//                                 }).text(term.name + " (" + term.ontology_name + ")")
-//                             );
-//
-//                         // let's check whether this specific term actually belongs to the Crop we selected above
-//                         let cropval = $("#crop").val();
-//                         if(cropval !== "Loading..." && cropval !== "All Crops") {
-//                             if(term.ontology_name !== cropval) {
-//                                 continue;
-//                             }
-//                         }
-//
-//                         $a.find("a").click((e) => {
-//                             // if there's a bracket, remove it
-//                             let oldtext = $clicked.text().match(/([^{]+)/g)[0],
-//                                 ids = LogId.add(term.id);
-//
-//                             //$("#log").val(JSON.stringify(ids));
-//                             $clicked.children("p").remove();
-//                             $clicked.append(
-//                                 $('<p>', {"style": "color: green", "class": "elementID"}).text("{" + term.id + "}")
-//                             );
-//                             //$clicked.text(oldtext + '<p style="color:green" class="elementID">'+ term.id +'</p>');
-//
-//                             e.preventDefault();
-//                             e.stopPropagation();
-//                         });
-//                         $searchResult.append($a);
-//                     }
-//                     if(!$searchResult.children().length) {
-//                         $searchResult.html("No results found");
-//                     }
-//                 });
-//
-//                 e.preventDefault();
-//                 e.stopPropagation();
-//             });
-//
-//             let table = [
-//                     $('<table>', {"class": "tip_table"}).append(
-//                         // $('<tr>').append(
-//                         //     $('<td>', {"class": "key"}).text("Term")
-//                         // ).append(
-//                         //     $('<td>', {"class": "key"}).text(term)
-//                         // )
-//                     )
-//                 ].join(""),
-//                 $table = $(table);
-//
-//             $(".poshytip").poshytip({
-//                 className: "tip_form",
-//                 showTimeout: 1,
-//                 alignTo: "target",
-//                 alignX: "center",
-//                 alignY: "bottom",
-//                 offsetY: 5,
-//                 allowTipHover: true,
-//                 fade: false,
-//                 slide: false,
-//                 liveEvents: true,
-//                 content: (updateCallback) => {
-//                     let termId = $(this).attr("term_id");
-//
-//                     $table.html("");
-//                     $.getJSON("/get-attributes/" + termId, (data) => {
-//                         $table.html("");
-//                         var $cont = $('<div>');
-//                         for(let i = 0; i < data.length; i++) {
-//                             let attribute = data[i];
-//                             $table.append(
-//                                 $('<tr>').append(
-//                                     $('<td>', {"class": "key"}).text(attribute.key)
-//                                 ).append(
-//                                     $('<td>').text(attribute.value)
-//                                 ).text(attribute.value)
-//                             );
-//                         }
-//                         $cont.append($table);
-//                         updateCallback($cont.html());
-//                     });
-//                     return "Loading...";
-//                 }
-//             });
-//         });
-//
-//         return {
-//             show: show,
-//             run: run
-//         };
-//
-//     })();
-// });
 
 exports.default = annotation_tool;

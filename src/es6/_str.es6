@@ -125,8 +125,22 @@ class str {
 		return string_part.split("\n")[0];
 	}
 
+	/**
+	 * Check wheter a string is an Ontology Term ID
+	 * @param  strng  							string							The string to check
+	 * @return boolean
+	 */
 	is_term_id(string) {
 		let regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
+		return regex.test(string);
+	}
+
+	is_date(string) {
+		let regex = /^\d{1,2}[\/|\-]\d{1,2}[\/|\-]\d{4}$/;
+		return regex.test(string);
+	}
+
+	check_regex(string, regex) {
 		return regex.test(string);
 	}
 

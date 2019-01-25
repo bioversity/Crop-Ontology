@@ -62,6 +62,9 @@ var modals = function () {
 				ok_action: function ok_action() {
 					return false;
 				},
+				cancel_action: function cancel_action() {
+					return false;
+				},
 				fixed_footer: true,
 				bottom_sheet: false,
 				size: "medium" // Modal size. Possible options: "small", "medium", "large"
@@ -77,11 +80,26 @@ var modals = function () {
 				}
 			}).append(settings.content)).append(function () {
 				if (settings.display_buttons) {
-					return $('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button)).append($('<a>', { "href": "javascript:;", "class": "modal-action waves-effect waves-green btn-flat right" }).text(settings.ok_button).click(function () {
+					return $('<div>', { "class": "modal-footer" }).append($('<a>', { "href": "javascript:;", "class": "modal-action modal-close waves-effect waves-green btn-flat left" }).text(settings.cancel_button).click(function () {
+						settings.cancel_action();
+					})).append($('<a>', { "href": "javascript:;", "class": "modal-action waves-effect waves-green btn-flat right" }).text(settings.ok_button).click(function () {
 						settings.ok_action();
 					}));
 				}
 			}));
+		}
+	}, {
+		key: "confirm",
+		value: function confirm(options) {
+			this.build_modal({
+				id: "confirm_modal",
+				size: "small",
+				title: options.title,
+				content: options.content,
+				fixed_footer: false,
+				bottom_sheet: false,
+				ok_action: options.ok_action
+			});
 		}
 	}, {
 		key: "add_filter_row",

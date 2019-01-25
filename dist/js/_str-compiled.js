@@ -178,10 +178,28 @@ var str = function () {
 			var string_part = $.trim($(string).text()).split(split_by)[0] + ".";
 			return string_part.split("\n")[0];
 		}
+
+		/**
+   * Check wheter a string is an Ontology Term ID
+   * @param  strng  							string							The string to check
+   * @return boolean
+   */
+
 	}, {
 		key: "is_term_id",
 		value: function is_term_id(string) {
 			var regex = /^([\w\d\_]+){6}\:([\d]+){6}$/;
+			return regex.test(string);
+		}
+	}, {
+		key: "is_date",
+		value: function is_date(string) {
+			var regex = /^\d{1,2}[\/|\-]\d{1,2}[\/|\-]\d{4}$/;
+			return regex.test(string);
+		}
+	}, {
+		key: "check_regex",
+		value: function check_regex(string, regex) {
 			return regex.test(string);
 		}
 
