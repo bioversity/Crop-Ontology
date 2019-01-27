@@ -1507,7 +1507,7 @@ class layout {
 											return $('<div>').append(
 												$.map(ontologies_data.lead_centers, (v, k) => {
 													if(v.image) {
-														let image = (!STR.is_url(v.image)) ? "common/media/img/" + v.image : v.image;
+														let image = (!STR.is_url(v.image)) ? "./common/media/img/" + v.image : v.image;
 														return $('<a>', {"href": v.link, "target": "_blank"}).append(
 															$('<img>', {"src": image})
 														)
@@ -1523,9 +1523,9 @@ class layout {
 											return $('<div>').append(
 												$.map(ontologies_data.partners, (v, k) => {
 													if(v.image) {
-														let image = (!STR.is_url(v.image)) ? "common/media/img/" + v.image : v.image;
+														let image = (!STR.is_url(v.image)) ? "./common/media/img/" + v.image : v.image;
 														return $('<a>', {"href": v.link, "target": "_blank"}).append(
-															$('<img>', {"src": "common/media/img/" + image})
+															$('<img>', {"src": image})
 														)
 													}
 												})
@@ -1539,7 +1539,7 @@ class layout {
 											return $('<div>').append(
 												$.map(ontologies_data.cgiar_research_program, (v, k) => {
 													return $('<a>', {"href": v.link, "target": "_blank"}).append(
-														$('<img>', {"src": "common/media/img/" + v.image})
+														$('<img>', {"src": "./common/media/img/" + v.image})
 													)
 												})
 											).html();

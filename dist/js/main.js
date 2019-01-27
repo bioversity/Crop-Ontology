@@ -10146,7 +10146,7 @@ var layout = function () {
 								// 	console.info(v.image);
 								return $('<div>').append($.map(ontologies_data.lead_centers, function (v, k) {
 									if (v.image) {
-										var image = !STR.is_url(v.image) ? "common/media/img/" + v.image : v.image;
+										var image = !STR.is_url(v.image) ? "./common/media/img/" + v.image : v.image;
 										return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": image }));
 									}
 								})).html();
@@ -10156,8 +10156,8 @@ var layout = function () {
 								// 	console.info(v.image);
 								return $('<div>').append($.map(ontologies_data.partners, function (v, k) {
 									if (v.image) {
-										var image = !STR.is_url(v.image) ? "common/media/img/" + v.image : v.image;
-										return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": "common/media/img/" + image }));
+										var image = !STR.is_url(v.image) ? "./common/media/img/" + v.image : v.image;
+										return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": image }));
 									}
 								})).html();
 							}
@@ -10165,7 +10165,7 @@ var layout = function () {
 							if (ontologies_data.cgiar_research_program.length > 0) {
 								// 	console.info(v.image);
 								return $('<div>').append($.map(ontologies_data.cgiar_research_program, function (v, k) {
-									return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": "common/media/img/" + v.image }));
+									return $('<a>', { "href": v.link, "target": "_blank" }).append($('<img>', { "src": "./common/media/img/" + v.image }));
 								})).html();
 							}
 						})))));
