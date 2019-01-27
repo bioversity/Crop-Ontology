@@ -1201,6 +1201,9 @@ var layout = function () {
 
 						// Set Ontology languages
 						var langs = STR.get_ontologies_languages(data.name);
+						if (typeof langs == "string") {
+							langs = [langs];
+						}
 						// Set the page name
 						var page_name = STR.get_ontology_term(data.name);
 						$(".page_name").text(page_name);
