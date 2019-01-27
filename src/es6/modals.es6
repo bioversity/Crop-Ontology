@@ -171,9 +171,7 @@ class modals {
 					).append(
 						$('<label>', {"for": "log_username"}).text("Username")
 					)
-			// 	)
-			).append(
-			// 	$('<div>', {"class": "row"}).append(
+				).append(
 					$('<div>', {"class": "input-field col s10 offset-s1"}).append(
 						$('<input>', {
 							"type": "password",

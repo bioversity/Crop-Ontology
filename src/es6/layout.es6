@@ -617,7 +617,7 @@ class layout {
 										);
 										break;
 									default:
-										return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
+										return $('<span>', {"class": "breadcrumb"}).html(STR.ucfirst(STR.camel_case_2_text(NAV.get_page().replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
 										break;
 								}
 							} else {
@@ -1555,8 +1555,7 @@ class layout {
 					LOADER.hide("#contents .progress");
 
 					// Set Ontology languages
-					let langs = [];
-					langs.push(STR.get_ontologies_languages(data.name));
+					let langs = STR.get_ontologies_languages(data.name);
 					// Set the page name
 					let page_name = STR.get_ontology_term(data.name);
 					$(".page_name").text(page_name);

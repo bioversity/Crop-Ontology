@@ -172,11 +172,7 @@ var modals = function () {
 				"type": "text",
 				"name": "username",
 				"id": "log_username"
-			})).append($('<label>', { "for": "log_username" }).text("Username"))
-			// 	)
-			).append(
-			// 	$('<div>', {"class": "row"}).append(
-			$('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
+			})).append($('<label>', { "for": "log_username" }).text("Username"))).append($('<div>', { "class": "input-field col s10 offset-s1" }).append($('<input>', {
 				"type": "password",
 				"name": "password",
 				"id": "log_password"

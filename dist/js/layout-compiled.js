@@ -581,7 +581,7 @@ var layout = function () {
 								return $('<span>', { "class": "breadcrumb" }).html($('<tt>').append(NAV.get_ontology_id()).append($('<small>').append(":" + NAV.get_term_id()))).append(" ").append($("<span>", { "class": "page_name" }).append(STR.ucfirst(STR.camel_case_2_text(NAV.get_term_label()))));
 								break;
 							default:
-								return $('<span>', { "class": "breadcrumb" }).html(STR.ucfirst(STR.camel_case_2_text(v.replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
+								return $('<span>', { "class": "breadcrumb" }).html(STR.ucfirst(STR.camel_case_2_text(NAV.get_page().replace(NAV.get_ontology_url_regex(":"), "<tt>$1</tt> $2"))));
 								break;
 						}
 					} else {
@@ -1200,8 +1200,7 @@ var layout = function () {
 						LOADER.hide("#contents .progress");
 
 						// Set Ontology languages
-						var langs = [];
-						langs.push(STR.get_ontologies_languages(data.name));
+						var langs = STR.get_ontologies_languages(data.name);
 						// Set the page name
 						var page_name = STR.get_ontology_term(data.name);
 						$(".page_name").text(page_name);
