@@ -30,6 +30,7 @@ class modals {
 			subtitle: "",
 			content: "Modal Content",
 			display_buttons: true,
+			close_button: false,
 			ok_button: "Ok",
 			cancel_button: "Cancel",
 			ok_action: () => { return false; },
@@ -45,7 +46,13 @@ class modals {
 				"id": settings.id,
 				"class": "modal " + settings.class + " " + settings.size + " " + ((settings.fixed_footer) ? " modal-fixed-footer" : "") + ((settings.bottom_sheet) ? " bottom-sheet" : ""),
 			}).append(
-				$('<div>', {"class": "modal-content"}).append(
+				$('<div>', {"class": "modal-content"}).append(() => {
+					if(settings.close_button) {
+						return $('<a>', {"href": "javascript:;", "class": "modal-action modal-close btn btn-mini right"}).append(
+							$('<span>', {"class": "fa fa-times"})
+						);
+					}
+				}).append(
 					$('<h4>').html(settings.title)
 				).append(() => {
 					if(settings.subtitle) {
@@ -289,7 +296,8 @@ class modals {
 			content: $download_ontology_modal,
 			fixed_footer: false,
 			bottom_sheet: false,
-			display_buttons: false
+			display_buttons: false,
+			close_button: true
 		});
 	}
 }

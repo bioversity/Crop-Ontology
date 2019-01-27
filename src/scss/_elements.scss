@@ -120,7 +120,7 @@ a {
       padding: 3px 6px;
     }
   }
-  &[rel="external"], &[target="_blank"]  {
+  &:not(.dowload-item)[rel="external"], &:not(.dowload-item)[target="_blank"]  {
     &:after {
       color: $grey;
       // content: "\f35d";

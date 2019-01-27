@@ -57,6 +57,7 @@ var modals = function () {
 				subtitle: "",
 				content: "Modal Content",
 				display_buttons: true,
+				close_button: false,
 				ok_button: "Ok",
 				cancel_button: "Cancel",
 				ok_action: function ok_action() {
@@ -74,7 +75,11 @@ var modals = function () {
 			$("body").prepend($('<div>', {
 				"id": settings.id,
 				"class": "modal " + settings.class + " " + settings.size + " " + (settings.fixed_footer ? " modal-fixed-footer" : "") + (settings.bottom_sheet ? " bottom-sheet" : "")
-			}).append($('<div>', { "class": "modal-content" }).append($('<h4>').html(settings.title)).append(function () {
+			}).append($('<div>', { "class": "modal-content" }).append(function () {
+				if (settings.close_button) {
+					return $('<a>', { "href": "javascript:;", "class": "modal-action modal-close btn btn-mini right" }).append($('<span>', { "class": "fa fa-times" }));
+				}
+			}).append($('<h4>').html(settings.title)).append(function () {
 				if (settings.subtitle) {
 					return $('<h5>').html(settings.subtitle);
 				}
@@ -233,7 +238,8 @@ var modals = function () {
 				content: $download_ontology_modal,
 				fixed_footer: false,
 				bottom_sheet: false,
-				display_buttons: false
+				display_buttons: false,
+				close_button: true
 			});
 		}
 	}]);

@@ -814,7 +814,6 @@ var treeview = function () {
 
 				LOADER.hide("#pages .progress");
 
-				console.warn(option);
 				// Load the root tree
 				this.get_tree_items({
 					target: "#treeview li.root",
