@@ -59,8 +59,10 @@ var annotation_tool = function () {
                     _this.set_ontology($(e.target).val());
                 }).material_select();
 
-                $("#continue_btn, #step2").on("click", function () {
+                $("#continue_btn, #step2 > .step-title").on("click", function () {
+                    // if($("#newspaper-b").length == 0) {
                     _this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
+                    // }
                 });
             });
         }
@@ -403,10 +405,16 @@ var annotation_tool = function () {
                         $("#clipboard").val(output.clipboard);
                     }
                 }
+
                 $("#step2 .step-title, #continue_btn").removeClass("disabled");
                 $("#continue_btn").click();
                 $("#drop_area").fadeOut();
             };
+
+            // var download = (type, wb) => {
+            //     // XLSX.write(wb, {bookType: 'xlsx' , bookSST: false, type: 'binary'});
+            //     saveAs(new Blob([wb], {type: "application/octet-stream"}), file[0].name);
+            // };
 
             console.info("Parsing file...", file[0].name);
             $("#drop_area").attr("data-content", "Parsing\n" + file[0].name + "...");
@@ -453,6 +461,11 @@ var annotation_tool = function () {
                         process_wb(X.read(data, { type: rABS ? 'binary' : 'array' }));
                     }
                 }
+                $("#download_btn").click(function () {
+                    // console.log(file[0].name, file[0].name.replace(/\..*?$/, "__exported.csv"), file[0].name.split("."));
+                    saveAs(new Blob([$("#first_line").val(), $("#clipboard").val()], { type: "application/octet-stream" }), file[0].name.replace(/\..*?$/, "__exported.csv"));
+                    return false;
+                });
             };
             if (rABS) {
                 reader.readAsBinaryString(f);
@@ -463,6 +476,7 @@ var annotation_tool = function () {
     }, {
         key: "generate",
         value: function generate(input, first_line, columns) {
+            $("#newspaper-b").html("");
             if (input && typeof input == "string") {
                 var result = this.parse_clipboard(input);
                 this.display_parsed_clipboard(result, first_line, columns);

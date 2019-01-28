@@ -31,8 +31,10 @@ class annotation_tool {
                 this.set_ontology($(e.target).val());
             }).material_select();
 
-            $("#continue_btn, #step2").on("click", () => {
-                this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
+            $("#continue_btn, #step2 > .step-title").on("click", () => {
+                // if($("#newspaper-b").length == 0) {
+                    this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
+                // }
             });
         });
     }
@@ -411,10 +413,16 @@ class annotation_tool {
         			$("#clipboard").val(output.clipboard);
                 }
             }
+
             $("#step2 .step-title, #continue_btn").removeClass("disabled");
             $("#continue_btn").click();
             $("#drop_area").fadeOut();
 		};
+
+        // var download = (type, wb) => {
+        //     // XLSX.write(wb, {bookType: 'xlsx' , bookSST: false, type: 'binary'});
+        //     saveAs(new Blob([wb], {type: "application/octet-stream"}), file[0].name);
+        // };
 
 		console.info("Parsing file...", file[0].name);
 		$("#drop_area").attr("data-content", "Parsing\n" + file[0].name + "...")
@@ -458,6 +466,11 @@ class annotation_tool {
                     process_wb(X.read(data, {type: rABS ? 'binary' : 'array'}));
                 }
             }
+            $("#download_btn").click(() => {
+                // console.log(file[0].name, file[0].name.replace(/\..*?$/, "__exported.csv"), file[0].name.split("."));
+                saveAs(new Blob([$("#first_line").val(), $("#clipboard").val()], {type: "application/octet-stream"}), file[0].name.replace(/\..*?$/, "__exported.csv"));
+                return false;
+            });
 		};
 		if(rABS) {
             reader.readAsBinaryString(f);
@@ -467,6 +480,7 @@ class annotation_tool {
 	}
 
     generate(input, first_line, columns) {
+        $("#newspaper-b").html("");
         if(input && typeof input == "string") {
             let result = this.parse_clipboard(input);
             this.display_parsed_clipboard(result, first_line, columns);

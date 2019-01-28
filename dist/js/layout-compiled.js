@@ -1333,12 +1333,7 @@ var layout = function () {
 				case "annotation-tool":
 					$("head").append("<!-- Materialize Stepper -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/mstepper.css", "type": "text/css", "media": "screen" }));
 
-					$("#scripts").append(
-					// 	"<!-- Poshy Tip -->"
-					// ).append(
-					// 	$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
-					// ).append(
-					"<!-- Materialize Stepper -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/mstepper.min.js" })).append("<!-- SheetJS/js-xlsx -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/xlsx.core.min.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js" })).append("<!-- nodeca/mimoza -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/mimoza/dist/mimoza.min.js" })).append("<!-- mholt/PapaParse -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/papaparse/papaparse.min.js" })).append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" }));
+					$("#scripts").append("<!-- Materialize Stepper -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/mstepper.min.js" })).append("<!-- SheetJS/js-xlsx -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/xlsx.core.min.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/file-saver/dist/FileSaver.min.js" })).append("<!-- nodeca/mimoza -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/mimoza/dist/mimoza.min.js" })).append("<!-- mholt/PapaParse -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/papaparse/papaparse.min.js" })).append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" }));
 					break;
 				case "register":
 					$("#scripts").append("<!-- jquery-validation -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jquery-validation/dist/jquery.validate.min.js" })).append("<!-- Google reCAPTCHA -->").append($('<script>', { "type": "text/javascript", "src": "https://www.google.com/recaptcha/api.js" }));

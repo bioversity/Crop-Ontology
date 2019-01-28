@@ -1865,10 +1865,6 @@ class layout {
 				);
 
 				$("#scripts").append(
-				// 	"<!-- Poshy Tip -->"
-				// ).append(
-				// 	$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
-				// ).append(
 					"<!-- Materialize Stepper -->"
 				).append(
 					$('<script>', {"type": "text/javascript", "src": "dist/js/mstepper.min.js"})
@@ -1880,6 +1876,8 @@ class layout {
 					$('<script>', {"type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js"})
 				).append(
 					$('<script>', {"type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js"})
+				).append(
+					$('<script>', {"type": "text/javascript", "src": "bower_components/file-saver/dist/FileSaver.min.js"})
 				).append(
 					"<!-- nodeca/mimoza -->"
 				).append(

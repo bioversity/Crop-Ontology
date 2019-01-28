@@ -97,6 +97,7 @@ var DATA = new data(),
                                                 $("#continue_btn").removeClass("disabled");
                                                 $(".step:not(.active) .step-title").removeClass("disabled");
                                             } else {
+                                                // $("#newspaper-b").html("");
                                                 $("#first_line").val("");
                                                 $("#columns").val("");
                                                 $("#generate_btn").removeClass("disabled");
@@ -166,9 +167,9 @@ var DATA = new data(),
                 							}).append(
                 								$('<i>', {"class": "material-icons"}).text("fullscreen")
                                             ).click((e) => {
-                								$("#result").fullscreen({
-                									toggleClass: "fullscreen"
-                								})
+                								// $("#result").fullscreen({
+                								// 	toggleClass: "fullscreen"
+                								// })
                 								$(".btn.fullscreen").blur();
                 										// $("#graph_content svg").attr("width", parseInt($(document).width()));
                 										// $("#graph_content svg").attr("height", parseInt($(document).height()));
@@ -219,7 +220,11 @@ var DATA = new data(),
                                                 $('<span>', {"class": "show-on-small hide-on-med-and-up fa fa-chevron-left"})
                                             )
                                         ).append(
-                                            $('<button>', {"class": "waves-effect waves-dark btn btn-highlight right"}).append(
+                                            $('<a>', {
+                                                "href": "javascript:;",
+                                                "id": "download_btn",
+                                                "class": "waves-effect waves-dark btn btn-highlight right"
+                                            }).append(
                                                 $('<span>', {"class": "show-on-medium-and-up hide-on-small-only"}).text("Download as CSV")
                                             ).append(
                                                 $('<span>', {"class": "show-on-small hide-on-med-and-up"}).text("Download")

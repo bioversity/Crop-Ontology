@@ -7898,6 +7898,7 @@ $('<div>', { "id": "upload_btn", "class": "file-field input-field" }).append($('
         $("#continue_btn").removeClass("disabled");
         $(".step:not(.active) .step-title").removeClass("disabled");
     } else {
+        // $("#newspaper-b").html("");
         $("#first_line").val("");
         $("#columns").val("");
         $("#generate_btn").removeClass("disabled");
@@ -7927,9 +7928,9 @@ $('<a>', {
     "data-position": "left",
     "data-tooltip": "Show fullscreen"
 }).append($('<i>', { "class": "material-icons" }).text("fullscreen")).click(function (e) {
-    $("#result").fullscreen({
-        toggleClass: "fullscreen"
-    });
+    // $("#result").fullscreen({
+    // 	toggleClass: "fullscreen"
+    // })
     $(".btn.fullscreen").blur();
     // $("#graph_content svg").attr("width", parseInt($(document).width()));
     // $("#graph_content svg").attr("height", parseInt($(document).height()));
@@ -7958,7 +7959,11 @@ $('<a>', {
 // Sidenav
 $('<ul>', { "id": "annotation_tool_data", "class": "side-nav" }).append($('<li>', { "class": "row-control" }).append($('<a>', { "href": "javascript:;" }).append($('<i>', { "class": "material-icons" }).text("close")).append("Close").click(function () {
     $(".button-collapse").sideNav("hide");
-})))))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "step-actions" }).append($('<button>', { "class": "waves-effect waves-dark btn-flat previous-step" }).append($('<span>', { "class": "show-on-medium-and-up hide-on-small-only" }).text("Back")).append($('<span>', { "class": "show-on-small hide-on-med-and-up fa fa-chevron-left" }))).append($('<button>', { "class": "waves-effect waves-dark btn btn-highlight right" }).append($('<span>', { "class": "show-on-medium-and-up hide-on-small-only" }).text("Download as CSV")).append($('<span>', { "class": "show-on-small hide-on-med-and-up" }).text("Download")))))))))));
+})))))).append($('<div>', { "class": "row" }).append($('<div>', { "class": "step-actions" }).append($('<button>', { "class": "waves-effect waves-dark btn-flat previous-step" }).append($('<span>', { "class": "show-on-medium-and-up hide-on-small-only" }).text("Back")).append($('<span>', { "class": "show-on-small hide-on-med-and-up fa fa-chevron-left" }))).append($('<a>', {
+    "href": "javascript:;",
+    "id": "download_btn",
+    "class": "waves-effect waves-dark btn btn-highlight right"
+}).append($('<span>', { "class": "show-on-medium-and-up hide-on-small-only" }).text("Download as CSV")).append($('<span>', { "class": "show-on-small hide-on-med-and-up" }).text("Download")))))))))));
 
 PAGE_ANNOTATION_TOOL.assign_events();
 // }
@@ -10308,12 +10313,7 @@ var layout = function () {
 				case "annotation-tool":
 					$("head").append("<!-- Materialize Stepper -->").append($('<link>', { "rel": "stylesheet", "href": "dist/css/mstepper.css", "type": "text/css", "media": "screen" }));
 
-					$("#scripts").append(
-					// 	"<!-- Poshy Tip -->"
-					// ).append(
-					// 	$('<script>', {"type": "text/javascript", "src": "dist/js/jquery.poshytip.js"})
-					// ).append(
-					"<!-- Materialize Stepper -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/mstepper.min.js" })).append("<!-- SheetJS/js-xlsx -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/xlsx.core.min.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js" })).append("<!-- nodeca/mimoza -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/mimoza/dist/mimoza.min.js" })).append("<!-- mholt/PapaParse -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/papaparse/papaparse.min.js" })).append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" }));
+					$("#scripts").append("<!-- Materialize Stepper -->").append($('<script>', { "type": "text/javascript", "src": "dist/js/mstepper.min.js" })).append("<!-- SheetJS/js-xlsx -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/xlsx.core.min.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/cpexcel.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/js-xlsx/dist/ods.js" })).append($('<script>', { "type": "text/javascript", "src": "bower_components/file-saver/dist/FileSaver.min.js" })).append("<!-- nodeca/mimoza -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/mimoza/dist/mimoza.min.js" })).append("<!-- mholt/PapaParse -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/papaparse/papaparse.min.js" })).append("<!-- Fullscreen feature -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jq-fullscreen/release/jquery.fullscreen.min.js" }));
 					break;
 				case "register":
 					$("#scripts").append("<!-- jquery-validation -->").append($('<script>', { "type": "text/javascript", "src": "bower_components/jquery-validation/dist/jquery.validate.min.js" })).append("<!-- Google reCAPTCHA -->").append($('<script>', { "type": "text/javascript", "src": "https://www.google.com/recaptcha/api.js" }));
@@ -10742,8 +10742,10 @@ var annotation_tool = function () {
                     _this.set_ontology($(e.target).val());
                 }).material_select();
 
-                $("#continue_btn, #step2").on("click", function () {
+                $("#continue_btn, #step2 > .step-title").on("click", function () {
+                    // if($("#newspaper-b").length == 0) {
                     _this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
+                    // }
                 });
             });
         }
@@ -11086,10 +11088,16 @@ var annotation_tool = function () {
                         $("#clipboard").val(output.clipboard);
                     }
                 }
+
                 $("#step2 .step-title, #continue_btn").removeClass("disabled");
                 $("#continue_btn").click();
                 $("#drop_area").fadeOut();
             };
+
+            // var download = (type, wb) => {
+            //     // XLSX.write(wb, {bookType: 'xlsx' , bookSST: false, type: 'binary'});
+            //     saveAs(new Blob([wb], {type: "application/octet-stream"}), file[0].name);
+            // };
 
             console.info("Parsing file...", file[0].name);
             $("#drop_area").attr("data-content", "Parsing\n" + file[0].name + "...");
@@ -11136,6 +11144,11 @@ var annotation_tool = function () {
                         process_wb(X.read(data, { type: rABS ? 'binary' : 'array' }));
                     }
                 }
+                $("#download_btn").click(function () {
+                    // console.log(file[0].name, file[0].name.replace(/\..*?$/, "__exported.csv"), file[0].name.split("."));
+                    saveAs(new Blob([$("#first_line").val(), $("#clipboard").val()], { type: "application/octet-stream" }), file[0].name.replace(/\..*?$/, "__exported.csv"));
+                    return false;
+                });
             };
             if (rABS) {
                 reader.readAsBinaryString(f);
@@ -11146,6 +11159,7 @@ var annotation_tool = function () {
     }, {
         key: "generate",
         value: function generate(input, first_line, columns) {
+            $("#newspaper-b").html("");
             if (input && typeof input == "string") {
                 var result = this.parse_clipboard(input);
                 this.display_parsed_clipboard(result, first_line, columns);
