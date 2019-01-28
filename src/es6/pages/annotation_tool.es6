@@ -32,9 +32,7 @@ class annotation_tool {
             }).material_select();
 
             $("#continue_btn, #step2 > .step-title").on("click", () => {
-                // if($("#newspaper-b").length == 0) {
-                    this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
-                // }
+                this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
             });
         });
     }

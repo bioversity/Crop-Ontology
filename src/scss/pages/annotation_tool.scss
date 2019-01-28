@@ -137,6 +137,13 @@
                             padding: 20px;
                             width: 100%;
                         }
+                        .exit-fullscreen {
+                            position: fixed;
+                            right: 20px;
+                            top: 20px;
+                            background-color: rgba(238, 238, 238, 0.5);
+                            color: $dark-grey;
+                        }
                         thead {
                             border-color: inherit;
                             // display: table-header-group;

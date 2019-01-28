@@ -60,9 +60,7 @@ var annotation_tool = function () {
                 }).material_select();
 
                 $("#continue_btn, #step2 > .step-title").on("click", function () {
-                    // if($("#newspaper-b").length == 0) {
                     _this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
-                    // }
                 });
             });
         }

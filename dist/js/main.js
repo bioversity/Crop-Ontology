@@ -7928,9 +7928,9 @@ $('<a>', {
     "data-position": "left",
     "data-tooltip": "Show fullscreen"
 }).append($('<i>', { "class": "material-icons" }).text("fullscreen")).click(function (e) {
-    // $("#result").fullscreen({
-    // 	toggleClass: "fullscreen"
-    // })
+    $("#result").fullscreen({
+        toggleClass: "fullscreen"
+    });
     $(".btn.fullscreen").blur();
     // $("#graph_content svg").attr("width", parseInt($(document).width()));
     // $("#graph_content svg").attr("height", parseInt($(document).height()));
@@ -9314,18 +9314,33 @@ var layout = function () {
 
 			// Adapt graph on fullscreen mode
 			$(document).on("fscreenchange", function (e, state, elem) {
-				if ($(elem).attr("id") == "graph") {
-					if (state) {
-						$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
+				switch ($(elem).attr("id")) {
+					case "graph":
+						if (state) {
+							$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
 
-						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click(function (e) {
-							$.fullscreen.exit();
-						});
-					} else {
-						$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
-
-						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Show fullscreen");
-					}
+							$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click(function (e) {
+								$.fullscreen.exit();
+							});
+						} else {
+							$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
+							$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Show fullscreen");
+						}
+						break;
+					case "result":
+						if (state) {
+							// $(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").text("fullscreen_exit");
+							$("#result").prepend($('<a>', {
+								"href": "javascript:;",
+								"class": "btn exit-fullscreen z-depth-1",
+								"data-position": "left",
+								"data-tooltip": "Exit fullscreen"
+							}).append($('<i>', { "class": "material-icons" }).text("fullscreen_exit")).click(function () {
+								$("#result .btn.exit-fullscreen").remove();
+								$.fullscreen.exit();
+							}));
+						}
+						break;
 				}
 			});
 		}
@@ -10743,9 +10758,7 @@ var annotation_tool = function () {
                 }).material_select();
 
                 $("#continue_btn, #step2 > .step-title").on("click", function () {
-                    // if($("#newspaper-b").length == 0) {
                     _this.generate($("#clipboard").val(), $("#first_line").val(), $("#columns").val());
-                    // }
                 });
             });
         }

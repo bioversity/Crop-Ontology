@@ -78,9 +78,9 @@ $('<a>', {
     "data-position": "left",
     "data-tooltip": "Show fullscreen"
 }).append($('<i>', { "class": "material-icons" }).text("fullscreen")).click(function (e) {
-    // $("#result").fullscreen({
-    // 	toggleClass: "fullscreen"
-    // })
+    $("#result").fullscreen({
+        toggleClass: "fullscreen"
+    });
     $(".btn.fullscreen").blur();
     // $("#graph_content svg").attr("width", parseInt($(document).width()));
     // $("#graph_content svg").attr("height", parseInt($(document).height()));

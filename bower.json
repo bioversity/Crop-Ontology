@@ -15,20 +15,16 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "^3.2.1",
-    "materialize": "^0.100.1",
+    "file-saver": "^2.0.0",
     "fontawesome": "^5.5.0",
-    "picol-font": "*",
     "jq-fullscreen": "^0.6.0",
-    "papaparse": "^4.6.3",
-    "mimoza": "^1.0.0",
+    "jquery": "^3.2.1",
     "js-xlsx": "js-xlsx-style#beta",
-    "file-saver": "^2.0.0"
+    "materialize": "^0.100.1",
+    "mimoza": "^1.0.0",
+    "papaparse": "^4.6.3",
+    "picol-font": "*"
   },
   "keywords": [
-    "PANTONE",
-    "color",
-    "picker",
-    "colopicker"
   ]
 }

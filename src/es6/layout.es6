@@ -298,18 +298,37 @@ class layout {
 
 		// Adapt graph on fullscreen mode
 		$(document).on("fscreenchange", (e, state, elem) => {
-			if($(elem).attr("id") == "graph") {
-				if(state) {
-					$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
+			switch($(elem).attr("id")) {
+				case "graph":
+					if(state) {
+						$(".fa-expand").removeClass("fa-expand").addClass("fa-compress");
 
-					$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click((e) => {
-						$.fullscreen.exit();
-					});
-				} else {
-					$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
-
-					$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Show fullscreen")
-				}
+						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").click((e) => {
+							$.fullscreen.exit();
+						});
+					} else {
+						$(".fa-compress").removeClass("fa-compress").addClass("fa-expand");
+						$("#graph.fullscreen").find(".btn.fullscreen").attr("data-tooltip", "Show fullscreen");
+					}
+					break;
+				case "result":
+					if(state) {
+						// $(".btn.fullscreen").attr("data-tooltip", "Exit fullscreen").text("fullscreen_exit");
+						$("#result").prepend(
+							$('<a>', {
+								"href": "javascript:;",
+								"class": "btn exit-fullscreen z-depth-1",
+								"data-position": "left",
+								"data-tooltip": "Exit fullscreen"
+							}).append(
+								$('<i>', {"class": "material-icons"}).text("fullscreen_exit")
+							).click(() => {
+								$("#result .btn.exit-fullscreen").remove();
+								$.fullscreen.exit();
+							})
+						)
+					}
+					break;
 			}
 		});
 	}
