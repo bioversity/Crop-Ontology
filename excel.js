@@ -107,6 +107,8 @@ var excel = {
         var obj = [];
         ///categorocal scale when obo 
         var scale = [];
+        //var cpt Scale to know how many hedears to add
+        var cptScale = 0
         
         for (var j = 0; j < data.length; j++) {
             if(data[j]["Variable name"] || (data[j]["relationship"] && data[j]["relationship"].indexOf("variable_of") != -1)){
@@ -227,12 +229,30 @@ var excel = {
                             if(getval(obj[scaleID]["Scale class"]) == 'Nominal' 
                                 || getval(obj[scaleID]["Scale class"]) == 'Ordinal' ){
                                 var catnum = 37;
+                                var localCptScale = 0;
+                                var catOnly = [];
+                                var copy = obj[scaleID];
+                                // get category only
                                 for(var cat in obj[scaleID]){
                                     if(cat.indexOf("Category")!=-1){
-                                        var cell = row.createCell(new java.lang.Integer(catnum));
-                                        cell.setCellValue(getval(obj[scaleID][cat])+"");
-                                        catnum++;
+                                        catOnly.push(cat)
                                     }
+                                }
+                                // sort catOnly
+                                catOnly = catOnly.sort(function(a,b){
+                                    return a.split(" ")[1] - b.split(" ")[1];
+                                });
+                                //add only the cat in order to the sheet
+                                catOnly.forEach(function(element) {
+                                  //System.out.println(element);
+                                  var cell = row.createCell(new java.lang.Integer(catnum));
+                                        cell.setCellValue(getval(obj[scaleID][element])+"");
+                                        catnum++;
+                                        localCptScale++;
+                                });
+                                    
+                                if(localCptScale > cptScale) {
+                                    cptScale = localCptScale;
                                 }
                             }
                         }else{//obo with var
@@ -421,7 +441,20 @@ var excel = {
             /////CSV
             var data = new StringBuffer();
             var sheet = myWorkBook.getSheetAt(1);
-            
+
+             // get all the data for the file and work on scale
+            // add the hearder if more than 10 scales
+            // //order the scales - done before
+            var header = sheet.getRow(0);
+            var lastHeader = header.getLastCellNum();
+            var catCpt = 11;
+            for(var cn=lastHeader; cn<cptScale+lastHeader-10; cn++) {
+                var cell = header.createCell(new java.lang.Integer(cn));
+                cell.setCellValue("Category "+ catCpt);
+                catCpt++;
+            }
+
+            sheet = myWorkBook.getSheetAt(1);
             for(var id=0; id<=sheet.getLastRowNum(); id++) { //let's assume that the file has more than 10 rows....poi pb
                 var row = sheet.getRow(id);
                for(var cn=0; cn<row.getLastCellNum(); cn++) {
@@ -433,6 +466,8 @@ var excel = {
                }
               data.append("\r\n"); 
             }
+
+
 
             return data.toString();
 
