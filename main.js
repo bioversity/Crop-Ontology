@@ -3247,19 +3247,19 @@ apejs.urls = {
 
             response.getWriter().println(csvString);
 
-            ///////XLS EXPORT
-            // var blobKey = JSON2XLS(traits, language);
-            var blobKey = ontoId;
+   //          ///////XLS EXPORT
+   //          // var blobKey = JSON2XLS(traits, language);
+   //          var blobKey = ontoId;
 
 
-             // get metadata
-            var blobInfo = new BlobInfoFactory().loadBlobInfo(ontoId);
-			log(blobInfo)
-			log("------------------------------------------")
-            response.setHeader("Cache-Control", "max-age=315360000");
-            response.setContentType(blobInfo.getContentType());
-            response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
-            blobstore.blobstoreService.serve(blobKey, response);
+   //           // get metadata
+   //          var blobInfo = new BlobInfoFactory().loadBlobInfo(ontoId);
+			// log(blobInfo)
+			// log("------------------------------------------")
+   //          response.setHeader("Cache-Control", "max-age=315360000");
+   //          response.setContentType(blobInfo.getContentType());
+   //          response.setHeader( "Content-Disposition", "filename=" + blobInfo.getFilename()  );
+   //          blobstore.blobstoreService.serve(blobKey, response);
         },
         post: function(request, response) {
             var ontoId = request.getParameter("ontology_id");
