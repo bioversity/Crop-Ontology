@@ -181,12 +181,11 @@ rdf.prototype.buildTriple = function(term) {
     // broader
     if(term.parent != 'null') {
         if(typeof term.parent != 'string') { // multiple broader
-            for(var i in term.parent) {
+            for(var i in term.parent) { //parent is an array
                 try{
                     if(term.relationship != undefined){
-                        if(term.parent.length==term.relationship.length){  // if parent different from relationship
-                            //let's assume that info is in the same order in parent and relationship
-                             if(term.relationship[i].indexOf('scale_of')==0) { 
+                        //if(term.parent.length==term.relationship.length){  // if parent different from relationship
+                            if(term.relationship.indexOf('scale_of')==0) { 
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                                 this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'scale_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                                 this.cptRes++;
@@ -198,7 +197,7 @@ rdf.prototype.buildTriple = function(term) {
                                     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
                                     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
                                 }
-                            }else if (term.relationship[i].indexOf('method_of')==0){
+                            }else if (term.relationship.indexOf('method_of')==0){
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                                 this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'method_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                                 this.cptRes++;
@@ -211,7 +210,7 @@ rdf.prototype.buildTriple = function(term) {
                                     this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
                                 }
                                
-                            }else if (term.relationship[i].indexOf('variable_of')==0){
+                            }else if (term.relationship.indexOf('variable_of')==0){
                                 this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'variable_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                                 this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'variable_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                                 this.cptRes++;
@@ -221,95 +220,7 @@ rdf.prototype.buildTriple = function(term) {
                             }else{
                                 this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
                             }
-                        }else{
-                            //first element of parent is superclass
-                            if(i==0){
-                                if(typeof term.relationship === 'string' && term.relationship.indexOf('variable_of')==0){
-                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'variable_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'variable_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.cptRes++;
-
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
-                                } else  if(typeof term.relationship === 'string' && term.relationship.indexOf('scale_of')==0){
-                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'scale_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.cptRes++;
-
-                                   if(term["Scale class"]!= undefined){
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
-                                        }else{
-                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
-                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
-                                        }
-                                }else  if(typeof term.relationship === 'string' && term.relationship.indexOf('method_of')==0){
-                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'method_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.cptRes++;
-
-                                   if(term["Method class"]!= undefined){
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
-                                        }else{
-                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
-                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
-                                        }
-                                }else{
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n'
-                                }
-                            }else{
-                                if(term.relationship[i-1] != undefined && term.relationship[i-1].indexOf('scale_of')==0) { 
-                                this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'scale_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                this.cptRes++;
-
-                                if(term["Scale class"]!= undefined){
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
-                                    }else{
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
-                                    }
-                                }else if(term.relationship[i-1] == undefined && term.relationship.indexOf('scale_of')==0) { 
-                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'scale_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'scale_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.cptRes++;
-
-                                    if(term["Scale class"]!= undefined){
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Scale class"]) + '> .\n';
-                                        }else{
-                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Scale' + '> .\n';
-                                            this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Scale' + '> .\n';
-                                        }
-                                }else if (term.relationship[i-1] != undefined && term.relationship[i-1].indexOf('method_of')==0){
-                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'method_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'method_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.cptRes++;
-
-                                    if(term["Method class"]!= undefined){
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + this.translate(term["Method class"]) + '> .\n';
-                                    }else{
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Method' + '> .\n';
-                                        this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Method' + '> .\n';
-                                    }
-                                }else if (term.relationship.indexOf('variable_of')==0){
-                                    this.turtle += '<' + this.uri + term.id + '> <'+ this.uri + 'variable_of' +'> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> '+ restrictionSubClassPart+this.cptRes+ '.\n' + '_:genid'+ this.cptRes + restrictionPart + '_:genid'+ this.cptRes + restrictionPropPart + '<'+ this.uri + 'variable_of' +'> .\n' + '_:genid'+ this.cptRes + restrictionClassPart + '<' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    this.cptRes++;
-
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
-                                    this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
-                                }else{
-                                    //this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broader> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
-                                    //this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + 'Variable' + '> .\n';
-                                    //this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <' + this.uri + 'Variable' + '> .\n';
-                                }
-                            }
-                        }
+                        
                     }else{
                         //it is an obo and parent is is_a
                         this.turtle += '<' + this.uri + term.id + '> <http://www.w3.org/2004/02/skos/core#broaderTransitive> <' + this.uri + this.encodeID(term.parent[i]) + '> .\n';
