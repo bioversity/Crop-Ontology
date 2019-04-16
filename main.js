@@ -375,9 +375,9 @@ apejs.urls = {
                     var result = httpget(url);
                     print(response).text(result);
                  }else if(ontologyId == "CO_321"){
-                     var url = 'http://www.cropontology.org/wheatCO_321.rdf';
-                     var result = httpget(url);
-                     print(response).text(result);
+                    var url = 'http://www.cropontology.org/wheatCO_321.rdf';
+                    var result = httpget(url);
+                    print(response).text(result);
                 }else if(ontologyId == "CO_322"){
                     var url = 'http://www.cropontology.org/maizeCO_322.rdf';
                     var result = httpget(url);
@@ -411,7 +411,7 @@ apejs.urls = {
                     var result = httpget(url);
                     print(response).text(result);
                 }else if(ontologyId == "CO_337"){
-                    var url = 'http://www.cropontology.org/GroundnutCO_337.rdf';
+                   var url = 'http://www.cropontology.org/GroundnutCO_337.rdf';
                     var result = httpget(url);
                     print(response).text(result);
                 }else if(ontologyId == "CO_327"){
@@ -692,17 +692,10 @@ apejs.urls = {
                     var name = term.getProperty("name");
                     if(term.getProperty("is_obsolete")) return;
 
-                    // Replace "undefined" key with "english"
-                    // name = Common.object_key_replace("undefined", "", name);
-                    // log("");
-                    // log("");
-                    // log(name);
-                    // log("");
-                    // log("");
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        // "name": ""+(name instanceof Text ? name.getValue() : name),
-						"name": "" + Common.object_key_replace("undefined", "", name),
+                        "name": ""+(name instanceof Text ? name.getValue() : name),
+						//"name": "" + Common.object_key_replace("undefined", "", name),
                         oboBlobKey: ''+term.getProperty('obo_blob_key'),
                         // oboBlobKey: "" + Common.object_key_replace("undefined", null, term.getProperty('obo_blob_key')),
                         excelBlobKey: ''+excelBlobKey,
@@ -874,8 +867,8 @@ apejs.urls = {
 
                     ret.push({
                         "id": ""+term.getProperty("id"),
-                        // "name": ""+(name instanceof Text ? name.getValue() : name),
-                        "name": "" + Common.object_key_replace("undefined", "", name),
+                         "name": ""+(name instanceof Text ? name.getValue() : name),
+                        //"name": "" + Common.object_key_replace("undefined", "", name),
                         "relationship": relationship,
                         "has_children": q.length,
 					    "trait_status": "" + traitStatus,
