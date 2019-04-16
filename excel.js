@@ -332,7 +332,7 @@ var excel = {
                         cpt++;
                     }
                 }catch(e){
-                    throw e+data[i];
+                    //throw e+data[i];
                 }
             }
         }
