@@ -130,6 +130,7 @@ var excel = {
 
         if(tdv5 || (tdv5 && obo)){
             for (var i = 0; i < data.length; i++) {
+                try{
               //  for (var cellnum in data[i]) {
                     if(data[i]["Variable name"] || data[i]["namespace"] && getval(data[i]["namespace"]).indexOf("Variable")>0){
                         // THIS IS A VARIABLE
@@ -330,9 +331,11 @@ var excel = {
                        
                         cpt++;
                     }
+                }catch(e){
+                    throw e+data[i];
                 }
             }
-
+        }
             //this is a TD v4
             else if(!tdv5 && !obo){
                 for (var i = 0; i < data.length; i++) {
