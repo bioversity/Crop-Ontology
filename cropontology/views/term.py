@@ -34,11 +34,15 @@ class TermDetailsView(PublicView):
         if hits == 0:
             raise HTTPNotFound()
         results = []
+        ontology_id = None
         for key, value in res["hits"]["hits"][0]["_source"].items():
+            if key == "ontology_id":
+                ontology_id = value
             results.append({"key": key, "value": value})
         return {
             "results": results,
             "term_id": term_id,
             "with_tree": with_tree,
             "variables": variables,
+            "ontology_id": ontology_id,
         }
