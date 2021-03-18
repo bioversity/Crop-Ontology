@@ -1,0 +1,82 @@
+{% extends 'base.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block css %}
+    {% cssresource request,'main_library','adminlte' %}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{% endblock css %}
+
+{% block bodyclass %}hold-transition register-page{% endblock bodyclass %}
+{% block body %}
+    <div class="register-box">
+        <div class="register-logo">
+            <a href="{{ request.route_url('home') }}"><b>{{ _('Crop Ontology Curation Tool') }}</b></a>
+        </div>
+
+        <div class="card">
+            <div class="card-body register-card-body">
+                <p class="login-box-msg">{{ _('Register a new account') }}</p>
+                {% block login_errors %}
+                    {{ form.display_errors(errors) }}
+                {% endblock login_errors %}
+                <form action="{{ request.url }}" method="post">
+                    {{ form.secure_form(request) }}
+                    <div class="input-group mb-3">
+                        <input type="text" name="user_name" value="{{ userdata.user_name }}" class="form-control" placeholder="{{ _('Full name') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="email" name="user_email" value="{{ userdata.user_email }}" class="form-control" placeholder="{{ _('Email') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" name="user_id" value="{{userdata.user_id }}" class="form-control" placeholder="{{ _('User name') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" name="user_password" class="form-control" placeholder="{{ _('Password') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" name="user_password2" class="form-control" placeholder="{{ _('Retype password') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    {% block register_form_extra %}
+
+                    {% endblock register_form_extra %}
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">{{ _('Register') }}</button>
+                        </div>
+                    </div>
+                </form>
+                {% block register_form_bottom_actions %}
+                    <a href="{{ request.route_url('login') }}" class="text-center">{{ _('I already have an account') }}</a>
+                {% endblock register_form_bottom_actions %}
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        {% jsresource request,'main_library','adminlte' %}
+    {% endblock %}
+{% endblock body %}

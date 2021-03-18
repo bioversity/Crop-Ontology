@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html {% block htmlattributes %}lang="{{ request.locale_name }}" {% endblock htmlattributes %}>
+{% block html %}
+    <head>
+        {% block head %}
+            {% block meta %}
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta http-equiv="x-ua-compatible" content="ie=edge">
+                <meta name="description" content="{{ _('Crop Ontology Curation tool') }}">
+                <meta name="author" content="Alliance Bioversity-CIAT">
+            {% endblock meta %}
+            {% block title %}
+                <title>{{ _('Crop Ontology Curation tool') }}</title>
+            {% endblock title %}
+            {% block icon %}
+                <link rel="shortcut icon" href="{{ request.url_for_static('co_ico.ico') }}" />
+            {% endblock  icon%}
+
+            {% block css %}
+
+            {% endblock css %}
+
+            {% block topScripts %}
+
+            {% endblock topScripts %}
+
+        {% endblock head %}
+    </head>
+    {% block body_tag %}
+        <body {% block bodyattributes %}{% endblock bodyattributes %} class="{% block bodyclass %}{% endblock bodyclass %}">
+        {% block body %}
+
+        {% endblock body %}
+        </body>
+    {% endblock body_tag %}
+{% endblock html %}
+</html>

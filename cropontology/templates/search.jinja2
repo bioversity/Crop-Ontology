@@ -1,0 +1,321 @@
+{% extends 'page.jinja2' %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','search' %}
+{% endblock css %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <form class="form-inline ml-12" method="post" action="{{ request.url }}">
+                        <div class="input-group" style="width: 100%">
+                            <input class="form-control form-control-navbar" type="search" name="searchtext" value="{{ qparam }}" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" name="btnsearch" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 style="color: #4f2800"><i class="fa fa-filter"></i>Filters</h2>
+                    <form method="post" action="{{ request.url }}" role="form">
+                        <input type="hidden" name="searchtext" value="{{ qparam }}">
+                        {% for afacet in activeFacets %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <select  class="select2" style="width: 100%" name="dfacettype" value="" placeholder="Facet" disabled>
+                                        <option value="{{ afacet.name }}">{{ afacet.desc }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <select class="select2" style="width: 100%"  name="dfacetvalue" id="dacetvalue" value="" placeholder="Facet" disabled>
+                                        <option>{{ afacet.value  }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-danger" name="facetremove" value="{{ afacet.code }}" type="submit" style="display: block; width: 100%">-</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <p></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <select class="select2" style="width: 100%" name="facettype" value="" placeholder="Facet" onchange="loadItems(this)">
+                                    {% for a_facet in facets %}
+                                        <option value="{{ a_facet.name }}">{{ a_facet.desc }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <select class="select2" style="width:100%;" name="facetvalue" id="facetvalue" value="" placeholder="Facet">
+                                    {% for onto in allontologies %}
+                                        <option value="{{ onto.name }}">{{ onto.name }} - ({{ onto.nitems }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-success" name="facetadd" type="submit" style="display: block; width: 100%">+</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2><i class="fa fa-search"></i> Search Summary & results</h2>
+                    <div class="row">
+                        <div class="slick_demo_2" style="margin-left: 20px; margin-right: 20px">
+                            {% if totalinqparam > 0 %}
+                                <div class="col-md-6">
+                                    <div class="widget white-bg p-lg text-center">
+                                        <div class="m-b-md">
+                                            Percentage of terms about<br/><b><span style="color: #ae6cb0">{{ qparam }}</span></b>
+                                            <div class="circle" id="circles-qparam"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% for astat in facetStats %}
+                                <div class="col-md-6">
+                                    <div class="widget white-bg p-lg text-center">
+                                        <div class="m-b-md">
+                                            Number of terms with <b><span style="color: #4bbac1">{{ astat.name }} <br/> = {{ astat.value }}</span></b>
+                                            <div class="circle" id="circles-{{ astat.nstat }}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if hits >= 0 %}
+                                <h3 class="ccafs-element">{{ hits }} terms found</h3>
+                            {% else %}
+                                <h3 class="ccafs-element">No results found</h3>
+                            {% endif %}
+
+                            <div>
+                                Active filters:
+                                <form method="post" action="{{ request.url }}">
+                                    <input type="hidden" name="searchtext" value="{{ qparam }}">
+                                    {% if qparam != "" %}
+                                        <button type="submit" name="removequery" title="{{ _('Click to remove') }}" class="btn btn-w-m btn-danger">Search ["{{ qparam  }}"] <i class="fa fa-times"></i></button>
+                                    {% endif %}
+                                    {% for afacet in activeFacets %}
+                                        <button type="submit" name="facetremove" value="{{ afacet.code }}" title="{{ _('Click to remove') }}" class="btn btn-w-m btn-danger">{{ afacet.name }} ["{{ afacet.value  }}"] <i class="fa fa-times"></i></button>
+                                    {% endfor %}
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body" id="posts">
+                    {% for result in results %}
+                        <div class="post">
+                            <a href="{{ request.route_url('term_details', termid=result.term_id) }}">{{ result.term_id }}</a>
+                            {% if result.term_type == "Term" %}
+                                <span class="badge" style="background: #778899; color: white">Term</span>
+                                {{ result.name }}
+                            {% endif %}
+                            {% if result.term_type == "Trait" %}
+                                <span class="badge badge-success">Trait</span>
+                                {{ result.trait_name }}
+                            {% endif %}
+                            {% if result.term_type == "Method" %}
+                                <span class="badge badge-warning">Method</span>
+                                {{ result.method_name }}
+                            {% endif %}
+                            {% if result.term_type == "Scale" %}
+                                <span class="badge badge-primary">Scale</span>
+                                {{ result.scale_name }}
+                            {% endif %}
+                            {% if result.term_type == "Variable" %}
+                                <span class="badge badge-danger">Variable</span>
+                                {{ result.variable_name }}
+                            {% endif %}
+                            - In ontology: {{ result.ontology_name }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pagination">
+        {% for page in allPages %}
+            {% if page.next == False %}
+                <a href="{{ page.url }}">{{ page.page }}</a>
+            {% else %}
+                <a href="{{ page.url }}" class="next">{{ page.page }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','co' %}
+
+    <script>
+        $(document).ready(function(){
+
+            $(".select2").select2();
+
+            $('.slick_demo_2').slick({
+                infinite: false,
+                slidesToShow: {{ npanels }},
+                slidesToScroll: {{ npanels }}+1,
+                centerMode: true,
+                dots: true,
+            });
+
+        });
+
+        function loadItems(list) {
+            $("#facetvalue").empty();
+            $.post( "{{ request.route_url('bucket') }}", {
+                buket_id: list.value,
+                q: "{{ qparam }}",
+                {% for a_facet in activeFacets %}
+                    facet_{{ a_facet.key }}: "{{ a_facet.value }}",
+                {% endfor %}
+            }, function( data ) {
+                data.forEach(function(entry) {
+                    //var opt = document.createElement('option');
+                    //opt.value = entry.name;
+                    //opt.text = entry.name;
+                    //tlist.options.add(opt);
+                    $('#facetvalue')
+                        .append($("<option></option>")
+                            .attr("value",entry.name)
+                            .text(entry.name + " - (" + entry.nitems.toString() + ")"));
+
+                });
+            }, "json");
+
+
+            {#$.getJSON("{{ request.application_url }}" + "/search/bucket/"+list.value, function( data ) {#}
+            {#    data.forEach(function(entry) {#}
+            {#        //var opt = document.createElement('option');#}
+            {#        //opt.value = entry.name;#}
+            {#        //opt.text = entry.name;#}
+            {#        //tlist.options.add(opt);#}
+            {#        $('#facetvalue')#}
+            {#            .append($("<option></option>")#}
+            {#                .attr("value",entry.name)#}
+            {#                .text(entry.name + " - (" + entry.nitems.toString() + ")"));#}
+            {##}
+            {#    });#}
+            {#); #}
+        }
+
+
+        function resfrehStats() {
+
+            {% if totalinqparam > 0 %}
+                Circles.create({
+                    id: 'circles-qparam',
+                    radius: 60,
+                    value: {{ totalinqparam }},
+                    maxValue: {{ grandTotal }},
+                    width: 10,
+                    text: function (value) {
+                        return {{ ((totalinqparam*100)/grandTotal)|round }} + '%';
+                    },
+                    colors: ['#ae6cb0', '#f4f4f4'],
+                    duration: 400,
+                    wrpClass: 'circles-wrp',
+                    textClass: 'circles-text',
+                    styleWrapper: true,
+                    styleText: true
+                });
+            {% endif %}
+
+            {% for astat in facetStats %}
+                Circles.create({
+                    id: 'circles-{{ astat.nstat }}',
+                    radius: 60,
+                    value: {{ astat.total }},
+                    maxValue: {{ grandTotal }},
+                    width: 10,
+                    text: function (value) {
+                        return {{ astat.total}};
+                    },
+                    colors: ['#4bbac1', '#f4f4f4'],
+                    duration: 400,
+                    wrpClass: 'circles-wrp',
+                    textClass: 'circles-text',
+                    styleWrapper: true,
+                    styleText: true
+                });
+            {% endfor %}
+
+            {% for astat in fieldStats %}
+                Circles.create({
+                    id: 'fcircles-{{ astat.nstat }}',
+                    radius: 60,
+                    value: {{ astat.total }},
+                    maxValue: {{ grandTotal }},
+                    width: 10,
+                    text: function (value) {
+                        return {{ astat.total}};
+                    },
+                    colors: ['#dab10d', '#f4f4f4'],
+                    duration: 400,
+                    wrpClass: 'circles-wrp',
+                    textClass: 'circles-text',
+                    styleWrapper: true,
+                    styleText: true
+                });
+            {% endfor %}
+
+        }
+        resfrehStats();
+
+        //$('.slick_demo_2').on('afterChange', function(event, slick, currentSlide, nextSlide){
+        //    resfrehStats();
+        // });
+
+        var ias = jQuery.ias({
+            container:  '#posts',
+            item:       '.post',
+            pagination: '#pagination',
+            next:       '.next'
+        });
+
+        ias.extension(new IASSpinnerExtension());
+
+        // Add a link after page 2 which has to be clicked to load the next page
+        //ias.extension(new IASTriggerExtension({offset: 2}));
+
+        // Add a text when there are no more pages left to load
+        ias.extension(new IASNoneLeftExtension({text: "You reached the end"}));
+    </script>
+
+{% endblock scripts %}

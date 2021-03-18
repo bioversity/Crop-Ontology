@@ -1,0 +1,5284 @@
+[
+  {
+    "name": "CO_330:0000000",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000223",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000000",
+      "CO_330:0000001",
+      "CO_330:0000002"
+    ]
+  },
+  {
+    "name": "CO_330:0000001",
+    "type": "method",
+    "depends": [
+      "CO_330:0000000"
+    ]
+  },
+  {
+    "name": "CO_330:Morphological trait",
+    "type": "term",
+    "depends": [
+      "CO_330:ROOT"
+    ]
+  },
+  {
+    "name": "CO_330:0000491",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000490",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000480",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000479",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000478",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000477",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000120",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000117",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000114",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000111",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000105",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000102",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000099",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000096",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000093",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000090",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000087",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000084",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000081",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000078",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000075",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000072",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000069",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000066",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000063",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000060",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000057",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000054",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000051",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000048",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000045",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000042",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000039",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000036",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000033",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000030",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000027",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000024",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000021",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000018",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000015",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000012",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000009",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000006",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000003",
+    "type": "trait",
+    "depends": [
+      "CO_330:Morphological trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000002",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000001"
+    ]
+  },
+  {
+    "name": "CO_330:0000699",
+    "type": "method",
+    "depends": [
+      "CO_330:0000003"
+    ]
+  },
+  {
+    "name": "CO_330:0000620",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000003",
+      "CO_330:0000619",
+      "CO_330:0000699"
+    ]
+  },
+  {
+    "name": "CO_330:0000224",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000003",
+      "CO_330:0000004",
+      "CO_330:0000005"
+    ]
+  },
+  {
+    "name": "CO_330:0000004",
+    "type": "method",
+    "depends": [
+      "CO_330:0000003"
+    ]
+  },
+  {
+    "name": "CO_330:0000005",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000004"
+    ]
+  },
+  {
+    "name": "CO_330:0000225",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000006",
+      "CO_330:0000007",
+      "CO_330:0000008"
+    ]
+  },
+  {
+    "name": "CO_330:0000007",
+    "type": "method",
+    "depends": [
+      "CO_330:0000006"
+    ]
+  },
+  {
+    "name": "CO_330:0000008",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000007"
+    ]
+  },
+  {
+    "name": "CO_330:0000226",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000009",
+      "CO_330:0000010",
+      "CO_330:0000011"
+    ]
+  },
+  {
+    "name": "CO_330:0000010",
+    "type": "method",
+    "depends": [
+      "CO_330:0000009"
+    ]
+  },
+  {
+    "name": "CO_330:0000011",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000010"
+    ]
+  },
+  {
+    "name": "CO_330:0000227",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000012",
+      "CO_330:0000013",
+      "CO_330:0000014"
+    ]
+  },
+  {
+    "name": "CO_330:0000013",
+    "type": "method",
+    "depends": [
+      "CO_330:0000012"
+    ]
+  },
+  {
+    "name": "CO_330:0000014",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000013"
+    ]
+  },
+  {
+    "name": "CO_330:0000228",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000015",
+      "CO_330:0000016",
+      "CO_330:0000017"
+    ]
+  },
+  {
+    "name": "CO_330:0000016",
+    "type": "method",
+    "depends": [
+      "CO_330:0000015"
+    ]
+  },
+  {
+    "name": "CO_330:0000017",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000016"
+    ]
+  },
+  {
+    "name": "CO_330:0000229",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000018",
+      "CO_330:0000019",
+      "CO_330:0000020"
+    ]
+  },
+  {
+    "name": "CO_330:0000019",
+    "type": "method",
+    "depends": [
+      "CO_330:0000018"
+    ]
+  },
+  {
+    "name": "CO_330:0000020",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000019"
+    ]
+  },
+  {
+    "name": "CO_330:0000230",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000021",
+      "CO_330:0000022",
+      "CO_330:0000023"
+    ]
+  },
+  {
+    "name": "CO_330:0000022",
+    "type": "method",
+    "depends": [
+      "CO_330:0000021"
+    ]
+  },
+  {
+    "name": "CO_330:0000023",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000022"
+    ]
+  },
+  {
+    "name": "CO_330:0000231",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000024",
+      "CO_330:0000025",
+      "CO_330:0000026"
+    ]
+  },
+  {
+    "name": "CO_330:0000025",
+    "type": "method",
+    "depends": [
+      "CO_330:0000024"
+    ]
+  },
+  {
+    "name": "CO_330:0000026",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000025"
+    ]
+  },
+  {
+    "name": "CO_330:0000232",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000027",
+      "CO_330:0000028",
+      "CO_330:0000029"
+    ]
+  },
+  {
+    "name": "CO_330:0000028",
+    "type": "method",
+    "depends": [
+      "CO_330:0000027"
+    ]
+  },
+  {
+    "name": "CO_330:0000029",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000028"
+    ]
+  },
+  {
+    "name": "CO_330:0000233",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000030",
+      "CO_330:0000031",
+      "CO_330:0000032"
+    ]
+  },
+  {
+    "name": "CO_330:0000031",
+    "type": "method",
+    "depends": [
+      "CO_330:0000030"
+    ]
+  },
+  {
+    "name": "CO_330:0000032",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000031"
+    ]
+  },
+  {
+    "name": "CO_330:0000234",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000033",
+      "CO_330:0000034",
+      "CO_330:0000035"
+    ]
+  },
+  {
+    "name": "CO_330:0000034",
+    "type": "method",
+    "depends": [
+      "CO_330:0000033"
+    ]
+  },
+  {
+    "name": "CO_330:0000035",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000034"
+    ]
+  },
+  {
+    "name": "CO_330:0000235",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000036",
+      "CO_330:0000037",
+      "CO_330:0000038"
+    ]
+  },
+  {
+    "name": "CO_330:0000037",
+    "type": "method",
+    "depends": [
+      "CO_330:0000036"
+    ]
+  },
+  {
+    "name": "CO_330:0000038",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000037"
+    ]
+  },
+  {
+    "name": "CO_330:0000236",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000039",
+      "CO_330:0000040",
+      "CO_330:0000041"
+    ]
+  },
+  {
+    "name": "CO_330:0000040",
+    "type": "method",
+    "depends": [
+      "CO_330:0000039"
+    ]
+  },
+  {
+    "name": "CO_330:0000041",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000040"
+    ]
+  },
+  {
+    "name": "CO_330:0000237",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000042",
+      "CO_330:0000043",
+      "CO_330:0000044"
+    ]
+  },
+  {
+    "name": "CO_330:0000043",
+    "type": "method",
+    "depends": [
+      "CO_330:0000042"
+    ]
+  },
+  {
+    "name": "CO_330:0000044",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000043"
+    ]
+  },
+  {
+    "name": "CO_330:0000238",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000045",
+      "CO_330:0000046",
+      "CO_330:0000047"
+    ]
+  },
+  {
+    "name": "CO_330:0000046",
+    "type": "method",
+    "depends": [
+      "CO_330:0000045"
+    ]
+  },
+  {
+    "name": "CO_330:0000047",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000046"
+    ]
+  },
+  {
+    "name": "CO_330:0000239",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000048",
+      "CO_330:0000049",
+      "CO_330:0000050"
+    ]
+  },
+  {
+    "name": "CO_330:0000049",
+    "type": "method",
+    "depends": [
+      "CO_330:0000048"
+    ]
+  },
+  {
+    "name": "CO_330:0000050",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000049"
+    ]
+  },
+  {
+    "name": "CO_330:0000240",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000051",
+      "CO_330:0000052",
+      "CO_330:0000053"
+    ]
+  },
+  {
+    "name": "CO_330:0000052",
+    "type": "method",
+    "depends": [
+      "CO_330:0000051"
+    ]
+  },
+  {
+    "name": "CO_330:0000053",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000052"
+    ]
+  },
+  {
+    "name": "CO_330:0000241",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000054",
+      "CO_330:0000055",
+      "CO_330:0000056"
+    ]
+  },
+  {
+    "name": "CO_330:0000055",
+    "type": "method",
+    "depends": [
+      "CO_330:0000054"
+    ]
+  },
+  {
+    "name": "CO_330:0000056",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000055"
+    ]
+  },
+  {
+    "name": "CO_330:0000242",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000057",
+      "CO_330:0000058",
+      "CO_330:0000059"
+    ]
+  },
+  {
+    "name": "CO_330:0000058",
+    "type": "method",
+    "depends": [
+      "CO_330:0000057"
+    ]
+  },
+  {
+    "name": "CO_330:0000059",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000058"
+    ]
+  },
+  {
+    "name": "CO_330:0000243",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000060",
+      "CO_330:0000061",
+      "CO_330:0000062"
+    ]
+  },
+  {
+    "name": "CO_330:0000061",
+    "type": "method",
+    "depends": [
+      "CO_330:0000060"
+    ]
+  },
+  {
+    "name": "CO_330:0000062",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000061"
+    ]
+  },
+  {
+    "name": "CO_330:0000244",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000063",
+      "CO_330:0000064",
+      "CO_330:0000065"
+    ]
+  },
+  {
+    "name": "CO_330:0000064",
+    "type": "method",
+    "depends": [
+      "CO_330:0000063"
+    ]
+  },
+  {
+    "name": "CO_330:0000065",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000064"
+    ]
+  },
+  {
+    "name": "CO_330:0000245",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000066",
+      "CO_330:0000067",
+      "CO_330:0000068"
+    ]
+  },
+  {
+    "name": "CO_330:0000067",
+    "type": "method",
+    "depends": [
+      "CO_330:0000066"
+    ]
+  },
+  {
+    "name": "CO_330:0000068",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000067"
+    ]
+  },
+  {
+    "name": "CO_330:0000246",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000069",
+      "CO_330:0000070",
+      "CO_330:0000071"
+    ]
+  },
+  {
+    "name": "CO_330:0000070",
+    "type": "method",
+    "depends": [
+      "CO_330:0000069"
+    ]
+  },
+  {
+    "name": "CO_330:0000071",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000070"
+    ]
+  },
+  {
+    "name": "CO_330:0000247",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000072",
+      "CO_330:0000073",
+      "CO_330:0000074"
+    ]
+  },
+  {
+    "name": "CO_330:0000073",
+    "type": "method",
+    "depends": [
+      "CO_330:0000072"
+    ]
+  },
+  {
+    "name": "CO_330:0000074",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000073"
+    ]
+  },
+  {
+    "name": "CO_330:0000248",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000075",
+      "CO_330:0000076",
+      "CO_330:0000077"
+    ]
+  },
+  {
+    "name": "CO_330:0000076",
+    "type": "method",
+    "depends": [
+      "CO_330:0000075"
+    ]
+  },
+  {
+    "name": "CO_330:0000077",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000076"
+    ]
+  },
+  {
+    "name": "CO_330:0000621",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000078",
+      "CO_330:0000497",
+      "CO_330:0000575"
+    ]
+  },
+  {
+    "name": "CO_330:0000497",
+    "type": "method",
+    "depends": [
+      "CO_330:0000078"
+    ]
+  },
+  {
+    "name": "CO_330:0000249",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000078",
+      "CO_330:0000079",
+      "CO_330:0000080"
+    ]
+  },
+  {
+    "name": "CO_330:0000079",
+    "type": "method",
+    "depends": [
+      "CO_330:0000078"
+    ]
+  },
+  {
+    "name": "CO_330:0000080",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000079"
+    ]
+  },
+  {
+    "name": "CO_330:0000250",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000081",
+      "CO_330:0000082",
+      "CO_330:0000083"
+    ]
+  },
+  {
+    "name": "CO_330:0000082",
+    "type": "method",
+    "depends": [
+      "CO_330:0000081"
+    ]
+  },
+  {
+    "name": "CO_330:0000083",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000082"
+    ]
+  },
+  {
+    "name": "CO_330:0000251",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000084",
+      "CO_330:0000085",
+      "CO_330:0000086"
+    ]
+  },
+  {
+    "name": "CO_330:0000085",
+    "type": "method",
+    "depends": [
+      "CO_330:0000084"
+    ]
+  },
+  {
+    "name": "CO_330:0000086",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000085"
+    ]
+  },
+  {
+    "name": "CO_330:0000252",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000087",
+      "CO_330:0000088",
+      "CO_330:0000089"
+    ]
+  },
+  {
+    "name": "CO_330:0000088",
+    "type": "method",
+    "depends": [
+      "CO_330:0000087"
+    ]
+  },
+  {
+    "name": "CO_330:0000089",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000088"
+    ]
+  },
+  {
+    "name": "CO_330:0000622",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000090",
+      "CO_330:0000498",
+      "CO_330:0000576"
+    ]
+  },
+  {
+    "name": "CO_330:0000498",
+    "type": "method",
+    "depends": [
+      "CO_330:0000090"
+    ]
+  },
+  {
+    "name": "CO_330:0000253",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000090",
+      "CO_330:0000091",
+      "CO_330:0000092"
+    ]
+  },
+  {
+    "name": "CO_330:0000091",
+    "type": "method",
+    "depends": [
+      "CO_330:0000090"
+    ]
+  },
+  {
+    "name": "CO_330:0000092",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000091"
+    ]
+  },
+  {
+    "name": "CO_330:0000254",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000093",
+      "CO_330:0000094",
+      "CO_330:0000095"
+    ]
+  },
+  {
+    "name": "CO_330:0000094",
+    "type": "method",
+    "depends": [
+      "CO_330:0000093"
+    ]
+  },
+  {
+    "name": "CO_330:0000095",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000094"
+    ]
+  },
+  {
+    "name": "CO_330:0000255",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000096",
+      "CO_330:0000097",
+      "CO_330:0000098"
+    ]
+  },
+  {
+    "name": "CO_330:0000097",
+    "type": "method",
+    "depends": [
+      "CO_330:0000096"
+    ]
+  },
+  {
+    "name": "CO_330:0000098",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000097"
+    ]
+  },
+  {
+    "name": "CO_330:0000256",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000099",
+      "CO_330:0000100",
+      "CO_330:0000101"
+    ]
+  },
+  {
+    "name": "CO_330:0000100",
+    "type": "method",
+    "depends": [
+      "CO_330:0000099"
+    ]
+  },
+  {
+    "name": "CO_330:0000101",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000100"
+    ]
+  },
+  {
+    "name": "CO_330:0000257",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000102",
+      "CO_330:0000103",
+      "CO_330:0000104"
+    ]
+  },
+  {
+    "name": "CO_330:0000103",
+    "type": "method",
+    "depends": [
+      "CO_330:0000102"
+    ]
+  },
+  {
+    "name": "CO_330:0000104",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000103"
+    ]
+  },
+  {
+    "name": "CO_330:0000258",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000105",
+      "CO_330:0000106",
+      "CO_330:0000107"
+    ]
+  },
+  {
+    "name": "CO_330:0000106",
+    "type": "method",
+    "depends": [
+      "CO_330:0000105"
+    ]
+  },
+  {
+    "name": "CO_330:0000107",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000106"
+    ]
+  },
+  {
+    "name": "CO_330:0000108",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000305",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000108",
+      "CO_330:0000109",
+      "CO_330:0000110"
+    ]
+  },
+  {
+    "name": "CO_330:0000109",
+    "type": "method",
+    "depends": [
+      "CO_330:0000108"
+    ]
+  },
+  {
+    "name": "CO_330:Agronomic trait",
+    "type": "term",
+    "depends": [
+      "CO_330:ROOT"
+    ]
+  },
+  {
+    "name": "CO_330:0000495",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000494",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000493",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000476",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000475",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000474",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000455",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000454",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000453",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000452",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000353",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000349",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000345",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000341",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000337",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000334",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000331",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000328",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000325",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000318",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000315",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000312",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000309",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000306",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000277",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000273",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000269",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000168",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000159",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000153",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000147",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000144",
+    "type": "trait",
+    "depends": [
+      "CO_330:Agronomic trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000110",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000109"
+    ]
+  },
+  {
+    "name": "CO_330:0000259",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000111",
+      "CO_330:0000112",
+      "CO_330:0000113"
+    ]
+  },
+  {
+    "name": "CO_330:0000112",
+    "type": "method",
+    "depends": [
+      "CO_330:0000111"
+    ]
+  },
+  {
+    "name": "CO_330:0000113",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000112"
+    ]
+  },
+  {
+    "name": "CO_330:0000260",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000114",
+      "CO_330:0000115",
+      "CO_330:0000116"
+    ]
+  },
+  {
+    "name": "CO_330:0000115",
+    "type": "method",
+    "depends": [
+      "CO_330:0000114"
+    ]
+  },
+  {
+    "name": "CO_330:0000116",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000115"
+    ]
+  },
+  {
+    "name": "CO_330:0000261",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000117",
+      "CO_330:0000118",
+      "CO_330:0000119"
+    ]
+  },
+  {
+    "name": "CO_330:0000118",
+    "type": "method",
+    "depends": [
+      "CO_330:0000117"
+    ]
+  },
+  {
+    "name": "CO_330:0000119",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000118"
+    ]
+  },
+  {
+    "name": "CO_330:0000262",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000120",
+      "CO_330:0000121",
+      "CO_330:0000122"
+    ]
+  },
+  {
+    "name": "CO_330:0000121",
+    "type": "method",
+    "depends": [
+      "CO_330:0000120"
+    ]
+  },
+  {
+    "name": "CO_330:0000122",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000121"
+    ]
+  },
+  {
+    "name": "CO_330:0000123",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000623",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000123",
+      "CO_330:0000499",
+      "CO_330:0000577"
+    ]
+  },
+  {
+    "name": "CO_330:0000499",
+    "type": "method",
+    "depends": [
+      "CO_330:0000123"
+    ]
+  },
+  {
+    "name": "CO_330:0000372",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000123",
+      "CO_330:0000124",
+      "CO_330:0000125"
+    ]
+  },
+  {
+    "name": "CO_330:0000124",
+    "type": "method",
+    "depends": [
+      "CO_330:0000123"
+    ]
+  },
+  {
+    "name": "CO_330:Biotic stress trait",
+    "type": "term",
+    "depends": [
+      "CO_330:ROOT"
+    ]
+  },
+  {
+    "name": "CO_330:0000485",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000484",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000483",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000482",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000481",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000368",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000364",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000360",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000357",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000141",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000138",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000135",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000132",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000129",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000126",
+    "type": "trait",
+    "depends": [
+      "CO_330:Biotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000125",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000124"
+    ]
+  },
+  {
+    "name": "CO_330:0000373",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000126",
+      "CO_330:0000127",
+      "CO_330:0000128"
+    ]
+  },
+  {
+    "name": "CO_330:0000127",
+    "type": "method",
+    "depends": [
+      "CO_330:0000126"
+    ]
+  },
+  {
+    "name": "CO_330:0000128",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000127"
+    ]
+  },
+  {
+    "name": "CO_330:0000374",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000129",
+      "CO_330:0000130",
+      "CO_330:0000131"
+    ]
+  },
+  {
+    "name": "CO_330:0000130",
+    "type": "method",
+    "depends": [
+      "CO_330:0000129"
+    ]
+  },
+  {
+    "name": "CO_330:0000131",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000130"
+    ]
+  },
+  {
+    "name": "CO_330:0000624",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000132",
+      "CO_330:0000500",
+      "CO_330:0000578"
+    ]
+  },
+  {
+    "name": "CO_330:0000500",
+    "type": "method",
+    "depends": [
+      "CO_330:0000132"
+    ]
+  },
+  {
+    "name": "CO_330:0000375",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000132",
+      "CO_330:0000133",
+      "CO_330:0000134"
+    ]
+  },
+  {
+    "name": "CO_330:0000133",
+    "type": "method",
+    "depends": [
+      "CO_330:0000132"
+    ]
+  },
+  {
+    "name": "CO_330:0000134",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000133"
+    ]
+  },
+  {
+    "name": "CO_330:0000625",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000135",
+      "CO_330:0000501",
+      "CO_330:0000579"
+    ]
+  },
+  {
+    "name": "CO_330:0000501",
+    "type": "method",
+    "depends": [
+      "CO_330:0000135"
+    ]
+  },
+  {
+    "name": "CO_330:0000376",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000135",
+      "CO_330:0000136",
+      "CO_330:0000137"
+    ]
+  },
+  {
+    "name": "CO_330:0000136",
+    "type": "method",
+    "depends": [
+      "CO_330:0000135"
+    ]
+  },
+  {
+    "name": "CO_330:0000137",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000136"
+    ]
+  },
+  {
+    "name": "CO_330:0000626",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000138",
+      "CO_330:0000502",
+      "CO_330:0000580"
+    ]
+  },
+  {
+    "name": "CO_330:0000502",
+    "type": "method",
+    "depends": [
+      "CO_330:0000138"
+    ]
+  },
+  {
+    "name": "CO_330:0000377",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000138",
+      "CO_330:0000139",
+      "CO_330:0000140"
+    ]
+  },
+  {
+    "name": "CO_330:0000139",
+    "type": "method",
+    "depends": [
+      "CO_330:0000138"
+    ]
+  },
+  {
+    "name": "CO_330:0000140",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000139"
+    ]
+  },
+  {
+    "name": "CO_330:0000378",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000141",
+      "CO_330:0000142",
+      "CO_330:0000143"
+    ]
+  },
+  {
+    "name": "CO_330:0000142",
+    "type": "method",
+    "depends": [
+      "CO_330:0000141"
+    ]
+  },
+  {
+    "name": "CO_330:0000143",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000142"
+    ]
+  },
+  {
+    "name": "CO_330:0000324",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000144",
+      "CO_330:0000145",
+      "CO_330:0000221"
+    ]
+  },
+  {
+    "name": "CO_330:0000323",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000144",
+      "CO_330:0000221",
+      "CO_330:0000322"
+    ]
+  },
+  {
+    "name": "CO_330:0000322",
+    "type": "method",
+    "depends": [
+      "CO_330:0000144"
+    ]
+  },
+  {
+    "name": "CO_330:0000145",
+    "type": "method",
+    "depends": [
+      "CO_330:0000144"
+    ]
+  },
+  {
+    "name": "CO_330:0000221",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000145",
+      "CO_330:0000322",
+      "CO_330:0000326"
+    ]
+  },
+  {
+    "name": "CO_330:0000396",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000147",
+      "CO_330:0000148",
+      "CO_330:0000149"
+    ]
+  },
+  {
+    "name": "CO_330:0000148",
+    "type": "method",
+    "depends": [
+      "CO_330:0000147"
+    ]
+  },
+  {
+    "name": "CO_330:0000149",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000148"
+    ]
+  },
+  {
+    "name": "CO_330:0000397",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000153",
+      "CO_330:0000154",
+      "CO_330:0000155"
+    ]
+  },
+  {
+    "name": "CO_330:0000154",
+    "type": "method",
+    "depends": [
+      "CO_330:0000153"
+    ]
+  },
+  {
+    "name": "CO_330:0000155",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000154"
+    ]
+  },
+  {
+    "name": "CO_330:0000398",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000159",
+      "CO_330:0000160",
+      "CO_330:0000161"
+    ]
+  },
+  {
+    "name": "CO_330:0000160",
+    "type": "method",
+    "depends": [
+      "CO_330:0000159"
+    ]
+  },
+  {
+    "name": "CO_330:0000161",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000160"
+    ]
+  },
+  {
+    "name": "CO_330:0000162",
+    "type": "trait",
+    "depends": [
+      "CO_330:Abiotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000627",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000162",
+      "CO_330:0000503",
+      "CO_330:0000581"
+    ]
+  },
+  {
+    "name": "CO_330:0000503",
+    "type": "method",
+    "depends": [
+      "CO_330:0000162"
+    ]
+  },
+  {
+    "name": "CO_330:0000399",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000162",
+      "CO_330:0000163",
+      "CO_330:0000164"
+    ]
+  },
+  {
+    "name": "CO_330:0000163",
+    "type": "method",
+    "depends": [
+      "CO_330:0000162"
+    ]
+  },
+  {
+    "name": "CO_330:Abiotic stress trait",
+    "type": "term",
+    "depends": [
+      "CO_330:ROOT"
+    ]
+  },
+  {
+    "name": "CO_330:0000489",
+    "type": "trait",
+    "depends": [
+      "CO_330:Abiotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000488",
+    "type": "trait",
+    "depends": [
+      "CO_330:Abiotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000487",
+    "type": "trait",
+    "depends": [
+      "CO_330:Abiotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000486",
+    "type": "trait",
+    "depends": [
+      "CO_330:Abiotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000165",
+    "type": "trait",
+    "depends": [
+      "CO_330:Abiotic stress trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000164",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000163"
+    ]
+  },
+  {
+    "name": "CO_330:0000400",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000165",
+      "CO_330:0000166",
+      "CO_330:0000167"
+    ]
+  },
+  {
+    "name": "CO_330:0000166",
+    "type": "method",
+    "depends": [
+      "CO_330:0000165"
+    ]
+  },
+  {
+    "name": "CO_330:0000167",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000166"
+    ]
+  },
+  {
+    "name": "CO_330:0000401",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000168",
+      "CO_330:0000169",
+      "CO_330:0000170"
+    ]
+  },
+  {
+    "name": "CO_330:0000169",
+    "type": "method",
+    "depends": [
+      "CO_330:0000168"
+    ]
+  },
+  {
+    "name": "CO_330:0000170",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000169"
+    ]
+  },
+  {
+    "name": "CO_330:0000171",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000628",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000171",
+      "CO_330:0000504",
+      "CO_330:0000582"
+    ]
+  },
+  {
+    "name": "CO_330:0000504",
+    "type": "method",
+    "depends": [
+      "CO_330:0000171"
+    ]
+  },
+  {
+    "name": "CO_330:0000379",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000171",
+      "CO_330:0000172",
+      "CO_330:0000173"
+    ]
+  },
+  {
+    "name": "CO_330:0000172",
+    "type": "method",
+    "depends": [
+      "CO_330:0000171"
+    ]
+  },
+  {
+    "name": "CO_330:Quality trait",
+    "type": "term",
+    "depends": [
+      "CO_330:ROOT"
+    ]
+  },
+  {
+    "name": "CO_330:0000174",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000177",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000180",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000183",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000186",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000189",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000192",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000195",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000198",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000201",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000204",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000210",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000213",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000385",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000391",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000405",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000410",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000413",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000415",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000419",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000423",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000427",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000430",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000433",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000436",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000439",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000442",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000445",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000448",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000451",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000456",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000457",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000458",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000459",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000460",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000461",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000462",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000463",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000464",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000465",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000466",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000467",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000468",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000469",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000470",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000471",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000472",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000492",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000496",
+    "type": "trait",
+    "depends": [
+      "CO_330:Quality trait"
+    ]
+  },
+  {
+    "name": "CO_330:0000173",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000172"
+    ]
+  },
+  {
+    "name": "CO_330:0000629",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000174",
+      "CO_330:0000505",
+      "CO_330:0000583"
+    ]
+  },
+  {
+    "name": "CO_330:0000505",
+    "type": "method",
+    "depends": [
+      "CO_330:0000174"
+    ]
+  },
+  {
+    "name": "CO_330:0000380",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000174",
+      "CO_330:0000175",
+      "CO_330:0000176"
+    ]
+  },
+  {
+    "name": "CO_330:0000175",
+    "type": "method",
+    "depends": [
+      "CO_330:0000174"
+    ]
+  },
+  {
+    "name": "CO_330:0000176",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000175"
+    ]
+  },
+  {
+    "name": "CO_330:0000395",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000177",
+      "CO_330:0000178",
+      "CO_330:0000179"
+    ]
+  },
+  {
+    "name": "CO_330:0000178",
+    "type": "method",
+    "depends": [
+      "CO_330:0000177"
+    ]
+  },
+  {
+    "name": "CO_330:0000179",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000178",
+      "CO_330:0000282",
+      "CO_330:0000289",
+      "CO_330:0000358",
+      "CO_330:0000193",
+      "CO_330:0000431",
+      "CO_330:0000434"
+    ]
+  },
+  {
+    "name": "CO_330:0000450",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000448",
+      "CO_330:0000449"
+    ]
+  },
+  {
+    "name": "CO_330:0000447",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000445",
+      "CO_330:0000446"
+    ]
+  },
+  {
+    "name": "CO_330:0000444",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000442",
+      "CO_330:0000443"
+    ]
+  },
+  {
+    "name": "CO_330:0000441",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000439",
+      "CO_330:0000440"
+    ]
+  },
+  {
+    "name": "CO_330:0000438",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000436",
+      "CO_330:0000437"
+    ]
+  },
+  {
+    "name": "CO_330:0000435",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000434",
+      "CO_330:0000433"
+    ]
+  },
+  {
+    "name": "CO_330:0000432",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000431",
+      "CO_330:0000430"
+    ]
+  },
+  {
+    "name": "CO_330:0000390",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000193",
+      "CO_330:0000192"
+    ]
+  },
+  {
+    "name": "CO_330:0000359",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000358",
+      "CO_330:0000357"
+    ]
+  },
+  {
+    "name": "CO_330:0000290",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000289",
+      "CO_330:0000288"
+    ]
+  },
+  {
+    "name": "CO_330:0000283",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000179",
+      "CO_330:0000282",
+      "CO_330:0000281"
+    ]
+  },
+  {
+    "name": "CO_330:0000282",
+    "type": "method",
+    "depends": [
+      "CO_330:0000281"
+    ]
+  },
+  {
+    "name": "CO_330:0000289",
+    "type": "method",
+    "depends": [
+      "CO_330:0000288"
+    ]
+  },
+  {
+    "name": "CO_330:0000358",
+    "type": "method",
+    "depends": [
+      "CO_330:0000357"
+    ]
+  },
+  {
+    "name": "CO_330:0000193",
+    "type": "method",
+    "depends": [
+      "CO_330:0000192"
+    ]
+  },
+  {
+    "name": "CO_330:0000431",
+    "type": "method",
+    "depends": [
+      "CO_330:0000430"
+    ]
+  },
+  {
+    "name": "CO_330:0000434",
+    "type": "method",
+    "depends": [
+      "CO_330:0000433"
+    ]
+  },
+  {
+    "name": "CO_330:0000381",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000180",
+      "CO_330:0000181",
+      "CO_330:0000182"
+    ]
+  },
+  {
+    "name": "CO_330:0000181",
+    "type": "method",
+    "depends": [
+      "CO_330:0000180"
+    ]
+  },
+  {
+    "name": "CO_330:0000182",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000181"
+    ]
+  },
+  {
+    "name": "CO_330:0000382",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000183",
+      "CO_330:0000184",
+      "CO_330:0000185"
+    ]
+  },
+  {
+    "name": "CO_330:0000184",
+    "type": "method",
+    "depends": [
+      "CO_330:0000183"
+    ]
+  },
+  {
+    "name": "CO_330:0000185",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000184"
+    ]
+  },
+  {
+    "name": "CO_330:0000383",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000186",
+      "CO_330:0000187",
+      "CO_330:0000188"
+    ]
+  },
+  {
+    "name": "CO_330:0000187",
+    "type": "method",
+    "depends": [
+      "CO_330:0000186"
+    ]
+  },
+  {
+    "name": "CO_330:0000188",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000187"
+    ]
+  },
+  {
+    "name": "CO_330:0000384",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000189",
+      "CO_330:0000190",
+      "CO_330:0000191"
+    ]
+  },
+  {
+    "name": "CO_330:0000190",
+    "type": "method",
+    "depends": [
+      "CO_330:0000189"
+    ]
+  },
+  {
+    "name": "CO_330:0000191",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000190"
+    ]
+  },
+  {
+    "name": "CO_330:0000389",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000195",
+      "CO_330:0000196",
+      "CO_330:0000197"
+    ]
+  },
+  {
+    "name": "CO_330:0000196",
+    "type": "method",
+    "depends": [
+      "CO_330:0000195"
+    ]
+  },
+  {
+    "name": "CO_330:0000197",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000196"
+    ]
+  },
+  {
+    "name": "CO_330:0000426",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000198",
+      "CO_330:0000199",
+      "CO_330:0000200"
+    ]
+  },
+  {
+    "name": "CO_330:0000199",
+    "type": "method",
+    "depends": [
+      "CO_330:0000198"
+    ]
+  },
+  {
+    "name": "CO_330:0000200",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000199",
+      "CO_330:0000406",
+      "CO_330:0000411",
+      "CO_330:0000208",
+      "CO_330:0000416",
+      "CO_330:0000428",
+      "CO_330:0000519",
+      "CO_330:0000521",
+      "CO_330:0000523",
+      "CO_330:0000525",
+      "CO_330:0000527"
+    ]
+  },
+  {
+    "name": "CO_330:0000661",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000465",
+      "CO_330:0000537"
+    ]
+  },
+  {
+    "name": "CO_330:0000660",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000465",
+      "CO_330:0000536"
+    ]
+  },
+  {
+    "name": "CO_330:0000659",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000464",
+      "CO_330:0000535"
+    ]
+  },
+  {
+    "name": "CO_330:0000658",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000464",
+      "CO_330:0000534"
+    ]
+  },
+  {
+    "name": "CO_330:0000657",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000463",
+      "CO_330:0000533"
+    ]
+  },
+  {
+    "name": "CO_330:0000656",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000463",
+      "CO_330:0000532"
+    ]
+  },
+  {
+    "name": "CO_330:0000655",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000462",
+      "CO_330:0000531"
+    ]
+  },
+  {
+    "name": "CO_330:0000654",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000462",
+      "CO_330:0000530"
+    ]
+  },
+  {
+    "name": "CO_330:0000653",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000461",
+      "CO_330:0000529"
+    ]
+  },
+  {
+    "name": "CO_330:0000652",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000461",
+      "CO_330:0000528"
+    ]
+  },
+  {
+    "name": "CO_330:0000651",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000527",
+      "CO_330:0000460"
+    ]
+  },
+  {
+    "name": "CO_330:0000649",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000525",
+      "CO_330:0000459"
+    ]
+  },
+  {
+    "name": "CO_330:0000647",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000523",
+      "CO_330:0000458"
+    ]
+  },
+  {
+    "name": "CO_330:0000645",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000521",
+      "CO_330:0000457"
+    ]
+  },
+  {
+    "name": "CO_330:0000643",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000519",
+      "CO_330:0000456"
+    ]
+  },
+  {
+    "name": "CO_330:0000429",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000428",
+      "CO_330:0000427"
+    ]
+  },
+  {
+    "name": "CO_330:0000417",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000416",
+      "CO_330:0000415"
+    ]
+  },
+  {
+    "name": "CO_330:0000414",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000208",
+      "CO_330:0000413"
+    ]
+  },
+  {
+    "name": "CO_330:0000412",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000411",
+      "CO_330:0000410"
+    ]
+  },
+  {
+    "name": "CO_330:0000407",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000200",
+      "CO_330:0000406",
+      "CO_330:0000405"
+    ]
+  },
+  {
+    "name": "CO_330:0000406",
+    "type": "method",
+    "depends": [
+      "CO_330:0000405"
+    ]
+  },
+  {
+    "name": "CO_330:0000411",
+    "type": "method",
+    "depends": [
+      "CO_330:0000410"
+    ]
+  },
+  {
+    "name": "CO_330:0000208",
+    "type": "method",
+    "depends": [
+      "CO_330:0000413"
+    ]
+  },
+  {
+    "name": "CO_330:0000416",
+    "type": "method",
+    "depends": [
+      "CO_330:0000415"
+    ]
+  },
+  {
+    "name": "CO_330:0000428",
+    "type": "method",
+    "depends": [
+      "CO_330:0000427"
+    ]
+  },
+  {
+    "name": "CO_330:0000519",
+    "type": "method",
+    "depends": [
+      "CO_330:0000456"
+    ]
+  },
+  {
+    "name": "CO_330:0000521",
+    "type": "method",
+    "depends": [
+      "CO_330:0000457"
+    ]
+  },
+  {
+    "name": "CO_330:0000523",
+    "type": "method",
+    "depends": [
+      "CO_330:0000458"
+    ]
+  },
+  {
+    "name": "CO_330:0000525",
+    "type": "method",
+    "depends": [
+      "CO_330:0000459"
+    ]
+  },
+  {
+    "name": "CO_330:0000527",
+    "type": "method",
+    "depends": [
+      "CO_330:0000460"
+    ]
+  },
+  {
+    "name": "CO_330:0000404",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000201",
+      "CO_330:0000203",
+      "CO_330:0000403"
+    ]
+  },
+  {
+    "name": "CO_330:0000403",
+    "type": "method",
+    "depends": [
+      "CO_330:0000201"
+    ]
+  },
+  {
+    "name": "CO_330:0000402",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000201",
+      "CO_330:0000202",
+      "CO_330:0000203"
+    ]
+  },
+  {
+    "name": "CO_330:0000202",
+    "type": "method",
+    "depends": [
+      "CO_330:0000201"
+    ]
+  },
+  {
+    "name": "CO_330:0000203",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000202",
+      "CO_330:0000403",
+      "CO_330:0000205",
+      "CO_330:0000518",
+      "CO_330:0000520",
+      "CO_330:0000522",
+      "CO_330:0000524",
+      "CO_330:0000526"
+    ]
+  },
+  {
+    "name": "CO_330:0000650",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000526",
+      "CO_330:0000460"
+    ]
+  },
+  {
+    "name": "CO_330:0000648",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000524",
+      "CO_330:0000459"
+    ]
+  },
+  {
+    "name": "CO_330:0000646",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000522",
+      "CO_330:0000458"
+    ]
+  },
+  {
+    "name": "CO_330:0000644",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000520",
+      "CO_330:0000457"
+    ]
+  },
+  {
+    "name": "CO_330:0000642",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000518",
+      "CO_330:0000456"
+    ]
+  },
+  {
+    "name": "CO_330:0000409",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000205",
+      "CO_330:0000204"
+    ]
+  },
+  {
+    "name": "CO_330:0000408",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000203",
+      "CO_330:0000205",
+      "CO_330:0000204"
+    ]
+  },
+  {
+    "name": "CO_330:0000205",
+    "type": "method",
+    "depends": [
+      "CO_330:0000204"
+    ]
+  },
+  {
+    "name": "CO_330:0000518",
+    "type": "method",
+    "depends": [
+      "CO_330:0000456"
+    ]
+  },
+  {
+    "name": "CO_330:0000520",
+    "type": "method",
+    "depends": [
+      "CO_330:0000457"
+    ]
+  },
+  {
+    "name": "CO_330:0000522",
+    "type": "method",
+    "depends": [
+      "CO_330:0000458"
+    ]
+  },
+  {
+    "name": "CO_330:0000524",
+    "type": "method",
+    "depends": [
+      "CO_330:0000459"
+    ]
+  },
+  {
+    "name": "CO_330:0000526",
+    "type": "method",
+    "depends": [
+      "CO_330:0000460"
+    ]
+  },
+  {
+    "name": "CO_330:0000418",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000210",
+      "CO_330:0000211",
+      "CO_330:0000212"
+    ]
+  },
+  {
+    "name": "CO_330:0000211",
+    "type": "method",
+    "depends": [
+      "CO_330:0000210"
+    ]
+  },
+  {
+    "name": "CO_330:0000212",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000211",
+      "CO_330:0000420",
+      "CO_330:0000214"
+    ]
+  },
+  {
+    "name": "CO_330:0000425",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000212",
+      "CO_330:0000423",
+      "CO_330:0000424"
+    ]
+  },
+  {
+    "name": "CO_330:0000422",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000212",
+      "CO_330:0000214",
+      "CO_330:0000213"
+    ]
+  },
+  {
+    "name": "CO_330:0000421",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000212",
+      "CO_330:0000420",
+      "CO_330:0000419"
+    ]
+  },
+  {
+    "name": "CO_330:0000420",
+    "type": "method",
+    "depends": [
+      "CO_330:0000419"
+    ]
+  },
+  {
+    "name": "CO_330:0000214",
+    "type": "method",
+    "depends": [
+      "CO_330:0000213"
+    ]
+  },
+  {
+    "name": "CO_330:0000219",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000264",
+      "CO_330:0000267",
+      "CO_330:0000292",
+      "CO_330:0000299"
+    ]
+  },
+  {
+    "name": "CO_330:0000300",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000219",
+      "CO_330:0000299",
+      "CO_330:0000298"
+    ]
+  },
+  {
+    "name": "CO_330:0000293",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000219",
+      "CO_330:0000292",
+      "CO_330:0000291"
+    ]
+  },
+  {
+    "name": "CO_330:0000268",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000219",
+      "CO_330:0000267",
+      "CO_330:0000266"
+    ]
+  },
+  {
+    "name": "CO_330:0000265",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000219",
+      "CO_330:0000264",
+      "CO_330:0000263"
+    ]
+  },
+  {
+    "name": "CO_330:0000264",
+    "type": "method",
+    "depends": [
+      "CO_330:0000263"
+    ]
+  },
+  {
+    "name": "CO_330:0000267",
+    "type": "method",
+    "depends": [
+      "CO_330:0000266"
+    ]
+  },
+  {
+    "name": "CO_330:0000292",
+    "type": "method",
+    "depends": [
+      "CO_330:0000291"
+    ]
+  },
+  {
+    "name": "CO_330:0000299",
+    "type": "method",
+    "depends": [
+      "CO_330:0000298"
+    ]
+  },
+  {
+    "name": "CO_330:0000220",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000307",
+      "CO_330:0000310",
+      "CO_330:0000313",
+      "CO_330:0000316"
+    ]
+  },
+  {
+    "name": "CO_330:0000317",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000220",
+      "CO_330:0000316",
+      "CO_330:0000315"
+    ]
+  },
+  {
+    "name": "CO_330:0000314",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000220",
+      "CO_330:0000313",
+      "CO_330:0000312"
+    ]
+  },
+  {
+    "name": "CO_330:0000311",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000220",
+      "CO_330:0000310",
+      "CO_330:0000309"
+    ]
+  },
+  {
+    "name": "CO_330:0000308",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000220",
+      "CO_330:0000307",
+      "CO_330:0000306"
+    ]
+  },
+  {
+    "name": "CO_330:0000307",
+    "type": "method",
+    "depends": [
+      "CO_330:0000306"
+    ]
+  },
+  {
+    "name": "CO_330:0000310",
+    "type": "method",
+    "depends": [
+      "CO_330:0000309"
+    ]
+  },
+  {
+    "name": "CO_330:0000313",
+    "type": "method",
+    "depends": [
+      "CO_330:0000312"
+    ]
+  },
+  {
+    "name": "CO_330:0000316",
+    "type": "method",
+    "depends": [
+      "CO_330:0000315"
+    ]
+  },
+  {
+    "name": "CO_330:0000330",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000221",
+      "CO_330:0000328",
+      "CO_330:0000329"
+    ]
+  },
+  {
+    "name": "CO_330:0000327",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000221",
+      "CO_330:0000326",
+      "CO_330:0000325"
+    ]
+  },
+  {
+    "name": "CO_330:0000326",
+    "type": "method",
+    "depends": [
+      "CO_330:0000325"
+    ]
+  },
+  {
+    "name": "CO_330:0000222",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000332",
+      "CO_330:0000335"
+    ]
+  },
+  {
+    "name": "CO_330:0000336",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000222",
+      "CO_330:0000335",
+      "CO_330:0000334"
+    ]
+  },
+  {
+    "name": "CO_330:0000333",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000222",
+      "CO_330:0000332",
+      "CO_330:0000331"
+    ]
+  },
+  {
+    "name": "CO_330:0000332",
+    "type": "method",
+    "depends": [
+      "CO_330:0000331"
+    ]
+  },
+  {
+    "name": "CO_330:0000335",
+    "type": "method",
+    "depends": [
+      "CO_330:0000334"
+    ]
+  },
+  {
+    "name": "CO_330:0000263",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:Crop research",
+    "type": "term",
+    "depends": [
+      "CO_330:ROOT"
+    ]
+  },
+  {
+    "name": "CO_330:0000301",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000298",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000294",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000291",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000288",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000284",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000281",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000266",
+    "type": "trait",
+    "depends": [
+      "CO_330:Crop research"
+    ]
+  },
+  {
+    "name": "CO_330:0000272",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000269",
+      "CO_330:0000270",
+      "CO_330:0000271"
+    ]
+  },
+  {
+    "name": "CO_330:0000270",
+    "type": "method",
+    "depends": [
+      "CO_330:0000269"
+    ]
+  },
+  {
+    "name": "CO_330:0000271",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000270"
+    ]
+  },
+  {
+    "name": "CO_330:0000630",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000273",
+      "CO_330:0000506",
+      "CO_330:0000584"
+    ]
+  },
+  {
+    "name": "CO_330:0000506",
+    "type": "method",
+    "depends": [
+      "CO_330:0000273"
+    ]
+  },
+  {
+    "name": "CO_330:0000276",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000273",
+      "CO_330:0000274",
+      "CO_330:0000275"
+    ]
+  },
+  {
+    "name": "CO_330:0000274",
+    "type": "method",
+    "depends": [
+      "CO_330:0000273"
+    ]
+  },
+  {
+    "name": "CO_330:0000275",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000274"
+    ]
+  },
+  {
+    "name": "CO_330:0000631",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000277",
+      "CO_330:0000507",
+      "CO_330:0000585"
+    ]
+  },
+  {
+    "name": "CO_330:0000507",
+    "type": "method",
+    "depends": [
+      "CO_330:0000277"
+    ]
+  },
+  {
+    "name": "CO_330:0000280",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000277",
+      "CO_330:0000278",
+      "CO_330:0000279"
+    ]
+  },
+  {
+    "name": "CO_330:0000278",
+    "type": "method",
+    "depends": [
+      "CO_330:0000277"
+    ]
+  },
+  {
+    "name": "CO_330:0000279",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000278"
+    ]
+  },
+  {
+    "name": "CO_330:0000287",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000284",
+      "CO_330:0000285",
+      "CO_330:0000286"
+    ]
+  },
+  {
+    "name": "CO_330:0000285",
+    "type": "method",
+    "depends": [
+      "CO_330:0000284"
+    ]
+  },
+  {
+    "name": "CO_330:0000286",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000285"
+    ]
+  },
+  {
+    "name": "CO_330:0000297",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000294",
+      "CO_330:0000295",
+      "CO_330:0000296"
+    ]
+  },
+  {
+    "name": "CO_330:0000295",
+    "type": "method",
+    "depends": [
+      "CO_330:0000294"
+    ]
+  },
+  {
+    "name": "CO_330:0000296",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000295"
+    ]
+  },
+  {
+    "name": "CO_330:0000304",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000301",
+      "CO_330:0000302",
+      "CO_330:0000303"
+    ]
+  },
+  {
+    "name": "CO_330:0000302",
+    "type": "method",
+    "depends": [
+      "CO_330:0000301"
+    ]
+  },
+  {
+    "name": "CO_330:0000303",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000302"
+    ]
+  },
+  {
+    "name": "CO_330:0000321",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000318",
+      "CO_330:0000319",
+      "CO_330:0000320"
+    ]
+  },
+  {
+    "name": "CO_330:0000319",
+    "type": "method",
+    "depends": [
+      "CO_330:0000318"
+    ]
+  },
+  {
+    "name": "CO_330:0000320",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000319"
+    ]
+  },
+  {
+    "name": "CO_330:0000329",
+    "type": "method",
+    "depends": [
+      "CO_330:0000328"
+    ]
+  },
+  {
+    "name": "CO_330:0000340",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000337",
+      "CO_330:0000338",
+      "CO_330:0000339"
+    ]
+  },
+  {
+    "name": "CO_330:0000338",
+    "type": "method",
+    "depends": [
+      "CO_330:0000337"
+    ]
+  },
+  {
+    "name": "CO_330:0000339",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000338"
+    ]
+  },
+  {
+    "name": "CO_330:0000632",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000341",
+      "CO_330:0000508",
+      "CO_330:0000586"
+    ]
+  },
+  {
+    "name": "CO_330:0000508",
+    "type": "method",
+    "depends": [
+      "CO_330:0000341"
+    ]
+  },
+  {
+    "name": "CO_330:0000344",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000341",
+      "CO_330:0000342",
+      "CO_330:0000343"
+    ]
+  },
+  {
+    "name": "CO_330:0000342",
+    "type": "method",
+    "depends": [
+      "CO_330:0000341"
+    ]
+  },
+  {
+    "name": "CO_330:0000343",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000342"
+    ]
+  },
+  {
+    "name": "CO_330:0000348",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000345",
+      "CO_330:0000346",
+      "CO_330:0000347"
+    ]
+  },
+  {
+    "name": "CO_330:0000346",
+    "type": "method",
+    "depends": [
+      "CO_330:0000345"
+    ]
+  },
+  {
+    "name": "CO_330:0000347",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000346"
+    ]
+  },
+  {
+    "name": "CO_330:0000352",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000349",
+      "CO_330:0000350",
+      "CO_330:0000351"
+    ]
+  },
+  {
+    "name": "CO_330:0000350",
+    "type": "method",
+    "depends": [
+      "CO_330:0000349"
+    ]
+  },
+  {
+    "name": "CO_330:0000351",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000350"
+    ]
+  },
+  {
+    "name": "CO_330:0000633",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000353",
+      "CO_330:0000509",
+      "CO_330:0000587"
+    ]
+  },
+  {
+    "name": "CO_330:0000509",
+    "type": "method",
+    "depends": [
+      "CO_330:0000353"
+    ]
+  },
+  {
+    "name": "CO_330:0000356",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000353",
+      "CO_330:0000354",
+      "CO_330:0000355"
+    ]
+  },
+  {
+    "name": "CO_330:0000354",
+    "type": "method",
+    "depends": [
+      "CO_330:0000353"
+    ]
+  },
+  {
+    "name": "CO_330:0000355",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000354"
+    ]
+  },
+  {
+    "name": "CO_330:0000363",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000360",
+      "CO_330:0000361",
+      "CO_330:0000362"
+    ]
+  },
+  {
+    "name": "CO_330:0000361",
+    "type": "method",
+    "depends": [
+      "CO_330:0000360"
+    ]
+  },
+  {
+    "name": "CO_330:0000362",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000361"
+    ]
+  },
+  {
+    "name": "CO_330:0000367",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000364",
+      "CO_330:0000365",
+      "CO_330:0000366"
+    ]
+  },
+  {
+    "name": "CO_330:0000365",
+    "type": "method",
+    "depends": [
+      "CO_330:0000364"
+    ]
+  },
+  {
+    "name": "CO_330:0000366",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000365"
+    ]
+  },
+  {
+    "name": "CO_330:0000371",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000368",
+      "CO_330:0000369",
+      "CO_330:0000370"
+    ]
+  },
+  {
+    "name": "CO_330:0000369",
+    "type": "method",
+    "depends": [
+      "CO_330:0000368"
+    ]
+  },
+  {
+    "name": "CO_330:0000370",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000369"
+    ]
+  },
+  {
+    "name": "CO_330:0000388",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000385",
+      "CO_330:0000386",
+      "CO_330:0000387"
+    ]
+  },
+  {
+    "name": "CO_330:0000386",
+    "type": "method",
+    "depends": [
+      "CO_330:0000385"
+    ]
+  },
+  {
+    "name": "CO_330:0000387",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000386"
+    ]
+  },
+  {
+    "name": "CO_330:0000394",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000391",
+      "CO_330:0000392",
+      "CO_330:0000393"
+    ]
+  },
+  {
+    "name": "CO_330:0000392",
+    "type": "method",
+    "depends": [
+      "CO_330:0000391"
+    ]
+  },
+  {
+    "name": "CO_330:0000393",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000392"
+    ]
+  },
+  {
+    "name": "CO_330:0000424",
+    "type": "method",
+    "depends": [
+      "CO_330:0000423"
+    ]
+  },
+  {
+    "name": "CO_330:0000437",
+    "type": "method",
+    "depends": [
+      "CO_330:0000436"
+    ]
+  },
+  {
+    "name": "CO_330:0000440",
+    "type": "method",
+    "depends": [
+      "CO_330:0000439"
+    ]
+  },
+  {
+    "name": "CO_330:0000443",
+    "type": "method",
+    "depends": [
+      "CO_330:0000442"
+    ]
+  },
+  {
+    "name": "CO_330:0000446",
+    "type": "method",
+    "depends": [
+      "CO_330:0000445"
+    ]
+  },
+  {
+    "name": "CO_330:0000449",
+    "type": "method",
+    "depends": [
+      "CO_330:0000448"
+    ]
+  },
+  {
+    "name": "CO_330:0000635",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000451",
+      "CO_330:0000511",
+      "CO_330:0000589"
+    ]
+  },
+  {
+    "name": "CO_330:0000634",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000451",
+      "CO_330:0000510",
+      "CO_330:0000588"
+    ]
+  },
+  {
+    "name": "CO_330:0000511",
+    "type": "method",
+    "depends": [
+      "CO_330:0000451"
+    ]
+  },
+  {
+    "name": "CO_330:0000510",
+    "type": "method",
+    "depends": [
+      "CO_330:0000451"
+    ]
+  },
+  {
+    "name": "CO_330:0000637",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000452",
+      "CO_330:0000513",
+      "CO_330:0000591"
+    ]
+  },
+  {
+    "name": "CO_330:0000636",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000452",
+      "CO_330:0000512",
+      "CO_330:0000590"
+    ]
+  },
+  {
+    "name": "CO_330:0000513",
+    "type": "method",
+    "depends": [
+      "CO_330:0000452"
+    ]
+  },
+  {
+    "name": "CO_330:0000512",
+    "type": "method",
+    "depends": [
+      "CO_330:0000452"
+    ]
+  },
+  {
+    "name": "CO_330:0000639",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000453",
+      "CO_330:0000515",
+      "CO_330:0000593"
+    ]
+  },
+  {
+    "name": "CO_330:0000638",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000453",
+      "CO_330:0000514",
+      "CO_330:0000592"
+    ]
+  },
+  {
+    "name": "CO_330:0000515",
+    "type": "method",
+    "depends": [
+      "CO_330:0000453"
+    ]
+  },
+  {
+    "name": "CO_330:0000514",
+    "type": "method",
+    "depends": [
+      "CO_330:0000453"
+    ]
+  },
+  {
+    "name": "CO_330:0000640",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000454",
+      "CO_330:0000516",
+      "CO_330:0000594"
+    ]
+  },
+  {
+    "name": "CO_330:0000516",
+    "type": "method",
+    "depends": [
+      "CO_330:0000454"
+    ]
+  },
+  {
+    "name": "CO_330:0000641",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000455",
+      "CO_330:0000517",
+      "CO_330:0000595"
+    ]
+  },
+  {
+    "name": "CO_330:0000517",
+    "type": "method",
+    "depends": [
+      "CO_330:0000455"
+    ]
+  },
+  {
+    "name": "CO_330:0000529",
+    "type": "method",
+    "depends": [
+      "CO_330:0000461"
+    ]
+  },
+  {
+    "name": "CO_330:0000528",
+    "type": "method",
+    "depends": [
+      "CO_330:0000461"
+    ]
+  },
+  {
+    "name": "CO_330:0000531",
+    "type": "method",
+    "depends": [
+      "CO_330:0000462"
+    ]
+  },
+  {
+    "name": "CO_330:0000530",
+    "type": "method",
+    "depends": [
+      "CO_330:0000462"
+    ]
+  },
+  {
+    "name": "CO_330:0000533",
+    "type": "method",
+    "depends": [
+      "CO_330:0000463"
+    ]
+  },
+  {
+    "name": "CO_330:0000532",
+    "type": "method",
+    "depends": [
+      "CO_330:0000463"
+    ]
+  },
+  {
+    "name": "CO_330:0000535",
+    "type": "method",
+    "depends": [
+      "CO_330:0000464"
+    ]
+  },
+  {
+    "name": "CO_330:0000534",
+    "type": "method",
+    "depends": [
+      "CO_330:0000464"
+    ]
+  },
+  {
+    "name": "CO_330:0000537",
+    "type": "method",
+    "depends": [
+      "CO_330:0000465"
+    ]
+  },
+  {
+    "name": "CO_330:0000536",
+    "type": "method",
+    "depends": [
+      "CO_330:0000465"
+    ]
+  },
+  {
+    "name": "CO_330:0000663",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000466",
+      "CO_330:0000473",
+      "CO_330:0000539"
+    ]
+  },
+  {
+    "name": "CO_330:0000662",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000466",
+      "CO_330:0000473",
+      "CO_330:0000538"
+    ]
+  },
+  {
+    "name": "CO_330:0000539",
+    "type": "method",
+    "depends": [
+      "CO_330:0000466"
+    ]
+  },
+  {
+    "name": "CO_330:0000538",
+    "type": "method",
+    "depends": [
+      "CO_330:0000466"
+    ]
+  },
+  {
+    "name": "CO_330:0000665",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000467",
+      "CO_330:0000473",
+      "CO_330:0000541"
+    ]
+  },
+  {
+    "name": "CO_330:0000664",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000467",
+      "CO_330:0000473",
+      "CO_330:0000540"
+    ]
+  },
+  {
+    "name": "CO_330:0000541",
+    "type": "method",
+    "depends": [
+      "CO_330:0000467"
+    ]
+  },
+  {
+    "name": "CO_330:0000540",
+    "type": "method",
+    "depends": [
+      "CO_330:0000467"
+    ]
+  },
+  {
+    "name": "CO_330:0000667",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000468",
+      "CO_330:0000473",
+      "CO_330:0000543"
+    ]
+  },
+  {
+    "name": "CO_330:0000666",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000468",
+      "CO_330:0000473",
+      "CO_330:0000542"
+    ]
+  },
+  {
+    "name": "CO_330:0000543",
+    "type": "method",
+    "depends": [
+      "CO_330:0000468"
+    ]
+  },
+  {
+    "name": "CO_330:0000542",
+    "type": "method",
+    "depends": [
+      "CO_330:0000468"
+    ]
+  },
+  {
+    "name": "CO_330:0000669",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000469",
+      "CO_330:0000473",
+      "CO_330:0000545"
+    ]
+  },
+  {
+    "name": "CO_330:0000668",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000469",
+      "CO_330:0000473",
+      "CO_330:0000544"
+    ]
+  },
+  {
+    "name": "CO_330:0000545",
+    "type": "method",
+    "depends": [
+      "CO_330:0000469"
+    ]
+  },
+  {
+    "name": "CO_330:0000544",
+    "type": "method",
+    "depends": [
+      "CO_330:0000469"
+    ]
+  },
+  {
+    "name": "CO_330:0000671",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000470",
+      "CO_330:0000473",
+      "CO_330:0000547"
+    ]
+  },
+  {
+    "name": "CO_330:0000670",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000470",
+      "CO_330:0000473",
+      "CO_330:0000546"
+    ]
+  },
+  {
+    "name": "CO_330:0000547",
+    "type": "method",
+    "depends": [
+      "CO_330:0000470"
+    ]
+  },
+  {
+    "name": "CO_330:0000546",
+    "type": "method",
+    "depends": [
+      "CO_330:0000470"
+    ]
+  },
+  {
+    "name": "CO_330:0000673",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000471",
+      "CO_330:0000473",
+      "CO_330:0000549"
+    ]
+  },
+  {
+    "name": "CO_330:0000672",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000471",
+      "CO_330:0000473",
+      "CO_330:0000548"
+    ]
+  },
+  {
+    "name": "CO_330:0000549",
+    "type": "method",
+    "depends": [
+      "CO_330:0000471"
+    ]
+  },
+  {
+    "name": "CO_330:0000548",
+    "type": "method",
+    "depends": [
+      "CO_330:0000471"
+    ]
+  },
+  {
+    "name": "CO_330:0000675",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000472",
+      "CO_330:0000473",
+      "CO_330:0000551"
+    ]
+  },
+  {
+    "name": "CO_330:0000674",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000472",
+      "CO_330:0000473",
+      "CO_330:0000550"
+    ]
+  },
+  {
+    "name": "CO_330:0000551",
+    "type": "method",
+    "depends": [
+      "CO_330:0000472"
+    ]
+  },
+  {
+    "name": "CO_330:0000550",
+    "type": "method",
+    "depends": [
+      "CO_330:0000472"
+    ]
+  },
+  {
+    "name": "CO_330:0000473",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000538",
+      "CO_330:0000539",
+      "CO_330:0000540",
+      "CO_330:0000541",
+      "CO_330:0000542",
+      "CO_330:0000543",
+      "CO_330:0000544",
+      "CO_330:0000545",
+      "CO_330:0000546",
+      "CO_330:0000547",
+      "CO_330:0000548",
+      "CO_330:0000549",
+      "CO_330:0000550"
+    ]
+  },
+  {
+    "name": "CO_330:0000676",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000474",
+      "CO_330:0000552",
+      "CO_330:0000596"
+    ]
+  },
+  {
+    "name": "CO_330:0000552",
+    "type": "method",
+    "depends": [
+      "CO_330:0000474"
+    ]
+  },
+  {
+    "name": "CO_330:0000677",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000475",
+      "CO_330:0000553",
+      "CO_330:0000597"
+    ]
+  },
+  {
+    "name": "CO_330:0000553",
+    "type": "method",
+    "depends": [
+      "CO_330:0000475"
+    ]
+  },
+  {
+    "name": "CO_330:0000678",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000476",
+      "CO_330:0000554",
+      "CO_330:0000598"
+    ]
+  },
+  {
+    "name": "CO_330:0000554",
+    "type": "method",
+    "depends": [
+      "CO_330:0000476"
+    ]
+  },
+  {
+    "name": "CO_330:0000679",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000477",
+      "CO_330:0000555",
+      "CO_330:0000599"
+    ]
+  },
+  {
+    "name": "CO_330:0000555",
+    "type": "method",
+    "depends": [
+      "CO_330:0000477"
+    ]
+  },
+  {
+    "name": "CO_330:0000680",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000478",
+      "CO_330:0000556",
+      "CO_330:0000600"
+    ]
+  },
+  {
+    "name": "CO_330:0000556",
+    "type": "method",
+    "depends": [
+      "CO_330:0000478"
+    ]
+  },
+  {
+    "name": "CO_330:0000681",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000479",
+      "CO_330:0000557",
+      "CO_330:0000601"
+    ]
+  },
+  {
+    "name": "CO_330:0000557",
+    "type": "method",
+    "depends": [
+      "CO_330:0000479"
+    ]
+  },
+  {
+    "name": "CO_330:0000682",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000480",
+      "CO_330:0000558",
+      "CO_330:0000602"
+    ]
+  },
+  {
+    "name": "CO_330:0000558",
+    "type": "method",
+    "depends": [
+      "CO_330:0000480"
+    ]
+  },
+  {
+    "name": "CO_330:0000683",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000481",
+      "CO_330:0000559",
+      "CO_330:0000603"
+    ]
+  },
+  {
+    "name": "CO_330:0000559",
+    "type": "method",
+    "depends": [
+      "CO_330:0000481"
+    ]
+  },
+  {
+    "name": "CO_330:0000684",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000482",
+      "CO_330:0000560",
+      "CO_330:0000604"
+    ]
+  },
+  {
+    "name": "CO_330:0000560",
+    "type": "method",
+    "depends": [
+      "CO_330:0000482"
+    ]
+  },
+  {
+    "name": "CO_330:0000685",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000483",
+      "CO_330:0000561",
+      "CO_330:0000605"
+    ]
+  },
+  {
+    "name": "CO_330:0000561",
+    "type": "method",
+    "depends": [
+      "CO_330:0000483"
+    ]
+  },
+  {
+    "name": "CO_330:0000686",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000484",
+      "CO_330:0000562",
+      "CO_330:0000606"
+    ]
+  },
+  {
+    "name": "CO_330:0000562",
+    "type": "method",
+    "depends": [
+      "CO_330:0000484"
+    ]
+  },
+  {
+    "name": "CO_330:0000687",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000485",
+      "CO_330:0000563",
+      "CO_330:0000607"
+    ]
+  },
+  {
+    "name": "CO_330:0000563",
+    "type": "method",
+    "depends": [
+      "CO_330:0000485"
+    ]
+  },
+  {
+    "name": "CO_330:0000688",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000486",
+      "CO_330:0000564",
+      "CO_330:0000608"
+    ]
+  },
+  {
+    "name": "CO_330:0000564",
+    "type": "method",
+    "depends": [
+      "CO_330:0000486"
+    ]
+  },
+  {
+    "name": "CO_330:0000689",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000487",
+      "CO_330:0000565",
+      "CO_330:0000609"
+    ]
+  },
+  {
+    "name": "CO_330:0000565",
+    "type": "method",
+    "depends": [
+      "CO_330:0000487"
+    ]
+  },
+  {
+    "name": "CO_330:0000690",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000488",
+      "CO_330:0000566",
+      "CO_330:0000610"
+    ]
+  },
+  {
+    "name": "CO_330:0000566",
+    "type": "method",
+    "depends": [
+      "CO_330:0000488"
+    ]
+  },
+  {
+    "name": "CO_330:0000691",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000489",
+      "CO_330:0000567",
+      "CO_330:0000611"
+    ]
+  },
+  {
+    "name": "CO_330:0000567",
+    "type": "method",
+    "depends": [
+      "CO_330:0000489"
+    ]
+  },
+  {
+    "name": "CO_330:0000692",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000490",
+      "CO_330:0000568",
+      "CO_330:0000612"
+    ]
+  },
+  {
+    "name": "CO_330:0000568",
+    "type": "method",
+    "depends": [
+      "CO_330:0000490"
+    ]
+  },
+  {
+    "name": "CO_330:0000693",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000491",
+      "CO_330:0000569",
+      "CO_330:0000613"
+    ]
+  },
+  {
+    "name": "CO_330:0000569",
+    "type": "method",
+    "depends": [
+      "CO_330:0000491"
+    ]
+  },
+  {
+    "name": "CO_330:0000694",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000492",
+      "CO_330:0000570",
+      "CO_330:0000614"
+    ]
+  },
+  {
+    "name": "CO_330:0000570",
+    "type": "method",
+    "depends": [
+      "CO_330:0000492"
+    ]
+  },
+  {
+    "name": "CO_330:0000695",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000493",
+      "CO_330:0000571",
+      "CO_330:0000615"
+    ]
+  },
+  {
+    "name": "CO_330:0000571",
+    "type": "method",
+    "depends": [
+      "CO_330:0000493"
+    ]
+  },
+  {
+    "name": "CO_330:0000696",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000494",
+      "CO_330:0000572",
+      "CO_330:0000616"
+    ]
+  },
+  {
+    "name": "CO_330:0000572",
+    "type": "method",
+    "depends": [
+      "CO_330:0000494"
+    ]
+  },
+  {
+    "name": "CO_330:0000697",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000495",
+      "CO_330:0000573",
+      "CO_330:0000617"
+    ]
+  },
+  {
+    "name": "CO_330:0000573",
+    "type": "method",
+    "depends": [
+      "CO_330:0000495"
+    ]
+  },
+  {
+    "name": "CO_330:0000698",
+    "type": "variable",
+    "depends": [
+      "CO_330:0000496",
+      "CO_330:0000574",
+      "CO_330:0000618"
+    ]
+  },
+  {
+    "name": "CO_330:0000574",
+    "type": "method",
+    "depends": [
+      "CO_330:0000496"
+    ]
+  },
+  {
+    "name": "CO_330:0000575",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000497"
+    ]
+  },
+  {
+    "name": "CO_330:0000576",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000498"
+    ]
+  },
+  {
+    "name": "CO_330:0000577",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000499"
+    ]
+  },
+  {
+    "name": "CO_330:0000578",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000500"
+    ]
+  },
+  {
+    "name": "CO_330:0000579",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000501"
+    ]
+  },
+  {
+    "name": "CO_330:0000580",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000502"
+    ]
+  },
+  {
+    "name": "CO_330:0000581",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000503"
+    ]
+  },
+  {
+    "name": "CO_330:0000582",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000504"
+    ]
+  },
+  {
+    "name": "CO_330:0000583",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000505"
+    ]
+  },
+  {
+    "name": "CO_330:0000584",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000506"
+    ]
+  },
+  {
+    "name": "CO_330:0000585",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000507"
+    ]
+  },
+  {
+    "name": "CO_330:0000586",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000508"
+    ]
+  },
+  {
+    "name": "CO_330:0000587",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000509"
+    ]
+  },
+  {
+    "name": "CO_330:0000588",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000510"
+    ]
+  },
+  {
+    "name": "CO_330:0000589",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000511"
+    ]
+  },
+  {
+    "name": "CO_330:0000590",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000512"
+    ]
+  },
+  {
+    "name": "CO_330:0000591",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000513"
+    ]
+  },
+  {
+    "name": "CO_330:0000592",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000514"
+    ]
+  },
+  {
+    "name": "CO_330:0000593",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000515"
+    ]
+  },
+  {
+    "name": "CO_330:0000594",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000516"
+    ]
+  },
+  {
+    "name": "CO_330:0000595",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000517"
+    ]
+  },
+  {
+    "name": "CO_330:0000596",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000552"
+    ]
+  },
+  {
+    "name": "CO_330:0000597",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000553"
+    ]
+  },
+  {
+    "name": "CO_330:0000598",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000554"
+    ]
+  },
+  {
+    "name": "CO_330:0000599",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000555"
+    ]
+  },
+  {
+    "name": "CO_330:0000600",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000556"
+    ]
+  },
+  {
+    "name": "CO_330:0000601",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000557"
+    ]
+  },
+  {
+    "name": "CO_330:0000602",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000558"
+    ]
+  },
+  {
+    "name": "CO_330:0000603",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000559"
+    ]
+  },
+  {
+    "name": "CO_330:0000604",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000560"
+    ]
+  },
+  {
+    "name": "CO_330:0000605",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000561"
+    ]
+  },
+  {
+    "name": "CO_330:0000606",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000562"
+    ]
+  },
+  {
+    "name": "CO_330:0000607",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000563"
+    ]
+  },
+  {
+    "name": "CO_330:0000608",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000564"
+    ]
+  },
+  {
+    "name": "CO_330:0000609",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000565"
+    ]
+  },
+  {
+    "name": "CO_330:0000610",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000566"
+    ]
+  },
+  {
+    "name": "CO_330:0000611",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000567"
+    ]
+  },
+  {
+    "name": "CO_330:0000612",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000568"
+    ]
+  },
+  {
+    "name": "CO_330:0000613",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000569"
+    ]
+  },
+  {
+    "name": "CO_330:0000614",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000570"
+    ]
+  },
+  {
+    "name": "CO_330:0000615",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000571"
+    ]
+  },
+  {
+    "name": "CO_330:0000616",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000572"
+    ]
+  },
+  {
+    "name": "CO_330:0000617",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000573"
+    ]
+  },
+  {
+    "name": "CO_330:0000618",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000574"
+    ]
+  },
+  {
+    "name": "CO_330:0000619",
+    "type": "scale",
+    "depends": [
+      "CO_330:0000699"
+    ]
+  },
+  {
+    "name": "CO_330:ROOT",
+    "type": "term",
+    "depends": []
+  }
+]

@@ -1,0 +1,36 @@
+{% extends 'page.jinja2' %}
+
+{% block breadcrums %}
+    {% include 'pages/snippets/breadcrums_list.jinja2' %}
+{% endblock breadcrums %}
+
+{% block main_container %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-tools">
+                    <button type="button" onclick="location.href='{{ request.route_url('page_add') }}';" class="btn btn-primary btn-xs">{{ _('Add new page') }}</button>
+                </div>
+            </div>
+            <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                    <tr>
+                        <th>{{ _('ID') }}</th>
+                        <th>{{ _('Name') }}</th>
+                        <th>{{ _('Last update') }}</th>
+                        <th>{{ _('Actions') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for page in pages %}
+                            {% include 'pages/snippets/page_item.jinja2' %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_container %}

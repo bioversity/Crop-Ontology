@@ -1,0 +1,9369 @@
+[
+  {
+    "name": "CO_330:0000000",
+    "desc": "Plant growth habit",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000223",
+    "desc": "PlGwht_Et_1to6",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000000",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000001",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000002",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000001",
+    "desc": "Visual estimation - Plant growth habit",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000000",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:Morphological trait",
+    "desc": "Morphological trait",
+    "type": "term",
+    "depends": [
+      {
+        "name": "CO_330:ROOT",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000491",
+    "desc": "Tuber skin texture",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000490",
+    "desc": "Number of eyes",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000480",
+    "desc": "Flower color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000479",
+    "desc": "Leaf type",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000478",
+    "desc": "Foliage color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000477",
+    "desc": "Plant architecture",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000120",
+    "desc": "Ploidy",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000117",
+    "desc": "Distribution of secondary sprout color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000114",
+    "desc": "Secondary sprout color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000111",
+    "desc": "Predominant sprout color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000105",
+    "desc": "Tuber depth eyes",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000102",
+    "desc": "Unusual tuber shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000099",
+    "desc": "Tuber shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000096",
+    "desc": "Distribution of secondary tuber flesh color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000093",
+    "desc": "Tuber flesh secondary color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000090",
+    "desc": "Predominant Tuber flesh color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000087",
+    "desc": "Distribution of secondary tuber skin color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000084",
+    "desc": "Tuber skin secondary color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000081",
+    "desc": "Tuber skin main color intensity",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000078",
+    "desc": "Predominant tuber skin color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000075",
+    "desc": "Wing stem shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000072",
+    "desc": "Main Stem pigmentation",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000069",
+    "desc": "Apex shape of the terminal leaflets",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000066",
+    "desc": "Base shape of the terminal leaflets",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000063",
+    "desc": "Lateral leaflet shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000060",
+    "desc": "Apical leaflet shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000057",
+    "desc": "Apical leaflet size",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000054",
+    "desc": "Leaf abaxial surface trichome density",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000051",
+    "desc": "Leaf adaxial surface trichome density",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000048",
+    "desc": "Leaf abaxial surface color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000045",
+    "desc": "Leaf adaxial surface color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000042",
+    "desc": "Primary lateral leaflet number",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000039",
+    "desc": "Leaf shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000036",
+    "desc": "Stigma shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000033",
+    "desc": "Seed production per berry",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000030",
+    "desc": "Calyx color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000027",
+    "desc": "Pedicel color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000024",
+    "desc": "Fruit color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000021",
+    "desc": "Fruit shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000018",
+    "desc": "Pistil pigmentation",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000015",
+    "desc": "Anther pigmentation",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000012",
+    "desc": "Main inflorescence flower number",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000009",
+    "desc": "Inflorescence number",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000006",
+    "desc": "Corolla shape",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000003",
+    "desc": "Flowering degree",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Morphological trait",
+        "link": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000002",
+    "desc": "PlGwht 6 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000001",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000699",
+    "desc": "Visual estimation - Flowering degree",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000003",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000620",
+    "desc": "Flwdgr_obs_0-4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000003",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000619",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000699",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000224",
+    "desc": "Flwdgr_Et_0to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000003",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000004",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000005",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000004",
+    "desc": "Visual estimation - Flowering degree",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000003",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000005",
+    "desc": "Flwdgr 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000004",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000225",
+    "desc": "CorSh_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000006",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000007",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000008",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000007",
+    "desc": "Visual estimation - Corolla shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000006",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000008",
+    "desc": "CorSh 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000007",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000226",
+    "desc": "FlwNIn_Et_0to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000009",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000010",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000011",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000010",
+    "desc": "Visual estimation - Inflorescence number",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000009",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000011",
+    "desc": "FlwNIn 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000010",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000227",
+    "desc": "FlwNum_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000012",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000013",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000014",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000013",
+    "desc": "Visual estimation - Main inflorescence flower number",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000012",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000014",
+    "desc": "FlwNum 6 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000013",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000228",
+    "desc": "FlrAnP_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000015",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000016",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000017",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000016",
+    "desc": "Visual estimation - Anther pigmentation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000015",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000017",
+    "desc": "FlrAnP 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000016",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000229",
+    "desc": "FlrPPg_Et_0to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000018",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000019",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000020",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000019",
+    "desc": "Visual estimation - Pistil pigmentation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000018",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000020",
+    "desc": "FlrPPg 9 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000019",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000230",
+    "desc": "FrtShp_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000021",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000022",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000023",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000022",
+    "desc": "Visual estimation - Fruit shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000021",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000023",
+    "desc": "FrtShp 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000022",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000231",
+    "desc": "FrtCol_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000024",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000025",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000026",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000025",
+    "desc": "Visual estimation - Fruit color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000024",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000026",
+    "desc": "FrtCol 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000025",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000232",
+    "desc": "Pedcol_Et_1to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000027",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000028",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000029",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000028",
+    "desc": "Visual estimation - Pedicel color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000027",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000029",
+    "desc": "Pedcol 8 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000028",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000233",
+    "desc": "Calcol_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000030",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000031",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000032",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000031",
+    "desc": "Visual estimation - Calyx color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000030",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000032",
+    "desc": "Calcol 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000031",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000234",
+    "desc": "SedPro_Et_0to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000033",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000034",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000035",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000034",
+    "desc": "Visual estimation - Seed production per berry",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000033",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000035",
+    "desc": "SedPro 6 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000034",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000235",
+    "desc": "FlrShp_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000036",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000037",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000038",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000037",
+    "desc": "Visual estimation - Stigma shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000036",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000038",
+    "desc": "FlrShp 3 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000037",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000236",
+    "desc": "LefShp_Et_1to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000039",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000040",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000041",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000040",
+    "desc": "Visual estimation - Leaf shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000039",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000041",
+    "desc": "LefShp 3 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000040",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000237",
+    "desc": "LaLfN_Et_0to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000042",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000043",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000044",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000043",
+    "desc": "Visual estimation - Primary lateral leaflet number",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000042",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000044",
+    "desc": "LaLfN 9 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000043",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000238",
+    "desc": "AdLfC_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000045",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000046",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000047",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000046",
+    "desc": "Visual estimation - Leaf adaxial surface color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000045",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000047",
+    "desc": "AdLfC 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000046",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000239",
+    "desc": "AbLfC_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000048",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000049",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000050",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000049",
+    "desc": "Visual estimation - Leaf abaxial surface color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000048",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000050",
+    "desc": "AbLfC 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000049",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000240",
+    "desc": "AdLfTd_Et_0to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000051",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000052",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000053",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000052",
+    "desc": "Visual estimation - Leaf adaxial surface trichome density",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000051",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000053",
+    "desc": "AdLfTd 4 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000052",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000241",
+    "desc": "AbLfTd_Et_0to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000054",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000055",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000056",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000055",
+    "desc": "Visual estimation - Leaf abaxial surface trichome density",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000054",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000056",
+    "desc": "AbLfTd 4 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000055",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000242",
+    "desc": "ApLfSz_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000057",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000058",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000059",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000058",
+    "desc": "Visual estimation - Apical leaflet size",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000057",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000059",
+    "desc": "ApLfSz 4 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000058",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000243",
+    "desc": "ApLfSh_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000060",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000061",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000062",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000061",
+    "desc": "Visual estimation - Apical leaflet shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000060",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000062",
+    "desc": "ApLfSh 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000061",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000244",
+    "desc": "LaLfSh_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000063",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000064",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000065",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000064",
+    "desc": "Visual estimation - Lateral leaflet shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000063",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000065",
+    "desc": "LaLfSh 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000064",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000245",
+    "desc": "BShTLf_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000066",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000067",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000068",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000067",
+    "desc": "Visual estimation - Base shape of the terminal leaflets",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000066",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000068",
+    "desc": "BShTLf 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000067",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000246",
+    "desc": "AShTLf_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000069",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000070",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000071",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000070",
+    "desc": "Visual estimation - Apex shape of the terminal leaflets",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000069",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000071",
+    "desc": "AShTLf 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000070",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000247",
+    "desc": "MStPg_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000072",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000073",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000074",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000073",
+    "desc": "Visual estimation - Main Stem pigmentation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000072",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000074",
+    "desc": "MStPg 7 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000073",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000248",
+    "desc": "StWgSh_Et_0to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000075",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000076",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000077",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000076",
+    "desc": "Visual estimation - Wing stem shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000075",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000077",
+    "desc": "StWgSh 3 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000076",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000621",
+    "desc": "PSknCol_obs_1-10",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000078",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000497",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000575",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000497",
+    "desc": "Visual estimation - Predominant tuber skin color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000078",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000249",
+    "desc": "PSknCol_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000078",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000079",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000080",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000079",
+    "desc": "Visual estimation - Predominant tuber skin color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000078",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000080",
+    "desc": "PrdSknCol 9 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000079",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000250",
+    "desc": "SknCPI_Et_1to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000081",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000082",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000083",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000082",
+    "desc": "Visual estimation - Tuber skin main color intensity",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000081",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000083",
+    "desc": "SknCPI 3 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000082",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000251",
+    "desc": "SknCSc_Et_0to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000084",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000085",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000086",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000085",
+    "desc": "Visual estimation - Tuber skin secondary color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000084",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000086",
+    "desc": "SknCSc 10 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000085",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000252",
+    "desc": "SknCScD_Et_0to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000087",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000088",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000089",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000088",
+    "desc": "Visual estimation - Distribution of secondary tuber skin color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000087",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000089",
+    "desc": "SknCScD 8 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000088",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000622",
+    "desc": "PFlshCol_obs_1-9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000090",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000498",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000576",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000498",
+    "desc": "Visual estimation - Predominant Tuber flesh color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000090",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000253",
+    "desc": "PFlshCol_Et_1to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000090",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000091",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000092",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000091",
+    "desc": "Visual estimation - Predominant Tuber flesh color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000090",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000092",
+    "desc": "PrdFlshCol 8 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000091",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000254",
+    "desc": "FlsCSc_Et_0to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000093",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000094",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000095",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000094",
+    "desc": "Visual estimation - Tuber flesh secondary color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000093",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000095",
+    "desc": "FlsCSc 9 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000094",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000255",
+    "desc": "FlsCSD_Et_0to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000096",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000097",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000098",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000097",
+    "desc": "Visual estimation - Distribution of secondary tuber flesh color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000096",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000098",
+    "desc": "FlsCSD 8 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000097",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000256",
+    "desc": "RtShp_Et_1to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000099",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000100",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000101",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000100",
+    "desc": "Visual estimation - Tuber shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000099",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000101",
+    "desc": "TbShp 8 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000100",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000257",
+    "desc": "RtShp_Et_0to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000102",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000103",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000104",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000103",
+    "desc": "Visual estimation - Unusual tuber shape",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000102",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000104",
+    "desc": "UTbShp 9 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000103",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000258",
+    "desc": "DpEyTb_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000105",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000106",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000107",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000106",
+    "desc": "Visual estimation - Tuber depth eyes",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000105",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000107",
+    "desc": "DpEyTb 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000106",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000108",
+    "desc": "Tuber number per plant",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000305",
+    "desc": "TubN_Ct_plant",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000108",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000109",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000110",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000109",
+    "desc": "Tuber number per plant - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000108",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:Agronomic trait",
+    "desc": "Agronomic trait",
+    "type": "term",
+    "depends": [
+      {
+        "name": "CO_330:ROOT",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000495",
+    "desc": "Global Farmer preference",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000494",
+    "desc": "Sprout type",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000493",
+    "desc": "Earliness of sprouting",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000476",
+    "desc": "Identified criteria  at post-harvest",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000475",
+    "desc": "Identified criteria at harvest",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000474",
+    "desc": "Identified criteria at flowering",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000455",
+    "desc": "Farmer's preference at postharvest",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000454",
+    "desc": "Farmer's preference at postharvest",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000453",
+    "desc": "Farmer's preference  at harvest",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000452",
+    "desc": "Farmer's preference at flowering",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000353",
+    "desc": "Tuber size",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000349",
+    "desc": "Tuber uniformity",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000345",
+    "desc": "Tuber appearance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000341",
+    "desc": "Length of stolons",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000337",
+    "desc": "Number of Stolons",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000334",
+    "desc": "Average of marketable tuber weight",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000331",
+    "desc": "Average of tuber weight",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000328",
+    "desc": "Marketable tuber yield no adjusted",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000325",
+    "desc": "Marketable tuber yield adjusted",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000318",
+    "desc": "Tuber weight per plant",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000315",
+    "desc": "Tuber weight",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000312",
+    "desc": "Non-marketable tuber weight",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000309",
+    "desc": "Marketable tuber weight per plant",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000306",
+    "desc": "Marketable tuber weight",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000277",
+    "desc": "Senescence",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000273",
+    "desc": "Plant vigor",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000269",
+    "desc": "Plant uniformity",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000168",
+    "desc": "Pollen viability",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000159",
+    "desc": "Tuber sprouting pattern",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000153",
+    "desc": "Tuber dormancy period",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000147",
+    "desc": "Plant growing period",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000144",
+    "desc": "Tuber yield no adjusted",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Agronomic trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000110",
+    "desc": "tuber/ plant",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000109",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000259",
+    "desc": "PSpCol_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000111",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000112",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000113",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000112",
+    "desc": "Visual estimation - Predominant sprout color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000111",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000113",
+    "desc": "PSpCol 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000112",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000260",
+    "desc": "SpScCol_Et_0to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000114",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000115",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000116",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000115",
+    "desc": "Visual estimation - Secondary sprout color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000114",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000116",
+    "desc": "SpScCol 6 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000115",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000261",
+    "desc": "SpCSD_Et_0to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000117",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000118",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000119",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000118",
+    "desc": "Visual estimation - Distribution of secondary sprout color",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000117",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000119",
+    "desc": "SpCSD 7pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000118",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000262",
+    "desc": "Pldy 5_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000120",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000121",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000122",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000121",
+    "desc": "Visual estimation - Ploidy",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000120",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000122",
+    "desc": "Pldy 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000121",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000123",
+    "desc": "Late blight resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000623",
+    "desc": "RLb_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000123",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000499",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000577",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000499",
+    "desc": "Visual estimation Late blight resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000123",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000372",
+    "desc": "RLb_Et_1to6",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000123",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000124",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000125",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000124",
+    "desc": "Late blight resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000123",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:Biotic stress trait",
+    "desc": "Biotic stress trait",
+    "type": "term",
+    "depends": [
+      {
+        "name": "CO_330:ROOT",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000485",
+    "desc": "Reaction to potato weevil",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000484",
+    "desc": "Reaction to Aphids",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000483",
+    "desc": "Reaction to Moth",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000482",
+    "desc": "Mosaic virus resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000481",
+    "desc": "Rizoctoniasis Resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000368",
+    "desc": "Late blight susceptibility",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000364",
+    "desc": "Late blight relative AUDPC",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000360",
+    "desc": "Late blight AUDPC",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000357",
+    "desc": "Late Blight severity",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000141",
+    "desc": "Leaf miner fly resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000138",
+    "desc": "Root knot nematode resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000135",
+    "desc": "Bacterial wilt resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000132",
+    "desc": "Potatoleaf roll virus resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000129",
+    "desc": "Potato virus Y resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000126",
+    "desc": "Potato virus X resistance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Biotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000125",
+    "desc": "SES 7 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000124",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000373",
+    "desc": "RPvx_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000126",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000127",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000128",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000127",
+    "desc": "Potato virus X resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000126",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000128",
+    "desc": "SES 7 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000127",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000374",
+    "desc": "RPvy_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000129",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000130",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000131",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000130",
+    "desc": "Potato virus Y resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000129",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000131",
+    "desc": "SES 7 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000130",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000624",
+    "desc": "RPrlv_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000132",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000500",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000578",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000500",
+    "desc": "Visual estimation Potatoleaf roll virus resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000132",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000375",
+    "desc": "RPrlv_Et_1to6",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000132",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000133",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000134",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000133",
+    "desc": "Potato†leaf roll virus resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000132",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000134",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000133",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000625",
+    "desc": "RBw_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000135",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000501",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000579",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000501",
+    "desc": "Visual estimation Bacterial wilt resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000135",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000376",
+    "desc": "RBw_Et_1to6",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000135",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000136",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000137",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000136",
+    "desc": "Bacterial wilt resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000135",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000137",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000136",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000626",
+    "desc": "RRkn_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000138",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000502",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000580",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000502",
+    "desc": "Visual estimation Root knot nematode resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000138",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000377",
+    "desc": "RRkn_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000138",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000139",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000140",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000139",
+    "desc": "Root knot nematode resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000138",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000140",
+    "desc": "SES 7 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000139",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000378",
+    "desc": "RLmf_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000141",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000142",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000143",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000142",
+    "desc": "Leaf miner fly resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000141",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000143",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000142",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000324",
+    "desc": "TbYldNAj_Cp_tha",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000144",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000145",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000221",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000323",
+    "desc": "TbYldAj_Cp_tha",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000144",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000221",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000322",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000322",
+    "desc": "Tuber yield adjusted - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000144",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000145",
+    "desc": "Tuber yield no adjusted - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000144",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000221",
+    "desc": "t/ha",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000145",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000322",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000326",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000396",
+    "desc": "GGroperl_Et_1to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000147",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000148",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000149",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000148",
+    "desc": "Plant growing period - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000147",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000149",
+    "desc": "SES 3 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000148",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000397",
+    "desc": "DoPeriod_Ms",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000153",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000154",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000155",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000154",
+    "desc": "Tuber dormancy period - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000153",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000155",
+    "desc": "days",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000154",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000398",
+    "desc": "Sppt_1to3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000159",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000160",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000161",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000160",
+    "desc": "Tuber sprouting pattern - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000159",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000161",
+    "desc": "SES 3 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000160",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000162",
+    "desc": "Heat tolerance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Abiotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000627",
+    "desc": "Reht_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000162",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000503",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000581",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000503",
+    "desc": "Visual estimation of the plant response to Heat tolerance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000162",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000399",
+    "desc": "Reht_Et_1to4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000162",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000163",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000164",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000163",
+    "desc": "Heat tolerance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000162",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:Abiotic stress trait",
+    "desc": "Abiotic stress trait",
+    "type": "term",
+    "depends": [
+      {
+        "name": "CO_330:ROOT",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000489",
+    "desc": "Moisture  tolerance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Abiotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000488",
+    "desc": "Frost tolerant",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Abiotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000487",
+    "desc": "Hailstorm tolerance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Abiotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000486",
+    "desc": "Drought tolerance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Abiotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000165",
+    "desc": "Salinity tolerance",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Abiotic stress trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000164",
+    "desc": "SES 4 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000163",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000400",
+    "desc": "ReSl_Et_1to4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000165",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000166",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000167",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000166",
+    "desc": "Salinity tolerance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000165",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000167",
+    "desc": "SES 4 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000166",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000401",
+    "desc": "PollV_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000168",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000169",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000170",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000169",
+    "desc": "Pollen viability - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000168",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000170",
+    "desc": "SES 4 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000169",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000171",
+    "desc": "Tuber flavor after cooking",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000628",
+    "desc": "TbTsAc_obs_1-5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000171",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000504",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000582",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000504",
+    "desc": "Tuber flavor after cooking - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000171",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000379",
+    "desc": "Flavor_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000171",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000172",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000173",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000172",
+    "desc": "Tuber flavor after cooking - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000171",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:Quality trait",
+    "desc": "Quality trait",
+    "type": "term",
+    "depends": [
+      {
+        "name": "CO_330:ROOT",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000174",
+    "desc": "Tuber texture after cooking",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000177",
+    "desc": "Chips oil absorption rate",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000180",
+    "desc": "Tuber cooking quality",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000183",
+    "desc": "Flesh darkening after cooking",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000186",
+    "desc": "Flesh color after cooking",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000189",
+    "desc": "Chips color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000192",
+    "desc": "Tuber dry matter content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000195",
+    "desc": "Tuber cooking time",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000198",
+    "desc": "Tuber Ascorbic acid concentration in dry weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000201",
+    "desc": "Tuber Iron concentration in dry weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000204",
+    "desc": "Tuber Zinc concentration in dry weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000210",
+    "desc": "Tuber Hydrophilic antioxidant activity in dry weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000213",
+    "desc": "Tuber Lipophilic antioxidant activity in dry weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000385",
+    "desc": "French fries color",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000391",
+    "desc": "Tuber specific gravity",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000405",
+    "desc": "Tuber Iron concentration in fresh weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000410",
+    "desc": "Tuber Zinc concentration in fresh weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000413",
+    "desc": "Tuber Anthocyanin concentration in dry weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000415",
+    "desc": "Tuber Anthocyanin concentration in fresh weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000419",
+    "desc": "Tuber Hydrophilic antioxidant activity in fresh weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000423",
+    "desc": "Tuber Lipophilic antioxidant activity in fresh weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000427",
+    "desc": "Tuber Ascorbic acid concentration in fresh weight basis",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000430",
+    "desc": "Tuber protein content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000433",
+    "desc": "Tuber starch content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000436",
+    "desc": "Tuber fructose content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000439",
+    "desc": "Tuber glucose content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000442",
+    "desc": "Tuber sucrose content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000445",
+    "desc": "Tuber maltose content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000448",
+    "desc": "Tuber fiber content",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000451",
+    "desc": "Marketable quality",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000456",
+    "desc": "Tuber calcium concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000457",
+    "desc": "Tuber magnesium concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000458",
+    "desc": "Tuber potassium concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000459",
+    "desc": "Tuber phosphorus concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000460",
+    "desc": "Tuber sulfur concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000461",
+    "desc": "Tuber chlorogenic acid concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000462",
+    "desc": "Tuber caffeic acid concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000463",
+    "desc": "Tuber tryptophan concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000464",
+    "desc": "Tuber total phenolic concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000465",
+    "desc": "Tuber glycoalkaloid concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000466",
+    "desc": "Tuber violaxanthin concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000467",
+    "desc": "Tuber antheraxanthin concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000468",
+    "desc": "Tuber lutein concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000469",
+    "desc": "Tuber zeaxanthine concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000470",
+    "desc": "Tuber beta-carotene concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000471",
+    "desc": "Tuber neoxanthine concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000472",
+    "desc": "Tuber total carotenoid concentration",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000492",
+    "desc": "Home consumption",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000496",
+    "desc": "Appearance after cooking",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Quality trait",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000173",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000172",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000629",
+    "desc": "TbTexAc_obs_1-5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000174",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000505",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000583",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000505",
+    "desc": "Visual estimation-Texture method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000174",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000380",
+    "desc": "Textac_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000174",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000175",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000176",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000175",
+    "desc": "Tuber texture after cooking - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000174",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000176",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000175",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000395",
+    "desc": "Aocp_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000177",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000178",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000178",
+    "desc": "Chips oil absorption rate - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000177",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000179",
+    "desc": "%",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000178",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000282",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000289",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000358",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000193",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000431",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000434",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000450",
+    "desc": "TubFlsFf_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000448",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000449",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000447",
+    "desc": "TubFlsMal_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000445",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000446",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000444",
+    "desc": "TubFlsSuc_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000442",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000443",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000441",
+    "desc": "TubFlsGlu_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000439",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000440",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000438",
+    "desc": "TubFlsFru_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000436",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000437",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000435",
+    "desc": "TubFlsSta_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000434",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000433",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000432",
+    "desc": "TubFlsPrt_Ms_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000431",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000430",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000390",
+    "desc": "Tdm_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000193",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000192",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000359",
+    "desc": "LBSv_Et_pct",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000358",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000357",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000290",
+    "desc": "PPlHv_Cp_per",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000289",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000288",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000283",
+    "desc": "PPlEg_Cp_per",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000179",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000282",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000281",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000282",
+    "desc": "Plant emergence proportion - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000281",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000289",
+    "desc": "Proportion of plants harvested - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000288",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000358",
+    "desc": "Visual estimation - Late Blight severity",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000357",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000193",
+    "desc": "Tuber dry matter content - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000192",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000431",
+    "desc": "Protein content - Method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000430",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000434",
+    "desc": "Storage root starch content - Method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000433",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000381",
+    "desc": "Cookqu_Et_1to7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000180",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000181",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000182",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000181",
+    "desc": "Tuber cooking quality - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000180",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000182",
+    "desc": "SES 7 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000181",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000382",
+    "desc": "Afcdar_Et_1to4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000183",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000184",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000185",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000184",
+    "desc": "Flesh darkening after cooking - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000183",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000185",
+    "desc": "SES 4 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000184",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000383",
+    "desc": "Flcac_Et_1to8",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000186",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000187",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000188",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000187",
+    "desc": "Flesh color after cooking - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000186",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000188",
+    "desc": "SES 8 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000187",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000384",
+    "desc": "Chipping_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000189",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000190",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000191",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000190",
+    "desc": "Chips color - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000189",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000191",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000190",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000389",
+    "desc": "Cootime_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000195",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000196",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000197",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000196",
+    "desc": "Tuber cooking time - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000195",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000197",
+    "desc": "SES 5 pt scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000196",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000426",
+    "desc": "Ascdw_Ms_mg100_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000198",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000199",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000199",
+    "desc": "Spectrophotometry - ascorbic acid",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000198",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000200",
+    "desc": "mg/100g",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000199",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000406",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000411",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000208",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000416",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000428",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000519",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000521",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000523",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000525",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000527",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000661",
+    "desc": "Tgly_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000465",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000537",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000660",
+    "desc": "Tgly_Ms_mg100g_fw",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000465",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000536",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000659",
+    "desc": "Tphe_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000464",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000535",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000658",
+    "desc": "Tphe_Ms_mg100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000464",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000534",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000657",
+    "desc": "Trip_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000463",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000533",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000656",
+    "desc": "Trip_Ms_mg100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000463",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000532",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000655",
+    "desc": "CafAc_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000462",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000531",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000654",
+    "desc": "CafAc_Ms_mg100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000462",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000530",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000653",
+    "desc": "Chloac_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000461",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000529",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000652",
+    "desc": "Chloac_mg100g_Ms_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000461",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000528",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000651",
+    "desc": "S_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000527",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000460",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000649",
+    "desc": "P_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000525",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000459",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000647",
+    "desc": "K_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000523",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000458",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000645",
+    "desc": "Mg_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000521",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000457",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000643",
+    "desc": "Ca_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000519",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000456",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000429",
+    "desc": "Ascfw_Cp_mg100_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000428",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000427",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000417",
+    "desc": "Athto_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000416",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000415",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000414",
+    "desc": "Athto_Ms_mg100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000208",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000413",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000412",
+    "desc": "Zn_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000411",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000410",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000407",
+    "desc": "Fe_Cp_mg100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000200",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000406",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000405",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000406",
+    "desc": "Spectrophotometry - iron fresh",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000405",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000411",
+    "desc": "Spectrophotometry - zinc fresh",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000410",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000208",
+    "desc": "Extraction methods - anthocyanin",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000413",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000416",
+    "desc": "Extraction methods - anthocyanin fresh",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000415",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000428",
+    "desc": "Spectrophotometry - ascorbic acid fresh",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000427",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000519",
+    "desc": "Spectrophotometry - calcium fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000456",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000521",
+    "desc": "Spectrophotometry - magnesium fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000457",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000523",
+    "desc": "Spectrophotometry - potassium fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000458",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000525",
+    "desc": "Spectrophotometry - phosphorus fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000459",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000527",
+    "desc": "Spectrophotometry - sulfur fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000460",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000404",
+    "desc": "Fedw_Ms_mgkg_DW_XRF",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000201",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000403",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000403",
+    "desc": "Fluorescencia de rayos X - iron",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000201",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000402",
+    "desc": "Fedw_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000201",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000202",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000202",
+    "desc": "Spectrophotometry - iron",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000201",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000203",
+    "desc": "mg/kg",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000202",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000403",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000205",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000518",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000520",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000522",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000524",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000526",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000650",
+    "desc": "S_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000526",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000460",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000648",
+    "desc": "P_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000524",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000459",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000646",
+    "desc": "K_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000522",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000458",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000644",
+    "desc": "Mg_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000520",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000457",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000642",
+    "desc": "Ca_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000518",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000456",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000409",
+    "desc": "Zndw_Ms_mgkg_DW_XRF",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000205",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000204",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000408",
+    "desc": "Zndw_Ms_mgkg_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000203",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000205",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000204",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000205",
+    "desc": "Fluorescencia de rayos X - zinc",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000204",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000518",
+    "desc": "Spectrophotometry - calcium dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000456",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000520",
+    "desc": "Spectrophotometry - magnesium dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000457",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000522",
+    "desc": "Spectrophotometry - potassium dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000458",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000524",
+    "desc": "Spectrophotometry - phosphorus dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000459",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000526",
+    "desc": "Spectrophotometry - sulfur dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000460",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000418",
+    "desc": "Aah_Ms_ugTrolox_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000210",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000211",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000212",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000211",
+    "desc": "Extraction methods - hydrophilic antioxidant",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000210",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000212",
+    "desc": "ugTroloxequiv/gfw",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000211",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000420",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000214",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000425",
+    "desc": "Aal_Ms_ugTrolox_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000212",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000423",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000424",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000422",
+    "desc": "Aal_Ms_ugTrolox_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000212",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000214",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000213",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000421",
+    "desc": "Aah_Ms_ugTrolox_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000212",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000420",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000419",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000420",
+    "desc": "Extraction methods - hydrophilic antioxidant fresh",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000419",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000214",
+    "desc": "Extraction methods - lipophilic antioxidant",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000213",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000219",
+    "desc": "tuber/plot",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000264",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000267",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000292",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000299",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000300",
+    "desc": "NNoMTb_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000219",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000299",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000298",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000293",
+    "desc": "NMTb_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000219",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000292",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000291",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000268",
+    "desc": "NTbEg_Ct_plplot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000219",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000267",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000266",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000265",
+    "desc": "NTbPl_Ct_plplot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000219",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000264",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000263",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000264",
+    "desc": "Number of tubers planted - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000263",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000267",
+    "desc": "Number of emerged plants - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000266",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000292",
+    "desc": "Number†of†marketable tubers - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000291",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000299",
+    "desc": "Non-marketable tuber number - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000298",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000220",
+    "desc": "kg/plot",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000307",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000310",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000313",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000316",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000317",
+    "desc": "TubWg_Cp_kgplot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000220",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000316",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000315",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000314",
+    "desc": "NoMTWg_Ms_kgplot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000220",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000313",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000312",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000311",
+    "desc": "MTbWg_Ms_kgplant",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000220",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000310",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000309",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000308",
+    "desc": "MTbWg_Ms_kgplot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000220",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000307",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000306",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000307",
+    "desc": "Marketable tuber weight - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000306",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000310",
+    "desc": "Marketable tuber weight per plant - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000309",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000313",
+    "desc": "Non-marketable tuber weight - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000312",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000316",
+    "desc": "Tuber weight - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000315",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000330",
+    "desc": "MkYldNAj_Cp_tha",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000221",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000328",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000329",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000327",
+    "desc": "MkbYldAj_Cp_tha",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000221",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000326",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000325",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000326",
+    "desc": "Marketable tuber yield adjusted - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000325",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000222",
+    "desc": "g",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000332",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000335",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000336",
+    "desc": "AvTrWg_Cp_g",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000222",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000335",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000334",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000333",
+    "desc": "AvTbWg_Cp_g",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000222",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000332",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000331",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000332",
+    "desc": "Average of tuber weight - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000331",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000335",
+    "desc": "Average of marketable tuber weight - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000334",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000263",
+    "desc": "Number of tubers planted",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:Crop research",
+    "desc": "Crop research",
+    "type": "term",
+    "depends": [
+      {
+        "name": "CO_330:ROOT",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000301",
+    "desc": "Tuber number",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000298",
+    "desc": "Non-marketable tuber number",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000294",
+    "desc": "Number†of†marketable tubers per plant",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000291",
+    "desc": "Number†of†marketable tubers",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000288",
+    "desc": "Proportion of plants harvested",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000284",
+    "desc": "Number of harvested plants",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000281",
+    "desc": "Plant emergence proportion",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000266",
+    "desc": "Number of emerged plants",
+    "type": "trait",
+    "depends": [
+      {
+        "name": "CO_330:Crop research",
+        "type": "RELATED_TO"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000272",
+    "desc": "PlUnif_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000269",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000270",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000271",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000270",
+    "desc": "Visual estimation Plant uniformity - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000269",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000271",
+    "desc": "PlUnif 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000270",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000630",
+    "desc": "PlVig_obs_1-3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000273",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000506",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000584",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000506",
+    "desc": "Visual estimation - Plant vigor method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000273",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000276",
+    "desc": "PlVig_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000273",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000274",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000275",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000274",
+    "desc": "Visual estimation - Plant vigor method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000273",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000275",
+    "desc": "PlVig 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000274",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000631",
+    "desc": "Sen_obs_1-4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000277",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000507",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000585",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000507",
+    "desc": "Visual estimation - Earliness method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000277",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000280",
+    "desc": "Sen_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000277",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000278",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000279",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000278",
+    "desc": "Visual estimation Senescence - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000277",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000279",
+    "desc": "Sen 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000278",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000287",
+    "desc": "PltHrv_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000284",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000285",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000286",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000285",
+    "desc": "Number of harvested plants - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000284",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000286",
+    "desc": "plants/plot",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000285",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000297",
+    "desc": "NMTb_Ct_plant",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000294",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000295",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000296",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000295",
+    "desc": "Number†of†marketable tubers per plant - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000294",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000296",
+    "desc": "tuber/plant",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000295",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000304",
+    "desc": "TubN_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000301",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000302",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000303",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000302",
+    "desc": "Tuber number - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000301",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000303",
+    "desc": "tuber/ plot",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000302",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000321",
+    "desc": "TubWg_Cp_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000318",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000319",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000320",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000319",
+    "desc": "Tuber weight per plant - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000318",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000320",
+    "desc": "kg/plant",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000319",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000329",
+    "desc": "Marketable tuber yield no adjusted - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000328",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000340",
+    "desc": "NumStn_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000337",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000338",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000339",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000338",
+    "desc": "Number of Stolons - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000337",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000339",
+    "desc": "NumStn 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000338",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000632",
+    "desc": "LgStn_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000341",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000508",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000586",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000508",
+    "desc": "Visual estimation-Length of stolons method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000341",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000344",
+    "desc": "LgStn_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000341",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000342",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000343",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000342",
+    "desc": "Length of stolons - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000341",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000343",
+    "desc": "LgStn 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000342",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000348",
+    "desc": "TubApp_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000345",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000346",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000347",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000346",
+    "desc": "Tuber appearance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000345",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000347",
+    "desc": "TubApp 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000346",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000352",
+    "desc": "TubUni_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000349",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000350",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000351",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000350",
+    "desc": "Tuber uniformity  - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000349",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000351",
+    "desc": "TubUni 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000350",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000633",
+    "desc": "TubSiz_obs_1-4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000353",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000509",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000587",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000509",
+    "desc": "Visual estimation - Tuber size method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000353",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000356",
+    "desc": "TubSiz_Et_1to9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000353",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000354",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000355",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000354",
+    "desc": "Tuber size - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000353",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000355",
+    "desc": "TubSiz 5 pt. scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000354",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000363",
+    "desc": "LB_AUDPC_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000360",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000361",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000362",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000361",
+    "desc": "Late blight AUDPC - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000360",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000362",
+    "desc": "No scale name found",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000361",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000367",
+    "desc": "LB_rAUDPC_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000364",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000365",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000366",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000365",
+    "desc": "Late blight relative AUDPC - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000364",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000366",
+    "desc": "No scale name found",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000365",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000371",
+    "desc": "LB_SAUDPC_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000368",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000369",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000370",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000369",
+    "desc": "Late blight susceptibility - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000368",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000370",
+    "desc": "No scale name found",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000369",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000388",
+    "desc": "Ffr_Et_1to5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000385",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000386",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000387",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000386",
+    "desc": "French fries color - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000385",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000387",
+    "desc": "No scale name found",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000386",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000394",
+    "desc": "Sg_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000391",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000392",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000393",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000392",
+    "desc": "Tuber specific gravity - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000391",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000393",
+    "desc": "No scale name found",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000392",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000424",
+    "desc": "Extraction methods - lipophilic antioxidant fresh",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000423",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000437",
+    "desc": "Fructose content - Method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000436",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000440",
+    "desc": "Glucose content - Method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000439",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000443",
+    "desc": "Sucrose content - Method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000442",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000446",
+    "desc": "Maltose content - Method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000445",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000449",
+    "desc": "Storage root fiber content - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000448",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000635",
+    "desc": "TbMkquSt_obs_1-7",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000451",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000511",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000589",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000634",
+    "desc": "TbMkquHv_obs_1-10",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000451",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000510",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000588",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000511",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000451",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000510",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000451",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000637",
+    "desc": "WprFlw_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000452",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000513",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000591",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000636",
+    "desc": "MprFlw_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000452",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000512",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000590",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000513",
+    "desc": "Visual estimation-Women preference at flowering",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000452",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000512",
+    "desc": "Visual estimation-Men preference at flowering",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000452",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000639",
+    "desc": "WprHar_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000453",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000515",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000593",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000638",
+    "desc": "MprHar_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000453",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000514",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000592",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000515",
+    "desc": "Visual estimation-Women preference at harvest",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000453",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000514",
+    "desc": "Visual estimation-Men preference at harvest",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000453",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000640",
+    "desc": "MprPHar_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000454",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000516",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000594",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000516",
+    "desc": "Visual estimation-Men preference at post-harvest",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000454",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000641",
+    "desc": "WprPHar_Ct_plot",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000455",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000517",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000595",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000517",
+    "desc": "Visual estimation-Women preference at post-harvest",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000455",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000529",
+    "desc": "Chromatography - chlorogenic acid fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000461",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000528",
+    "desc": "Chromatography - chlorogenic acid dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000461",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000531",
+    "desc": "Chromatography - caffeic acid fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000462",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000530",
+    "desc": "Chromatography - caffeic acid dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000462",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000533",
+    "desc": "Chromatography - tryptophan fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000463",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000532",
+    "desc": "Chromatography - tryptophan dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000463",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000535",
+    "desc": "Chromatography - total phenolics fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000464",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000534",
+    "desc": "Chromatography - total phenolics dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000464",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000537",
+    "desc": "Chromatography - glycoalkaloid fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000465",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000536",
+    "desc": "Chromatography - glycoalkaloid dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000465",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000663",
+    "desc": "Vio_Ms_ug100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000466",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000539",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000662",
+    "desc": "Vio_Cp_ug100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000466",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000538",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000539",
+    "desc": "Spectrophotometry - violaxanthin fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000466",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000538",
+    "desc": "Spectrophotometry - violaxanthin dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000466",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000665",
+    "desc": "Ant_Ms_ug100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000467",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000541",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000664",
+    "desc": "Ant_Cp_ug100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000467",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000540",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000541",
+    "desc": "Spectrophotometry - antheraxanthin fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000467",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000540",
+    "desc": "Spectrophotometry - antheraxanthin dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000467",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000667",
+    "desc": "Lute_Ms_ug100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000468",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000543",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000666",
+    "desc": "Lute_Cp_ug100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000468",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000542",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000543",
+    "desc": "Spectrophotometry - lutein fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000468",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000542",
+    "desc": "Spectrophotometry - lutein dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000468",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000669",
+    "desc": "Zea_Ms_ug100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000469",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000545",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000668",
+    "desc": "Zea_Cp_ug100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000469",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000544",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000545",
+    "desc": "Spectrophotometry - zeaxanthine fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000469",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000544",
+    "desc": "Spectrophotometry - zeaxanthine dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000469",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000671",
+    "desc": "Betacaro_Ms_ug100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000470",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000547",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000670",
+    "desc": "Betacaro_Cp_ug100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000470",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000546",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000547",
+    "desc": "Spectrophotometry - beta-carotene fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000470",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000546",
+    "desc": "Spectrophotometry - beta-carotene dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000470",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000673",
+    "desc": "Neo_Ms_ug100g_FW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000471",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000549",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000672",
+    "desc": "Neo_Cp_ug100g_DW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000471",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000548",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000549",
+    "desc": "Spectrophotometry - neoxanthine fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000471",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000548",
+    "desc": "Spectrophotometry - neoxanthine dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000471",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000675",
+    "desc": "Caro_Ms_ug100gFW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000472",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000551",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000674",
+    "desc": "Caro_Cp_ug100gDW",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000472",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000473",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000550",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000551",
+    "desc": "Spectrophotometry - total carotenoids fresh weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000472",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000550",
+    "desc": "Spectrophotometry - total carotenoids dry weight",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000472",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000473",
+    "desc": "ug/100g",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000538",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000539",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000540",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000541",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000542",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000543",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000544",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000545",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000546",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000547",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000548",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000549",
+        "link": "SCALE_OF"
+      },
+      {
+        "name": "CO_330:0000550",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000676",
+    "desc": "IdCFlo_obs_1-10",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000474",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000552",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000596",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000552",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000474",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000677",
+    "desc": "IdCHav_obs_1-13",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000475",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000553",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000597",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000553",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000475",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000678",
+    "desc": "IdCPhv_obs_1-3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000476",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000554",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000598",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000554",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000476",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000679",
+    "desc": "PlArc_obs_1-13",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000477",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000555",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000599",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000555",
+    "desc": "Visual estimation - Plant architecture method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000477",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000680",
+    "desc": "FolCol_obs_1-4",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000478",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000556",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000600",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000556",
+    "desc": "Visual estimation - Foliage color method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000478",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000681",
+    "desc": "LefTyp_obs_1-5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000479",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000557",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000601",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000557",
+    "desc": "Visual estimation - Leaf type method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000479",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000682",
+    "desc": "FlwCol_obs_1-3",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000480",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000558",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000602",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000558",
+    "desc": "Visual estimation - Flower color method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000480",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000683",
+    "desc": "RAlter_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000481",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000559",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000603",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000559",
+    "desc": "Visual estimation Alternaria resistance - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000481",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000684",
+    "desc": "RMVir_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000482",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000560",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000604",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000560",
+    "desc": "Visual estimation Mosaic virus resistance  - method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000482",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000685",
+    "desc": "RnMth_obs_1-9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000483",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000561",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000605",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000561",
+    "desc": "Visual estimation of the plant response to  Moth",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000483",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000686",
+    "desc": "RnAph_obs_1-9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000484",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000562",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000606",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000562",
+    "desc": "Visual estimation of the plant response to  Aphis",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000484",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000687",
+    "desc": "RnSSPW_obs_1-9",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000485",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000563",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000607",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000563",
+    "desc": "Visual estimation of the plant response to potato weevil",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000485",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000688",
+    "desc": "lDro_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000486",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000564",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000608",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000564",
+    "desc": "Visual estimation  - Drought tolerance method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000486",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000689",
+    "desc": "lHst_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000487",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000565",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000609",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000565",
+    "desc": "Visual estimation - Hailstorm tolerance method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000487",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000690",
+    "desc": "lFrost_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000488",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000566",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000610",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000566",
+    "desc": "Visual estimation - Frost tolerant method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000488",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000691",
+    "desc": "lMoS_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000489",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000567",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000611",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000567",
+    "desc": "Visual estimation - Moisture  tolerance",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000489",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000692",
+    "desc": "NuEyTb_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000490",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000568",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000612",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000568",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000490",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000693",
+    "desc": "TexSkn_obs_1-5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000491",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000569",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000613",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000569",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000491",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000694",
+    "desc": "TbHcom_obs_1-5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000492",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000570",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000614",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000570",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000492",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000695",
+    "desc": "SprEal_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000493",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000571",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000615",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000571",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000493",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000696",
+    "desc": "SprTyp_obs_1-2",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000494",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000572",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000616",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000572",
+    "desc": "Visual estimation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000494",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000697",
+    "desc": "GlFaPr_Cp",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000495",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000573",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000617",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000573",
+    "desc": "Computation",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000495",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000698",
+    "desc": "TbApAc_obs_1-5",
+    "type": "variable",
+    "depends": [
+      {
+        "name": "CO_330:0000496",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000574",
+        "link": "VARIABLE_OF"
+      },
+      {
+        "name": "CO_330:0000618",
+        "link": "VARIABLE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000574",
+    "desc": "Visual estimation-Appearance method",
+    "type": "method",
+    "depends": [
+      {
+        "name": "CO_330:0000496",
+        "link": "METHOD_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000575",
+    "desc": "PrdSknCol 8pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000497",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000576",
+    "desc": "PrdFlshCol  4pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000498",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000577",
+    "desc": "RLb 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000499",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000578",
+    "desc": "RPrlv 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000500",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000579",
+    "desc": "RBw 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000501",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000580",
+    "desc": "RRkn 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000502",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000581",
+    "desc": "Reht 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000503",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000582",
+    "desc": "TbTsAc 3pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000504",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000583",
+    "desc": "TbTexAc 3pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000505",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000584",
+    "desc": "PlVig 3pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000506",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000585",
+    "desc": "Sen 4pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000507",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000586",
+    "desc": "LgStn 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000508",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000587",
+    "desc": "TubSiz 4pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000509",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000588",
+    "desc": "TbMkquHv 10pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000510",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000589",
+    "desc": "TbMkquSt 7pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000511",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000590",
+    "desc": "MprFlw",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000512",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000591",
+    "desc": "WprFlw",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000513",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000592",
+    "desc": "MprHar",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000514",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000593",
+    "desc": "WprHar",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000515",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000594",
+    "desc": "MprPHar",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000516",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000595",
+    "desc": "WprPHar",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000517",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000596",
+    "desc": "IdCFlo 10pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000552",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000597",
+    "desc": "IdCHav 13pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000553",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000598",
+    "desc": "IdCPhv 3pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000554",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000599",
+    "desc": "PlArc 13pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000555",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000600",
+    "desc": "FolCol 4pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000556",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000601",
+    "desc": "LefTyp 5pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000557",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000602",
+    "desc": "FlwCol 3pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000558",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000603",
+    "desc": "RAlter  2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000559",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000604",
+    "desc": "RMVir  2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000560",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000605",
+    "desc": "RcMth 5 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000561",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000606",
+    "desc": "RcAph 5 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000562",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000607",
+    "desc": "RcSSPW 5 pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000563",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000608",
+    "desc": "TolDro 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000564",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000609",
+    "desc": "TolHst 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000565",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000610",
+    "desc": "TolFrost 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000566",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000611",
+    "desc": "TolMoS 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000567",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000612",
+    "desc": "NuEyTb 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000568",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000613",
+    "desc": "TexSkn 5pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000569",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000614",
+    "desc": "TbHcom 6pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000570",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000615",
+    "desc": "SprEal 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000571",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000616",
+    "desc": "SprTyp 2pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000572",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000617",
+    "desc": "GlFaPr",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000573",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000618",
+    "desc": "TbApAc 3pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000574",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:0000619",
+    "desc": "Flwdgr 4pt. Scale",
+    "type": "scale",
+    "depends": [
+      {
+        "name": "CO_330:0000699",
+        "link": "SCALE_OF"
+      }
+    ]
+  },
+  {
+    "name": "CO_330:ROOT",
+    "desc": "Potato",
+    "type": "term",
+    "depends": []
+  }
+]

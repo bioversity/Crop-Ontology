@@ -1,0 +1,49 @@
+<div class="collapse navbar-collapse order-3" id="navbarCollapse">
+    <ul class="navbar-nav">
+        {% block main_items %}
+            <li class="nav-item">
+                <a href="{{ request.route_url('about') }}" class="nav-link">{{ _('About') }}</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ request.route_url('feedback') }}" class="nav-link">{{ _('Feedback') }}</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ request.route_url('help') }}" class="nav-link">{{ _('Help') }}</a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ request.route_url('api_help') }}" class="nav-link">{{ _('API') }}</a>
+            </li>
+            <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu2" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Tools') }}</a>
+                    <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+                        {% if userLogged %}
+                            <li><a href="#" class="dropdown-item">{{ _('Add new terms') }}</a></li>
+                        {% endif %}
+                        <li><a href="#" class="dropdown-item">{{ _('Agtrials') }}</a></li>
+                        {% if userLogged %}
+                            <li><a href="#" class="dropdown-item">{{ _('Annotation tool') }}</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% if userLogged %}
+                {% if activeUser.super %}
+                    <li class="nav-item dropdown">
+                        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Site maintenance') }}</a>
+                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                            <li><a href="{{ request.route_url('page_list') }}" class="dropdown-item">{{ _('Pages') }}</a></li>
+                            <li><a href="{{ request.route_url('section_list') }}" class="dropdown-item">{{ _('Sections') }}</a></li>
+{#                            <li><a href="#" class="dropdown-item">{{ _('Menus') }}</a></li>#}
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endblock main_items %}
+        {% block extra_items %}
+
+        {% endblock extra_items %}
+    </ul>
+    {% block navbar_search %}
+        {# Uncomment the below line to have a search action #}
+        {#        {% include 'private/snippets/navbar_search.jinja2' %}#}
+    {% endblock navbar_search %}
+</div>

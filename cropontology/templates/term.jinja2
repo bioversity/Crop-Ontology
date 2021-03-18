@@ -1,0 +1,132 @@
+{% extends 'page.jinja2' %}
+
+{% block css %}
+    {{ super() }}
+    {% if with_tree %}
+        {% cssresource request,'main_library','jstree' %}
+    {% endif %}
+{% endblock css %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="m-0">Navigation</h5>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: scroll">
+                            <div id="tree"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="m-0">Variables</h5>
+                        </div>
+                        <div class="card-body" style="max-height: 400px; overflow-y: scroll">
+                            {{ _('Search:') }} <input type="text" class="search" />
+                            <div id="variable_list">
+                                <ul class="tag-list" style="padding: 0">
+                                    {% for variable in variables %}
+                                        <li><a href="{{ request.route_url('term_details', termid=variable.id) }}"> {{ variable.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="m-0">Term details</h5>
+              </div>
+                <div class="card-body">
+                    <div id="term_content">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for a_result in results %}
+                                <tr>
+                                    <td>{{ a_result.key }}</td>
+                                    <td>{{ a_result.value }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {% if with_tree %}
+        {% jsresource request,'main_library','jstree' %}
+        <script>
+            $(function() {
+
+                $('input.search').keyup(function() {
+
+                    var searchText = $(this).val();
+
+                    $('ul.tag-list > li').each(function() {
+
+                        var currentLiText = $(this).text(),
+                            showCurrentLi = currentLiText.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
+
+                        $(this).toggle(showCurrentLi);
+
+                    });
+                });
+
+            });
+        </script>
+
+        <script>
+            var active_node = '{{ term_id }}';
+            var details_url = '{{ request.application_url }}';
+            $('#tree')
+                .jstree({
+                    'core' : {
+                        'data' : {
+                            'url' : '{{ request.route_url('tree', termid=term_id) }}',
+                            'data' : function (node) {
+                                return { 'id' : node.id };
+                            }
+                        },
+                        "multiple": false,
+                    }
+                })
+                .on('changed.jstree', function (e, data) {
+                    var i, j;
+                    for(i = 0, j = data.selected.length; i < j; i++) {
+                        var selected_id = data.instance.get_node(data.selected[i]).id;
+                        if (active_node !== selected_id)
+                        {
+                            active_node = selected_id;
+                            //alert(selected_id);
+                            var ecoded_id = encodeURIComponent(selected_id.trim())
+                            $('#term_content').load(details_url + "/term/" + ecoded_id + "?with_tree=False #term_content");
+                            $('#variable_list').load(details_url + "/term/" + ecoded_id + "?with_tree=False #variable_list");
+                        }
+
+                    }
+                });
+        </script>
+    {% endif %}
+{% endblock %}

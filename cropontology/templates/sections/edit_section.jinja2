@@ -1,0 +1,134 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block breadcrums %}
+    {% include 'sections/snippets/breadcrums_edit.jinja2' %}
+{% endblock breadcrums %}
+
+{% block main_container %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title m-0">{{ _('Current content of ') }} {{ form_data.section_desc }}</h5>
+            </div>
+            <form role="form" method="post" action="{{ request.url }}">
+                {{ form.secure_form(request) }}
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">{{ _('ID') }}</label>
+                        <input type="text" readonly class="form-control" name="section_id" value="{{ form_data.section_id }}">
+                    </div>
+                     <div class="form-group">
+                        <label for="exampleInputEmail1">{{ _('Description') }}</label>
+                        <input type="text" class="form-control" name="section_desc" value="{{ form_data.section_desc }}" placeholder="{{ _('Enter description') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">{{ _('Content') }}</label>
+                        <textarea id="editor" class="form-control editor" name="section_content">{{ form_data.section_content }}</textarea>
+                    </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">{{ _('Save changes') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ request.url_for_static('ckeditor/ckeditor.js') }}"> </script>
+
+    <script>
+        CKEDITOR.replace( 'editor', {
+            height: 300,
+            filebrowserUploadUrl: '{{ request.route_url("page_image_upload", _query={'command':'QuickUpload'})}}'
+        });
+    </script>
+
+
+
+{#    <script>#}
+{#        ClassicEditor#}
+{#        .create( document.querySelector( '.editor' ), {#}
+{#            toolbar: {#}
+{#                items: [#}
+{#                    'heading',#}
+{#                    '|',#}
+{#                    'bold',#}
+{#                    'italic',#}
+{#                    'underline',#}
+{#                    'link',#}
+{#                    'bulletedList',#}
+{#                    'numberedList',#}
+{#                    '|',#}
+{#                    'indent',#}
+{#                    'outdent',#}
+{#                    'alignment',#}
+{#                    '|',#}
+{#                    'imageUpload',#}
+{#                    'blockQuote',#}
+{#                    'insertTable',#}
+{#                    'mediaEmbed',#}
+{#                    'undo',#}
+{#                    'redo',#}
+{#                    '|',#}
+{#                    'highlight',#}
+{#                    'fontBackgroundColor',#}
+{#                    'fontColor',#}
+{#                    'fontSize',#}
+{#                    'fontFamily',#}
+{#                    'subscript',#}
+{#                    'superscript',#}
+{#                    '|',#}
+{#                    'horizontalLine',#}
+{#                    '|',#}
+{#                    'code',#}
+{#                    'codeBlock',#}
+{#                    '|',#}
+{#                    'specialCharacters'#}
+{#                ]#}
+{#            },#}
+{#            language: 'en',#}
+{#            image: {#}
+{#                styles: [#}
+{#                    'alignLeft', 'alignCenter', 'alignRight'#}
+{#                ],#}
+{#                toolbar: [#}
+{#                    'imageTextAlternative',#}
+{#                    'imageStyle:full',#}
+{#                    'imageStyle:side',#}
+{#                    '|',#}
+{#                    'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',#}
+{#                    '|',#}
+{#                    'imageResize',#}
+{#                ]#}
+{#            },#}
+{#            table: {#}
+{#                contentToolbar: [#}
+{#                    'tableColumn',#}
+{#                    'tableRow',#}
+{#                    'mergeTableCells',#}
+{#                    'tableCellProperties',#}
+{#                    'tableProperties',#}
+{#                ]#}
+{#            },#}
+{#            licenseKey: '',#}
+{#            ckfinder: {#}
+{#                uploadUrl: '{{ request.route_url("section_image_upload", sectionid=sectionid) }}'#}
+{#            },#}
+{#        } )#}
+{#        .then( editor => {#}
+{#            window.editor = editor;#}
+{##}
+{#        } )#}
+{#        .catch( error => {#}
+{#            console.error( 'Oops, something went wrong!' );#}
+{#            console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );#}
+{#            console.warn( 'Build id: 1cip5nib3qzi-4scddo90p0ax' );#}
+{#            console.error( error );#}
+{#        } );#}
+{#    </script>#}
+{% endblock %}

@@ -1,0 +1,12 @@
+{
+  "facets": [
+    {"code": "ontology_name.keyword", "name": "Ontology", "key": "ontology_name", "desc":  "Ontology name"},
+    {"code": "term_type.keyword", "name": "Type", "key": "term_type", "desc":  "Term type"},
+    {"code": "crop.keyword", "name": "Crop", "key": "crop", "desc":  "Crop"},
+    {"code": "entity.keyword", "name": "Entity", "key": "entity", "desc":  "Entity"},
+    {"code": "trait_class.keyword", "name": "Trait Class", "key": "trait_class", "desc":  "Trait Class"},
+    {"code": "method_class.keyword", "name": "Method Class", "key": "method_class", "desc":  "Method Class"},
+    {"code": "scale_class.keyword", "name": "Scale Class", "key": "scale_class", "desc":  "Scale Class"},
+    {"code": "obsolete.keyword", "name": "Obsolete", "key": "obsolete", "desc":  "Is Obsolete"}
+  ]
+}

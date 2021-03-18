@@ -1,0 +1,64 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','graph_svg' %}
+{% endblock css %}
+
+{% block breadcrums %}
+    {% include 'ontology/snippets/breadcrums_ontology.jinja2' %}
+{% endblock breadcrums %}
+
+{% block main_container %}
+    <div class="row">
+        {% if request.h.has_section_content(request, ontology_id) %}
+        <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        {{ request.h.get_section_content(request, ontology_id) }}
+                    </div>
+                </div>
+
+        </div>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <a class="btn btn-default nav-button" id="nav-list" href="">
+                View list
+            </a>
+            <a class="btn btn-default fit-button" id="fit-button">
+                Fit
+            </a>
+            <a class="btn btn-default thaw-button" id="thaw-button">
+                Thaw
+            </a>
+            <a class="btn btn-default png-button" id="png-button" style="display: none">
+                PNG
+            </a>
+            <a class="btn btn-default svg-button" id="svg-button" style="display: none">
+                SVG
+            </a>
+            <div id="graph-container" style="max-height: 600px !important;">
+                <div id="graph" style="max-height: 600px"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="docs-container" style="max-height: 600px; height: 600px">
+                <div id="docs" class="docs"></div>
+            </div>
+
+        </div>
+    </div>
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        var url_term = "{{ request.route_url('term_details',termid='replace_me') }}";
+        var config = {"title":"Ontology explorer ({{ ontology_data.ontology_name }})","graph":{"linkDistance":100,"charge":-100,"preventColls":"false","collide":48,"height":500,"numColors":12,"labelPadding":{"left":3,"right":3,"top":2,"bottom":2},"labelMargin":{"left":3,"right":3,"top":2,"bottom":2},"ticksWithoutCollisions":50},"types":{"view":{"short":"term","long":"Terms"},"table":{"short":"method","long":"Methods"},"query":{"short":"scale","long":"Scales"},"sas":{"short":"trait","long":"Traits"},"extract":{"short":"variable","long":"Variables"}},"constraints":[],"jsonUrl":"{{ request.route_url('ontology_json',ontology_id=ontology_id) }}"};
+    </script>
+    {% jsresource request,'main_library','graph' %}
+{% endblock scripts %}

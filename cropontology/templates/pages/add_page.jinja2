@@ -1,0 +1,34 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block breadcrums %}
+    {% include 'pages/snippets/breadcrums_add.jinja2' %}
+{% endblock breadcrums %}
+
+{% block main_container %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title m-0">{{ _('Information for the new page') }}</h5>
+            </div>
+            <form role="form" method="post" action="{{ request.url }}">
+                {{ form.secure_form(request) }}
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">{{ _('ID') }}</label>
+                        <input type="text" class="form-control" name="page_id" value="{{ form_data.page_id }}" placeholder="{{ _('Enter page ID') }}">
+                    </div>
+                     <div class="form-group">
+                        <label for="exampleInputEmail1">{{ _('Description') }}</label>
+                        <input type="text" class="form-control" name="page_desc" value="{{ form_data.page_desc }}" placeholder="{{ _('Enter description') }}">
+                    </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">{{ _('Add page') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main_container %}

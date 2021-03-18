@@ -1,0 +1,10 @@
+{% include 'generic/404.jinja2' %}
+{% block error_content %}
+    <h2 class="headline text-danger">!!!</h2>
+    <div class="error-content">
+        <h3><i class="fas fa-exclamation-triangle text-danger"></i> {{ _('Oops! You need to refresh you session.') }}</h3>
+        <p>
+            {{ _("Don't worry. Just go back and press the browser refresh button") }}
+        </p>
+    </div>
+{% endblock %}

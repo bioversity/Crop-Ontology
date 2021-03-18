@@ -1,0 +1,61 @@
+{% extends 'base.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block css %}
+    {% cssresource request,'main_library','adminlte' %}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{% endblock css %}
+
+{% block bodyclass %}hold-transition login-page{% endblock bodyclass %}
+{% block body %}
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="{{ request.route_url('home') }}"><b>{{ _('Crop Ontology Curation Tool') }}</b></a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                {% block login_errors %}
+                    {{ form.display_errors(errors) }}
+                {% endblock login_errors %}
+                <p class="login-box-msg">{{ _('Sign in to start your session') }}</p>
+
+                <form action="{{ request.url }}" method="post">
+                    {{ form.secure_form(request) }}
+                    <div class="input-group mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="{{ _('Email') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" name="passwd" class="form-control" placeholder="{{ _('Password') }}">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    {% block login_form_extra %}
+
+                    {% endblock login_form_extra %}
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">{{ _('Sign In') }}</button>
+                        </div>
+                    </div>
+                </form>
+                {% block login_bottom_actions %}
+                <p class="mb-0">
+                    <a href="{{ request.route_url('register') }}" class="text-center">{{ _('Register a new account') }}</a>
+                </p>
+                {% endblock login_bottom_actions %}
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        {% jsresource request,'main_library','adminlte' %}
+    {% endblock %}
+{% endblock body %}

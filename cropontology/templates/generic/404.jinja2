@@ -1,0 +1,36 @@
+{% extends 'base.jinja2' %}
+
+{% block css %}
+    {% cssresource request,'main_library','adminlte' %}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{% endblock css %}
+
+{% block bodyclass %}hold-transition login-page{% endblock bodyclass %}
+{% block body %}
+    <div class="login-box">
+    <div class="error-page">
+        {% block error_content %}
+            <h2 class="headline text-warning"> 404</h2>
+            <div class="error-content">
+                <h3><i class="fas fa-exclamation-triangle text-warning"></i> {{ _('Oops! Page not found.') }}</h3>
+                <p>
+                    {{ _('We could not find the page you were looking for.') }}
+                    {{ _('Meanwhile, you may') }} <a href="{{ request.route_url('home') }}">{{ _('return to home') }}</a> {{ _('or try using the search form.') }}
+                </p>
+                <form class="search-form">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="{{ _('Search') }}">
+                        <div class="input-group-append">
+                            <button type="submit" name="submit" class="btn btn-warning"><i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {% endblock error_content %}
+    </div>
+    </div>
+    {% block scripts %}
+        {% jsresource request,'main_library','adminlte' %}
+    {% endblock %}
+{% endblock body %}

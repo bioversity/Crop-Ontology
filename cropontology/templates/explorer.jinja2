@@ -1,0 +1,47 @@
+{% extends 'page.jinja2' %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','d3-tip' %}
+{% endblock css %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="split-container">
+                        <a class="btn btn-default fit-button" id="fit-button">
+                            Fit
+                        </a>
+                        <a class="btn btn-default thaw-button" id="thaw-button">
+                            Thaw
+                        </a>
+                        <a class="btn btn-default png-button" id="png-button">
+                            PNG
+                        </a>
+                        <a class="btn btn-default svg-button" id="svg-button">
+                            SVG
+                        </a>
+                        <div id="graph-container">
+                            <div id="graph"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','fileSaver' %}
+
+    <script>
+        var config = {"title":"Database process documentation","graph":{"linkDistance":100,"charge":-100,"preventColls":"false","collide":48,"height":500,"numColors":12,"labelPadding":{"left":3,"right":3,"top":2,"bottom":2},"labelMargin":{"left":3,"right":3,"top":2,"bottom":2},"ticksWithoutCollisions":50},"types":{"view":{"short":"term","long":"Terms"},"table":{"short":"method","long":"Methods"},"query":{"short":"scale","long":"Scales"},"sas":{"short":"trait","long":"Traits"},"extract":{"short":"variable","long":"Variables"}},"constraints":[],"jsonUrl":"json.php?dataset=qlands"};
+    </script>
+
+    {% jsresource request,'main_library','graph' %}
+
+{% endblock scripts  %}

@@ -1,0 +1,340 @@
+{
+  "result": [
+    {
+      "ontology_id": "CO_010",
+      "created_at": "2011-10-03 20:26:41.386000+00:00",
+      "ontology_summary": "germplasm",
+      "category": "010-089 General Germplasm Ontology",
+      "ontology_name": "Germplasm ",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>"
+    },
+    {
+      "ontology_summary": "FAO/Bioversity Multi-Crop Passport Descriptors V.2.1 [MCPD V.2.1] standard, developed and co-authored by Alercia, A; Diulgheroff, S; Mackay, M",
+      "created_at": "2017-03-09 13:20:54.489000+00:00",
+      "ontology_name": "FAO/Bioversity Multi-Crop Passport Descriptors",
+      "ontology_id": "CO_020",
+      "category": "010-089 General Germplasm Ontology",
+      "user_key": "<Key('user', 5001), project=cropontology-curationtool>"
+    },
+    {
+      "ontology_name": "ICIS germplasm method",
+      "ontology_summary": "ICIS germplasm methods ",
+      "category": "010-089 General Germplasm Ontology",
+      "created_at": "2011-10-03 20:24:32.460000+00:00",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "ontology_id": "CO_040"
+    },
+    {
+      "ontology_id": "CO_121",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "ontology_name": "Wheat Plant Anatomy and Development Ontology",
+      "ontology_summary": "Defines growth stages of  wheat",
+      "category": "100-299 Plant Anatomy & Development Ontology",
+      "created_at": "2015-01-30 16:33:49.924000+00:00"
+    },
+    {
+      "created_at": "2011-08-03 09:24:18.871000+00:00",
+      "ontology_summary": "Banana Anatomy",
+      "ontology_name": "Banana Anatomy",
+      "ontology_id": "CO_125",
+      "category": "100-299 Plant Anatomy & Development Ontology",
+      "user_key": "<Key('user', 5001), project=cropontology-curationtool>"
+    },
+    {
+      "ontology_summary": "Rice Trait Dictionary in template v 5.0 - IRRI - March 2016 - Based on SES, RD, UPOV variables and on variables used by CIAT, FLAR and the GRISP Phenotyping Network variables",
+      "ontology_id": "CO_320",
+      "created_at": "2016-04-18 17:01:16.739000+00:00",
+      "user_key": "<Key('user', 5791032448909312), project=cropontology-curationtool>",
+      "ontology_name": "Rice",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "ontology_name": "Wheat",
+      "ontology_id": "CO_321",
+      "ontology_summary": "July 2018",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "created_at": "2019-02-15 09:19:11.054000+00:00"
+    },
+    {
+      "ontology_summary": "Maize Trait Dictionary in template 5 - CIMMYT- September 2016",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "created_at": "2016-10-18 22:49:33.680000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_name": "Maize",
+      "ontology_id": "CO_322"
+    },
+    {
+      "created_at": "2020-06-09 07:45:15.989000+00:00",
+      "ontology_name": "Barley",
+      "user_key": "<Key('user', 5848004653219840), project=cropontology-curationtool>",
+      "ontology_id": "CO_323",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "ICARDA - TDv5 - Sept 2018"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_name": "Sorghum",
+      "ontology_summary": "Sorghum TDv5 - Oct 2019",
+      "ontology_id": "CO_324",
+      "user_key": "<Key('user', 36001), project=cropontology-curationtool>",
+      "created_at": "2018-02-02 13:05:15.023000+00:00"
+    },
+    {
+      "ontology_id": "CO_325",
+      "created_at": "2019-04-18 10:45:39.767000+00:00",
+      "user_key": "<Key('user', 5786161150689280), project=cropontology-curationtool>",
+      "ontology_summary": "Banana Trait Dictionary in template 5 - Bioversity & IITA - April 2019",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_name": "Banana"
+    },
+    {
+      "ontology_name": "Pearl millet",
+      "user_key": "<Key('user', 36001), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_id": "CO_327",
+      "ontology_summary": "Pearl millet Trait Dictionary in template 5 - ICRISAT/INERA - April 2016",
+      "created_at": "2016-05-30 11:20:58.358000+00:00"
+    },
+    {
+      "user_key": "<Key('user', 269001), project=cropontology-curationtool>",
+      "ontology_summary": "CIP - potato ontology - december 2018",
+      "ontology_name": "Potato",
+      "created_at": "2019-01-22 16:16:58.810000+00:00",
+      "ontology_id": "CO_330",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "created_at": "2019-11-28 14:12:42.640000+00:00",
+      "ontology_id": "CO_331",
+      "ontology_summary": "Sweet Potato Trait Dictionary in template v5 - CIP - November 2019",
+      "ontology_name": "Sweet Potato",
+      "user_key": "<Key('user', 269001), project=cropontology-curationtool>"
+    },
+    {
+      "created_at": "2020-08-05 08:26:03.997000+00:00",
+      "ontology_id": "CO_333",
+      "user_key": "<Key('user', 5801814158999552), project=cropontology-curationtool>",
+      "ontology_summary": "This ontology was built as part of the AKER project. It describes variables used in beet phenotyping (experimental properties and measurement scale) for each institution (INRAE, Geves, ITB) and breeding companies (Florimond Desprez). Curator: Dorothee Charruaud (ADRINORD - URGI) Daphne Verdelet (Florimond Desprez) - First submission in November 2017.",
+      "ontology_name": "Beet Ontology",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "ontology_name": "Cassava",
+      "created_at": "2016-02-08 17:21:16.128000+00:00",
+      "ontology_id": "CO_334",
+      "user_key": "<Key('user', 84001), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "Cassava Trait Dictionary in template 5 - IITA - July 2015, updated in February 2016"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "CIAT Common bean trait dictionary - version August 2014",
+      "ontology_id": "CO_335",
+      "ontology_name": "Common Bean",
+      "created_at": "2019-04-15 11:03:06.391000+00:00",
+      "user_key": "<Key('user', 32001), project=cropontology-curationtool>"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "created_at": "2016-09-02 07:35:27.790000+00:00",
+      "ontology_name": "Soybean",
+      "ontology_summary": "Soybean Trait Dictionary in template v5 - IITA - July 2015",
+      "user_key": "<Key('user', 369002), project=cropontology-curationtool>",
+      "ontology_id": "CO_336"
+    },
+    {
+      "ontology_summary": "Groundnut Trait Dictionary in template v5 - ICRISAT/ISRA/DARS - Sept 2015",
+      "user_key": "<Key('user', 2001), project=cropontology-curationtool>",
+      "ontology_id": "CO_337",
+      "ontology_name": "Groundnut",
+      "created_at": "2018-01-04 14:32:05.186000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "created_at": "2016-02-15 17:19:03.604000+00:00",
+      "user_key": "<Key('user', 2001), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_id": "CO_338",
+      "ontology_name": "Chickpea",
+      "ontology_summary": "Chickpea Trait Dictionary in template v5 - ICRISAT - July 2015"
+    },
+    {
+      "ontology_id": "CO_339",
+      "ontology_summary": "Lentil Trait Dictionary in template v5 - ICARDA - July 2015",
+      "ontology_name": "Lentil",
+      "created_at": "2016-02-15 17:34:51.127000+00:00",
+      "user_key": "<Key('user', 399001), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "Cowpea Trait Dictionary in template v5 - IITA - August 2015",
+      "ontology_id": "CO_340",
+      "ontology_name": "Cowpea",
+      "user_key": "<Key('user', 21001), project=cropontology-curationtool>",
+      "created_at": "2016-09-06 10:43:19.755000+00:00"
+    },
+    {
+      "ontology_id": "CO_341",
+      "ontology_name": "Pigeonpea",
+      "created_at": "2019-09-03 07:51:21.654000+00:00",
+      "ontology_summary": "Pigeonpea Trait Dictionary in template v5 - ICRISAT - July 2015",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "user_key": "<Key('user', 2001), project=cropontology-curationtool>"
+    },
+    {
+      "created_at": "2019-06-14 08:59:29.401000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_id": "CO_343",
+      "ontology_name": "Yam",
+      "ontology_summary": "version 2019 - pvs",
+      "user_key": "<Key('user', 5848004653219840), project=cropontology-curationtool>"
+    },
+    {
+      "user_key": "<Key('user', 5813781682716672), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "created_at": "2017-03-21 12:48:44.925000+00:00",
+      "ontology_summary": "Brachiaria (forages) ontology TD v5 - Version Oct 2016",
+      "ontology_id": "CO_345",
+      "ontology_name": "Brachiaria"
+    },
+    {
+      "created_at": "2017-05-02 10:47:54.534000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "oct 2016",
+      "ontology_id": "CO_346",
+      "user_key": "<Key('user', 5830065917001728), project=cropontology-curationtool>",
+      "ontology_name": "Mungbean"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "created_at": "2017-05-02 12:25:10.938000+00:00",
+      "ontology_summary": "March 2017 version ",
+      "ontology_name": "Castor bean",
+      "ontology_id": "CO_347",
+      "user_key": "<Key('user', 5848004653219840), project=cropontology-curationtool>"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "user_key": "<Key('user', 5830394616217600), project=cropontology-curationtool>",
+      "created_at": "2017-11-27 13:25:38.799000+00:00",
+      "ontology_summary": "Brassica Trait Ontology (BRaTO) hosts trait information to describe brassica crop data.\nTerms are collected from various projects including OREGIN, RIPR (UK) and Rapsodyn (France).\nBRATO development is conducted by Earlham Institute (UK), Southern Cross University (Australia) and INRA (France).",
+      "ontology_id": "CO_348",
+      "ontology_name": "Brassica"
+    },
+    {
+      "created_at": "2019-10-08 13:07:25.114000+00:00",
+      "ontology_name": "Oat",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "user_key": "<Key('user', 5848004653219840), project=cropontology-curationtool>",
+      "ontology_id": "CO_350",
+      "ontology_summary": "Oat trait dictionary started by Oat Global (http://oatglobal.org/) and improved by NIAB and PepsiCo"
+    },
+    {
+      "user_key": "<Key('user', 5801814158999552), project=cropontology-curationtool>",
+      "ontology_summary": "Grape Ontology including OIV and bioversity descriptors. INRA July 2017",
+      "ontology_id": "CO_356",
+      "ontology_name": "Vitis",
+      "created_at": "2017-07-12 14:29:18.277000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "This ontology lists all variables used for woody plant observations. Terms are collected from various sources (past and ongoing projects at national and international levels). Curators: Celia Michotey (INRAE) & Ines Chaves (IBET) - Version 2 submitted on Jun 2020 by INRAE.",
+      "ontology_id": "CO_357",
+      "created_at": "2020-06-08 15:08:16.589000+00:00",
+      "ontology_name": "Woody Plant Ontology",
+      "user_key": "<Key('user', 5801814158999552), project=cropontology-curationtool>"
+    },
+    {
+      "ontology_id": "CO_358",
+      "created_at": "2019-06-19 10:04:16.973000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_name": "Cotton",
+      "user_key": "<Key('user', 5794179451977728), project=cropontology-curationtool>",
+      "ontology_summary": "Cotton ontology from CottonGen database - June 2019"
+    },
+    {
+      "created_at": "2019-12-16 09:13:56.400000+00:00",
+      "user_key": "<Key('user', 5770487204413440), project=cropontology-curationtool>",
+      "ontology_name": "Sunflower",
+      "ontology_summary": "December 2019",
+      "ontology_id": "CO_359",
+      "category": "300-499 Phenotype and Trait Ontology"
+    },
+    {
+      "ontology_summary": "Sugar Kelp trait ontology",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_name": "Sugar Kelp trait",
+      "created_at": "2018-03-05 17:11:36.718000+00:00",
+      "ontology_id": "CO_360",
+      "user_key": "<Key('user', 5804938747707392), project=cropontology-curationtool>"
+    },
+    {
+      "created_at": "2018-12-14 19:57:16.774000+00:00",
+      "ontology_summary": "developed by ICARDA - Dec 2018",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_name": "Fababean",
+      "user_key": "<Key('user', 5824060277653504), project=cropontology-curationtool>",
+      "ontology_id": "CO_365"
+    },
+    {
+      "ontology_summary": "version Dec 2019",
+      "created_at": "2019-12-20 08:42:44.417000+00:00",
+      "ontology_id": "CO_366",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "user_key": "<Key('user', 5834829396443136), project=cropontology-curationtool>",
+      "ontology_name": "Bambara groundnut"
+    },
+    {
+      "ontology_summary": "Adapted from Descriptors for Genetic Markers Technologies (2004) by Carmen De Vicente, Thomas Metz and Adriana Alercia ",
+      "category": "500-699 Structural and Functional Genomic Ontology",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "ontology_id": "CO_500",
+      "ontology_name": "Molecular marker",
+      "created_at": "2011-08-18 21:46:01.639000+00:00"
+    },
+    {
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "created_at": "2012-04-09 03:29:03.805000+00:00",
+      "ontology_summary": "Describes official ISO 3166-1 alpha-2, alpha-3 and numeric country codes along with location names.",
+      "category": "700-799 Location and Environmental Ontology",
+      "ontology_name": "Country and Location",
+      "ontology_id": "CO_705"
+    },
+    {
+      "category": "700-799 Location and Environmental Ontology",
+      "ontology_id": "CO_715",
+      "user_key": "<Key('user', 2), project=cropontology-curationtool>",
+      "ontology_summary": "Describes experimental design, environmental conditions and methods associated with the crop study/experiment/trail and their evaluation.",
+      "created_at": "2012-04-09 03:32:53.646000+00:00",
+      "ontology_name": "Crop Research"
+    },
+    {
+      "user_key": "<Key('user', 97001), project=cropontology-curationtool>",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "Barley Trait Ontology template v 4, 6 June 2013 submitted by the Institute of Plant Genetics Poznan on behalf of Polapgen Consortium Poland",
+      "created_at": "2013-06-13 08:55:53.766000+00:00",
+      "ontology_id": "POLAPGEN_BARLEY",
+      "ontology_name": "Barley Trait POLAPGEN Ontology"
+    },
+    {
+      "ontology_name": "SoyBase Soybean Trait Ontology",
+      "created_at": "2015-04-16 20:43:42.080000+00:00",
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_summary": "SoyBase soybean trait ontology",
+      "ontology_id": "SOY",
+      "user_key": "<Key('user', 38001), project=cropontology-curationtool>"
+    },
+    {
+      "category": "300-499 Phenotype and Trait Ontology",
+      "ontology_id": "SP",
+      "ontology_summary": "Solanaceae-specific traits and phenotypes",
+      "user_key": "<Key('user', 28001), project=cropontology-curationtool>",
+      "created_at": "2011-10-12 17:18:27.503000+00:00",
+      "ontology_name": "Solanaceae Phenotype Ontology"
+    }
+  ]
+}

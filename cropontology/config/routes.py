@@ -1,0 +1,219 @@
+import logging
+
+import cropontology.plugins as p
+from ..plugins.utilities import add_route
+
+from ..views.search import SearchView
+from ..views.term import TermDetailsView
+from ..views.search import GetBucketView
+from ..views.tree import TreeView
+from ..views.public_views import (
+    NotFoundView,
+    HomeView,
+    log_out_view,
+    LoginView,
+    RegisterView,
+    RefreshSessionView,
+    ErrorView,
+    Gravatar,
+    ContentView,
+    APIHelpView,
+)
+from ..views.pages import (
+    PageListView,
+    PageAddView,
+    PageEditView,
+    PageUploadImageView,
+    PageGetImageView,
+)
+from ..views.sections import (
+    SectionListView,
+    SectionAddView,
+    SectionEditView,
+    SectionUploadImageView,
+    SectionGetImageView,
+)
+
+from ..views.ontology import OntologyView, JSONDataView, OntologyRDFView
+
+log = logging.getLogger("cropontology")
+
+route_list = []
+
+
+def append_to_routes(route_array):
+    """
+    #This function append or overrides the routes to the main list
+    :param route_array: Array of routes
+    """
+    for new_route in route_array:
+        found = False
+        pos = 0
+        for curr_route in route_list:
+            if curr_route["path"] == new_route["path"]:
+                found = True
+                break
+            pos = pos + 1
+        if not found:
+            route_list.append(new_route)
+        else:
+            route_list[pos]["name"] = new_route["name"]
+            route_list[pos]["view"] = new_route["view"]
+            route_list[pos]["renderer"] = new_route["renderer"]
+
+
+def load_routes(config):
+    """
+    Call connected to plugins to add any routes before cropontology
+    :param config: Pyramid config
+    """
+    routes = []
+    for plugin in p.PluginImplementations(p.IRoutes):
+        routes = plugin.before_mapping(config)
+        append_to_routes(routes)
+
+    # cropontology public routes
+    routes.append(add_route("home", "/", HomeView, "index.jinja2"))
+    routes.append(
+        add_route("refresh", "/refresh", RefreshSessionView, "generic/refresh.jinja2")
+    )
+    routes.append(add_route("login", "/login", LoginView, "user/login.jinja2"))
+    routes.append(add_route("register", "/join", RegisterView, "user/register.jinja2"))
+    routes.append(add_route("logout", "/logout", log_out_view, None))
+    routes.append(add_route("gravatar", "/gravatar", Gravatar, None))
+
+    routes.append(
+        add_route("about", "/about", ContentView, "pages/standard/about.jinja2")
+    )
+    routes.append(
+        add_route(
+            "feedback", "/feedback", ContentView, "pages/standard/feedback.jinja2"
+        )
+    )
+    routes.append(add_route("help", "/help", ContentView, "pages/standard/help.jinja2"))
+    routes.append(
+        add_route("api_help", "/api_help", APIHelpView, "pages/standard/api.jinja2")
+    )
+
+    # Pages
+    routes.append(
+        add_route("page_list", "/pages", PageListView, "pages/list_pages.jinja2")
+    )
+    routes.append(
+        add_route("page_add", "/pages/add", PageAddView, "pages/add_page.jinja2")
+    )
+    routes.append(
+        add_route(
+            "page_edit", "/page/{pageid}/edit", PageEditView, "pages/edit_page.jinja2"
+        )
+    )
+    routes.append(
+        add_route("page_image_upload", "/pages/upload", PageUploadImageView, "json")
+    )
+    routes.append(
+        add_route(
+            "page_image_request",
+            "/pages/image/{imageid}",
+            PageGetImageView,
+            None,
+        )
+    )
+    # Sections
+    routes.append(
+        add_route(
+            "section_list",
+            "/sections",
+            SectionListView,
+            "sections/list_sections.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "section_add",
+            "/sections/add",
+            SectionAddView,
+            "sections/add_section.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "section_edit",
+            "/section/{sectionid}/edit",
+            SectionEditView,
+            "sections/edit_section.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "section_image_upload",
+            "/section/{sectionid}/upload",
+            SectionUploadImageView,
+            "json",
+        )
+    )
+    routes.append(
+        add_route(
+            "section_image_request",
+            "/section/{sectionid}/image/{imageid}",
+            SectionGetImageView,
+            None,
+        )
+    )
+
+    # Ontology
+    routes.append(
+        add_route(
+            "ontology",
+            "/ontology/{ontology_id}",
+            OntologyView,
+            "/ontology/ontology_d3.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "ontology_rdf",
+            "/ontology/{ontology_id}/rdf",
+            OntologyRDFView,
+            None,
+        )
+    )
+    routes.append(
+        add_route(
+            "ontology_json",
+            "/ontology_json/{ontology_id}",
+            JSONDataView,
+            "json",
+        )
+    )
+
+    # Search
+    routes.append(add_route("search", "/search", SearchView, "search.jinja2"))
+    routes.append(add_route("bucket", "/search/bucket/", GetBucketView, "json"))
+    routes.append(
+        add_route("term_details", "/term/{termid}", TermDetailsView, "term.jinja2")
+    )
+
+    # Tree
+    routes.append(add_route("tree", "/tree/{termid}", TreeView, "json"))
+
+    append_to_routes(routes)
+
+    # Add the not found route
+    config.add_notfound_view(NotFoundView, renderer="generic/404.jinja2")
+
+    if log.level == logging.WARN:
+        config.add_view(ErrorView, context=Exception, renderer="generic/500.jinja2")
+
+    # Call connected plugins to add any routes after cropontology
+    for plugin in p.PluginImplementations(p.IRoutes):
+        routes = plugin.after_mapping(config)
+        append_to_routes(routes)
+
+    # Now add the routes and views to the Pyramid config
+    for curr_route in route_list:
+        config.add_route(curr_route["name"], curr_route["path"])
+        config.add_view(
+            curr_route["view"],
+            route_name=curr_route["name"],
+            renderer=curr_route["renderer"],
+        )

@@ -1,0 +1,80 @@
+{% extends 'base.jinja2' %}
+
+{% block css %}
+    {% cssresource request,'main_library','cropontology' %}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{% endblock css %}
+
+{% block topScripts %}
+
+{% endblock topScripts %}
+
+{% block bodyclass %}hold-transition layout-top-nav{% endblock bodyclass %}
+
+{% block body %}
+<div class="wrapper">
+    {% block wrapper %}
+        {% block navbar %}
+            {% include 'snippets/navbar.jinja2' %}
+        {% endblock navbar %}
+        <div class="content-wrapper">
+            {% block content_wrapper %}
+                <div class="content-header">
+                    {% block breadcrums %}
+
+                    {% endblock breadcrums %}
+                </div>
+                <div class="content">
+                    {% block main_content %}
+                        <div class="container">
+                            {% block main_container %}
+
+                            {% endblock main_container %}
+                        </div>
+                    {% endblock main_content %}
+                </div>
+            {% endblock content_wrapper %}
+        </div>
+        {% block footer %}
+            {% include 'snippets/footer.jinja2' %}
+        {% endblock footer %}
+    {% endblock wrapper %}
+</div>
+    {% block scripts %}
+        {% jsresource request,'main_library','adminlte' %}
+        <script>
+            $(document).ready(function() {
+                var selectedLanguage = readCookie('_LOCALE_');
+                if (selectedLanguage != null)
+                    $('#language').val(selectedLanguage);
+                $("#language").bind('change', function() {
+                    //on change set cookie and...
+                    setCookie('_LOCALE_', this.value, 365);
+                    location.reload();
+                });
+            });
+
+            function setCookie(cookieName, cookieValue, nDays) {
+                var today = new Date();
+                var expire = new Date();
+
+                if (nDays==null || nDays==0)
+                    nDays=1;
+
+                expire.setTime(today.getTime() + 3600000*24*nDays);
+                document.cookie = cookieName+"="+escape(cookieValue) + ";expires="+expire.toGMTString() + ";path=/";
+            }
+
+            function readCookie(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for(var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            }
+        </script>
+    {% endblock %}
+{% endblock body %}

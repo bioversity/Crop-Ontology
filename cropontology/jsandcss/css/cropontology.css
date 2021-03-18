@@ -1,0 +1,9 @@
+.crop_ontology-image {
+  margin-top: -.5rem;
+  margin-right: .2rem;
+}
+
+.ck-editor__editable {
+    min-height: 500px;
+    max-height: 600px;
+}

@@ -1,0 +1,43 @@
+# Updates
+match (t {term_type: "trait"}) SET t:Trait REMOVE t:Term
+
+# First Childs of an node
+MATCH (parent {id:"CO_330:Morphological trait"})<-[]-(child) RETURN child
+
+#Parents of a Node:
+match(child {id:"CO_330:Morphological trait"})-[]->(parent) return parent
+
+# Get all roots
+MATCH (n)
+WHERE n.root = True AND n.obsolete = False
+RETURN n
+
+# Get orphans
+MATCH (n)
+WHERE NOT (n)--()
+RETURN n;
+
+#Methods in a Ontology. Same could be for variables and scales
+match(parent {ontology_id: "CO_330"})<-[]-(child:Scale) return DISTINCT child.id
+
+# Get all the variables under a trait
+Match (trait {id:"CO_330:0000006"})<-[*]-(op {term_type: "variable"}) return op.id, op.term_type
+
+# All terms down the line of a terms order by pathLength
+MATCH p= (:Term {id:"CO_330:Morphological trait"})<-[*]-(op:Term) WITH op as opp, length(p) as pathLength RETURN opp ORDER BY pathLength
+
+# Parents and child of an ontology
+match(parent:Term {ontology_id: "CO_330"})<-[]-(child:Term) return parent.id as term_id, parent.term_type as term_type,parent.name as parent_name,collect(child.id+"|"+child.term_type) as children
+
+# Drill with second child
+match(child:Term)-[*1]->(parent:Term)-[]->(start:Term {id: "CO_330:ROOT"}) return parent.id,collect(child.id)
+
+# Close drill down
+match(child:Term)-[*1]->(parent:Term {id: "CO_330:Abiotic stress trait"}) return parent.id as term_id,parent.term_type as term_type,parent.name as name,collect(child.id+"|"+child.term_type) as children ORDER BY term_id
+
+# Get one item
+match(t {id: "CO_330:0000006"}) return t.name, t.term_type
+
+
+:POST /rdf/neo4j/cypher
+{ "cypher" : "MATCH path = (t {ontology_id: 'CO_330'}) RETURN path " , "format": "RDF/XML" }

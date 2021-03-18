@@ -1,0 +1,96 @@
+###
+# app configuration
+# https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:cropontology]
+use = egg:cropontology
+
+pyramid.reload_templates = true
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+pyramid.default_locale_name = en
+pyramid.includes =
+    pyramid_debugtoolbar
+
+
+sqlalchemy.url = mysql+mysqlconnector://{{ mysql_user_name }}:{{ mysql_user_password }}@{{ mysql_host }}/{{ mysql_schema }}?charset=utf8&ssl_disabled=True
+
+retry.attempts = 3
+
+
+auth.main.secret = {{ main_secret }}
+
+auth.main.cookie = cropontology_main_auth_tkt
+
+auth.secret = {{ auth_secret }}
+aes.key = {{ aes_key }}
+redis.sessions.secret = {{ redis_sessions_secret }}
+
+redis.sessions.timeout = 7200
+redis.sessions.cookie_name = cropontology_session
+redis.sessions.host = localhost
+redis.sessions.port = 6379
+
+# By default, the toolbar only appears for clients from IP addresses
+# '127.0.0.1' and '::1'.
+# debugtoolbar.hosts = 127.0.0.1 ::1
+
+[pshell]
+setup = cropontology.pshell.setup
+
+###
+# wsgi server configuration
+###
+
+[composite:main]
+use = egg:rutter#urlmap
+/ = cropontology
+
+[server:main]
+use = egg:gunicorn
+host = localhost
+port = 5900
+workers = 1
+worker_class = gevent
+
+###
+# logging configuration
+# https://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, cropontology, sqlalchemy
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_cropontology]
+level = DEBUG
+handlers =
+qualname = cropontology
+
+[logger_sqlalchemy]
+level = WARN
+handlers =
+qualname = sqlalchemy.engine
+# "level = INFO" logs SQL queries.
+# "level = DEBUG" logs SQL queries and results.
+# "level = WARN" logs neither.  (Recommended for production systems.)
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s:%(lineno)s][%(threadName)s] %(message)s

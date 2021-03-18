@@ -1,0 +1,31 @@
+<ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+    {% if not userLogged %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ request.route_url('login') }}">
+                <i class="fas fa-sign-in-alt mr-2"></i> {{ _('Login') }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ request.route_url('register') }}">
+                <i class="fas fa-user-plus mr-2"></i> {{ _('Sign up') }}
+            </a>
+        </li>
+    {% else %}
+        <li class="nav-item dropdown">
+            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ activeUser.name }}</a>
+            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                <li><a href="{{ request.route_url('logout') }}" class="dropdown-item">{{ _('Logout') }}</a></li>
+            </ul>
+        </li>
+    {% endif %}
+{#    <li class="nav-item">#}
+{#        <div style="margin-top: 8px; color: rgba(0,0,0,.5)">#}
+{#            {{ _('Language') }}:#}
+{#            <select id="language" style="color: rgba(0,0,0,.5)">#}
+{#                {% block language_options %}#}
+{#                    <option id="en" value="en">English</option>#}
+{#                {% endblock language_options %}#}
+{#            </select>#}
+{#        </div>#}
+{#    </li>#}
+</ul>

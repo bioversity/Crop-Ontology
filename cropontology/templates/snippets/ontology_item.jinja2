@@ -1,0 +1,32 @@
+<tr>
+    <td>
+        <a href="{{ request.route_url("term_details", termid=ontology.root) }}">
+            <span {% if ontology.ontology_type == "obo" %}style="color: #4183C4" {% else %}style="color: #4FA359"{% endif %}>{{ ontology.ontology_name }}</span>
+        </a>
+        <br/>
+        <small>
+            Created on {{ request.h.readble_date_with_time(ontology.created_at) }}
+        </small>
+    </td>
+    <td>
+        <p>{{ ontology.ontology_summary }}</p>
+    </td>
+    <td class="project-state">
+        {% if ontology.ontology_type == "obo" %}
+            <span title="{{ _('OBO Ontologies are created using OBO-Edit and usually contain more detailed relationships.') }}" class="badge badge" style="color: #4183C4">OBO</span>
+        {% else %}
+            <span title="{{ _('Trait Dictionaries are uploaded using an Excel template and contain less detailed relationships.') }}" class="badge" style="color: #4FA359">{{ _('Trait') }}</span>
+        {% endif %}
+    </td>
+    <td class="project-actions text-right">
+        <a class="btn btn-default btn-sm" href="{{ request.route_url('ontology', ontology_id=ontology.ontology_id) }}">
+            <i title="{{ _('Ontology explorer') }}" class="fas fa-project-diagram">
+            </i>
+        </a>
+        <a class="btn btn-default btn-sm" href="{{ request.route_url('ontology_rdf', ontology_id=ontology.ontology_id) }}">
+            <i title="RDF/N-Triples" class="far fa-file-code">
+            </i>
+
+        </a>
+    </td>
+</tr>

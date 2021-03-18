@@ -1,0 +1,49 @@
+{
+    "title" : "Database process documentation",
+    "graph" : {
+        "linkDistance" : 100,
+        "charge"       : -50,
+        "preventColls" : "true",
+        "collide"      : 1000,
+        "height"       : 400,
+        "numColors"    : 12,
+        "labelPadding" : {
+            "left"   : 3,
+            "right"  : 3,
+            "top"    : 2,
+            "bottom" : 2
+        },
+        "labelMargin" : {
+            "left"   : 3,
+            "right"  : 3,
+            "top"    : 2,
+            "bottom" : 2
+        },
+        "ticksWithoutCollisions" : 50
+    },
+    "types" : {
+        "view"        : {
+            "short" : "term",
+            "long"  : "Terms"
+        },
+        "table"       : {
+            "short" : "method",
+            "long"  : "Methods"
+        },
+        "query"       : {
+            "short" : "scale",
+            "long"  : "Scales"
+        },
+        "sas"         : {
+            "short" : "trait",
+            "long"  : "Traits"
+        },
+        "extract"     : {
+            "short" : "variable",
+            "long"  : "Variables"
+        }
+    },
+    "constraints" : [
+
+    ]
+}

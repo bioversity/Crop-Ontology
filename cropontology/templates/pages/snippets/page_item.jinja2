@@ -1,0 +1,11 @@
+<tr>
+    <td>{{ page.page_id }}</td>
+    <td>{{ page.page_desc }}</td>
+    <td>{{ page.page_lastupdate }}</td>
+    <td>
+        <button type="button" onclick="location.href='{{ request.route_url('page_edit', pageid=page.page_id) }}';" class="btn btn-warning btn-xs">{{ _('Edit') }}</button>
+        {% if page.page_fixed == 0 %}
+            <button type="button" class="btn btn-danger btn-xs">{{ _('Delete') }}</button>
+        {% endif %}
+    </td>
+</tr>

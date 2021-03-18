@@ -1,0 +1,261 @@
+# English translations for cropontology.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the cropontology project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: cropontology 0.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-09-07 11:44-0600\n"
+"PO-Revision-Date: 2020-09-07 11:45-0600\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: cropontology/processes/db/user.py:51
+msgid "Username is already taken"
+msgstr ""
+
+#: cropontology/processes/db/user.py:62 cropontology/processes/db/user.py:65
+msgid "Email is invalid"
+msgstr ""
+
+#: cropontology/templates/base.jinja2:10 cropontology/templates/base.jinja2:14
+msgid "FormShare Stack"
+msgstr ""
+
+#: cropontology/templates/generic/404.jinja2:15
+msgid "Oops! Page not found."
+msgstr ""
+
+#: cropontology/templates/generic/404.jinja2:17
+msgid "We could not find the page you were looking for."
+msgstr ""
+
+#: cropontology/templates/generic/404.jinja2:18 cropontology/templates/generic/500.jinja2:8
+msgid "Meanwhile, you may"
+msgstr ""
+
+#: cropontology/templates/generic/404.jinja2:18 cropontology/templates/generic/500.jinja2:8
+msgid "return to home"
+msgstr ""
+
+#: cropontology/templates/generic/404.jinja2:18 cropontology/templates/generic/500.jinja2:8
+msgid "or try using the search form."
+msgstr ""
+
+#: cropontology/templates/generic/404.jinja2:22
+#: cropontology/templates/generic/500.jinja2:12
+#: cropontology/templates/private/snippets/navbar_search.jinja2:3
+msgid "Search"
+msgstr ""
+
+#: cropontology/templates/generic/500.jinja2:5
+msgid "Oops! Something went wrong."
+msgstr ""
+
+#: cropontology/templates/generic/500.jinja2:7
+msgid "We will work on fixing that right away."
+msgstr ""
+
+#: cropontology/templates/generic/refresh.jinja2:5
+msgid "Oops! You need to refresh you session."
+msgstr ""
+
+#: cropontology/templates/generic/refresh.jinja2:7
+msgid "Don't worry. Just go back and press the browser refresh button"
+msgstr ""
+
+#: cropontology/templates/macros/form.jinja2:9
+msgid "Error"
+msgstr ""
+
+#: cropontology/templates/private/snippets/breadcrums.jinja2:5
+msgid "Private section"
+msgstr ""
+
+#: cropontology/templates/private/snippets/breadcrums.jinja2:5
+msgid "Example"
+msgstr ""
+
+#: cropontology/templates/private/snippets/breadcrums.jinja2:9
+msgid "Home"
+msgstr ""
+
+#: cropontology/templates/private/snippets/breadcrums.jinja2:10
+msgid "Layout"
+msgstr ""
+
+#: cropontology/templates/private/snippets/breadcrums.jinja2:11
+msgid "Private home"
+msgstr ""
+
+#: cropontology/templates/private/snippets/footer.jinja2:4
+#: cropontology/templates/public/snippets/footer.jinja2:4
+msgid "Using"
+msgstr ""
+
+#: cropontology/templates/private/snippets/footer.jinja2:7
+#: cropontology/templates/public/snippets/footer.jinja2:7
+msgid "Copyright"
+msgstr ""
+
+#: cropontology/templates/private/snippets/footer.jinja2:7
+#: cropontology/templates/public/snippets/footer.jinja2:7
+msgid "All rights reserved."
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_main.jinja2:4
+#: cropontology/templates/public/snippets/navbar_main.jinja2:4
+msgid "Public access"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_main.jinja2:9
+msgid "Some action"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_main.jinja2:10
+msgid "Some other action"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_main.jinja2:13
+msgid "Hover for action"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_messages.jinja2:49
+msgid "See All Messages"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_notifications.jinja2:7
+msgid "Notifications"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_notifications.jinja2:10
+msgid "new messages"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_notifications.jinja2:15
+msgid "friend requests"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_notifications.jinja2:20
+msgid "new reports"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_notifications.jinja2:24
+msgid "See All Notifications"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_right_links.jinja2:13
+msgid "Logout"
+msgstr ""
+
+#: cropontology/templates/private/snippets/navbar_right_links.jinja2:18
+#: cropontology/templates/public/snippets/navbar_right_links.jinja2:14
+msgid "Language"
+msgstr ""
+
+#: cropontology/templates/private/snippets/sidebar.jinja2:3
+msgid "Title"
+msgstr ""
+
+#: cropontology/templates/private/snippets/sidebar.jinja2:4
+msgid "Sidebar content"
+msgstr ""
+
+#: cropontology/templates/public/snippets/navbar_right_links.jinja2:4
+msgid "Login"
+msgstr ""
+
+#: cropontology/templates/public/snippets/navbar_right_links.jinja2:9
+msgid "Sign up"
+msgstr ""
+
+#: cropontology/templates/user/login.jinja2:21
+msgid "Sign in to start your session"
+msgstr ""
+
+#: cropontology/templates/user/login.jinja2:26
+msgid "Username or Email"
+msgstr ""
+
+#: cropontology/templates/user/login.jinja2:34
+#: cropontology/templates/user/register.jinja2:49
+msgid "Password"
+msgstr ""
+
+#: cropontology/templates/user/login.jinja2:46
+msgid "Sign In"
+msgstr ""
+
+#: cropontology/templates/user/login.jinja2:52
+#: cropontology/templates/user/register.jinja2:18
+msgid "Register a new account"
+msgstr ""
+
+#: cropontology/templates/user/register.jinja2:25
+msgid "Full name"
+msgstr ""
+
+#: cropontology/templates/user/register.jinja2:33
+msgid "Email"
+msgstr ""
+
+#: cropontology/templates/user/register.jinja2:41
+msgid "User name"
+msgstr ""
+
+#: cropontology/templates/user/register.jinja2:57
+msgid "Retype password"
+msgstr ""
+
+#: cropontology/templates/user/register.jinja2:69
+msgid "Register"
+msgstr ""
+
+#: cropontology/templates/user/register.jinja2:74
+msgid "I already have an account"
+msgstr ""
+
+#: cropontology/views/classes.py:270
+msgid "This API key does not exist or is inactive"
+msgstr ""
+
+#: cropontology/views/classes.py:284
+msgid "You need to specify an API key"
+msgstr ""
+
+#: cropontology/views/classes.py:312
+msgid "The following keys were not present in the submitted JSON"
+msgstr ""
+
+#: cropontology/views/public_views.py:158 cropontology/views/public_views.py:165
+msgid "The user account does not exists or the password is invalid"
+msgstr ""
+
+#: cropontology/views/public_views.py:279
+msgid "The password must be less than 50 characters"
+msgstr ""
+
+#: cropontology/views/public_views.py:290
+msgid "The password and its confirmation are not the same"
+msgstr ""
+
+#: cropontology/views/public_views.py:301
+msgid "The user id has invalid characters. Only underscore and dot are allowed"
+msgstr ""
+
+#: cropontology/views/public_views.py:310
+msgid "The password cannot be empty"
+msgstr ""
+
+#: cropontology/views/public_views.py:313
+msgid "Invalid email"
+msgstr ""
+
