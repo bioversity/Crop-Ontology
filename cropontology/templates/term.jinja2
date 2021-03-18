@@ -28,7 +28,8 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="m-0">Navigation</h5>
+                            <h5 class="m-0">Navigation</h5><br/>
+                            <img src="{{ request.url_for_static("term.png") }}">={{ _('Term') }}, <img src="{{ request.url_for_static("trait.png") }}">={{ _('Trait') }}, <img src="{{ request.url_for_static("method.png") }}">={{ _('Method') }}, <img src="{{ request.url_for_static("scale.png") }}">={{ _('Scale') }}, and <img src="{{ request.url_for_static("variable.png") }}">={{ _('Variable') }}
                         </div>
                         <div class="card-body" style="max-height: 400px; overflow-y: scroll">
                             <div id="tree"></div>
