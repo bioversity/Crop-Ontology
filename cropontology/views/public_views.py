@@ -34,7 +34,7 @@ class HomeView(PublicView):
         mongo_client = pymongo.MongoClient(mongo_url)
         ontology_db = mongo_client["ontologies"]
         ontology_collection = ontology_db["ontologies"]
-        ontologies = list(ontology_collection.find().sort([("created_at", -1)]))
+        ontologies = list(ontology_collection.find().sort([("ontology_name", 1)]))
 
         neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
         neo4j_user = self.request.registry.settings["neo4j.user"]
