@@ -35,7 +35,7 @@ def create_resources(apppath, config):
     )
     r.add_js_resource("main_library", "d3", "plugins/graph/d3/d3.min.js")
     r.add_js_resource("main_library", "colorbrewer", "plugins/graph/colorbrewer.js")
-    r.add_js_resource("main_library", "geometry", "plugins/graph/lib/geometry.js")
+    r.add_js_resource("main_library", "geometry", "plugins/graph/libs/geometry.js")
     r.add_js_resource("main_library", "d3-v6-tip", "plugins/graph/d3-v6-tip.js")
     r.add_js_resource(
         "main_library", "canvas-to-blob", "plugins/graph/canvas-to-blob.min.js"
