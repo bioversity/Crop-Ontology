@@ -3,6 +3,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 import paginate
 import json
+from neo4j import GraphDatabase
 
 
 def get_facet_code(facets, facet_name):
@@ -133,6 +134,29 @@ class GetBucketView(PublicView):
 
 class SearchView(PublicView):
     def process_view(self):
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        def get_parents(term_id, parent_type):
+            query = (
+                'MATCH (nodeOfInterest {id : "'
+                + term_id
+                + '"})-[*0..]->(parent {term_type: "'
+                + parent_type
+                + '"}) RETURN distinct parent.id as term_id, parent.name as term_name, '
+                "parent.term_type as term_type"
+            )
+            cursor = db.run(query)
+            result = []
+            for an_item in cursor:
+                result.append(
+                    {"term_id": an_item["term_id"], "term_name": an_item["term_name"]}
+                )
+            return result
+
         facet_file = self.request.registry.settings["facet.file"]
         with open(facet_file) as json_file:
             facet_data = json.load(json_file)
@@ -321,6 +345,13 @@ class SearchView(PublicView):
                     results.append(hit["_source"])
             else:
                 results = []
+
+            for a_result in results:
+                if a_result["term_type"] == "Variable":
+                    a_result["parent_traits"] = get_parents(
+                        a_result["term_id"], "trait"
+                    )
+                    # a_result["parent_methods"] = get_parents(a_result["term_id"], "method")
 
             all_ontologies = get_all_ontologies(index_manager, final_query)
             total_panels = len(facet_stats)

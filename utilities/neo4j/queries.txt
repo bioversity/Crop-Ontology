@@ -41,3 +41,6 @@ match(t {id: "CO_330:0000006"}) return t.name, t.term_type
 
 :POST /rdf/neo4j/cypher
 { "cypher" : "MATCH path = (t {ontology_id: 'CO_330'}) RETURN path " , "format": "RDF/XML" }
+
+# Get all parents up a node
+MATCH (nodeOfInterest {id : "CO_348:4100005"})-[*0..]->(parent) RETURN distinct parent.id as term_id, parent.name as term_name, parent.term_type as term_type

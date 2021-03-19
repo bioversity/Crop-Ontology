@@ -137,6 +137,7 @@
                 <div class="card-body" id="posts">
                     {% for result in results %}
                         <div class="post">
+                            - In ontology: {{ result.ontology_name }}<br/>
                             <a href="{{ request.route_url('term_details', termid=result.term_id) }}">{{ result.term_id }}</a>
                             {% if result.term_type == "Term" %}
                                 <span class="badge" style="background: #778899; color: white">Term</span>
@@ -156,9 +157,10 @@
                             {% endif %}
                             {% if result.term_type == "Variable" %}
                                 <span class="badge badge-danger">Variable</span>
-                                {{ result.variable_name }}
+                                {{ result.variable_name }}<br/>
+                                {{ _('Related traits') }}: {% for a_trait in result.parent_traits %}<a href="{{ request.route_url('term_details', termid=a_trait.term_id) }}">{{ a_trait.term_name }}</a> -- {% endfor %}<br/>
+{#                                {{ _('Related Methods') }}: {% for a_method in result.parent_methods %}<a href="{{ request.route_url('term_details', termid=a_method.term_id) }}">{{ a_method.term_name }}</a> -- {% endfor %}<br/>#}
                             {% endif %}
-                            - In ontology: {{ result.ontology_name }}
                         </div>
                     {% endfor %}
                 </div>
