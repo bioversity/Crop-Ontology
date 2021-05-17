@@ -35,6 +35,7 @@ from ..views.sections import (
 )
 
 from ..views.ontology import OntologyView, JSONDataView, OntologyRDFView
+from ..views.api import BRAPICropHarvestView, APIDocView
 
 log = logging.getLogger("cropontology")
 
@@ -195,6 +196,15 @@ def load_routes(config):
 
     # Tree
     routes.append(add_route("tree", "/tree/{termid}", TreeView, "json"))
+
+    # Here comes the BRAPI API routes
+
+    routes.append(
+        add_route(
+            "brapi_croo_harvest", "/api/v1/crop_harvest", BRAPICropHarvestView, None
+        )
+    )
+    routes.append(add_route("api_ifo", "/api/v1/info", APIDocView, "api/info.jinja2"))
 
     append_to_routes(routes)
 
