@@ -1,4 +1,4 @@
-from cropontology.views.classes import PrivateView
+from cropontology.views.classes import PrivateView, PublicView
 from cropontology.processes.db import (
     add_new_page,
     get_page_data,
@@ -138,7 +138,7 @@ class PageUploadImageView(PrivateView):
     # }
 
 
-class PageGetImageView(PrivateView):
+class PageGetImageView(PublicView):
     def process_view(self):
         image_id = self.request.matchdict["imageid"]
         repository_path = self.request.registry.settings.get("repository.path")
