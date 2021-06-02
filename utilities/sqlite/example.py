@@ -1,7 +1,9 @@
 import sqlite3
 from neo4j import GraphDatabase
 
-conn = sqlite3.connect('/home/cquiros/data/projects2017/cropontology/yara/data/data.sqlite')
+conn = sqlite3.connect(
+    "/home/cquiros/data/projects2017/cropontology/yara/data/data.sqlite"
+)
 driver = GraphDatabase.driver("bolt://192.168.0.107:7687", auth=("neo4j", "123"))
 
 
@@ -27,9 +29,11 @@ with driver.session() as session:
     session.write_transaction(create_constraint)
 
 
-cursor = conn.execute("select product_region.id,product_region.name,"
-                      "product_region.n,p,k,region.name as region "
-                      "FROM product_region,region WHERE product_region.regionId = region.id")
+cursor = conn.execute(
+    "select product_region.id,product_region.name,"
+    "product_region.n,p,k,region.name as region "
+    "FROM product_region,region WHERE product_region.regionId = region.id"
+)
 for row in cursor:
     with driver.session() as session:
         session.write_transaction(

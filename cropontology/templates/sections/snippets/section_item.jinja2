@@ -5,7 +5,7 @@
     <td>
         <button type="button" onclick="location.href='{{ request.route_url('section_edit', sectionid=section.section_id) }}';" class="btn btn-warning btn-xs">{{ _('Edit') }}</button>
         {% if section.section_fixed == 0 %}
-            <button type="button" class="btn btn-danger btn-xs">{{ _('Delete') }}</button>
+            <button data-section-desc="{{ section.section_desc }}" urn="{{ request.route_url('section_delete', sectionid=section.section_id) }}" type="button" class="btn btn-danger btn-xs delete_section">{{ _('Delete') }}</button>
         {% endif %}
     </td>
 </tr>

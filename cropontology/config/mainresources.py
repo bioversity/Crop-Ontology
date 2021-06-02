@@ -12,6 +12,9 @@ def create_resources(apppath, config):
     )
     r.add_css_resource("main_library", "adminlte", "css/adminlte.css")
     r.add_css_resource("main_library", "cropontology", "css/cropontology.css")
+    r.add_css_resource(
+        "main_library", "sweetalert", "css/plugins/sweetalert/sweetalert.css", None
+    )
 
     # ----------------------------Basic JS----------------------------------------------------
     r.add_js_resource("main_library", "jquery", "plugins/jquery/jquery.min.js")
@@ -22,6 +25,9 @@ def create_resources(apppath, config):
     r.add_js_resource("main_library", "ckeditor", "plugins/ckeditor5/ckeditor.js", None)
     r.add_js_resource(
         "main_library", "ckeditor4", "plugins/ckeditor4/ckeditor.js", None
+    )
+    r.add_js_resource(
+        "main_library", "sweetalert", "js/plugins/sweetalert/sweetalert.min.js", None
     )
 
     # Graph CSS

@@ -9,6 +9,7 @@ __all__ = [
     "get_section_data",
     "update_section",
     "get_all_sections",
+    "delete_section",
 ]
 
 
@@ -51,6 +52,10 @@ def update_section(request, section_id, section_data):
     request.dbsession.query(Section).filter(Section.section_id == section_id).update(
         mapped_data
     )
+
+
+def delete_section(request, section_id):
+    request.dbsession.query(Section).filter(Section.section_id == section_id).delete()
 
 
 def get_all_sections(request):

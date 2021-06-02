@@ -1,5 +1,10 @@
 {% extends 'page.jinja2' %}
 
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','sweetalert' %}
+{% endblock css %}
+
 {% block breadcrums %}
     {% include 'sections/snippets/breadcrums_list.jinja2' %}
 {% endblock breadcrums %}
@@ -34,3 +39,45 @@
     </div>
 </div>
 {% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','sweetalert' %}
+    <script>
+        $(document).ready(function() {
+            $('.delete_section').click(function () {
+                var action_url = $( this ).attr('urn');
+                var section_desc = $( this ).attr('data-section-desc');
+                swal({
+                        title: "{{ _('Are you sure?') }}",
+                        text: "{{ _('You will delete the section: ') }}" + section_desc,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "{{ _('Yes, delete it!') }}",
+                        cancelButtonText: "{{ _('Oops, cancel!') }}",
+                        closeOnConfirm: true,
+                        closeOnCancel: true },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            var form = document.createElement('form');
+                            form.setAttribute('method', 'post');
+                            form.setAttribute('action', action_url);
+                            form.style.display = 'hidden';
+
+                            var i = document.createElement("input"); //input element, text
+                            i.setAttribute('type',"text");
+                            i.setAttribute('name',"csrf_token");
+                            i.setAttribute('value','{{ request.session.get_csrf_token() }}');
+                            form.appendChild(i);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+            });
+        })
+    </script>
+
+
+{% endblock scripts %}

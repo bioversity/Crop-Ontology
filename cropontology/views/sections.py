@@ -4,6 +4,7 @@ from cropontology.processes.db.section import (
     get_section_data,
     update_section,
     get_all_sections,
+    delete_section,
 )
 import re
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -68,6 +69,29 @@ class SectionEditView(PrivateView):
             update_section(self.request, section_id, form_data)
 
         return {"form_data": form_data, "sectionid": section_id}
+
+
+class SectionDeleteView(PrivateView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        self.checkCrossPost = False
+        section_id = self.request.matchdict["sectionid"]
+        if self.request.method == "GET":
+            raise HTTPNotFound()
+        else:
+            form_data = get_section_data(self.request, section_id)
+            if form_data is None:
+                raise HTTPNotFound()
+            try:
+                delete_section(self.request, section_id)
+            except Exception as e:
+                self.append_to_errors("Unable to delete section: {}".format(str(e)))
+
+            return HTTPFound(
+                location=self.request.route_url(
+                    "section_list",
+                )
+            )
 
 
 class SectionUploadImageView(PrivateView):
