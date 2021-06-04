@@ -58,7 +58,9 @@ class BRAPITraitsView(PublicView):
                             "currentPage": 0,
                             "totalCount": 1,
                             "totalPages": 1,
-                        }
+                        }, 
+                        "status": [],
+                        "datafiles": []
                     },
                     "result": {},
                 }
@@ -68,6 +70,7 @@ class BRAPITraitsView(PublicView):
                         "traitDbId": trait_id,
                         "traitId": trait_id,
                         "name": result["name"],
+                        "defaultValue": None,
                     }
                     variables = get_variables(db, trait_id)
                     ret_result["observationVariables"] = []
@@ -103,7 +106,9 @@ class BRAPITraitsView(PublicView):
                             "currentPage": current_page,
                             "totalCount": total_traits,
                             "totalPages": a_page.page_count,
-                        }
+                        }, 
+                        "status": [],
+                        "datafiles": []
                     },
                     "result": [],
                 }
@@ -112,6 +117,7 @@ class BRAPITraitsView(PublicView):
                         "traitDbId": a_trait["id"],
                         "traitId": a_trait["id"],
                         "name": a_trait["name"],
+                        "defaultValue": None,
                     }
                     variables = get_variables(db, a_trait["id"])
                     ret_result["observationVariables"] = []
@@ -141,7 +147,9 @@ class BRAPITraitsView(PublicView):
                         "currentPage": current_page,
                         "totalCount": total_traits,
                         "totalPages": a_page.page_count,
-                    }
+                    }, 
+                        "status": [],
+                        "datafiles": []
                 },
                 "result": [],
             }
@@ -150,6 +158,8 @@ class BRAPITraitsView(PublicView):
                     "traitDbId": a_trait["id"],
                     "traitId": a_trait["id"],
                     "name": a_trait["name"],
+                    "defaultValue": None,
+
                 }
                 variables = get_variables(db, a_trait["id"])
                 ret_result["observationVariables"] = []
