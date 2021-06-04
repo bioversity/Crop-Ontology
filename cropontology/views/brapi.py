@@ -3,6 +3,7 @@ from pyramid.response import Response
 import json
 from neo4j import GraphDatabase
 import paginate
+import pymongo
 
 
 def to_json(data):
@@ -42,7 +43,7 @@ class BRAPITraitsView(PublicView):
         neo4j_password = self.request.registry.settings["neo4j.password"]
         driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
         db = driver.session()
-        current_page = self.request.params.get("page", "1")
+        current_page = self.request.params.get("page", "0")
         current_page = int(current_page)
         page_size = self.request.params.get("pageSize", "10")
         page_size = int(page_size)
@@ -208,6 +209,67 @@ class BRAPICallsView(PublicView):
             { "call": "variables/{observationVariableDbId}", "datatypes" : ["json"], "methods" : ["GET"] },
             { "call": "ontologies", "datatypes" : [ "json" ], "methods" : ["GET"] }
         ];
+
+        json_data = to_json(ret)
+        response.text = json_data
+        return response
+
+class BRAPIOntologiesView(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),
+        ]
+        response = Response(headerlist=headers, status=200)
+
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        ontology_collection = ontology_db["ontologies"]
+        ontologies = list(ontology_collection.find().sort([("ontology_name", 1)]))
+
+        current_page = self.request.params.get("page", "0")
+        current_page = int(current_page)
+        page_size = self.request.params.get("pageSize", "10")
+        page_size = int(page_size)
+
+        total_ontologies = 0
+
+        data = []
+
+        for ontology in ontologies:
+            if ontology['category'] == '300-499 Phenotype and Trait Ontology':
+                total_ontologies+=1
+
+                ret_result = {
+                    "ontologyDbId": ontology["ontology_id"],
+                    "ontologyName": ontology["ontology_name"],
+                    "auhtors": None,
+                    "version": ontology["created_at"],
+                    "description": ontology["ontology_summary"],
+                    "copyright": None,
+                    "licence": "CC BY-SA 4.0",
+                }
+                data.append(ret_result)
+
+        a_page = paginate.Page(data, current_page, page_size)
+       
+
+        ret = {
+            "metadata": {
+                "pagination": {
+                    "pageSize": page_size,
+                    "currentPage": current_page,
+                    "totalCount": len(data),
+                    "totalPages": a_page.page_count,
+                }, 
+                "status": [],
+                 "datafiles": []
+            },
+            "result": {},
+        }
+
+        ret["result"] = {"data" : [a_page]};
 
         json_data = to_json(ret)
         response.text = json_data

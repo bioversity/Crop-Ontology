@@ -37,7 +37,7 @@ from ..views.sections import (
 
 from ..views.ontology import OntologyView, JSONDataView, OntologyRDFView
 from ..views.api import APIDocView
-from ..views.brapi import BRAPITraitsView, BRAPICallsView
+from ..views.brapi import BRAPITraitsView, BRAPICallsView, BRAPIOntologiesView
 
 log = logging.getLogger("cropontology")
 
@@ -214,6 +214,7 @@ def load_routes(config):
         add_route("brapi_trait", "/brapi/v1/traits/{trait_id}", BRAPITraitsView, None)
     )
     routes.append(add_route("brapi_calls", "/brapi/v1/calls", BRAPICallsView, None))
+    routes.append(add_route("brapi_ontologies", "/brapi/v1/ontologies", BRAPIOntologiesView, None))
 
     # Here comes the CO API routes
 
