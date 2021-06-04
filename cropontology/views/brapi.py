@@ -81,7 +81,7 @@ class BRAPITraitsView(PublicView):
                 query = (
                     'match (trait:Trait {ontology_id: "'
                     + trait_id
-                    + '"}) return count(trait) as total_traits'
+                    + '"}) where (trait.trait_status <> "Obsolete") return count(trait) as total_traits'
                 )
                 cursor = db.run(query)
                 result = get_neo_result(cursor, "total_traits")
@@ -91,7 +91,7 @@ class BRAPITraitsView(PublicView):
                 query = (
                     'match (trait:Trait {ontology_id: "'
                     + trait_id
-                    + '"}) return trait SKIP '
+                    + '"}) where (trait.trait_status <> "Obsolete") return trait SKIP '
                     + str(a_page.first_item - 1)
                     + " LIMIT "
                     + str(page_size)
@@ -132,7 +132,7 @@ class BRAPITraitsView(PublicView):
             item_collection = range(total_traits)
             a_page = paginate.Page(item_collection, current_page, page_size)
             query = (
-                "match (trait:Trait) return trait SKIP "
+                "match (trait:Trait) where (trait.trait_status <> 'Obsolete') return trait SKIP "
                 + str(a_page.first_item - 1)
                 + " LIMIT "
                 + str(page_size)
@@ -173,6 +173,42 @@ class BRAPITraitsView(PublicView):
             ("Content-Type", "application/json; charset=utf-8"),
         ]
         response = Response(headerlist=headers, status=200)
+        json_data = to_json(ret)
+        response.text = json_data
+        return response
+
+class BRAPICallsView(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),
+        ]
+        response = Response(headerlist=headers, status=200)
+
+        ret = {
+            "metadata": {
+                "pagination": {
+                    "pageSize": 1,
+                    "currentPage": 0,
+                    "totalCount": 6,
+                    "totalPages": 1,
+                }, 
+                "status": [],
+                 "datafiles": []
+            },
+            "result": {},
+        }
+
+        ret["result"] = {"data" : []};
+        ret["result"]["data"] = [
+            { "call": "traits", "datatypes" : ["json"], "methods" : ["GET"] },
+            { "call": "traits/{traitDbId}" , "datatypes" : ["json"], "methods" : ["GET"] },
+            { "call": "variables/datatypes", "datatypes": ["json"], "methods": ["GET"] },
+            { "call": "variables", "datatypes" : ["json"], "methods" : ["GET"] },
+            { "call": "variables/{observationVariableDbId}", "datatypes" : ["json"], "methods" : ["GET"] },
+            { "call": "ontologies", "datatypes" : [ "json" ], "methods" : ["GET"] }
+        ];
+
         json_data = to_json(ret)
         response.text = json_data
         return response
