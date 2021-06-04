@@ -18,7 +18,7 @@ def get_neo_result(cursor, key):
 
 def get_variables(db, term_id):
     query = (
-        'Match (trait {id:"' + term_id + '"}) <-[VARIABLE_OF]-(op {term_type: "variable"}) where (op.variable_status <> "Obsolete")'
+        'Match (trait {id:"' + term_id + '"}) <-[VARIABLE_OF]-(op {term_type: "variable"})'
         "return distinct op.id, op.name"
     )
     cursor = db.run(query)
