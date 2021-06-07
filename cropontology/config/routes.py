@@ -43,6 +43,7 @@ from ..views.brapi import (
     BRAPIOntologiesView,
     BRAPIVariablesView,
 )
+from ..views.rdf_api import EBIMetadataView
 
 log = logging.getLogger("cropontology")
 
@@ -233,6 +234,9 @@ def load_routes(config):
             None,
         )
     )
+
+    # Here comes the download (EBI/AGROPORTAL) API routes
+    routes.append(add_route("ebi_metadata", "/metadata", EBIMetadataView, None))
 
     # Here comes the CO API routes
 
