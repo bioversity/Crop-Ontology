@@ -1,0 +1,53 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <form role="form" method="post" action="{{ request.url }}">
+                        {{ form.secure_form(request) }}
+                        <div class="card-body">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Value</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for a_key in keys %}
+                                    <tr>
+                                        <td>{{ a_key.name }}</td>
+                                        {% if a_key.read_only == False %}
+                                            {% if a_key.type == "text" %}
+                                                <td><input type="text" name="{{ a_key.name }}" value="{{ a_key.value }}"></td>
+                                            {% endif %}
+                                            {% if a_key.type == "options" %}
+                                                <td>
+                                                    <select name="{{ a_key.name }}">
+                                                        {% for an_option in a_key.options %}
+                                                            <option value="{{ an_option.code }}" {% if an_option.code == a_key.value %}selected{% endif %}>{{ an_option.desc }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                            {% endif %}
+                                        {% else %}
+                                            <td>{{ a_key.value }}</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">{{ _('Save changes') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

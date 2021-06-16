@@ -4,6 +4,9 @@
     {{ super() }}
     {% if with_tree %}
         {% cssresource request,'main_library','jstree' %}
+        <style>
+            .load_variable { cursor: pointer; }
+        </style>
     {% endif %}
 {% endblock css %}
 
@@ -29,7 +32,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h5 class="m-0">Navigation</h5><br/>
-                            <img src="{{ request.url_for_static("term.png") }}">={{ _('Term') }}, <img src="{{ request.url_for_static("trait.png") }}">={{ _('Trait') }}, <img src="{{ request.url_for_static("method.png") }}">={{ _('Method') }}, <img src="{{ request.url_for_static("scale.png") }}">={{ _('Scale') }}, and <img src="{{ request.url_for_static("variable.png") }}">={{ _('Variable') }}
+                            <img src="{{ request.url_for_static("term.png") }}">={{ _('Term') }}, <img src="{{ request.url_for_static("trait.png") }}">={{ _('Trait') }}, <img src="{{ request.url_for_static("method.png") }}">={{ _('Method') }}, and <img src="{{ request.url_for_static("scale.png") }}">={{ _('Scale') }}
                         </div>
                         <div class="card-body" style="max-height: 400px; overflow-y: scroll">
                             <div id="tree"></div>
@@ -48,7 +51,7 @@
                             <div id="variable_list">
                                 <ul class="tag-list" style="padding: 0">
                                     {% for variable in variables %}
-                                        <li><a href="{{ request.route_url('term_details', termid=variable.id) }}"> {{ variable.name }}</a></li>
+                                        <li><a data-variable-id="{{ variable.id }}" class="load_variable"> {{ variable.name }}</a></li>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -137,11 +140,20 @@
                             //alert(selected_id);
                             var ecoded_id = encodeURIComponent(selected_id.trim())
                             $('#term_content').load(details_url + "/term/" + ecoded_id + "?with_tree=False #term_content");
-                            $('#variable_list').load(details_url + "/term/" + ecoded_id + "?with_tree=False #variable_list");
+                            $('#variable_list').load(details_url + "/term/" + ecoded_id + "?with_tree=False #variable_list",function(){
+                                click_variables()
+                            });
                         }
 
                     }
                 });
+            function click_variables(){
+                $('.load_variable').click(function () {
+                    var variable_id = $( this ).attr('data-variable-id');
+                    $('#term_content').load(details_url + "/term/" + variable_id + "?with_tree=False #term_content");
+                });
+            }
+            click_variables();
         </script>
     {% endif %}
 {% endblock %}

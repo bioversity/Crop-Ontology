@@ -9,6 +9,7 @@ __all__ = [
     "get_page_data",
     "update_page",
     "get_all_pages",
+    "delete_page",
 ]
 
 
@@ -43,6 +44,10 @@ def get_page_data(request, page_id):
 def update_page(request, page_id, page_data):
     mapped_data = map_to_schema(Page, page_data)
     request.dbsession.query(Page).filter(Page.page_id == page_id).update(mapped_data)
+
+
+def delete_page(request, page_id):
+    request.dbsession.query(Page).filter(Page.page_id == page_id).delete()
 
 
 def get_all_pages(request):

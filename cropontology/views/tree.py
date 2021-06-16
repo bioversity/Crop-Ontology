@@ -228,7 +228,8 @@ class TreeView(PublicView):
                     + basic_path[0]
                     + '"})<-[]-(child {ontology_id: "'
                     + ontology_id
-                    + '"}) RETURN DISTINCT child.id, '
+                    + '"}) WHERE child.term_type <> "variable" '
+                    'AND (child.is_obsolete <> "true" OR child.is_obsolete is null) RETURN DISTINCT child.id, '
                     "child.term_type, child.name "
                     "ORDER BY child.name"
                 )
@@ -253,7 +254,8 @@ class TreeView(PublicView):
                 + node_id
                 + '"})<-[]-(child {ontology_id: "'
                 + ontology_id
-                + '"}) RETURN '
+                + '"}) WHERE child.term_type <> "variable" '
+                'AND (child.is_obsolete <> "true" OR child.is_obsolete is null) RETURN '
                 "DISTINCT child.id, child.term_type, child.name "
                 "ORDER BY child.name"
             )

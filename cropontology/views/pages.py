@@ -4,6 +4,7 @@ from cropontology.processes.db import (
     get_page_data,
     update_page,
     get_all_pages,
+    delete_page,
 )
 import re
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -67,36 +68,26 @@ class PageEditView(PrivateView):
         return {"form_data": form_data, "pageid": page_id}
 
 
-# class PageUploadImageView(PrivateView):
-#     def __init__(self, request):
-#         PrivateView.__init__(self, request)
-#         self.checkCRF = False
-#
-#     def process_view(self):
-#         self.returnRawViewResult = True
-#
-#         uid = str(uuid.uuid4())
-#         input_file = self.request.POST["upload"].file
-#         input_file_name = self.request.POST["upload"].filename.lower()
-#         name, extension = os.path.splitext(input_file_name)
-#         repository_path = self.request.registry.settings.get("repository.path")
-#
-#         paths = [repository_path, "upload"]
-#         upload_path = os.path.join(repository_path, *paths)
-#         if not os.path.exists(upload_path):
-#             os.makedirs(upload_path)
-#
-#         paths = [repository_path, "upload", uid + extension]
-#         target_file = os.path.join(repository_path, *paths)
-#         input_file.seek(0)
-#         with open(target_file, "wb") as permanent_file:
-#             shutil.copyfileobj(input_file, permanent_file)
-#         return {
-#             "uploaded": True,
-#             "url": self.request.route_url(
-#                 "page_image_request", pageid=page_id, imageid=uid + extension
-#             ),
-#         }
+class PageDeleteView(PrivateView):
+    def process_view(self):
+        page_id = self.request.matchdict["pageid"]
+        if self.request.method == "GET":
+            raise HTTPNotFound()
+        else:
+            delete_page(self.request, page_id)
+
+            self.returnRawViewResult = True
+            return HTTPFound(location=self.request.route_url("page_list"))
+
+
+class ViewPageView(PublicView):
+    def process_view(self):
+        page_id = self.request.matchdict["pageid"]
+        form_data = get_page_data(self.request, page_id)
+        if form_data is None:
+            raise HTTPNotFound()
+
+        return {"pageid": page_id, "pagedesc": form_data["page_desc"]}
 
 
 class PageUploadImageView(PrivateView):

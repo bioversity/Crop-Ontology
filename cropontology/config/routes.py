@@ -4,7 +4,7 @@ import cropontology.plugins as p
 from ..plugins.utilities import add_route
 
 from ..views.search import SearchView
-from ..views.term import TermDetailsView
+from ..views.term import TermDetailsView, TermEditorView
 from ..views.search import GetBucketView
 from ..views.tree import TreeView
 from ..views.public_views import (
@@ -25,6 +25,8 @@ from ..views.pages import (
     PageEditView,
     PageUploadImageView,
     PageGetImageView,
+    ViewPageView,
+    PageDeleteView,
 )
 from ..views.sections import (
     SectionListView,
@@ -115,6 +117,12 @@ def load_routes(config):
         add_route(
             "page_edit", "/page/{pageid}/edit", PageEditView, "pages/edit_page.jinja2"
         )
+    )
+    routes.append(
+        add_route("page_delete", "/page/{pageid}/delete", PageDeleteView, None)
+    )
+    routes.append(
+        add_route("page_view", "/page/{pageid}", ViewPageView, "pages/view_page.jinja2")
     )
     routes.append(
         add_route("page_image_upload", "/pages/upload", PageUploadImageView, "json")
@@ -208,6 +216,11 @@ def load_routes(config):
     routes.append(add_route("bucket", "/search/bucket/", GetBucketView, "json"))
     routes.append(
         add_route("term_details", "/term/{termid}", TermDetailsView, "term.jinja2")
+    )
+    routes.append(
+        add_route(
+            "term_edit", "/term/{termid}/edit", TermEditorView, "term_editor.jinja2"
+        )
     )
 
     # Tree
