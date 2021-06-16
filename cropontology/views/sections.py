@@ -18,7 +18,8 @@ from pyramid.response import FileResponse
 
 class SectionListView(PrivateView):
     def process_view(self):
-        sections = get_all_sections(self.request)
+        list_order = self.request.params.get("order", "desc")
+        sections = get_all_sections(self.request, list_order)
         return {"sections": sections}
 
 

@@ -58,8 +58,31 @@ def delete_section(request, section_id):
     request.dbsession.query(Section).filter(Section.section_id == section_id).delete()
 
 
-def get_all_sections(request):
-    res = request.dbsession.query(Section).all()
+def get_all_sections(request, order_by="desc"):
+    if order_by == "desc":
+        res = (
+            request.dbsession.query(Section).order_by(Section.section_desc.asc()).all()
+        )
+    else:
+        if order_by == "id":
+            res = (
+                request.dbsession.query(Section)
+                .order_by(Section.section_id.asc())
+                .all()
+            )
+        else:
+            if order_by == "date":
+                res = (
+                    request.dbsession.query(Section)
+                    .order_by(Section.section_lastupdate.asc())
+                    .all()
+                )
+            else:
+                res = (
+                    request.dbsession.query(Section)
+                    .order_by(Section.section_desc.asc())
+                    .all()
+                )
     if res is not None:
         return map_from_schema(res)
     else:
