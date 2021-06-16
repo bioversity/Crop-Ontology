@@ -15,7 +15,9 @@
         <div class="card">
             <div class="card-header">
                 <div class="card-tools">
-                    <button type="button" onclick="location.href='{{ request.route_url('page_add') }}';" class="btn btn-primary btn-xs">{{ _('Add new page') }}</button>
+                    {% if activeUser.super %}
+                        <button type="button" onclick="location.href='{{ request.route_url('page_add') }}';" class="btn btn-primary btn-xs">{{ _('Add new page') }}</button>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body table-responsive p-0" style="height: 300px;">

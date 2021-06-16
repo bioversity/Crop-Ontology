@@ -1,4 +1,4 @@
-from ...models import Section, map_to_schema, map_from_schema
+from ...models import Section, map_to_schema, map_from_schema, UserSection
 from sqlalchemy.exc import IntegrityError
 import logging
 
@@ -58,32 +58,73 @@ def delete_section(request, section_id):
     request.dbsession.query(Section).filter(Section.section_id == section_id).delete()
 
 
-def get_all_sections(request, order_by="desc"):
-    if order_by == "desc":
-        res = (
-            request.dbsession.query(Section).order_by(Section.section_desc.asc()).all()
-        )
-    else:
-        if order_by == "id":
+def get_all_sections(request, order_by="desc", for_user=None):
+    if for_user is None:
+        if order_by == "desc":
             res = (
                 request.dbsession.query(Section)
-                .order_by(Section.section_id.asc())
+                .order_by(Section.section_desc.asc())
                 .all()
             )
         else:
-            if order_by == "date":
+            if order_by == "id":
                 res = (
                     request.dbsession.query(Section)
-                    .order_by(Section.section_lastupdate.asc())
+                    .order_by(Section.section_id.asc())
                     .all()
                 )
             else:
+                if order_by == "date":
+                    res = (
+                        request.dbsession.query(Section)
+                        .order_by(Section.section_lastupdate.asc())
+                        .all()
+                    )
+                else:
+                    res = (
+                        request.dbsession.query(Section)
+                        .order_by(Section.section_desc.asc())
+                        .all()
+                    )
+        if res is not None:
+            return map_from_schema(res)
+        else:
+            return None
+    else:
+        sub_stmt = request.dbsession.query(UserSection.section_id).filter(
+            UserSection.user_id == for_user
+        )
+        if order_by == "desc":
+            res = (
+                request.dbsession.query(Section)
+                .filter(Section.section_id.in_(sub_stmt))
+                .order_by(Section.section_desc.asc())
+                .all()
+            )
+        else:
+            if order_by == "id":
                 res = (
                     request.dbsession.query(Section)
-                    .order_by(Section.section_desc.asc())
+                    .filter(Section.section_id.in_(sub_stmt))
+                    .order_by(Section.section_id.asc())
                     .all()
                 )
-    if res is not None:
-        return map_from_schema(res)
-    else:
-        return None
+            else:
+                if order_by == "date":
+                    res = (
+                        request.dbsession.query(Section)
+                        .filter(Section.section_id.in_(sub_stmt))
+                        .order_by(Section.section_lastupdate.asc())
+                        .all()
+                    )
+                else:
+                    res = (
+                        request.dbsession.query(Section)
+                        .filter(Section.section_id.in_(sub_stmt))
+                        .order_by(Section.section_desc.asc())
+                        .all()
+                    )
+        if res is not None:
+            return map_from_schema(res)
+        else:
+            return None

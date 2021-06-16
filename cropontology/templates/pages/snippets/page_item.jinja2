@@ -3,8 +3,10 @@
     <td>{{ page.page_desc }}</td>
     <td>{{ page.page_lastupdate }}</td>
     <td>
-        <button type="button" onclick="location.href='{{ request.route_url('page_edit', pageid=page.page_id) }}';" class="btn btn-warning btn-xs">{{ _('Edit') }}</button>
-        {% if page.page_fixed == 0 %}
+        {% if activeUser.super %}
+            <button type="button" onclick="location.href='{{ request.route_url('page_edit', pageid=page.page_id) }}';" class="btn btn-warning btn-xs">{{ _('Edit') }}</button>
+        {% endif %}
+        {% if page.page_fixed == 0 and activeUser.super %}
             <button type="button" data-page-desc="{{ page.page_desc }}" urn="{{ request.route_url('page_delete', pageid=page.page_id) }}" class="btn btn-danger btn-xs delete_page">{{ _('Delete') }}</button>
         {% endif %}
     </td>

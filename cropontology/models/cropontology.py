@@ -54,6 +54,26 @@ class Section(Base):
     extras = Column(UnicodeText)
 
 
+class UserSection(Base):
+    __tablename__ = "usersection"
+
+    user_id = Column(
+        ForeignKey("user.user_id", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+    )
+    section_id = Column(
+        ForeignKey("section.section_id", ondelete="CASCADE"),
+        primary_key=True,
+        nullable=False,
+        index=True,
+    )
+    access_date = Column(DateTime)
+
+    section = relationship("Section")
+    user = relationship("User")
+
+
 class Menu(Base):
     __tablename__ = "menu"
 

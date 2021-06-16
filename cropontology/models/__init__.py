@@ -8,6 +8,7 @@ from .cropontology import (
     User,
     Page,
     Section,
+    UserSection,
 )
 from .schema import *
 

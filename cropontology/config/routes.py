@@ -12,7 +12,7 @@ from ..views.public_views import (
     HomeView,
     log_out_view,
     LoginView,
-    RegisterView,
+    # RegisterView,
     RefreshSessionView,
     ErrorView,
     Gravatar,
@@ -89,7 +89,7 @@ def load_routes(config):
         add_route("refresh", "/refresh", RefreshSessionView, "generic/refresh.jinja2")
     )
     routes.append(add_route("login", "/login", LoginView, "user/login.jinja2"))
-    routes.append(add_route("register", "/join", RegisterView, "user/register.jinja2"))
+    # routes.append(add_route("register", "/join", RegisterView, "user/register.jinja2"))
     routes.append(add_route("logout", "/logout", log_out_view, None))
     routes.append(add_route("gravatar", "/gravatar", Gravatar, None))
 

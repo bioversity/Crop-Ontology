@@ -5,11 +5,11 @@
                 <i class="fas fa-sign-in-alt mr-2"></i> {{ _('Login') }}
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ request.route_url('register') }}">
-                <i class="fas fa-user-plus mr-2"></i> {{ _('Sign up') }}
-            </a>
-        </li>
+{#        <li class="nav-item">#}
+{#            <a class="nav-link" href="{{ request.route_url('register') }}">#}
+{#                <i class="fas fa-user-plus mr-2"></i> {{ _('Sign up') }}#}
+{#            </a>#}
+{#        </li>#}
     {% else %}
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ activeUser.name }}</a>
