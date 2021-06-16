@@ -22,9 +22,9 @@
                 <table class="table table-head-fixed text-nowrap">
                     <thead>
                     <tr>
-                        <th>{{ _('ID') }}</th>
-                        <th>{{ _('Name') }}</th>
-                        <th>{{ _('Last update') }}</th>
+                        <th><a href="{{ request.route_url('page_list', _query={"order": "id"}) }}">{{ _('ID') }}</a></th>
+                        <th><a href="{{ request.route_url('page_list', _query={"order": "desc"}) }}">{{ _('Name') }}</a></th>
+                        <th><a href="{{ request.route_url('page_list', _query={"order": "date"}) }}">{{ _('Last update') }}</a></th>
                         <th>{{ _('Actions') }}</th>
                     </tr>
                     </thead>

@@ -50,8 +50,25 @@ def delete_page(request, page_id):
     request.dbsession.query(Page).filter(Page.page_id == page_id).delete()
 
 
-def get_all_pages(request):
-    res = request.dbsession.query(Page).all()
+def get_all_pages(request, order_by="desc"):
+    if order_by == "desc":
+        res = request.dbsession.query(Page).order_by(Page.page_desc.asc()).all()
+    else:
+        if order_by == "id":
+            res = request.dbsession.query(Page).order_by(Page.page_id.asc()).all()
+        else:
+            if order_by == "date":
+                res = (
+                    request.dbsession.query(Page)
+                    .order_by(Page.page_lastupdate.asc())
+                    .all()
+                )
+            else:
+                res = (
+                    request.dbsession.query(Page)
+                    .order_by(Page.page_lastupdate.asc())
+                    .all()
+                )
     if res is not None:
         return map_from_schema(res)
     else:

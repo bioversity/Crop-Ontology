@@ -18,7 +18,8 @@ from pyramid.response import FileResponse
 
 class PageListView(PrivateView):
     def process_view(self):
-        pages = get_all_pages(self.request)
+        list_order = self.request.params.get("order", "desc")
+        pages = get_all_pages(self.request, list_order)
         return {"pages": pages}
 
 
