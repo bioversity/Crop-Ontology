@@ -81,7 +81,6 @@ class ContentView(PublicView):
     def process_view(self):
         return {}
 
-
 class APIHelpView(PublicView):
     def process_view(self):
         return {}
