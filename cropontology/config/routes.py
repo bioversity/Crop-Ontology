@@ -46,6 +46,7 @@ from ..views.brapi import (
     BRAPIVariablesView,
 )
 from ..views.rdf_api import EBIMetadataView
+from ..views.users import APIUserSearchSelect2, UsersListView, AddUserView, EditUserView
 
 log = logging.getLogger("cropontology")
 
@@ -211,6 +212,32 @@ def load_routes(config):
         )
     )
 
+    # Users
+    routes.append(
+        add_route(
+            "user_list",
+            "/users",
+            UsersListView,
+            "user/list_users.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "add_user",
+            "/users/add",
+            AddUserView,
+            "user/add_user.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "modify_user",
+            "/user/{userid}/edit",
+            EditUserView,
+            "user/edit_user.jinja2",
+        )
+    )
+
     # Search
     routes.append(add_route("search", "/search", SearchView, "search.jinja2"))
     routes.append(add_route("bucket", "/search/bucket/", GetBucketView, "json"))
@@ -254,6 +281,16 @@ def load_routes(config):
     # Here comes the CO API routes
 
     routes.append(add_route("api_ifo", "/api/v1/info", APIDocView, "api/info.jinja2"))
+
+    # Users API
+    routes.append(
+        add_route(
+            "api_select2_users",
+            "/api/v1/select2_user",
+            APIUserSearchSelect2,
+            "json",
+        )
+    )
 
     append_to_routes(routes)
 

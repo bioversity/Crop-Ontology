@@ -1,0 +1,84 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','switchery' %}
+{% endblock css %}
+
+{% block topScripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','switchery' %}
+{% endblock topScripts %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {% block user_add_title %}
+                        <h2>{{ _('Edit user information') }}</h2>
+                    {% endblock user_add_title %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {% block user_edit_content %}
+                        {% block form_errors %}
+                            {% if action == "modify" %}
+                                {{ form.display_errors(errors) }}
+                            {% endif %}
+                        {% endblock form_errors %}
+                        {% include 'user/snippets/user_form_edit.jinja2' %}
+                    {% endblock user_edit_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                   <h5>{{ _('Change password') }}</h5>
+                    {% block user_password_content %}
+                    {% block password_errors %}
+                        {% if action == "changepass" %}
+                            {{ form.display_errors(errors) }}
+                        {% endif %}
+                    {% endblock password_errors %}
+                    {% include 'user/snippets/user_password_form.jinja2' %}
+                {% endblock user_password_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        function uuidv4() {
+            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+        }
+
+        $(document).ready(function() {
+            var elem = document.querySelector('.js-switch');
+            var switchery = new Switchery(elem, { color: '#1AB394' });
+
+            let elem2 = document.querySelector('.js-switch2');
+            let switchery2 = new Switchery(elem2, { color: '#1AB394' });
+
+            $('#genkey').click(function () {
+                $('#user_apikey').val(uuidv4());
+            });
+
+        });
+    </script>
+{% endblock scripts %}
+

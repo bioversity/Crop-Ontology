@@ -23,6 +23,7 @@ __all__ = [
     "update_last_login",
     "get_user_id_with_email",
     "get_users",
+    "query_users",
 ]
 
 log = logging.getLogger("cropontology")
@@ -190,3 +191,24 @@ def update_password(request, user, password):
         request.dbsession.rollback()
         log.error("Error {} when changing password for user {}".format(str(e), user))
         return False, str(e)
+
+
+def query_users(request, q, start, size):
+    sql = "SELECT COUNT(user_id) " "FROM user WHERE UPPER(CONCAT(user_id,'|',user_name,'|',user_email)) LIKE '%{}%'".format(
+        q.upper()
+    ) + " LIMIT {} OFFSET {}".format(
+        size, start
+    )
+    res = request.dbsession.execute(sql).fetchone()
+    total = res[0]
+
+    if total > 0:
+        sql = "SELECT user_id,user_name,user_email " "FROM user WHERE UPPER(CONCAT(user_id,'|',user_name,'|',user_email)) LIKE '%{}%'".format(
+            q.upper()
+        ) + " ORDER BY user_name LIMIT {} OFFSET {}".format(
+            size, start
+        )
+        users = request.dbsession.execute(sql).fetchall()
+        return users, total
+    else:
+        return [], 0

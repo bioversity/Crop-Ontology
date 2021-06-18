@@ -71,3 +71,14 @@ def create_resources(apppath, config):
     # r.add_css_resource("main_library", "jstree-40", "plugins/jstree/css/default/40px.png", None)
     # r.add_css_resource("main_library", "jstree-32", "plugins/jstree/css/default/32px.png", None)
     r.add_js_resource("main_library", "jstree", "plugins/jstree/js/jstree.min.js", None)
+
+    # Search users
+    r.add_css_resource("main_library", "select_users", "css/select2/select2.css", None)
+    r.add_js_resource("main_library", "select_users", "js/select2/select2.js", None)
+
+    r.add_css_resource(
+        "main_library", "switchery", "css/plugins/switchery/switchery.css", None
+    )
+    r.add_js_resource(
+        "main_library", "switchery", "js/plugins/switchery/switchery.js", None
+    )

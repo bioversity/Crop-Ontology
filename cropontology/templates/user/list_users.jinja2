@@ -1,0 +1,110 @@
+{% extends 'page.jinja2' %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','select_users' %}
+    <style>
+        @media (max-width: 767px) {
+            .action-buttons {
+                margin-top: 10px;
+            }
+        }
+    </style>
+{% endblock css %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2>{{ _('Site users') }}</h2>
+                        {{ _('As an administrator you can add and edit users') }}<br/>
+                        <div style="margin-top: 10px" class="row">
+                            <div class="col-md-9">
+
+                            </div>
+                            <div class="col-md-3">
+                                <button onclick="location.href='{{ request.route_url('add_user') }}';" class="btn btn-block btn-primary"> <i class="fa fa-plus"></i> {{ _('Add user') }}</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2>{{ _('Search for a user') }}</h2>
+                    <small>{{ _('You can search by username, full name or email address') }}</small>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <select name="user" id="user" style="width: 100%; !important;" class="js-example-data-ajax form-control"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <button id="edit_user" class="btn btn-block btn-warning action-buttons"> <i class="fas fa-user-edit"></i> {{ _('Edit user') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','select_users' %}
+    <script>
+        $(document).ready(function() {
+
+            $('#edit_user').click(function () {
+                let selected_user = $('#user').find(":selected").val();
+                if (selected_user)
+                {
+                    let loc = '{{ request.route_url('modify_user',userid='~TOCHANGE~') }}';
+                    let loc2 = loc.replace("~TOCHANGE~",selected_user);
+                    location.href=loc2;
+                }
+
+            });
+
+            function formatUser (user) {
+                if (!user.id) {
+                    return user.text;
+                }
+                let baseUrl = "{{ request.route_url('gravatar') }}";
+                let $state = $(
+                    '<span><img src="' + baseUrl + '?name=' + user.text + '&size=45" class="img-flag" /> ' + user.text + '</span>'
+                );
+                return $state;
+            }
+
+            $(".js-example-data-ajax").select2({
+                templateResult: formatUser,
+                ajax: {
+                    url: "{{ request.route_url('api_select2_users') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            include_me: "True",
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: (params.page * 10) < data.total
+                            }
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+        });
+    </script>
+{% endblock scripts %}

@@ -34,6 +34,9 @@
                                 <li><a href="{{ request.route_url('page_list') }}" class="dropdown-item">{{ _('Pages') }}</a></li>
                             {% endif %}
                             <li><a href="{{ request.route_url('section_list') }}" class="dropdown-item">{{ _('Sections') }}</a></li>
+                            {% if activeUser.super %}
+                                <li><a href="{{ request.route_url('user_list') }}" class="dropdown-item">{{ _('Users') }}</a></li>
+                            {% endif %}
 {#                            <li><a href="#" class="dropdown-item">{{ _('Menus') }}</a></li>#}
                         </ul>
                     </li>

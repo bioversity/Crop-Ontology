@@ -1,0 +1,51 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','switchery' %}
+{% endblock css %}
+
+{% block topScripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','switchery' %}
+{% endblock topScripts %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {% block user_add_title %}
+                        <h2>{{ _('Add new user') }}</h2>
+                    {% endblock user_add_title %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    {% block user_add_content %}
+                        {% block form_errors %}
+                            {{ form.display_errors(errors) }}
+                        {% endblock form_errors %}
+                        {% include 'user/snippets/user_form.jinja2' %}
+                    {% endblock user_add_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(document).ready(function() {
+            var elem = document.querySelector('.js-switch');
+            var switchery = new Switchery(elem, { color: '#1AB394' });
+        });
+    </script>
+{% endblock scripts %}
+
