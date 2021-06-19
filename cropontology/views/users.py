@@ -156,6 +156,53 @@ class AddUserView(PrivateView):
         return {"userData": user_details}
 
 
+class ChangePasswordView(PrivateView):
+    def process_view(self):
+        if self.request.method == "POST":
+            user_details = self.get_post_dict()
+            if "changepass" in user_details.keys():
+                if self.user.check_password(user_details["old_password"], self.request):
+                    if user_details["user_password"] != "":
+                        if (
+                            user_details["user_password"]
+                            == user_details["user_password2"]
+                        ):
+                            encoded_password = encode_data(
+                                self.request, user_details["user_password"]
+                            )
+                            updated, message = update_password(
+                                self.request, self.userID, encoded_password
+                            )
+                            if updated:
+                                log.warning(
+                                    "User {} changed its password".format(self.userID)
+                                )
+                                self.returnRawViewResult = True
+                                self.request.session.flash(
+                                    self._(
+                                        "The password for {} was modified".format(
+                                            self.userID
+                                        )
+                                    )
+                                )
+                                return HTTPFound(
+                                    location=self.request.route_url("home")
+                                )
+                            else:
+                                self.append_to_errors(message)
+                        else:
+                            self.append_to_errors(
+                                self._(
+                                    "The password and its confirmation are not the same"
+                                )
+                            )
+                    else:
+                        self.append_to_errors(self._("The password cannot be empty"))
+                else:
+                    self.append_to_errors(self._("The current password is not correct"))
+        return {}
+
+
 class EditUserView(PrivateView):
     def process_view(self):
         if self.user.super != 1:

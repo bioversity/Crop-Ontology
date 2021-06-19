@@ -49,7 +49,13 @@ from ..views.brapi import (
 )
 
 from ..views.rdf_api import EBIMetadataView, RDFCleanView
-from ..views.users import APIUserSearchSelect2, UsersListView, AddUserView, EditUserView
+from ..views.users import (
+    APIUserSearchSelect2,
+    UsersListView,
+    AddUserView,
+    EditUserView,
+    ChangePasswordView,
+)
 
 
 log = logging.getLogger("cropontology")
@@ -97,6 +103,14 @@ def load_routes(config):
     # routes.append(add_route("register", "/join", RegisterView, "user/register.jinja2"))
     routes.append(add_route("logout", "/logout", log_out_view, None))
     routes.append(add_route("gravatar", "/gravatar", Gravatar, None))
+    routes.append(
+        add_route(
+            "change_password",
+            "/change_password",
+            ChangePasswordView,
+            "user/change_password.jinja2",
+        )
+    )
 
     routes.append(
         add_route("about", "/about", ContentView, "pages/standard/about.jinja2")

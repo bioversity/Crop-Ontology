@@ -14,6 +14,7 @@
         <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ activeUser.name }}</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                <li><a href="{{ request.route_url('change_password') }}" class="dropdown-item">{{ _('Change password') }}</a></li>
                 <li><a href="{{ request.route_url('logout') }}" class="dropdown-item">{{ _('Logout') }}</a></li>
             </ul>
         </li>
