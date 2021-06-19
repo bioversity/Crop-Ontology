@@ -5,6 +5,10 @@ from cropontology.processes.db.section import (
     update_section,
     get_all_sections,
     delete_section,
+    get_section_users,
+    add_user_to_section,
+    remove_user_from_section,
+    user_admin_section,
 )
 import re
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -19,7 +23,7 @@ from pyramid.response import FileResponse
 class SectionListView(PrivateView):
     def process_view(self):
         list_order = self.request.params.get("order", "desc")
-        if self.user.super:
+        if self.user.super == 1:
             sections = get_all_sections(self.request, list_order)
         else:
             sections = get_all_sections(self.request, list_order, self.userID)
@@ -63,6 +67,9 @@ class SectionAddView(PrivateView):
 class SectionEditView(PrivateView):
     def process_view(self):
         section_id = self.request.matchdict["sectionid"]
+        if self.user.super == 0:
+            if not user_admin_section(self.request, section_id, self.userID):
+                raise HTTPNotFound()
         if self.request.method == "GET":
             form_data = get_section_data(self.request, section_id)
             if form_data is None:
@@ -73,6 +80,55 @@ class SectionEditView(PrivateView):
             update_section(self.request, section_id, form_data)
 
         return {"form_data": form_data, "sectionid": section_id}
+
+
+class SectionUsersView(PrivateView):
+    def process_view(self):
+        section_id = self.request.matchdict["sectionid"]
+        if self.request.method == "GET":
+            users = get_section_users(self.request, section_id)
+        else:
+            new_user_data = self.get_post_dict()
+            added, message = add_user_to_section(
+                self.request, section_id, new_user_data["user"]
+            )
+            if not added:
+                self.append_to_errors(message)
+            else:
+                self.returnRawViewResult = True
+                return HTTPFound(
+                    location=self.request.route_url(
+                        "section_users",
+                        sectionid=section_id,
+                    )
+                )
+            users = get_section_users(self.request, section_id)
+        form_data = get_section_data(self.request, section_id)
+        if form_data is None:
+            raise HTTPNotFound()
+        return {"section_users": users, "sectionid": section_id, "form_data": form_data}
+
+
+class SectionRemoveUserView(PrivateView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        self.checkCrossPost = False
+        section_id = self.request.matchdict["sectionid"]
+        user_id = self.request.matchdict["userid"]
+        if self.request.method == "GET":
+            raise HTTPNotFound()
+        else:
+            try:
+                remove_user_from_section(self.request, section_id, user_id)
+            except Exception as e:
+                self.append_to_errors("Unable to delete section: {}".format(str(e)))
+
+            return HTTPFound(
+                location=self.request.route_url(
+                    "section_users",
+                    sectionid=section_id,
+                )
+            )
 
 
 class SectionDeleteView(PrivateView):

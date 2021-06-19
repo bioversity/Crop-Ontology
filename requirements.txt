@@ -63,6 +63,7 @@ python-editor==1.0.4
 python-slugify==4.0.1
 pytz==2020.1
 PyUtilib==6.0.0
+rdflib==5.0.0
 redis==3.5.3
 regex==2020.7.14
 repoze.lru==0.7

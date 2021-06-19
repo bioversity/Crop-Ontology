@@ -179,8 +179,8 @@ class LoginView(PublicView):
             login = data["email"]
             passwd = data["passwd"]
             user = get_user_data(login, self.request)
-            login_data = {"login": login, "group": "mainApp"}
             if user is not None:
+                login_data = {"login": user.id, "group": "mainApp"}
                 if user.check_password(passwd, self.request):
                     continue_login = True
                     # Load connected plugins and check if they modify the login authorization

@@ -35,6 +35,8 @@ from ..views.sections import (
     SectionUploadImageView,
     SectionGetImageView,
     SectionDeleteView,
+    SectionUsersView,
+    SectionRemoveUserView,
 )
 
 from ..views.ontology import OntologyView, JSONDataView, OntologyRDFView
@@ -161,6 +163,22 @@ def load_routes(config):
             "/section/{sectionid}/edit",
             SectionEditView,
             "sections/edit_section.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "section_users",
+            "/section/{sectionid}/users",
+            SectionUsersView,
+            "sections/user_sections.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "section_remove_user",
+            "/section/{sectionid}/user/{userid}/remove",
+            SectionRemoveUserView,
+            None,
         )
     )
     routes.append(

@@ -24,23 +24,21 @@
                             <li><a href="#" class="dropdown-item">{{ _('Annotation tool') }}</a></li>
                         {% endif %}
                     </ul>
-                </li>
+            </li>
             {% if userLogged %}
-                {% if activeUser.super %}
-                    <li class="nav-item dropdown">
-                        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Site maintenance') }}</a>
-                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                            {% if activeUser.super %}
-                                <li><a href="{{ request.route_url('page_list') }}" class="dropdown-item">{{ _('Pages') }}</a></li>
-                            {% endif %}
-                            <li><a href="{{ request.route_url('section_list') }}" class="dropdown-item">{{ _('Sections') }}</a></li>
-                            {% if activeUser.super %}
-                                <li><a href="{{ request.route_url('user_list') }}" class="dropdown-item">{{ _('Users') }}</a></li>
-                            {% endif %}
-{#                            <li><a href="#" class="dropdown-item">{{ _('Menus') }}</a></li>#}
-                        </ul>
-                    </li>
-                {% endif %}
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Site maintenance') }}</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        {% if activeUser.super %}
+                            <li><a href="{{ request.route_url('page_list') }}" class="dropdown-item">{{ _('Pages') }}</a></li>
+                        {% endif %}
+                        <li><a href="{{ request.route_url('section_list') }}" class="dropdown-item">{{ _('Sections') }}</a></li>
+                        {% if activeUser.super %}
+                            <li><a href="{{ request.route_url('user_list') }}" class="dropdown-item">{{ _('Users') }}</a></li>
+                        {% endif %}
+                        {#                            <li><a href="#" class="dropdown-item">{{ _('Menus') }}</a></li>#}
+                    </ul>
+                </li>
             {% endif %}
         {% endblock main_items %}
         {% block extra_items %}
