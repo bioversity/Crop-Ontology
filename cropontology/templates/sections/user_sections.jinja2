@@ -1,0 +1,83 @@
+{% extends 'page.jinja2' %}
+
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','sweetalert' %}
+{% endblock css %}
+
+{% block breadcrums %}
+    {% include 'sections/snippets/breadcrums_list.jinja2' %}
+{% endblock breadcrums %}
+
+{% block main_container %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-tools">
+                    {% if activeUser.super %}
+                        <button type="button" onclick="location.href='{{ request.route_url('section_add') }}';" class="btn btn-primary btn-xs">{{ _('Add new section') }}</button>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body table-responsive p-0" style="height: 300px;">
+                <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                    <tr>
+                        <th><a href="{{ request.route_url('section_list', _query={"order": "id"}) }}">{{ _('ID') }}</a></th>
+                        <th><a href="{{ request.route_url('section_list', _query={"order": "desc"}) }}">{{ _('Name') }}</a></th>
+                        <th><a href="{{ request.route_url('section_list', _query={"order": "date"}) }}">{{ _('Last update') }}</a>
+                        <th>{{ _('Actions') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for section in sections %}
+                            {% include 'sections/snippets/section_item.jinja2' %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main_container %}
+
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','sweetalert' %}
+    <script>
+        $(document).ready(function() {
+            $('.delete_section').click(function () {
+                var action_url = $( this ).attr('urn');
+                var section_desc = $( this ).attr('data-section-desc');
+                swal({
+                        title: "{{ _('Are you sure?') }}",
+                        text: "{{ _('You will delete the section: ') }}" + section_desc,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "{{ _('Yes, delete it!') }}",
+                        cancelButtonText: "{{ _('Oops, cancel!') }}",
+                        closeOnConfirm: true,
+                        closeOnCancel: true },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            var form = document.createElement('form');
+                            form.setAttribute('method', 'post');
+                            form.setAttribute('action', action_url);
+                            form.style.display = 'hidden';
+
+                            var i = document.createElement("input"); //input element, text
+                            i.setAttribute('type',"text");
+                            i.setAttribute('name',"csrf_token");
+                            i.setAttribute('value','{{ request.session.get_csrf_token() }}');
+                            form.appendChild(i);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+            });
+        })
+    </script>
+{% endblock scripts %}
