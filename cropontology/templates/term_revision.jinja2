@@ -63,7 +63,7 @@
                                         <td>{{ _('Disregarded') }}</td>
                                     {% endif %}
                                     <td>
-                                        <button type="button" class="btn btn-default btn-xs">{{ _('Review changes') }}</button>
+                                        <button type="button" onclick="location.href='{{ request.route_url('compare_revision',revisionid=a_revision.revision) }}';" class="btn btn-default btn-xs">{{ _('Review changes') }}</button>
                                         {% if a_revision.status == 0 %}
                                             {% if activeUser.super %}
                                                 <button type="button" class="btn btn-success btn-xs">{{ _('Approve') }}</button>

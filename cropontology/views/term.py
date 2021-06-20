@@ -1,11 +1,15 @@
 import datetime
 import uuid
-
+from collections import OrderedDict
 from .classes import PublicView, PrivateView
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from neo4j import GraphDatabase
 import pymongo
+import os
+import json
+from webhelpers2.html import literal
+from cropontology.processes.revision.diff import generate_diff
 
 
 class TermDetailsView(PublicView):
@@ -183,3 +187,53 @@ class TermRevisionListView(PrivateView):
             revision_query["status"] = status_code
         revisions = revisions_collection.find(revision_query).sort("created_on", -1)
         return {"revisions": revisions, "status": status}
+
+
+class CompareRevisionView(PrivateView):
+    def process_view(self):
+        revision_id = self.request.matchdict["revisionid"]
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        revisions_collection = ontology_db["revisions"]
+        revision_data = revisions_collection.find_one({"revision": revision_id})
+        if revision_data is None:
+            raise HTTPNotFound()
+        else:
+            revision_date = revision_data["created_on"]
+            revision_by = revision_data["created_by"]
+            data_a = OrderedDict()
+            data_b = OrderedDict()
+            for a_field in revision_data["data"]:
+                data_a[a_field["name"]] = a_field["value"]
+                if a_field.get("new_value", None) is None:
+                    data_b[a_field["name"]] = a_field["value"]
+                else:
+                    data_b[a_field["name"]] = a_field["new_value"]
+
+            repository_path = self.request.registry.settings.get("repository.path")
+            paths = ["revision", revision_id]
+            revision_path = os.path.join(repository_path, *paths)
+            if not os.path.exists(revision_path):
+                os.makedirs(revision_path)
+
+            file_a = os.path.join(revision_path, *["file_a.json"])
+            file_b = os.path.join(revision_path, *["file_b.json"])
+            with open(file_a, "w") as f:
+                f.write(json.dumps(data_a, indent=4, default=str))
+
+            with open(file_b, "w") as f:
+                f.write(json.dumps(data_b, indent=4, default=str))
+
+            error, diff = generate_diff(self.request, revision_id, file_b, file_a)
+            if error != 0:
+                diff = None
+            else:
+                diff = literal(diff)
+
+            return {
+                "revision_id": revision_id,
+                "revision_date": revision_date,
+                "revision_by": revision_by,
+                "diff": diff,
+            }

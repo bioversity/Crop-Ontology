@@ -82,3 +82,14 @@ def create_resources(apppath, config):
     r.add_js_resource(
         "main_library", "switchery", "js/plugins/switchery/switchery.js", None
     )
+
+    # Revisions
+    r.add_css_resource(
+        "main_library",
+        "simplemde",
+        "js/plugins/simplemde/simplemde.min.css",
+        None,
+    )
+    r.add_js_resource(
+        "main_library", "simplemde", "js/plugins/simplemde/simplemde.min.js", None
+    )

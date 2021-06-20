@@ -4,7 +4,12 @@ import cropontology.plugins as p
 from ..plugins.utilities import add_route
 
 from ..views.search import SearchView
-from ..views.term import TermDetailsView, TermEditorView, TermRevisionListView
+from ..views.term import (
+    TermDetailsView,
+    TermEditorView,
+    TermRevisionListView,
+    CompareRevisionView,
+)
 from ..views.search import GetBucketView
 from ..views.tree import TreeView
 from ..views.public_views import (
@@ -276,6 +281,14 @@ def load_routes(config):
     routes.append(
         add_route(
             "revisions", "/revisions", TermRevisionListView, "term_revision.jinja2"
+        )
+    )
+    routes.append(
+        add_route(
+            "compare_revision",
+            "/revision/{revisionid}/view",
+            CompareRevisionView,
+            "compare_revision.jinja2",
         )
     )
 
