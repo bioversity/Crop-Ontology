@@ -13,7 +13,7 @@
 {% block main_container %}
     <div class="row">
         {% if request.h.has_section_content(request, ontology_id) %}
-        <div class="col-lg-12">
+            <div class="col-lg-12">
 
                 <div class="card">
                     <div class="card-body">
@@ -21,7 +21,7 @@
                     </div>
                 </div>
 
-        </div>
+            </div>
         {% endif %}
     </div>
 
@@ -62,11 +62,14 @@
         </div>
         <div class="col-lg-6">
             <div class="card">
-              <div class="card-header">
-                <h5 class="m-0">Term details</h5>
-              </div>
+                <div class="card-header">
+                    <h5 class="m-0">Term details</h5>
+                </div>
                 <div class="card-body" style="max-height: 800px; overflow-y: scroll">
                     <div id="term_content">
+                        {% if userLogged %}
+                            <button type="button" onclick="location.href='{{ request.route_url('term_edit',termid=term_id) }}';" class="btn btn-primary btn-xs">{{ _('Edit term') }}</button>
+                        {% endif %}
                         <table class="table table-hover">
                             <thead>
                             <tr>

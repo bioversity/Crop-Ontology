@@ -9,6 +9,7 @@
                     <form role="form" method="post" action="{{ request.url }}">
                         {{ form.secure_form(request) }}
                         <div class="card-body">
+                            {{ form.display_errors(errors) }}
                             <table class="table table-hover">
                                 <thead>
                                 <tr>
@@ -40,9 +41,13 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">{{ _('Notes for reviewers') }}</label>
+                                <textarea id="revision_notes" class="form-control" name="revision_notes">{{ revision_notes }}</textarea>
+                            </div>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">{{ _('Save changes') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ _('Submit revision') }}</button>
                         </div>
                     </form>
                 </div>

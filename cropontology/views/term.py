@@ -1,7 +1,11 @@
+import datetime
+import uuid
+
 from .classes import PublicView, PrivateView
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from neo4j import GraphDatabase
+import pymongo
 
 
 class TermDetailsView(PublicView):
@@ -50,7 +54,7 @@ class TermDetailsView(PublicView):
 
 class TermEditorView(PrivateView):
     def process_view(self):
-        def set_key_settings(kes):
+        def set_key_settings(keys):
             for a_key in keys:
                 if a_key["name"] == "term_type":
                     a_key["type"] = "options"
@@ -79,29 +83,103 @@ class TermEditorView(PrivateView):
         neo4j_password = self.request.registry.settings["neo4j.password"]
         driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
         db = driver.session()
+
+        query = "MATCH (n) WHERE n.id='" + term_id + "' RETURN keys(n) as key_name"
+        cursor = db.run(query)
+        keys = []
+        fields = []
+        for a_row in cursor:
+            for an_item in a_row["key_name"]:
+                keys.append(
+                    {
+                        "name": an_item,
+                        "desc": "",
+                        "read_only": False,
+                        "type": "text",
+                        "options": [],
+                    }
+                )
+                fields.append("n." + an_item)
+        query = "MATCH (n) WHERE n.id='" + term_id + "' RETURN " + ",".join(fields)
+        cursor = db.run(query)
+        for an_item in cursor:
+            for a_key in keys:
+                a_key["value"] = an_item["n." + a_key["name"]]
         if self.request.method == "GET":
-            query = "MATCH (n) WHERE n.id='" + term_id + "' RETURN keys(n) as key_name"
-            cursor = db.run(query)
-            keys = []
-            fields = []
-            for a_row in cursor:
-                for an_item in a_row["key_name"]:
-                    keys.append(
-                        {
-                            "name": an_item,
-                            "desc": "",
-                            "read_only": False,
-                            "type": "text",
-                            "options": [],
-                        }
-                    )
-                    fields.append("n." + an_item)
-            query = "MATCH (n) WHERE n.id='" + term_id + "' RETURN " + ",".join(fields)
-            cursor = db.run(query)
-            for an_item in cursor:
-                for a_key in keys:
-                    a_key["value"] = an_item["n." + a_key["name"]]
             set_key_settings(keys)
             return {"keys": keys}
         else:
-            return {}
+            form_data = self.get_post_dict()
+            revision_notes = form_data.get("revision_notes", None)
+            if revision_notes is not None:
+                form_data.pop("revision_notes", None)
+            data_changed = False
+            for a_field in form_data.keys():
+                for a_key in keys:
+                    if a_key["name"] == a_field:
+                        if a_key["value"] != form_data[a_field]:
+                            a_key["new_value"] = form_data[a_field]
+                            data_changed = True
+                        break
+            if data_changed:
+                revision = {
+                    "revision": str(uuid.uuid4()),
+                    "for_term": term_id,
+                    "created_on": datetime.datetime.now(),
+                    "created_by": self.userID,
+                    "status": 0,
+                    "reviewed_by": None,
+                    "reviewed_on": None,
+                    "revision_notes": revision_notes,
+                    "review_notes": None,
+                    "data": keys,
+                }
+                mongo_url = self.request.registry.settings.get("mongo.url")
+                mongo_client = pymongo.MongoClient(mongo_url)
+                ontology_db = mongo_client["ontologies"]
+                revisions_collection = ontology_db["revisions"]
+                revisions_collection.insert_one(revision)
+                self.returnRawViewResult = True
+                return HTTPFound(location=self.request.route_url("revisions"))
+            else:
+                self.errors.append(self._("Nothing to change"))
+                set_key_settings(keys)
+                return {"keys": keys, "revision_notes": ""}
+
+
+class TermRevisionListView(PrivateView):
+    def process_view(self):
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        revisions_collection = ontology_db["revisions"]
+
+        status = self.request.params.get("status", None)
+        user_to_query = self.request.params.get("user", None)
+        if status is None:
+            session = self.request.session
+            if "clean_status" in session:
+                status = session["clean_status"]
+            else:
+                status = "all"
+                session["clean_status"] = "all"
+        status_code = None
+        if status == "pending":
+            status_code = 0
+        if status == "approved":
+            status_code = 1
+        if status == "rejected":
+            status_code = -1
+        if status == "disregarded":
+            status_code = 2
+
+        if self.user.super == 0:
+            revision_query = {"created_by": self.userID}
+        else:
+            revision_query = {}
+            if user_to_query is not None:
+                revision_query["created_by"] = user_to_query
+        if status_code is not None:
+            revision_query["status"] = status_code
+        revisions = revisions_collection.find(revision_query).sort("created_on", -1)
+        return {"revisions": revisions, "status": status}

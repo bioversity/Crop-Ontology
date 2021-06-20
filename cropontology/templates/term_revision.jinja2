@@ -1,0 +1,89 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <span>{{ _('Filter (Click to change)') }}:</span> <p class="btn-group" style="margin-top: 10px">
+                    <button class="btn btn-default" onclick="location.href='{{ request.route_url('revisions',_query={'status':'all'}) }}';" type="button">{% if status == "all" %}<b>{{ _('All') }}</b>{% else %}{{ _('All') }}{% endif %}</button>
+                    <button class="btn btn-primary" onclick="location.href='{{ request.route_url('revisions',_query={'status':'approved'}) }}';" type="button">{% if status == "approved" %}<b>{{ _('Approved') }}</b>{% else %}{{ _('Approved') }}{% endif %}</button>
+                    <button class="btn btn-danger" onclick="location.href='{{ request.route_url('revisions',_query={'status':'pending'}) }}';" type="button">{% if status == "pending" %}<b>{{ _('Pending') }}</b>{% else %}{{ _('Pending') }}{% endif %}</button>
+                    <button class="btn btn-warning" onclick="location.href='{{ request.route_url('revisions',_query={'status':'disregarded'}) }}';" type="button">{% if status == "disregarded" %}<b>{{ _('Disregarded') }}</b>{% else %}{{ _('Disregarded') }}{% endif %}</button>
+                    <button class="btn btn-info" onclick="location.href='{{ request.route_url('revisions',_query={'status':'rejected'}) }}';" type="button">{% if status == "rejected" %}<b>{{ _('Rejected') }}</b>{% else %}{{ _('Rejected') }}{% endif %}</button>
+                <p>
+                    <h3>
+                        {% if status == "all" %}
+                            {{ _('Showing all revisions') }}
+                        {% endif %}
+                        {% if status == "approved" %}
+                            {{ _('Showing approved revisions') }}
+                        {% endif %}
+                        {% if status == "pending" %}
+                            {{ _('Showing pending revisions') }}
+                        {% endif %}
+                        {% if status == "disregarded" %}
+                            {{ _('Showing disregarded revisions') }}
+                        {% endif %}
+                        {% if status == "rejected" %}
+                            {{ _('Showing rejected revisions') }}
+                        {% endif %}
+                    </h3>
+            </p>
+                </div>
+                <div class="card-body">
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>{{ _('Revision') }}</th>
+                                <th>{{ _('Date') }}</th>
+                                <th>{{ _('By') }}</th>
+                                <th>{{ _('Status') }}</th>
+                                <th>{{ _('Actions') }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for a_revision in revisions %}
+                                <tr>
+                                    <td><span title="{{ a_revision.revision}}">{{ a_revision.revision[-12:] }}</span></td>
+                                    <td><span title="{{ a_revision.created_on }}">{{ request.h.readble_date_with_time(a_revision.created_on) }}</span></td>
+                                    <td>{{ a_revision.created_by }}</td>
+                                    {% if a_revision.status == 0 %}
+                                        <td>{{ _('Pending') }}</td>
+                                    {% endif %}
+                                    {% if a_revision.status == 1 %}
+                                        <td>{{ _('Approved') }}</td>
+                                    {% endif %}
+                                    {% if a_revision.status == -1 %}
+                                        <td>{{ _('Rejected') }}</td>
+                                    {% endif %}
+                                    {% if a_revision.status == 2 %}
+                                        <td>{{ _('Disregarded') }}</td>
+                                    {% endif %}
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs">{{ _('Review changes') }}</button>
+                                        {% if a_revision.status == 0 %}
+                                            {% if activeUser.super %}
+                                                <button type="button" class="btn btn-success btn-xs">{{ _('Approve') }}</button>
+                                                <button type="button" class="btn btn-danger btn-xs">{{ _('Reject') }}</button>
+                                                {% if activeUser.id == a_revision.created_by %}
+                                                    <button type="button" class="btn btn-warning btn-xs">{{ _('Disregard') }}</button>
+                                                {% endif %}
+                                            {% else %}
+                                                <button type="button" class="btn btn-warning btn-xs">{{ _('Disregard') }}</button>
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

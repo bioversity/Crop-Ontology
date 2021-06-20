@@ -36,6 +36,7 @@
                         {% if activeUser.super %}
                             <li><a href="{{ request.route_url('user_list') }}" class="dropdown-item">{{ _('Users') }}</a></li>
                         {% endif %}
+                        <li><a href="{{ request.route_url('revisions') }}" class="dropdown-item">{{ _('Revisions') }}</a></li>
                         {#                            <li><a href="#" class="dropdown-item">{{ _('Menus') }}</a></li>#}
                     </ul>
                 </li>
