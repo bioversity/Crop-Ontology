@@ -202,6 +202,7 @@ class CompareRevisionView(PrivateView):
         else:
             revision_date = revision_data["created_on"]
             revision_by = revision_data["created_by"]
+            revision_notes = revision_data["revision_notes"]
             data_a = OrderedDict()
             data_b = OrderedDict()
             for a_field in revision_data["data"]:
@@ -236,4 +237,71 @@ class CompareRevisionView(PrivateView):
                 "revision_date": revision_date,
                 "revision_by": revision_by,
                 "diff": diff,
+                "revision_notes": revision_notes,
             }
+
+
+class DisregardRevisionView(PrivateView):
+    def process_view(self):
+        revision_id = self.request.matchdict["revisionid"]
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        revisions_collection = ontology_db["revisions"]
+        revision_data = revisions_collection.find_one({"revision": revision_id})
+        if revision_data is None:
+            raise HTTPNotFound()
+        else:
+            revision_query = {"revision": revision_id}
+            new_status = {"$set": {"status": 2}}
+            revisions_collection.update_one(revision_query, new_status)
+            self.returnRawViewResult = True
+            return HTTPFound(location=self.request.route_url("revisions"))
+
+
+class RejectRevisionView(PrivateView):
+    def process_view(self):
+        revision_id = self.request.matchdict["revisionid"]
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        revisions_collection = ontology_db["revisions"]
+        revision_data = revisions_collection.find_one({"revision": revision_id})
+        if revision_data is None:
+            raise HTTPNotFound()
+        else:
+            revision_query = {"revision": revision_id}
+            new_status = {
+                "$set": {
+                    "status": -1,
+                    "reviewed_by": self.userID,
+                    "reviewed_on": datetime.datetime.now(),
+                }
+            }
+            revisions_collection.update_one(revision_query, new_status)
+            self.returnRawViewResult = True
+            return HTTPFound(location=self.request.route_url("revisions"))
+
+
+class ApproveRevisionView(PrivateView):
+    def process_view(self):
+        revision_id = self.request.matchdict["revisionid"]
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        revisions_collection = ontology_db["revisions"]
+        revision_data = revisions_collection.find_one({"revision": revision_id})
+        if revision_data is None:
+            raise HTTPNotFound()
+        else:
+            revision_query = {"revision": revision_id}
+            new_status = {
+                "$set": {
+                    "status": 1,
+                    "reviewed_by": self.userID,
+                    "reviewed_on": datetime.datetime.now(),
+                }
+            }
+            revisions_collection.update_one(revision_query, new_status)
+            self.returnRawViewResult = True
+            return HTTPFound(location=self.request.route_url("revisions"))

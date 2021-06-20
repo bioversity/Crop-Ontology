@@ -1,6 +1,11 @@
 {% extends 'page.jinja2' %}
 {% import 'macros/form.jinja2' as form %}
 
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','sweetalert' %}
+{% endblock css %}
+
 {% block main_container %}
     <div class="row">
         <div class="col-lg-12">
@@ -54,10 +59,10 @@
                                         <td>{{ _('Pending') }}</td>
                                     {% endif %}
                                     {% if a_revision.status == 1 %}
-                                        <td>{{ _('Approved') }}</td>
+                                        <td><span title="{{ _('By') }} {{ a_revision.reviewed_by }} {{ _('on') }} {{ request.h.readble_date_with_time(a_revision.reviewed_on) }}">{{ _('Approved') }}</span></td>
                                     {% endif %}
                                     {% if a_revision.status == -1 %}
-                                        <td>{{ _('Rejected') }}</td>
+                                        <td><span title="{{ _('By') }} {{ a_revision.reviewed_by }} {{ _('on') }} {{ request.h.readble_date_with_time(a_revision.reviewed_on) }}">{{ _('Rejected') }}</span></td>
                                     {% endif %}
                                     {% if a_revision.status == 2 %}
                                         <td>{{ _('Disregarded') }}</td>
@@ -66,13 +71,13 @@
                                         <button type="button" onclick="location.href='{{ request.route_url('compare_revision',revisionid=a_revision.revision) }}';" class="btn btn-default btn-xs">{{ _('Review changes') }}</button>
                                         {% if a_revision.status == 0 %}
                                             {% if activeUser.super %}
-                                                <button type="button" class="btn btn-success btn-xs">{{ _('Approve') }}</button>
-                                                <button type="button" class="btn btn-danger btn-xs">{{ _('Reject') }}</button>
+                                                <button type="button" urn="{{ request.route_url('approve_revision', revisionid=a_revision.revision) }}" class="btn btn-success btn-xs approve">{{ _('Approve') }}</button>
+                                                <button type="button" urn="{{ request.route_url('reject_revision', revisionid=a_revision.revision) }}" class="btn btn-danger btn-xs reject">{{ _('Reject') }}</button>
                                                 {% if activeUser.id == a_revision.created_by %}
-                                                    <button type="button" class="btn btn-warning btn-xs">{{ _('Disregard') }}</button>
+                                                    <button type="button" urn="{{ request.route_url('disregard_revision', revisionid=a_revision.revision) }}" class="btn btn-warning btn-xs disregard">{{ _('Disregard') }}</button>
                                                 {% endif %}
                                             {% else %}
-                                                <button type="button" class="btn btn-warning btn-xs">{{ _('Disregard') }}</button>
+                                                <button type="button" urn="{{ request.route_url('disregard_revision', revisionid=a_revision.revision) }}" class="btn btn-warning btn-xs disregard">{{ _('Disregard') }}</button>
                                             {% endif %}
                                         {% endif %}
                                     </td>
@@ -87,3 +92,101 @@
     </div>
 {% endblock %}
 
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','sweetalert' %}
+    <script>
+        $(document).ready(function() {
+            $('.disregard').click(function () {
+                var action_url = $( this ).attr('urn');
+                swal({
+                        title: "{{ _('Disregard revision') }}",
+                        text: "{{ _('Are you sure that you want to disregard this revision') }}",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "{{ _('Yes, disregard it!') }}",
+                        cancelButtonText: "{{ _('Oops, cancel!') }}",
+                        closeOnConfirm: true,
+                        closeOnCancel: true },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            var form = document.createElement('form');
+                            form.setAttribute('method', 'post');
+                            form.setAttribute('action', action_url);
+                            form.style.display = 'hidden';
+
+                            var i = document.createElement("input"); //input element, text
+                            i.setAttribute('type',"text");
+                            i.setAttribute('name',"csrf_token");
+                            i.setAttribute('value','{{ request.session.get_csrf_token() }}');
+                            form.appendChild(i);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+            });
+            $('.reject').click(function () {
+                var action_url = $( this ).attr('urn');
+                swal({
+                        title: "{{ _('Reject revision') }}",
+                        text: "{{ _('Are you sure that you want to reject this revision') }}",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "{{ _('Yes, reject it!') }}",
+                        cancelButtonText: "{{ _('Oops, cancel!') }}",
+                        closeOnConfirm: true,
+                        closeOnCancel: true },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            var form = document.createElement('form');
+                            form.setAttribute('method', 'post');
+                            form.setAttribute('action', action_url);
+                            form.style.display = 'hidden';
+
+                            var i = document.createElement("input"); //input element, text
+                            i.setAttribute('type',"text");
+                            i.setAttribute('name',"csrf_token");
+                            i.setAttribute('value','{{ request.session.get_csrf_token() }}');
+                            form.appendChild(i);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+            });
+            $('.approve').click(function () {
+                var action_url = $( this ).attr('urn');
+                swal({
+                        title: "{{ _('Approve revision') }}",
+                        text: "{{ _('Are you sure that you want to approve this revision') }}",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "{{ _('Yes, approve it!') }}",
+                        cancelButtonText: "{{ _('Oops, cancel!') }}",
+                        closeOnConfirm: true,
+                        closeOnCancel: true },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            var form = document.createElement('form');
+                            form.setAttribute('method', 'post');
+                            form.setAttribute('action', action_url);
+                            form.style.display = 'hidden';
+
+                            var i = document.createElement("input"); //input element, text
+                            i.setAttribute('type',"text");
+                            i.setAttribute('name',"csrf_token");
+                            i.setAttribute('value','{{ request.session.get_csrf_token() }}');
+                            form.appendChild(i);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+            });
+        })
+    </script>
+{% endblock scripts %}

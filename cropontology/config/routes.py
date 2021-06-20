@@ -9,6 +9,9 @@ from ..views.term import (
     TermEditorView,
     TermRevisionListView,
     CompareRevisionView,
+    DisregardRevisionView,
+    RejectRevisionView,
+    ApproveRevisionView,
 )
 from ..views.search import GetBucketView
 from ..views.tree import TreeView
@@ -289,6 +292,30 @@ def load_routes(config):
             "/revision/{revisionid}/view",
             CompareRevisionView,
             "compare_revision.jinja2",
+        )
+    )
+    routes.append(
+        add_route(
+            "disregard_revision",
+            "/revision/{revisionid}/disregard",
+            DisregardRevisionView,
+            None,
+        )
+    )
+    routes.append(
+        add_route(
+            "reject_revision",
+            "/revision/{revisionid}/reject",
+            RejectRevisionView,
+            None,
+        )
+    )
+    routes.append(
+        add_route(
+            "approve_revision",
+            "/revision/{revisionid}/approve",
+            ApproveRevisionView,
+            None,
         )
     )
 
