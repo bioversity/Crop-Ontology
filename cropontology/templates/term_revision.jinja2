@@ -17,7 +17,8 @@
                     <button class="btn btn-danger" onclick="location.href='{{ request.route_url('revisions',_query={'status':'pending'}) }}';" type="button">{% if status == "pending" %}<b>{{ _('Pending') }}</b>{% else %}{{ _('Pending') }}{% endif %}</button>
                     <button class="btn btn-warning" onclick="location.href='{{ request.route_url('revisions',_query={'status':'disregarded'}) }}';" type="button">{% if status == "disregarded" %}<b>{{ _('Disregarded') }}</b>{% else %}{{ _('Disregarded') }}{% endif %}</button>
                     <button class="btn btn-info" onclick="location.href='{{ request.route_url('revisions',_query={'status':'rejected'}) }}';" type="button">{% if status == "rejected" %}<b>{{ _('Rejected') }}</b>{% else %}{{ _('Rejected') }}{% endif %}</button>
-                <p>
+                    <button class="btn btn-dark" onclick="location.href='{{ request.route_url('revisions',_query={'status':'error'}) }}';" type="button">{% if status == "error" %}<b>{{ _('With error') }}</b>{% else %}{{ _('With error') }}{% endif %}</button>
+                    <p>
                     <h3>
                         {% if status == "all" %}
                             {{ _('Showing all revisions') }}
@@ -34,8 +35,11 @@
                         {% if status == "rejected" %}
                             {{ _('Showing rejected revisions') }}
                         {% endif %}
+                        {% if status == "error" %}
+                            {{ _('Showing revisions with errors') }}
+                        {% endif %}
                     </h3>
-            </p>
+                    </p>
                 </div>
                 <div class="card-body">
                     <div class="card-body">
@@ -66,6 +70,9 @@
                                     {% endif %}
                                     {% if a_revision.status == 2 %}
                                         <td>{{ _('Disregarded') }}</td>
+                                    {% endif %}
+                                    {% if a_revision.status == -2 %}
+                                        <td>{{ _('With error') }}</td>
                                     {% endif %}
                                     <td>
                                         <button type="button" onclick="location.href='{{ request.route_url('compare_revision',revisionid=a_revision.revision) }}';" class="btn btn-default btn-xs">{{ _('Review changes') }}</button>

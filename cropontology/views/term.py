@@ -2,7 +2,6 @@ import datetime
 import uuid
 from collections import OrderedDict
 from .classes import PublicView, PrivateView
-from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from neo4j import GraphDatabase
 import pymongo
@@ -10,6 +9,10 @@ import os
 import json
 from webhelpers2.html import literal
 from cropontology.processes.revision.diff import generate_diff
+from cropontology.processes.elasticsearch.term_index import get_term_index_manager
+import logging
+
+log = logging.getLogger("cropontology")
 
 
 class TermDetailsView(PublicView):
@@ -134,6 +137,7 @@ class TermEditorView(PrivateView):
                     "status": 0,
                     "reviewed_by": None,
                     "reviewed_on": None,
+                    "error_message": None,
                     "revision_notes": revision_notes,
                     "review_notes": None,
                     "data": keys,
@@ -176,6 +180,8 @@ class TermRevisionListView(PrivateView):
             status_code = -1
         if status == "disregarded":
             status_code = 2
+        if status == "error":
+            status_code = -2
 
         if self.user.super == 0:
             revision_query = {"created_by": self.userID}
@@ -302,6 +308,105 @@ class ApproveRevisionView(PrivateView):
                     "reviewed_on": datetime.datetime.now(),
                 }
             }
-            revisions_collection.update_one(revision_query, new_status)
+
+            new_es_data = {}
+            new_neo_data = []
+            old_es_data = {}
+            old_neo_data = []
+            for a_field in revision_data["data"]:
+                if a_field.get("new_value", None) is not None:
+                    if a_field["value"] != a_field["new_value"]:
+                        new_es_data[a_field["name"]] = a_field["new_value"]
+                        old_es_data[a_field["name"]] = a_field["value"]
+                        new_neo_data.append(
+                            {"name": a_field["name"], "value": a_field["new_value"]}
+                        )
+                        old_neo_data.append(
+                            {"name": a_field["name"], "value": a_field["value"]}
+                        )
+
+            error_message = ""
+            es_updated = False
+            index_manager = get_term_index_manager(self.request)
+            term_id = revision_data["for_term"]
+            try:
+                index_manager.update_term(term_id, new_es_data)
+                es_updated = True
+            except Exception as e:
+                error_message = "Error {} while updating term {} in ES".format(
+                    str(e), term_id
+                )
+                log.error(error_message)
+                self.errors.append(error_message)
+
+            neo4j_updated = False
+            if es_updated:
+                neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+                neo4j_user = self.request.registry.settings["neo4j.user"]
+                neo4j_password = self.request.registry.settings["neo4j.password"]
+                driver = GraphDatabase.driver(
+                    neo4j_bolt_url, auth=(neo4j_user, neo4j_password)
+                )
+                db = driver.session()
+                for a_change in new_neo_data:
+                    neo_query = (
+                        "MATCH (t {id: '" + term_id + "'}) "
+                        "SET t."
+                        + a_change["name"]
+                        + " = '"
+                        + a_change["value"]
+                        + "' RETURN t"
+                    )
+                    try:
+                        db.run(neo_query)
+                        neo4j_updated = True
+                    except Exception as e:
+                        error_message = "Error {} while updating term {} in Neo7J for key {}".format(
+                            str(e), term_id, a_change["name"]
+                        )
+                        log.error(error_message)
+                        self.errors.append(error_message)
+                        neo4j_updated = False
+                        break
+                if not neo4j_updated:
+                    # Try to rollback Neo4j
+                    for a_change in old_neo_data:
+                        neo_query = (
+                            "MATCH (t {id: '" + term_id + "'}) "
+                            "SET t."
+                            + a_change["name"]
+                            + " = '"
+                            + a_change["value"]
+                            + "' RETURN t"
+                        )
+                        try:
+                            db.run(neo_query)
+                        except Exception as e:
+                            error_message = "Error {} while rollback term {} in Neo7J for key {}".format(
+                                str(e), term_id, a_change["name"]
+                            )
+                            log.error(error_message)
+                    # Try to rollback ES
+                    try:
+                        index_manager.update_term(term_id, old_es_data)
+                    except Exception as e:
+                        error_message = (
+                            "Error {} while rollback ES data for term {}".format(
+                                str(e), term_id
+                            )
+                        )
+                        log.error(error_message)
+            if es_updated and neo4j_updated:
+                revisions_collection.update_one(revision_query, new_status)
+            else:
+                new_status = {
+                    "$set": {
+                        "status": -2,
+                        "reviewed_by": self.userID,
+                        "reviewed_on": datetime.datetime.now(),
+                        "error_message": error_message,
+                    }
+                }
+                revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
             return HTTPFound(location=self.request.route_url("revisions"))

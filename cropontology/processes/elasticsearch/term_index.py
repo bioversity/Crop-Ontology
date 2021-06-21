@@ -17,7 +17,7 @@ class TermNotExistError(Exception):
     """
 
     def __str__(self):
-        return "Link object does not exists in network"
+        return "Term ID does not exists in index"
 
 
 def _get_term_index_definition(number_of_shards, number_of_replicas):
@@ -277,7 +277,7 @@ def _get_term_search_dict(term_id):
     :param term_id: The Term to search if it exists
     :return: A dict that will be passes to ES
     """
-    _dict = {"query": {"bool": {"must": {"term": {"term_id": term_id}}}}}
+    _dict = {"query": {"terms": {"_id": [term_id]}}}
     return _dict
 
 
@@ -447,7 +447,7 @@ class TermIndexManager(object):
 
     def update_term(self, term_id, data_dict):
         """
-        Removes an Term from the index
+        Updates a Term from the index
         :param term_id: The Term to be removed.
         :param data_dict: New Term data
         :return: Bool
