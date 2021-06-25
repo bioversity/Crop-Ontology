@@ -176,7 +176,7 @@ class RDFCleanView(PublicView):
         query = (
             'match (variable:Variable {ontology_id: "'
             + ontology_id
-            + '"}) where (variable.variable_status <> "Obsolete") return variable  '
+            + '"}) where (not variable.variable_status =~ "(?i).*obsolete.*" or NOT EXISTS(variable.variable_status)) return variable'
         )
 
         cursor = db.run(query)
