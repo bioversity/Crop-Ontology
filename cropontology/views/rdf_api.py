@@ -365,5 +365,5 @@ class RDFCleanView(PublicView):
             g.add((scale_uri, RDFS.subClassOf, br))
 
         response.text = g.serialize(format="pretty-xml").decode("utf-8")
-
+        db.close()
         return response

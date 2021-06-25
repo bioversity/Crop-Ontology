@@ -241,7 +241,16 @@ def load_routes(config):
         add_route(
             "ontology_rdf",
             "/ontology/{ontology_id}/rdf",
-            OntologyRDFView,
+            RDFCleanView,
+            None,
+        )
+    )
+
+    routes.append(
+        add_route(
+            "ontology_owl",
+            "/ontology/{ontology_id}/{ontology_name}/owl",
+            RDFCleanView,
             None,
         )
     )
@@ -358,8 +367,6 @@ def load_routes(config):
 
     # Here comes the download (EBI/AGROPORTAL) API routes
     routes.append(add_route("ebi_metadata", "/metadata", EBIMetadataView, None))
-
-    routes.append(add_route("rdf_ebi", "/ols/{ontology_id}", RDFCleanView, None))
 
     # Here comes the CO API routes
 
