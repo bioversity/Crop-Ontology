@@ -14,52 +14,6 @@ def to_json(data):
     return json.dumps(data, indent=4, default=str)
 
 
-def get_neo_result(cursor, key):
-    results = []
-    for an_item in cursor:
-        results.append(an_item[key])
-    return results
-
-
-def get_trait(db, term_id):
-    query = (
-        'Match (variable {id:"'
-        + term_id
-        + '"}) -[VARIABLE_OF]->(trait {term_type: "trait"}) return an_item["trait"]'
-    )
-    cursor = db.run(query)
-    trait = get_neo_result(cursor, "trait")
-    if an_item["trait"]:
-        trait = trait[0]
-    return an_item["trait"]
-
-
-def get_method(db, term_id):
-    query = (
-        'Match (variable {id:"'
-        + term_id
-        + '"}) -[VARIABLE_OF]->(method {term_type: "method"}) return method'
-    )
-    cursor = db.run(query)
-    method = get_neo_result(cursor, "method")
-    if method:
-        method = method[0]
-    return method
-
-
-def get_scale(db, term_id):
-    query = (
-        'Match (variable {id:"'
-        + term_id
-        + '"}) -[VARIABLE_OF]->(scale {term_type: "scale"}) return an_item["scale"]'
-    )
-    cursor = db.run(query)
-    an_item["scale"] = get_neo_result(cursor, "scale")
-    if an_item["scale"]:
-        an_item["scale"] = an_item["scale"][0]
-    return an_item["scale"]
-
-
 class MetadataView(PublicView):
     def process_view(self):
         self.returnRawViewResult = True
@@ -175,42 +129,68 @@ class RDFCleanView(PublicView):
         )
 
         query = (
-            'match (variable:Variable {ontology_id: "'
+            'match (variable:Variable{ontology_id:"'
             + ontology_id
-            + '"}) where (not variable.variable_status =~ "(?i).*obsolete.*" or NOT EXISTS(variable.variable_status)) return variable'
+            + '"})-[:VARIABLE_OF]->(trait:Trait) '
+            + 'match (variable:Variable{ontology_id:"'
+            + ontology_id
+            + '"})-[:VARIABLE_OF]->(method:Method) '
+            + 'match (variable:Variable{ontology_id:"'
+            + ontology_id
+            + '"})-[:VARIABLE_OF]->(scale:Scale) '
+            + 'where (not variable.variable_status =~ "(?i).*obsolete.*" or NOT EXISTS(variable.variable_status)) '
+            + "return variable, trait, method, scale"
         )
 
         cursor = db.run(query)
-        variables = get_neo_result(cursor, "variable")
 
-        for var in variables:
+        for an_item in cursor:
             ## add ontology label
-            g.add((co, RDFS.label, Literal(var["crop"] + " ontology")))
+            g.add((co, RDFS.label, Literal(an_item["variable"]["crop"] + " ontology")))
             ## create triples
-            var_uri = URIRef(NS + var["id"])
+            var_uri = URIRef(NS + an_item["variable"]["id"])
             g.add((var_uri, RDF.type, OWL.Class))
             g.add((var_uri, RDFS.subClassOf, URIRef(NS + "Variable")))
-            g.add((var_uri, RDFS.label, Literal(var["name"], lang="en")))
-            if "variable_synonyms" in var:
-                for syn in var["variable_synonyms"].split(","):
+            g.add(
+                (var_uri, RDFS.label, Literal(an_item["variable"]["name"], lang="en"))
+            )
+            if "variable_synonyms" in an_item["variable"]:
+                for syn in an_item["variable"]["variable_synonyms"].split(","):
                     g.add((var_uri, SKOS.altLabel, Literal(syn, lang="en")))
-            if "xref" in var:
-                g.add((var_uri, DCTERMS.source, Literal(var["variable_xref"])))
-            if "institution" in var:
-                g.add((var_uri, DCTERMS.contributor, Literal(var["institution"])))
-            if "scientist" in var:
-                g.add((var_uri, DCTERMS.contributor, Literal(var["scientist"])))
+            if "xref" in an_item["variable"]:
+                g.add(
+                    (
+                        var_uri,
+                        DCTERMS.source,
+                        Literal(an_item["variable"]["variable_xref"]),
+                    )
+                )
+            if "institution" in an_item["variable"]:
+                g.add(
+                    (
+                        var_uri,
+                        DCTERMS.contributor,
+                        Literal(an_item["variable"]["institution"]),
+                    )
+                )
+            if "scientist" in an_item["variable"]:
+                g.add(
+                    (
+                        var_uri,
+                        DCTERMS.contributor,
+                        Literal(an_item["variable"]["scientist"]),
+                    )
+                )
 
             ##add an_item["trait"] information
-            trait = get_trait(db, var["id"])
-            trait_uri = URIRef(NS + trait["id"])
+            trait_uri = URIRef(NS + an_item["trait"]["id"])
             g.add((trait_uri, RDF.type, OWL.Class))
-            g.add((trait_uri, RDFS.label, Literal(trait["name"], lang="en")))
+            g.add((trait_uri, RDFS.label, Literal(an_item["trait"]["name"], lang="en")))
             g.add(
                 (
                     trait_uri,
                     SKOS.definition,
-                    Literal(trait["trait_description"], lang="en"),
+                    Literal(an_item["trait"]["trait_description"], lang="en"),
                 )
             )
             if "trait_synonym" in an_item["trait"]:
@@ -221,28 +201,30 @@ class RDFCleanView(PublicView):
                     (
                         trait_uri,
                         acronym,
-                        Literal(trait["main_trait_abbreviation"], lang="en"),
+                        Literal(an_item["trait"]["main_trait_abbreviation"], lang="en"),
                     )
                 )
             if "alternative_abbreviation" in an_item["trait"]:
                 for syn in an_item["trait"]["alternative_abbreviation"].split(","):
                     g.add((trait_uri, SKOS.altLabel, Literal(syn, lang="en")))
             if "entity" in an_item["trait"]:
-                g.add((trait_uri, entity, Literal(trait["entity"])))
+                g.add((trait_uri, entity, Literal(an_item["trait"]["entity"])))
             if "attribute" in an_item["trait"]:
-                g.add((trait_uri, attribute, Literal(trait["attribute"])))
+                g.add((trait_uri, attribute, Literal(an_item["trait"]["attribute"])))
             if "xref" in an_item["trait"]:
-                g.add((trait_uri, DCTERMS.source, Literal(trait["trait_xref"])))
+                g.add(
+                    (trait_uri, DCTERMS.source, Literal(an_item["trait"]["trait_xref"]))
+                )
             g.add(
                 (
                     trait_uri,
                     RDFS.subClassOf,
-                    URIRef(NS + trait["trait_class"].replace(" ", "_")),
+                    URIRef(NS + an_item["trait"]["trait_class"].replace(" ", "_")),
                 )
             )
             g.add(
                 (
-                    URIRef(NS + trait["trait_class"].replace(" ", "_")),
+                    URIRef(NS + an_item["trait"]["trait_class"].replace(" ", "_")),
                     RDFS.subClassOf,
                     URIRef(NS + "Trait"),
                 )
@@ -255,29 +237,36 @@ class RDFCleanView(PublicView):
             g.add((var_uri, RDFS.subClassOf, br))
 
             ## add method information
-            method = get_method(db, var["id"])
-            method_uri = URIRef(NS + method["id"])
+            method_uri = URIRef(NS + an_item["method"]["id"])
             g.add((method_uri, RDF.type, OWL.Class))
-            g.add((method_uri, RDFS.label, Literal(method["name"], lang="en")))
+            g.add(
+                (method_uri, RDFS.label, Literal(an_item["method"]["name"], lang="en"))
+            )
             g.add(
                 (
                     method_uri,
                     SKOS.definition,
-                    Literal(method["method_description"], lang="en"),
+                    Literal(an_item["method"]["method_description"], lang="en"),
                 )
             )
-            if "reference" in method:
-                g.add((method_uri, DCTERMS.source, Literal(method["method_reference"])))
+            if "reference" in an_item["method"]:
+                g.add(
+                    (
+                        method_uri,
+                        DCTERMS.source,
+                        Literal(an_item["method"]["method_reference"]),
+                    )
+                )
             g.add(
                 (
                     method_uri,
                     RDFS.subClassOf,
-                    URIRef(NS + method["method_class"].replace(" ", "_")),
+                    URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
                 )
             )
             g.add(
                 (
-                    URIRef(NS + method["method_class"].replace(" ", "_")),
+                    URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
                     RDFS.subClassOf,
                     URIRef(NS + "Method"),
                 )
@@ -295,30 +284,31 @@ class RDFCleanView(PublicView):
             g.add((method_uri, RDFS.subClassOf, br))
 
             ## add an_item["scale"] information
-            an_item["scale"] = get_scale(db, var["id"])
             scale_uri = URIRef(NS + an_item["scale"]["id"])
             g.add((scale_uri, RDF.type, OWL.Class))
-            g.add((scale_uri, RDFS.label, Literal(scale["name"], lang="en")))
+            g.add((scale_uri, RDFS.label, Literal(an_item["scale"]["name"], lang="en")))
             if "xref" in an_item["scale"]:
-                g.add((scale_uri, DCTERMS.source, Literal(scale["scale_xref"])))
+                g.add(
+                    (scale_uri, DCTERMS.source, Literal(an_item["scale"]["scale_xref"]))
+                )
             g.add(
                 (
                     scale_uri,
                     RDFS.subClassOf,
-                    URIRef(NS + scale["scale_class"].replace(" ", "_")),
+                    URIRef(NS + an_item["scale"]["scale_class"].replace(" ", "_")),
                 )
             )
             g.add(
                 (
-                    URIRef(NS + scale["scale"]["scale_class"].replace(" ", "_")),
+                    URIRef(NS + an_item["scale"]["scale_class"].replace(" ", "_")),
                     RDFS.subClassOf,
                     URIRef(NS + "Scale"),
                 )
             )
             categories = []
             i = 1
-            while scale["category_" + str(i)]:
-                categories.append(scale["category_" + str(i)])
+            while an_item["scale"]["category_" + str(i)]:
+                categories.append(an_item["scale"]["category_" + str(i)])
                 i += 1
             for s in categories:
                 try:
@@ -326,21 +316,27 @@ class RDFCleanView(PublicView):
                         cat = s.split("=")
                         g.add(
                             (
-                                URIRef(NS + scale["id"] + "/" + cat[0].strip()),
+                                URIRef(
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                ),
                                 RDFS.subClassOf,
                                 scale_uri,
                             )
                         )
                         g.add(
                             (
-                                URIRef(NS + scale["id"] + "/" + cat[0].strip()),
+                                URIRef(
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                ),
                                 RDFS.label,
                                 Literal(cat[1].strip(), lang="en"),
                             )
                         )
                         g.add(
                             (
-                                URIRef(NS + scale["id"] + "/" + cat[0].strip()),
+                                URIRef(
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                ),
                                 SKOS.altLabel,
                                 Literal(cat[0].strip(), lang="en"),
                             )
@@ -394,8 +390,12 @@ class ExcelView(PublicView):
             'match (variable:Variable{ontology_id:"'
             + ontology_id
             + '"})-[:VARIABLE_OF]->(trait:Trait) '
-            + 'match (variable:Variable{ontology_id:"'+ontology_id+'"})-[:VARIABLE_OF]->(method:Method) '
-            + 'match (variable:Variable{ontology_id:"'+ontology_id+'"})-[:VARIABLE_OF]->(scale:Scale) '
+            + 'match (variable:Variable{ontology_id:"'
+            + ontology_id
+            + '"})-[:VARIABLE_OF]->(method:Method) '
+            + 'match (variable:Variable{ontology_id:"'
+            + ontology_id
+            + '"})-[:VARIABLE_OF]->(scale:Scale) '
             + "return variable, trait, method, scale"
         )
         cursor = db.run(query)
@@ -460,8 +460,6 @@ class ExcelView(PublicView):
 
             results.append(ret_result)
 
-        response = pandas.read_json(to_json(results)).to_excel(
-            ontology_id + ".xlsx"
-        )
+        response = pandas.read_json(to_json(results)).to_excel(ontology_id + ".xlsx")
         db.close()
         return response
