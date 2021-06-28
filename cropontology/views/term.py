@@ -32,7 +32,7 @@ class TermDetailsView(PublicView):
         db = driver.session()
 
         query = (
-            'Match (trait {id:"' + term_id + '"})<-[*]-(op {term_type: "variable"}) '
+            'Match (trait {id:"' + term_id + '"})<-[:VARIABLE_OF]-(op {term_type: "variable"}) '
             'WHERE (op.is_obsolete <> "true" OR op.is_obsolete is null) return distinct op.id, op.name'
         )
         cursor = db.run(query)
@@ -50,6 +50,8 @@ class TermDetailsView(PublicView):
             if key == "ontology_id":
                 ontology_id = value
             results.append({"key": key, "value": value})
+
+        print(term_id)
         return {
             "results": results,
             "term_id": term_id,
