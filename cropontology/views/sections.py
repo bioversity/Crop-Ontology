@@ -17,6 +17,7 @@ import uuid
 import shutil
 import mimetypes
 import datetime
+import pymongo
 from pyramid.response import FileResponse
 
 
@@ -70,16 +71,46 @@ class SectionEditView(PrivateView):
         if self.user.super == 0:
             if not user_admin_section(self.request, section_id, self.userID):
                 raise HTTPNotFound()
+
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        ontology_collection = ontology_db["ontologies"]
+        for_ontology = False
+        ontology_data = ontology_collection.find_one({"ontology_id": section_id})
+        ontology_desc = ""
+        if ontology_data:
+            for_ontology = True
+            if "ontology_summary" in ontology_data.keys():
+                ontology_desc = ontology_data["ontology_summary"]
+
         if self.request.method == "GET":
             form_data = get_section_data(self.request, section_id)
             if form_data is None:
                 raise HTTPNotFound()
         else:
             form_data = self.get_post_dict()
+            update_ontology = False
+            if "ontology_desc" in form_data.keys():
+                ontology_desc = form_data["ontology_desc"]
+                form_data.pop("ontology_desc", None)
+                update_ontology = True
+
             form_data["section_lastupdate"] = datetime.datetime.now()
             update_section(self.request, section_id, form_data)
 
-        return {"form_data": form_data, "sectionid": section_id}
+            if update_ontology:
+                ontology_collection.update_one(
+                    {"ontology_id": section_id},
+                    {"$set": {"ontology_summary": ontology_desc}},
+                )
+
+        return {
+            "form_data": form_data,
+            "sectionid": section_id,
+            "for_ontology": for_ontology,
+            "ontology_desc": ontology_desc,
+        }
 
 
 class SectionUsersView(PrivateView):

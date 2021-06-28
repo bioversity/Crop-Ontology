@@ -19,17 +19,31 @@
                         <label for="exampleInputEmail1">{{ _('ID') }}</label>
                         <input type="text" readonly class="form-control" name="section_id" value="{{ form_data.section_id }}">
                     </div>
-                     <div class="form-group">
-                        <label for="exampleInputEmail1">{{ _('Description') }}</label>
+                    <div class="form-group">
+                        {% if for_ontology %}
+                            <label for="exampleInputEmail1">{{ _('Description for the section') }}</label>
+                        {% else %}
+                            <label for="exampleInputEmail1">{{ _('Description') }}</label>
+                        {% endif %}
                         <input type="text" class="form-control" name="section_desc" value="{{ form_data.section_desc }}" placeholder="{{ _('Enter description') }}">
                     </div>
+                    {% if for_ontology %}
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">{{ _('Description for the ontology') }}</label>
+                            <textarea class="form-control editor" name="ontology_desc">{{ ontology_desc }}</textarea>
+                        </div>
+                    {% endif %}
                     <div class="form-group">
-                        <label for="exampleInputEmail1">{{ _('Content') }}</label>
+                        {% if for_ontology %}
+                            <label for="exampleInputEmail1">{{ _('Content of the section') }}</label>
+                        {% else %}
+                            <label for="exampleInputEmail1">{{ _('Content') }}</label>
+                        {% endif %}
                         <textarea id="editor" class="form-control editor" name="section_content">{{ form_data.section_content }}</textarea>
                     </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">{{ _('Save changes') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('Save changes') }}</button>
                 </div>
             </form>
         </div>
