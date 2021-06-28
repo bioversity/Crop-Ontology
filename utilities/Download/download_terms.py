@@ -14,8 +14,8 @@ output = list(result)
 json_data = {"result": output}
 print("Saving")
 json = json.dumps(json_data, default=str)
-if os.path.exists("./terms.json"):
-    os.remove("./terms.json")
-f = open("./terms.json", "w")
+if os.path.exists("./terms_20210623.json"):
+    os.remove("./terms_20210623.json")
+f = open("./terms_20210623.json", "w")
 f.write(json)
 f.close()
