@@ -193,8 +193,8 @@ class RDFCleanView(PublicView):
                     Literal(an_item["trait"]["trait_description"], lang="en"),
                 )
             )
-            if "trait_synonym" in an_item["trait"]:
-                for syn in an_item["trait"]["trait_synonym"].split(","):
+            if "trait_synonyms" in an_item["trait"]:
+                for syn in an_item["trait"]["trait_synonyms"].split(","):
                     g.add((trait_uri, SKOS.altLabel, Literal(syn, lang="en")))
             if "main_trait_abbreviation" in an_item["trait"]:
                 g.add(
@@ -461,5 +461,277 @@ class ExcelView(PublicView):
             results.append(ret_result)
 
         response = pandas.read_json(to_json(results)).to_excel(ontology_id + ".xlsx")
+        db.close()
+        return response
+
+
+class UriView(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        term_id = self.request.matchdict["term_id"]
+
+        headers = [
+            ("Content-Type", "text/xml; charset=utf-8"),
+        ]
+        response = Response(headerlist=headers, status=200)
+
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        ## create graph
+        g = Graph()
+        ## define namespace
+        NS = "http://www.cropontology.org/rdf/"
+
+        ## create properties
+        variable_of = URIRef(NS + "variable_of")
+        g.add((variable_of, RDF.type, OWL.ObjectProperty))
+        g.add((variable_of, RDFS.label, Literal("variable_of")))
+        scale_of = URIRef(NS + "scale_of")
+        g.add((scale_of, RDF.type, OWL.ObjectProperty))
+        g.add((scale_of, RDFS.label, Literal("scale_of")))
+        method_of = URIRef(NS + "method_of")
+        g.add((method_of, RDF.type, OWL.ObjectProperty))
+        g.add((method_of, RDFS.label, Literal("method_of")))
+        acronym = URIRef(NS + "acronym")
+        g.add((acronym, RDF.type, OWL.AnnotationProperty))
+        g.add((acronym, RDFS.label, Literal("acronym")))
+        entity = URIRef(NS + "entity")
+        g.add((entity, RDF.type, OWL.AnnotationProperty))
+        g.add((entity, RDFS.label, Literal("entity")))
+        attribute = URIRef(NS + "attribute")
+        g.add((attribute, RDF.type, OWL.AnnotationProperty))
+        g.add((attribute, RDFS.label, Literal("attribute")))
+
+        query = 'match (term{id:"' + term_id + '"}) return term'
+
+        cursor = db.run(query)
+
+        for an_item in cursor:
+            if an_item["term"]["term_type"] == "trait":
+                trait_uri = URIRef(NS + an_item["term"]["id"])
+                g.add((trait_uri, RDF.type, OWL.Class))
+                g.add(
+                    (trait_uri, RDFS.label, Literal(an_item["term"]["name"], lang="en"))
+                )
+                g.add(
+                    (
+                        trait_uri,
+                        SKOS.definition,
+                        Literal(an_item["term"]["trait_description"], lang="en"),
+                    )
+                )
+                if "trait_synonyms" in an_item["term"]:
+                    for syn in an_item["term"]["trait_synonyms"].split(","):
+                        g.add((trait_uri, SKOS.altLabel, Literal(syn, lang="en")))
+                if "main_trait_abbreviation" in an_item["term"]:
+                    g.add(
+                        (
+                            trait_uri,
+                            acronym,
+                            Literal(
+                                an_item["term"]["main_trait_abbreviation"], lang="en"
+                            ),
+                        )
+                    )
+                if "alternative_abbreviation" in an_item["term"]:
+                    for syn in an_item["term"]["alternative_abbreviation"].split(","):
+                        g.add((trait_uri, SKOS.altLabel, Literal(syn, lang="en")))
+                if "entity" in an_item["term"]:
+                    g.add((trait_uri, entity, Literal(an_item["term"]["entity"])))
+                if "attribute" in an_item["term"]:
+                    g.add((trait_uri, attribute, Literal(an_item["term"]["attribute"])))
+                if "xref" in an_item["term"]:
+                    g.add(
+                        (
+                            trait_uri,
+                            DCTERMS.source,
+                            Literal(an_item["term"]["trait_xref"]),
+                        )
+                    )
+                g.add(
+                    (
+                        trait_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + an_item["term"]["trait_class"].replace(" ", "_")),
+                    )
+                )
+
+            elif an_item["term"]["term_type"] == "method":
+                method_uri = URIRef(NS + an_item["term"]["id"])
+                g.add((method_uri, RDF.type, OWL.Class))
+                g.add(
+                    (
+                        method_uri,
+                        RDFS.label,
+                        Literal(an_item["term"]["name"], lang="en"),
+                    )
+                )
+                g.add(
+                    (
+                        method_uri,
+                        SKOS.definition,
+                        Literal(an_item["term"]["method_description"], lang="en"),
+                    )
+                )
+                if "reference" in an_item["term"]:
+                    g.add(
+                        (
+                            method_uri,
+                            DCTERMS.source,
+                            Literal(an_item["term"]["method_reference"]),
+                        )
+                    )
+                g.add(
+                    (
+                        method_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + an_item["term"]["method_class"].replace(" ", "_")),
+                    )
+                )
+            elif an_item["term"]["term_type"] == "scale":
+                scale_uri = URIRef(NS + an_item["term"]["id"])
+                g.add((scale_uri, RDF.type, OWL.Class))
+                g.add(
+                    (scale_uri, RDFS.label, Literal(an_item["term"]["name"], lang="en"))
+                )
+                if "xref" in an_item["term"]:
+                    g.add(
+                        (
+                            scale_uri,
+                            DCTERMS.source,
+                            Literal(an_item["term"]["scale_xref"]),
+                        )
+                    )
+                g.add(
+                    (
+                        scale_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + an_item["term"]["scale_class"].replace(" ", "_")),
+                    )
+                )
+                categories = []
+                i = 1
+                while an_item["term"]["category_" + str(i)]:
+                    categories.append(an_item["term"]["category_" + str(i)])
+                    i += 1
+                for s in categories:
+                    try:
+                        if "=" in s:
+                            cat = s.split("=")
+                            g.add(
+                                (
+                                    URIRef(
+                                        NS
+                                        + an_item["term"]["id"]
+                                        + "/"
+                                        + cat[0].strip()
+                                    ),
+                                    RDFS.subClassOf,
+                                    scale_uri,
+                                )
+                            )
+                            g.add(
+                                (
+                                    URIRef(
+                                        NS
+                                        + an_item["term"]["id"]
+                                        + "/"
+                                        + cat[0].strip()
+                                    ),
+                                    RDFS.label,
+                                    Literal(cat[1].strip(), lang="en"),
+                                )
+                            )
+                            g.add(
+                                (
+                                    URIRef(
+                                        NS
+                                        + an_item["term"]["id"]
+                                        + "/"
+                                        + cat[0].strip()
+                                    ),
+                                    SKOS.altLabel,
+                                    Literal(cat[0].strip(), lang="en"),
+                                )
+                            )
+                        else:
+                            try:
+                                g.add((scale_uri, RDFS.comment, ", ".join(categories)))
+                            except Exception:
+                                continue
+                    except:
+                        print(s)
+
+            elif an_item["term"]["term_type"] == "variable":
+                var_uri = URIRef(NS + an_item["term"]["id"])
+                g.add((var_uri, RDF.type, OWL.Class))
+                g.add((var_uri, RDFS.subClassOf, URIRef(NS + "Variable")))
+                g.add(
+                    (var_uri, RDFS.label, Literal(an_item["term"]["name"], lang="en"))
+                )
+                if "variable_synonyms" in an_item["term"]:
+                    for syn in an_item["term"]["variable_synonyms"].split(","):
+                        g.add((var_uri, SKOS.altLabel, Literal(syn, lang="en")))
+                if "xref" in an_item["term"]:
+                    g.add(
+                        (
+                            var_uri,
+                            DCTERMS.source,
+                            Literal(an_item["term"]["variable_xref"]),
+                        )
+                    )
+                if "institution" in an_item["term"]:
+                    g.add(
+                        (
+                            var_uri,
+                            DCTERMS.contributor,
+                            Literal(an_item["term"]["institution"]),
+                        )
+                    )
+                if "scientist" in an_item["term"]:
+                    g.add(
+                        (
+                            var_uri,
+                            DCTERMS.contributor,
+                            Literal(an_item["term"]["scientist"]),
+                        )
+                    )
+                ## get the links
+                q = (
+                    'match (variable:Variable{id:"'
+                    + an_item["term"]["id"]
+                    + '"})-[:VARIABLE_OF]->(trait:Trait) '
+                    + 'match (variable:Variable{id:"'
+                    + an_item["term"]["id"]
+                    + '"})-[:VARIABLE_OF]->(method:Method) '
+                    + 'match (variable:Variable{id:"'
+                    + an_item["term"]["id"]
+                    + '"})-[:VARIABLE_OF]->(scale:Scale) '
+                    + "return trait.id, method.id, scale.id"
+                )
+
+                c = db.run(q)
+                for item in c:
+                    br = BNode()
+                    g.add((br, RDF.type, OWL.Restriction))
+                    g.add((br, OWL.onProperty, variable_of))
+                    g.add((br, OWL.someValuesFrom, URIRef(NS + item["trait.id"])))
+                    g.add((var_uri, RDFS.subClassOf, br))
+                    br = BNode()
+                    g.add((br, RDF.type, OWL.Restriction))
+                    g.add((br, OWL.onProperty, variable_of))
+                    g.add((br, OWL.someValuesFrom, URIRef(NS + item["method.id"])))
+                    g.add((var_uri, RDFS.subClassOf, br))
+                    br = BNode()
+                    g.add((br, RDF.type, OWL.Restriction))
+                    g.add((br, OWL.onProperty, variable_of))
+                    g.add((br, OWL.someValuesFrom, URIRef(NS + item["scale.id"])))
+                    g.add((var_uri, RDFS.subClassOf, br))
+
+        response.text = g.serialize(format="pretty-xml").decode("utf-8")
         db.close()
         return response
