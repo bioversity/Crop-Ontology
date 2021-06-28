@@ -394,8 +394,8 @@ class ExcelView(PublicView):
             'match (variable:Variable{ontology_id:"'
             + ontology_id
             + '"})-[:VARIABLE_OF]->(trait:Trait) '
-            + 'match (variable:Variable{ontology_id:"CO_339"})-[:VARIABLE_OF]->(method:Method) '
-            + 'match (variable:Variable{ontology_id:"CO_339"})-[:VARIABLE_OF]->(scale:Scale) '
+            + 'match (variable:Variable{ontology_id:"'+ontology_id+'"})-[:VARIABLE_OF]->(method:Method) '
+            + 'match (variable:Variable{ontology_id:"'+ontology_id+'"})-[:VARIABLE_OF]->(scale:Scale) '
             + "return variable, trait, method, scale"
         )
         cursor = db.run(query)
