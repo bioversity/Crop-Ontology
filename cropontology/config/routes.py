@@ -56,7 +56,7 @@ from ..views.brapi import (
     BRAPIVariablesView,
 )
 
-from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView
+from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView
 from ..views.users import (
     APIUserSearchSelect2,
     UsersListView,
@@ -370,6 +370,9 @@ def load_routes(config):
 
     # Here comes the CO API routes
     routes.append(add_route("api_ifo", "/api/v1/info", APIDocView, "api/info.jinja2"))
+
+    # Here comes the dereferenceable URIs routes
+    routes.append(add_route("uri_term", "/rdf/{term_id}", UriView, None))
 
     # Here comes the TD download routes
     routes.append(
