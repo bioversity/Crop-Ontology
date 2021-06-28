@@ -372,7 +372,11 @@ def load_routes(config):
     routes.append(add_route("api_ifo", "/api/v1/info", APIDocView, "api/info.jinja2"))
 
     # Here comes the TD download routes
-    routes.append(add_route("td_download_excel", "/report/ontology_id={ontology_id}", ExcelView, None))
+    routes.append(
+        add_route(
+            "td_download_excel", "/report/ontology_id={ontology_id}", ExcelView, None
+        )
+    )
 
     # Users API
     routes.append(

@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 
 
 def random_password(size):
-    """Generate a random password """
+    """Generate a random password"""
     random_source = string.ascii_letters + string.digits + string.punctuation
     password = random.choice(string.ascii_lowercase)
     password += random.choice(string.ascii_uppercase)

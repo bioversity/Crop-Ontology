@@ -20,13 +20,6 @@ def get_neo_result(cursor, key):
         results.append(an_item[key])
     return results
 
-def get_neo_result_2keys(cursor, key, key2):
-    results = {}
-    for an_item in cursor:
-        results[key]=an_item[key]
-        results[key2]=an_item[key2]
-
-    return results
 
 def get_trait(db, term_id):
     query = (
@@ -376,14 +369,18 @@ class RDFCleanView(PublicView):
         db.close()
         return response
 
+
 class ExcelView(PublicView):
     def process_view(self):
         self.returnRawViewResult = True
         ontology_id = self.request.matchdict["ontology_id"]
 
         headers = [
-            #("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8"), 
-            ("Content-Type", "text/csv; charset=utf-8"), ## csv
+            (
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8",
+            ),
+            # ("Content-Type", "text/csv; charset=utf-8"), ## csv
         ]
         response = Response(headerlist=headers, status=200)
 
@@ -393,64 +390,78 @@ class ExcelView(PublicView):
         driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
         db = driver.session()
 
-        query = ('match (variable:Variable{ontology_id:"'+ontology_id+'"})-[:VARIABLE_OF]->(trait:Trait) ' + 
-                    'match (variable:Variable{ontology_id:"CO_339"})-[:VARIABLE_OF]->(method:Method) ' +
-                    'match (variable:Variable{ontology_id:"CO_339"})-[:VARIABLE_OF]->(scale:Scale) ' +
-                    'return variable, trait, method, an_item["scale"]')
+        query = (
+            'match (variable:Variable{ontology_id:"'
+            + ontology_id
+            + '"})-[:VARIABLE_OF]->(trait:Trait) '
+            + 'match (variable:Variable{ontology_id:"CO_339"})-[:VARIABLE_OF]->(method:Method) '
+            + 'match (variable:Variable{ontology_id:"CO_339"})-[:VARIABLE_OF]->(scale:Scale) '
+            + "return variable, trait, method, scale"
+        )
         cursor = db.run(query)
-        
-        #terms = get_neo_result_4keys(cursor, "variable", "trait", "method")
+
+        # terms = get_neo_result_4keys(cursor, "variable", "trait", "method")
 
         results = []
 
         for an_item in cursor:
             ret_result = {
-                        "curation": "",
-                        "Variable ID": an_item["variable"]["id"],
-                        "Variable name": an_item["variable"]["name"],
-                        "Variable synonyms": an_item["variable"]["variable_synonyms"],
-                        "Context of use": an_item["variable"]["context_of_use"],
-                        "Growth stage": an_item["variable"]["growth_stage"],
-                        "Variable status": an_item["variable"]["variable_status"],
-                        "Variable Xref": an_item["variable"]["variable_xref"],
-                        "Institution": an_item["variable"]["institution"],
-                        "Scientist": an_item["variable"]["scientist"],
-                        "Date": an_item["variable"]["date"],
-                        "Language": an_item["variable"]["language"],
-                        "Crop": an_item["variable"]["crop"],
-                        "Trait ID": trait["id"],
-                        "Trait name": trait["name"],
-                        "Trait class": trait["trait_class"],
-                        "Trait description": trait["trait_description"],
-                        "Trait synonyms": trait["trait_synonym"], 
-                        "Main trait abbreviation": trait["main_trait_abbreviation"],
-                        "Alternative trait abbreviations": trait["alternative_abbreviation"],
-                        "Entity": trait["entity"],
-                        "Attribute": trait["attribute"],
-                        "Trait status": trait["trait_status"],
-                        "Trait Xref": trait["trait_xref"],
-                        "Method ID": an_item["method"]["id"],
-                        "Method name": an_item["method"]["name"],
-                        "Method class": an_item["method"]["method_class"],
-                        "Method description": an_item["method"]["method_description"],
-                        "Formula": an_item["method"]["formula"],
-                        "Method reference": an_item["method"]["method_reference"],
-                        "Scale ID": an_item["scale"]["id"],
-                        "Scale name": an_item["scale"]["name"],
-                        "Scale class": an_item["scale"]["scale_class"],
-                        "Decimal places": an_item["scale"]["decimal_places"],
-                        "Lower limit": an_item["scale"]["lower_limit"],
-                        "Upper limit": an_item["scale"]["upper limit"],
-                        "Scale Xref": an_item["scale"]["scale_xref"],
-                }
+                "curation": "",
+                "Variable ID": an_item["variable"]["id"],
+                "Variable name": an_item["variable"]["name"],
+                "Variable synonyms": an_item["variable"]["variable_synonyms"],
+                "Context of use": an_item["variable"]["context_of_use"],
+                "Growth stage": an_item["variable"]["growth_stage"],
+                "Variable status": an_item["variable"]["variable_status"],
+                "Variable Xref": an_item["variable"]["variable_xref"],
+                "Institution": an_item["variable"]["institution"],
+                "Scientist": an_item["variable"]["scientist"],
+                "Date": an_item["variable"]["date"],
+                "Language": an_item["variable"]["language"],
+                "Crop": an_item["variable"]["crop"],
+                "Trait ID": an_item["trait"]["id"],
+                "Trait name": an_item["trait"]["name"],
+                "Trait class": an_item["trait"]["trait_class"],
+                "Trait description": an_item["trait"]["trait_description"],
+                "Trait synonyms": an_item["trait"]["trait_synonym"],
+                "Main trait abbreviation": an_item["trait"]["main_trait_abbreviation"],
+                "Alternative trait abbreviations": an_item["trait"][
+                    "alternative_abbreviation"
+                ],
+                "Entity": an_item["trait"]["entity"],
+                "Attribute": an_item["trait"]["attribute"],
+                "Trait status": an_item["trait"]["trait_status"],
+                "Trait Xref": an_item["trait"]["trait_xref"],
+                "Method ID": an_item["method"]["id"],
+                "Method name": an_item["method"]["name"],
+                "Method class": an_item["method"]["method_class"],
+                "Method description": an_item["method"]["method_description"],
+                "Formula": an_item["method"]["formula"],
+                "Method reference": an_item["method"]["method_reference"],
+                "Scale ID": an_item["scale"]["id"],
+                "Scale name": an_item["scale"]["name"],
+                "Scale class": an_item["scale"]["scale_class"],
+                "Decimal places": an_item["scale"]["decimal_places"],
+                "Lower limit": an_item["scale"]["lower_limit"],
+                "Upper limit": an_item["scale"]["upper limit"],
+                "Scale Xref": an_item["scale"]["scale_xref"],
+            }
 
-            
-            print(ret_result)
+            i = 1
+            while an_item["scale"]["category_" + str(i)]:
+                ret_result["Category " + str(i)] = an_item["scale"][
+                    "category_" + str(i)
+                ]
+                i += 1
+            if i <= 10:  ## still need to create empty field to category 10
+                while i <= 10:
+                    ret_result["Category " + str(i)] = ""
+                    i += 1
+
             results.append(ret_result)
-            
-            break
 
-        
-        response.text = to_json(results)
+        response = pandas.read_json(to_json(results)).to_excel(
+            ontology_id + ".xlsx"
+        )
         db.close()
         return response
