@@ -1,5 +1,6 @@
 from .classes import PublicView
 from pyramid.response import Response
+from pyramid.response import FileResponse
 import json
 from neo4j import GraphDatabase
 import pymongo
@@ -460,8 +461,16 @@ class ExcelView(PublicView):
 
             results.append(ret_result)
 
-        response = pandas.read_json(to_json(results)).to_excel(ontology_id + ".xlsx")
         db.close()
+
+        pandas.DataFrame.from_dict(results).to_excel(ontology_id + ".xlsx", index=False)
+
+        response = FileResponse(
+            ontology_id + ".xlsx",
+            request=self.request,
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response.content_disposition = 'attachment; filename="' + ontology_id + '.xlsx"'
         return response
 
 
