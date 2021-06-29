@@ -42,20 +42,22 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="m-0">Variables</h5>
-                        </div>
-                        <div class="card-body" style="max-height: 400px; overflow-y: scroll">
-                            {{ _('Search:') }} <input type="text" class="search" />
-                            <div id="variable_list">
-                                <ul class="tag-list" style="padding: 0">
-                                    {% for variable in variables %}
-                                        <li><a data-variable-id="{{ variable.id }}" class="load_variable"> {{ variable.name }}</a></li>
-                                    {% endfor %}
-                                </ul>
+                    <div id="variable_list">
+                        {% if variables|length > 0 %}
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="m-0">Variables</h5>
+                                </div>
+                                <div class="card-body" style="max-height: 400px; overflow-y: scroll">
+{#                                    {{ _('Search:') }} <input type="text" class="search" />#}
+                                    <ul class="tag-list" style="padding: 0">
+                                        {% for variable in variables %}
+                                            <li><a data-variable-id="{{ variable.id }}" class="load_variable"> {{ variable.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
