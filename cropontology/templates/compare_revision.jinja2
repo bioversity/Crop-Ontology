@@ -36,6 +36,8 @@
             </div>
             <div class="card-body">
                 {{ _('You are comparing submission') }} <b>{{ revision_id }}</b> {{ _('made on') }} {{ request.h.readble_date_with_time(revision_date) }} {{ _('by') }} {{ revision_by }}.
+                <br/>
+                {{ _('For term') }} <b>{{ term_id }}</b> {{ _('in ontology') }} {{ ontology_name }}
                 <hr>
                 <div id="diff">
                     <div class="d2h-wrapper">

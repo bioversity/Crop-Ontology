@@ -47,8 +47,9 @@
                             <thead>
                             <tr>
                                 <th>{{ _('Revision') }}</th>
+                                <th>{{ _('Term and ontology') }}</th>
                                 <th>{{ _('Date') }}</th>
-                                <th>{{ _('By') }}</th>
+                                <th>{{ _('Suggested by') }}</th>
                                 <th>{{ _('Status') }}</th>
                                 <th>{{ _('Actions') }}</th>
                             </tr>
@@ -57,6 +58,7 @@
                             {% for a_revision in revisions %}
                                 <tr>
                                     <td><span title="{{ a_revision.revision}}">{{ a_revision.revision[-12:] }}</span></td>
+                                    <td><span>{{ a_revision.for_term }} {{ _('in ontology') }}<br/>{{ a_revision.ontology_name }}</span></td>
                                     <td><span title="{{ a_revision.created_on }}">{{ request.h.readble_date_with_time(a_revision.created_on) }}</span></td>
                                     <td>{{ a_revision.created_by }}</td>
                                     {% if a_revision.status == 0 %}

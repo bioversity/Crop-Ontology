@@ -112,9 +112,12 @@ class TermEditorView(PrivateView):
                 fields.append("n." + an_item)
         query = "MATCH (n) WHERE n.id='" + term_id + "' RETURN " + ",".join(fields)
         cursor = db.run(query)
+        ontology_id = ""
         for an_item in cursor:
             for a_key in keys:
                 a_key["value"] = an_item["n." + a_key["name"]]
+                if a_key["name"] == "ontology_id":
+                    ontology_id = a_key["value"]
         if self.request.method == "GET":
             set_key_settings(keys)
             return {"keys": keys}
@@ -132,9 +135,22 @@ class TermEditorView(PrivateView):
                             data_changed = True
                         break
             if data_changed:
+                mongo_url = self.request.registry.settings.get("mongo.url")
+                mongo_client = pymongo.MongoClient(mongo_url)
+                ontology_db = mongo_client["ontologies"]
+                revisions_collection = ontology_db["revisions"]
+                ontology_collection = ontology_db["ontologies"]
+                ontology_data = ontology_collection.find_one(
+                    {"ontology_id": ontology_id}
+                )
+                ontology_name = ""
+                if ontology_data:
+                    ontology_name = ontology_data["ontology_name"]
                 revision = {
                     "revision": str(uuid.uuid4()),
                     "for_term": term_id,
+                    "ontology_id": ontology_id,
+                    "ontology_name": ontology_name,
                     "created_on": datetime.datetime.now(),
                     "created_by": self.userID,
                     "status": 0,
@@ -145,10 +161,7 @@ class TermEditorView(PrivateView):
                     "review_notes": None,
                     "data": keys,
                 }
-                mongo_url = self.request.registry.settings.get("mongo.url")
-                mongo_client = pymongo.MongoClient(mongo_url)
-                ontology_db = mongo_client["ontologies"]
-                revisions_collection = ontology_db["revisions"]
+
                 revisions_collection.insert_one(revision)
                 self.returnRawViewResult = True
                 return HTTPFound(location=self.request.route_url("revisions"))
@@ -210,6 +223,11 @@ class CompareRevisionView(PrivateView):
             raise HTTPNotFound()
         else:
             revision_date = revision_data["created_on"]
+            term_id = revision_data["for_term"]
+            if "ontology_name" in revision_data.keys():
+                ontology_name = revision_data["ontology_name"]
+            else:
+                ontology_name = ""
             revision_by = revision_data["created_by"]
             revision_notes = revision_data["revision_notes"]
             data_a = OrderedDict()
@@ -247,6 +265,8 @@ class CompareRevisionView(PrivateView):
                 "revision_by": revision_by,
                 "diff": diff,
                 "revision_notes": revision_notes,
+                "term_id": term_id,
+                "ontology_name": ontology_name,
             }
 
 
