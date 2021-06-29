@@ -1,5 +1,10 @@
 {% extends 'page.jinja2' %}
 
+{% block css %}
+    {{ super() }}
+    {% cssresource request,'main_library','icon_picker' %}
+{% endblock css %}
+
 {% block breadcrums %}
     {% include 'menus/snippets/breadcrums_menu.jinja2' %}
 {% endblock breadcrums %}
@@ -8,24 +13,34 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="card">
-            <div class="card-body table-responsive p-0" style="height: 300px;">
+            <div class="card-header">
+                <h3>{{ _('Menu items') }}</h3>
+            </div>
+            <div class="card-body table-responsive p-0" style="height: 360px;">
                 <ul id="myEditor" class="sortableLists list-group">
                 </ul>
             </div>
             <div class="card-footer">
-                <button type="button" id="btnSaveMenu" class="btn btn-primary"><i class="fas fa-sync-alt"></i>{{ _('Save menu') }}</button>
+                <button type="button" id="btnSaveMenu" class="btn btn-primary"><i class="fas fa-save"></i> {{ _('Save menu') }}</button>
             </div>
         </div>
     </div>
     <div class="col-lg-6">
         <div class="card">
-            <div class="card-body table-responsive p-0" style="height: 300px;">
+            <div class="card-header">
+                <h3>{{ _('Items editor') }}</h3>
+            </div>
+            <div class="card-body table-responsive p-0" style="height: 360px;">
                 <form id="frmEdit" class="form-horizontal">
                     <div class="form-group">
-                        <label for="text">{{ _('Text') }}</label>
+                        <label for="text">{{ _('Menu caption') }}</label>
                         <div class="input-group">
-                            <input type="text" class="form-control item-menu" name="text" id="text" placeholder="{{ _('Text') }}">
+                            <input type="text" class="form-control item-menu" name="text" id="text" placeholder="{{ _('Caption') }}">
+                            <div class="input-group-append">
+                                <button type="button" id="myEditor_icon" class="btn btn-outline-secondary"></button>
+                            </div>
                         </div>
+                        <input type="hidden" name="icon" class="item-menu">
                     </div>
                     <div class="form-group">
                         <label for="href">{{ _('URL') }}</label>
@@ -38,11 +53,15 @@
                             <option value="_blank">{{ _('Blank') }}</option>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="title">{{ _('Tooltip') }}</label>
+                        <input type="text" name="title" class="form-control item-menu" id="title" placeholder="{{ _('Tooltip') }}">
+                    </div>
                 </form>
             </div>
             <div class="card-footer">
-                <button type="button" id="btnUpdate" class="btn btn-primary" disabled><i class="fas fa-sync-alt"></i>{{ _('Update') }}</button>
-                <button type="button" id="btnAdd" class="btn btn-success"><i class="fas fa-plus"></i>{{ _('Add') }}</button>
+                <button type="button" id="btnUpdate" class="btn btn-warning" disabled><i class="fas fa-edit"></i> {{ _('Update menu item') }}</button>
+                <button type="button" id="btnAdd" class="btn btn-success"><i class="fas fa-plus"></i> {{ _('Add new menu item') }}</button>
             </div>
         </div>
     </div>
@@ -54,14 +73,25 @@
     {% jsresource request,'main_library','menu_editor' %}
     <script>
         $(document).ready(function() {
+            // icon picker options
+            var iconPickerOptions = {searchText: "Find...", labelHeader: "{0}/{1}"};
+// sortable list options
+            var sortableListOptions = {
+                placeholderCss: {'background-color': "#cccccc"}
+            };
             var editor = new MenuEditor('myEditor',
                 {
                     listOptions: sortableListOptions,
+                    iconPicker: iconPickerOptions,
                     maxLevel: 2 // (Optional) Default is -1 (no level limit)
                     // Valid levels are from [0, 1, 2, 3,...N]
                 });
             editor.setForm($('#frmEdit'));
             editor.setUpdateButton($('#btnUpdate'));
+
+            var arrayjson = {{ menu_data }};
+            editor.setData(arrayjson);
+
 //Calling the update method
             $("#btnUpdate").click(function(){
                 editor.update();
@@ -70,6 +100,29 @@
             $('#btnAdd').click(function(){
                 editor.add();
             });
+
+            $('#btnSaveMenu').click(function () {
+                var form = document.createElement('form');
+                form.setAttribute('method', 'post');
+                form.setAttribute('action', '{{ request.url }}');
+                form.style.display = 'hidden';
+
+                var i = document.createElement("input"); //input element, text
+                i.setAttribute('type',"text");
+                i.setAttribute('name',"csrf_token");
+                i.setAttribute('value','{{ request.session.get_csrf_token() }}');
+                form.appendChild(i);
+
+                var str = editor.getString();
+                var content = document.createElement("textarea"); //input element, text
+                content.setAttribute('name',"menu_data");
+                content.innerText = str;
+                form.appendChild(content);
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+
         })
     </script>
 {% endblock scripts %}

@@ -3,7 +3,7 @@ import re
 import traceback
 import uuid
 from ast import literal_eval
-
+import json
 import validators
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPFound
@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from pyramid.security import remember
 from pyramid.session import check_csrf_token
-
+import os
 import cropontology.plugins as p
 from cropontology.config.encdecdata import encode_data
 from cropontology.processes.avatar import Avatar
@@ -24,6 +24,7 @@ from ..processes.db import (
 import pymongo
 import datetime
 from neo4j import GraphDatabase
+from webhelpers2.html import literal
 
 log = logging.getLogger("cropontology")
 
@@ -74,7 +75,50 @@ class HomeView(PublicView):
 
         mongo_client.close()
         db.close()
-        return {"categories": result}
+
+        repository_path = self.request.registry.settings.get("repository.path")
+        paths = ["menu.json"]
+        menu_json_file = os.path.join(repository_path, *paths)
+        if os.path.exists(menu_json_file):
+            with open(menu_json_file) as f:
+                menu_data = json.load(f)
+                menu_data = literal(menu_data)
+        else:
+            menu_data = [
+                {
+                    "text": "About",
+                    "icon": "",
+                    "href": self.request.route_url("about"),
+                    "target": "_self",
+                    "title": "About this site",
+                },
+                {
+                    "text": "Feedback",
+                    "icon": "empty",
+                    "href": self.request.route_url("feedback"),
+                    "target": "_self",
+                    "title": "Tell us what you think",
+                },
+                {
+                    "text": "Help",
+                    "icon": "empty",
+                    "href": self.request.route_url("help"),
+                    "target": "_self",
+                    "title": "Help about this site",
+                },
+                {
+                    "text": "API",
+                    "icon": "empty",
+                    "href": self.request.route_url("api_help"),
+                    "target": "_self",
+                    "title": "API information",
+                },
+            ]
+            with open(menu_json_file, "w") as json_file:
+                json.dump(menu_data, json_file)
+            menu_data = literal(menu_data)
+
+        return {"categories": result, "menu_data": menu_data}
 
 
 class ContentView(PublicView):

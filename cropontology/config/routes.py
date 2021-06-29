@@ -2,7 +2,7 @@ import logging
 
 import cropontology.plugins as p
 from ..plugins.utilities import add_route
-
+from ..views.menu import MenuEditorView
 from ..views.search import SearchView
 from ..views.term import (
     TermDetailsView,
@@ -260,6 +260,16 @@ def load_routes(config):
             "/ontology_json/{ontology_id}",
             JSONDataView,
             "json",
+        )
+    )
+
+    # Menus
+    routes.append(
+        add_route(
+            "menu_list",
+            "/menu",
+            MenuEditorView,
+            "menus/menu_editor.jinja2",
         )
     )
 

@@ -95,9 +95,30 @@ def create_resources(apppath, config):
     )
 
     # Menu editor
+    r.add_css_resource(
+        "main_library",
+        "icon_picker",
+        "js/plugins/bootstrap-iconpicker/css/bootstrap-iconpicker.css",
+        None,
+    )
+
+    r.add_js_resource(
+        "main_library",
+        "font_awesome",
+        "js/plugins/bootstrap-iconpicker/js/iconset/fontawesome5-3-1.js",
+        None,
+    )
+
+    r.add_js_resource(
+        "main_library",
+        "icon_picker",
+        "js/plugins/bootstrap-iconpicker/js/bootstrap-iconpicker.js",
+        "font_awesome",
+    )
+
     r.add_js_resource(
         "main_library",
         "menu_editor",
         "js/plugins/menu_editor/jquery-menu-editor.min.js",
-        None,
+        "icon_picker",
     )
