@@ -93,3 +93,11 @@ def create_resources(apppath, config):
     r.add_js_resource(
         "main_library", "simplemde", "js/plugins/simplemde/simplemde.min.js", None
     )
+
+    # Menu editor
+    r.add_js_resource(
+        "main_library",
+        "menu_editor",
+        "js/plugins/menu_editor/jquery-menu-editor.min.js",
+        None,
+    )
