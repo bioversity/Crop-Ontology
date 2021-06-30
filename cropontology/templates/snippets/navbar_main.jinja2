@@ -13,14 +13,16 @@
             <li class="nav-item">
                 <a href="{{ request.route_url('api_help') }}" class="nav-link">{{ _('API') }}</a>
             </li>
-            <li class="nav-item dropdown">
+            {% if userLogged %}
+                <li class="nav-item dropdown">
                     <a id="dropdownSubMenu2" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Tools') }}</a>
                     <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                        {% if userLogged %}
-                            <li><a href="#" class="dropdown-item">{{ _('Add new terms') }}</a></li>
-                        {% endif %}
+
+                        <li><a href="#" class="dropdown-item">{{ _('Add new terms') }}</a></li>
+
                     </ul>
-            </li>
+                </li>
+            {% endif %}
             {% if userLogged %}
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Site maintenance') }}</a>
