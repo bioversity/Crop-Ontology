@@ -4,11 +4,12 @@ from pyramid.response import FileResponse
 import json
 from neo4j import GraphDatabase
 import pymongo
-import requests
+import os
 from rdflib import Graph
 from rdflib.namespace import OWL, DC, DCTERMS, RDF, RDFS, SKOS
 from rdflib import URIRef, BNode, Literal
 import pandas
+import uuid
 
 
 def to_json(data):
@@ -463,10 +464,19 @@ class ExcelView(PublicView):
 
         db.close()
 
-        pandas.DataFrame.from_dict(results).to_excel(ontology_id + ".xlsx", index=False)
+        repository_path = self.request.registry.settings.get("repository.path")
+        paths = ["tmp"]
+        temp_path = os.path.join(repository_path, *paths)
+        if not os.path.exists(temp_path):
+            os.makedirs(temp_path)
+
+        paths = ["tmp", str(uuid.uuid4()) + ".xlsx"]
+        excel_file = os.path.join(repository_path, *paths)
+
+        pandas.DataFrame.from_dict(results).to_excel(excel_file, index=False)
 
         response = FileResponse(
-            ontology_id + ".xlsx",
+            excel_file,
             request=self.request,
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
