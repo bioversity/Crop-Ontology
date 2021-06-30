@@ -13,14 +13,14 @@
 import json
 import logging
 from ast import literal_eval
-
+import os
 from babel import Locale
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound, exception_response
 from pyramid.response import Response
 from pyramid.session import check_csrf_token
-
+from webhelpers2.html import literal
 from cropontology.processes.db import (
     get_user_details,
     get_user_by_api_key,
@@ -124,6 +124,32 @@ class PrivateView(object):
                 )
 
     def __call__(self):
+        def build_menu(menu_items, lines):
+            for a_menu_item in menu_items:
+                if "children" in a_menu_item.keys():
+                    lines.append(
+                        '<li class="nav-item dropdown"><a id="id_'
+                        + a_menu_item["text"].lower()
+                        + '" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" '
+                        'class="nav-link dropdown-toggle">'
+                        + a_menu_item["text"]
+                        + '</a><ul aria-labelledby="id_'
+                        + a_menu_item["text"].lower()
+                        + '" class="dropdown-menu border-0 shadow">'
+                    )
+                    build_menu(a_menu_item["children"], lines)
+                    lines.append("</ul></li>")
+                else:
+                    lines.append(
+                        '<li class="nav-item"><a target="'
+                        + a_menu_item["target"]
+                        + '" href="'
+                        + a_menu_item["href"]
+                        + '" class="nav-link">'
+                        + a_menu_item["text"]
+                        + "</a></li>"
+                    )
+
         error = self.request.session.pop_flash(queue="error")
         if len(error) > 0:
             self.append_to_errors(error[0].replace("|error", ""))
@@ -181,6 +207,53 @@ class PrivateView(object):
                 plugin.before_processing(
                     self.request,
                 )
+
+        repository_path = self.request.registry.settings.get("repository.path")
+        paths = ["menu.json"]
+        menu_json_file = os.path.join(repository_path, *paths)
+        if os.path.exists(menu_json_file):
+            with open(menu_json_file) as f:
+                menu_data = json.load(f)
+        else:
+            menu_data = [
+                {
+                    "text": "About",
+                    "icon": "",
+                    "href": self.request.route_url("about"),
+                    "target": "_self",
+                    "title": "About this site",
+                },
+                {
+                    "text": "Feedback",
+                    "icon": "empty",
+                    "href": self.request.route_url("feedback"),
+                    "target": "_self",
+                    "title": "Tell us what you think",
+                },
+                {
+                    "text": "Help",
+                    "icon": "empty",
+                    "href": self.request.route_url("help"),
+                    "target": "_self",
+                    "title": "Help about this site",
+                },
+                {
+                    "text": "API",
+                    "icon": "empty",
+                    "href": self.request.route_url("api_help"),
+                    "target": "_self",
+                    "title": "API information",
+                },
+            ]
+            with open(menu_json_file, "w") as json_file:
+                json.dump(menu_data, json_file)
+
+        html_lines = []
+        build_menu(menu_data, html_lines)
+        menu_string = ""
+        for a_line in html_lines:
+            menu_string = menu_string + a_line + "\n"
+        self.classResult["menu_string"] = literal(menu_string)
 
         self.viewResult = self.process_view()
 
