@@ -26,7 +26,12 @@
         <a class="btn btn-default btn-sm" href="{{ request.route_url('ontology_rdf', ontology_id=ontology.ontology_id) }}">
             <i title="RDF/N-Triples" class="far fa-file-code">
             </i>
-
         </a>
+        {% if ontology.ontology_type != "obo" %}
+            <a class="btn btn-default btn-sm" href="{{ request.route_url('td_download_excel', ontology_id=ontology.ontology_id) }}">
+                <i title="Download trait dictionary" class="far fa-file-excel">
+                </i>
+            </a>
+        {% endif %}
     </td>
 </tr>

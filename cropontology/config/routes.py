@@ -386,9 +386,7 @@ def load_routes(config):
 
     # Here comes the TD download routes
     routes.append(
-        add_route(
-            "td_download_excel", "/report/ontology_id={ontology_id}", ExcelView, None
-        )
+        add_route("td_download_excel", "/report/{ontology_id}", ExcelView, None)
     )
 
     # Users API
