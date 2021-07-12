@@ -10,6 +10,7 @@ from rdflib.namespace import OWL, DC, DCTERMS, RDF, RDFS, SKOS
 from rdflib import URIRef, BNode, Literal
 import pandas
 import uuid
+import re
 
 
 def to_json(data):
@@ -315,7 +316,36 @@ class RDFCleanView(PublicView):
                 i += 1
             for s in categories:
                 try:
-                    if "=" in s:
+                    if re.match(r'\[\d+\]', s):
+                        cat = re.findall(r'\d+', s)
+                        g.add(
+                            (
+                                URIRef(
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                ),
+                                RDFS.subClassOf,
+                                scale_uri,
+                            )
+                        )
+                        g.add(
+                            (
+                                URIRef(
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                ),
+                                RDFS.label,
+                                Literal(s.split("]")[1].strip(), lang="en"),
+                            )
+                        )
+                        g.add(
+                            (
+                                URIRef(
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                ),
+                                SKOS.altLabel,
+                                Literal(cat[0].strip(), lang="en"),
+                            )
+                        )
+                    elif "=" in s:
                         cat = s.split("=")
                         g.add(
                             (
@@ -349,7 +379,7 @@ class RDFCleanView(PublicView):
                             g.add((scale_uri, RDFS.comment, ", ".join(categories)))
                         except Exception:
                             continue
-                except:
+                except: 
                     print(s)
 
             ## create links
