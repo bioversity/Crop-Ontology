@@ -295,20 +295,21 @@ class RDFCleanView(PublicView):
                 g.add(
                     (scale_uri, DCTERMS.source, Literal(an_item["scale"]["scale_xref"]))
                 )
-            g.add(
-                (
-                    scale_uri,
-                    RDFS.subClassOf,
-                    URIRef(NS + an_item["scale"]["scale_class"].replace(" ", "_")),
+            if(an_item["scale"]["scale_class"]):
+                g.add(
+                    (
+                        scale_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + an_item["scale"]["scale_class"].replace(" ", "_")),
+                    )
                 )
-            )
-            g.add(
-                (
-                    URIRef(NS + an_item["scale"]["scale_class"].replace(" ", "_")),
-                    RDFS.subClassOf,
-                    URIRef(NS + "Scale"),
+                g.add(
+                    (
+                        URIRef(NS + an_item["scale"]["scale_class"].replace(" ", "_")),
+                        RDFS.subClassOf,
+                        URIRef(NS + "Scale"),
+                    )
                 )
-            )
             categories = []
             i = 1
             while an_item["scale"]["category_" + str(i)]:
