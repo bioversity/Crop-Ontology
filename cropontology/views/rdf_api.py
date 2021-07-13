@@ -278,7 +278,7 @@ class RDFCleanView(PublicView):
             else:
                 g.add(
                     (
-                        method_uri,,
+                        method_uri,
                         RDFS.subClassOf,
                         URIRef(NS + "Method"),
                     )
