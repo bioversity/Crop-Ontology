@@ -282,6 +282,7 @@ class RDFCleanView(PublicView):
                         RDFS.subClassOf,
                         URIRef(NS + "Method"),
                     )
+                )
             ## create links
             br = BNode()
             g.add((br, RDF.type, OWL.Restriction))
@@ -324,6 +325,7 @@ class RDFCleanView(PublicView):
                         RDFS.subClassOf,
                         URIRef(NS + "Scale"),
                     )
+                )
             categories = []
             i = 1
             while an_item["scale"]["category_" + str(i)]:
