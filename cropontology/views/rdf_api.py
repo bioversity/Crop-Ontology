@@ -260,17 +260,21 @@ class RDFCleanView(PublicView):
                         Literal(an_item["method"]["method_reference"]),
                     )
                 )
-            if(an_item["method"]["method_class"]):
+            if an_item["method"]["method_class"]:
                 g.add(
                     (
                         method_uri,
                         RDFS.subClassOf,
-                        URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
+                        URIRef(
+                            NS + an_item["method"]["method_class"].replace(" ", "_")
+                        ),
                     )
                 )
                 g.add(
                     (
-                        URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
+                        URIRef(
+                            NS + an_item["method"]["method_class"].replace(" ", "_")
+                        ),
                         RDFS.subClassOf,
                         URIRef(NS + "Method"),
                     )
@@ -303,7 +307,7 @@ class RDFCleanView(PublicView):
                 g.add(
                     (scale_uri, DCTERMS.source, Literal(an_item["scale"]["scale_xref"]))
                 )
-            if(an_item["scale"]["scale_class"]):
+            if an_item["scale"]["scale_class"]:
                 g.add(
                     (
                         scale_uri,
@@ -321,7 +325,7 @@ class RDFCleanView(PublicView):
             else:
                 g.add(
                     (
-                        scale_uri, 
+                        scale_uri,
                         RDFS.subClassOf,
                         URIRef(NS + "Scale"),
                     )
@@ -333,8 +337,8 @@ class RDFCleanView(PublicView):
                 i += 1
             for s in categories:
                 try:
-                    if re.match(r'\[\d+\]', s):
-                        cat = re.findall(r'\d+', s)
+                    if re.match(r"\[\d+\]", s):
+                        cat = re.findall(r"\d+", s)
                         g.add(
                             (
                                 URIRef(
@@ -396,7 +400,7 @@ class RDFCleanView(PublicView):
                             g.add((scale_uri, RDFS.comment, ", ".join(categories)))
                         except Exception:
                             continue
-                except: 
+                except:
                     print(s)
 
             ## create links

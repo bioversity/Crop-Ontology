@@ -57,6 +57,9 @@ from ..views.brapi import (
 )
 
 from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView
+
+from ..views.template import TemplateLoadView
+
 from ..views.users import (
     APIUserSearchSelect2,
     UsersListView,
@@ -387,6 +390,11 @@ def load_routes(config):
     # Here comes the TD download routes
     routes.append(
         add_route("td_download_excel", "/report/{ontology_id}", ExcelView, None)
+    )
+
+    # Here come the upload template routes
+    routes.append(
+        add_route("load_template", "/load/{ontology_id}", TemplateLoadView, None)
     )
 
     # Users API
