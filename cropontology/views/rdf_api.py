@@ -260,20 +260,28 @@ class RDFCleanView(PublicView):
                         Literal(an_item["method"]["method_reference"]),
                     )
                 )
-            g.add(
-                (
-                    method_uri,
-                    RDFS.subClassOf,
-                    URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
+            if(an_item["method"]["method_class"]):
+                g.add(
+                    (
+                        method_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
+                    )
                 )
-            )
-            g.add(
-                (
-                    URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
-                    RDFS.subClassOf,
-                    URIRef(NS + "Method"),
+                g.add(
+                    (
+                        URIRef(NS + an_item["method"]["method_class"].replace(" ", "_")),
+                        RDFS.subClassOf,
+                        URIRef(NS + "Method"),
+                    )
                 )
-            )
+            else:
+                g.add(
+                    (
+                        method_uri,,
+                        RDFS.subClassOf,
+                        URIRef(NS + "Method"),
+                    )
             ## create links
             br = BNode()
             g.add((br, RDF.type, OWL.Restriction))
@@ -309,6 +317,13 @@ class RDFCleanView(PublicView):
                         URIRef(NS + "Scale"),
                     )
                 )
+            else:
+                g.add(
+                    (
+                        scale_uri, 
+                        RDFS.subClassOf,
+                        URIRef(NS + "Scale"),
+                    )
             categories = []
             i = 1
             while an_item["scale"]["category_" + str(i)]:
