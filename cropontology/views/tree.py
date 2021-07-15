@@ -61,9 +61,9 @@ def count_children(db, term_id, ontology_id):
     query = (
         'MATCH (parent {id:"'
         + term_id
-        + '"})<-[]-(child {ontology_id: "'
+        + '"})<-[r]-(child {ontology_id: "'
         + ontology_id
-        + '"}) RETURN COUNT(DISTINCT child) as children'
+        + '"}) where type(r)<>"VARIABLE_OF"  RETURN COUNT(DISTINCT child) as children'
     )
     cursor = db.run(query)
     result = get_neo_result(cursor, "children")
