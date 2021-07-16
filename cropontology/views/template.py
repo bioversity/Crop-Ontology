@@ -47,6 +47,8 @@ class TemplateLoadView(PublicView):
 
         ## fill na with empty string
         td.fillna("", inplace=True)
+        ## replace special characters that might fail queries
+        td.replace({"\"":"", "'":""}, regex=True, inplace=True)
 
         term_ID = 0  ## to be used when an ID is empty
 
@@ -62,9 +64,15 @@ class TemplateLoadView(PublicView):
         for nid in cursor:
             try:
                 term_ID = int(nid[0].split(":")[1])
+                if nid[0].split(":")[0] != "CO":
+                    continue
                 break
             except ValueError:
                 continue
+            except IndexError:
+                response = Response(headerlist=headers, status=400)
+                response.text = "check that IDs are formatted as follow: CO_XXX:XXXXXXX"
+                return response
 
         ## parse the file
         for index, row in td.iterrows():
@@ -82,7 +90,7 @@ class TemplateLoadView(PublicView):
                     + row["Crop"]
                     + "' , a.name = '"
                     + row["Crop"]
-                    + " traits' , a.root = 'true' , "
+                    + " traits' , a.root = True , "
                     + " a.obsolete = 'false' , a.created_at = '"
                     + date
                     + "' , a.language = '"
@@ -99,12 +107,14 @@ class TemplateLoadView(PublicView):
                 var_id = ontology_id + ":" + str(term_ID + 1).zfill(7)
                 term_ID += 1
 
+            ###NEED TO CHECK IF ID NOT USED IF TERM EXISTS TERM_ID -= 1
+
             #### mandatory fields
             ## ON CREATE
             query = (
                 "MERGE (a:Variable{name: '"
                 + row["Variable name"]
-                + "'}) ON CREATE SET a:Variable, a.id = '"
+                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Variable, a.id = '"
                 + var_id
                 + "', a.variable_id = '"
                 + var_id
@@ -147,11 +157,7 @@ class TemplateLoadView(PublicView):
 
             ## ON MATCH
             query += (
-                " ON MATCH SET a.id = '"
-                + var_id
-                + "', a.variable_id = '"
-                + var_id
-                + "', "
+                " ON MATCH SET "
                 + " a.ontology_id = '"
                 + ontology_id
                 + "' , a.ontology_name = '"
@@ -189,7 +195,11 @@ class TemplateLoadView(PublicView):
                 query += ", a.scientist = '" + row["Scientist"] + "' "
 
             query += " RETURN a "
-            db.run(query)
+            cursor = db.run(query)
+            ## need to check if the id created has been used or if term was already existing
+            if not row["Variable ID"]:
+                if var_id != cursor.single()["a"]["id"]:
+                    term_ID -= 1
 
             ## create trait
             trait_id = row["Trait ID"]
@@ -201,7 +211,7 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Trait{name:'"
                 + row["Trait name"]
-                + "'}) ON CREATE SET a:Trait, a.id = '"
+                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Trait, a.id = '"
                 + trait_id
                 + "', a.trait_id = '"
                 + trait_id
@@ -224,6 +234,8 @@ class TemplateLoadView(PublicView):
                 + " a.term_type = 'trait' "
             )
             #### other fieds - need to check if exist
+            if row["Trait class"]:
+                query += ", a.trait_class = '"+row["Trait class"] + "' "
             if row["Trait description"]:
                 query += ", a.trait_description = '" + row["Trait description"] + "' "
             if row["Trait synonyms"]:
@@ -251,11 +263,7 @@ class TemplateLoadView(PublicView):
 
             ## ON MATCH
             query += (
-                " ON MATCH SET a.id = '"
-                + trait_id
-                + "', a.trait_id = '"
-                + trait_id
-                + "', "
+                " ON MATCH SET "
                 + " a.ontology_id = '"
                 + ontology_id
                 + "' , a.ontology_name = '"
@@ -274,6 +282,8 @@ class TemplateLoadView(PublicView):
                 + " a.term_type = 'trait' "
             )
             #### other fieds - need to check if exist
+            if row["Trait class"]:
+                query += ", a.trait_class = '"+row["Trait class"] + "' "
             if row["Trait description"]:
                 query += ", a.trait_description = '" + row["Trait description"] + "' "
             if row["Trait synonyms"]:
@@ -300,7 +310,11 @@ class TemplateLoadView(PublicView):
                 query += ", a.trait_xref = '" + row["Trait Xref"] + "' "
 
             query += " RETURN a "
-            db.run(query)
+            cursor = db.run(query)
+            ## need to check if the id created has been used or if term was already existing
+            if not row["Trait ID"]:
+                if trait_id != cursor.single()["a"]["id"]:
+                    term_ID -= 1
 
             ## create method
             method_id = row["Method ID"]
@@ -312,7 +326,7 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Method{name: '"
                 + row["Method name"]
-                + "'}) ON CREATE SET a:Method, a.id = '"
+                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Method, a.id = '"
                 + method_id
                 + "', a.method_id = '"
                 + method_id
@@ -335,20 +349,18 @@ class TemplateLoadView(PublicView):
                 + " a.term_type = 'method' "
             )
             #### other fieds - need to check if exist
+            if row["Method class"]:
+                query += ", a.method_class = '"+row["Method class"] + "' "
             if row["Method description"]:
                 query += ", a.method_description = '" + row["Method description"] + "' "
             if row["Formula"]:
                 query += ", a.formula = '" + row["Formula"] + "' "
             if row["Method reference"]:
                 query += ", a.method_reference = '" + row["Method reference"] + "' "
-            ## ON MATHC
+            ## ON MATCH
             #### mandatory field
             query += (
-                " ON MATCH SET a.id = '"
-                + method_id
-                + "', a.method_id = '"
-                + method_id
-                + "', "
+                " ON MATCH SET "
                 + " a.ontology_id = '"
                 + ontology_id
                 + "' , a.ontology_name = '"
@@ -367,6 +379,8 @@ class TemplateLoadView(PublicView):
                 + " a.term_type = 'method' "
             )
             #### other fieds - need to check if exist
+            if row["Method class"]:
+                query += ", a.method_class = '"+row["Method class"] + "' "
             if row["Method description"]:
                 query += ", a.method_description = '" + row["Method description"] + "' "
             if row["Formula"]:
@@ -375,7 +389,11 @@ class TemplateLoadView(PublicView):
                 query += ", a.method_reference = '" + row["Method reference"] + "' "
 
             query += " RETURN a "
-            db.run(query)
+            cursor = db.run(query)
+            ## need to check if the id created has been used or if term was already existing
+            if not row["Method ID"]:
+                if method_id != cursor.single()["a"]["id"]:
+                    term_ID -= 1
 
             ## create scale
             scale_id = row["Scale ID"]
@@ -387,7 +405,7 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Scale {name: '"
                 + row["Scale name"]
-                + "'}) ON CREATE SET a:Scale, a.id = '"
+                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Scale, a.id = '"
                 + scale_id
                 + "', a.scale_id = '"
                 + scale_id
@@ -410,6 +428,8 @@ class TemplateLoadView(PublicView):
                 + " a.term_type = 'scale' "
             )
             #### other fieds - need to check if exist
+            if row["Scale class"]:
+                query += ", a.scale_class = '"+row["Scale class"] + "' "
             if row["Decimal places"]:
                 query += ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
             if row["Lower limit"]:
@@ -421,16 +441,12 @@ class TemplateLoadView(PublicView):
             i = 1
             while row["Category " + str(i)]:
                 query += (
-                    ", a.category_" + str(i) + " = '" + row["Category " + str(i)] + "' "
+                    ", a.category_" + str(i) + " = '" + str(row["Category " + str(i)]) + "' "
                 )
                 i += 1
             ## ON MATCH
             query += (
-                " ON MATCH SET a.id = '"
-                + scale_id
-                + "', a.scale_id = '"
-                + scale_id
-                + "', "
+                " ON MATCH SET "
                 + " a.ontology_id = '"
                 + ontology_id
                 + "' , a.ontology_name = '"
@@ -449,6 +465,8 @@ class TemplateLoadView(PublicView):
                 + " a.term_type = 'scale' "
             )
             #### other fieds - need to check if exist
+            if row["Scale class"]:
+                query += ", a.scale_class = '"+row["Scale class"] + "' "
             if row["Decimal places"]:
                 query += ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
             if row["Lower limit"]:
@@ -460,12 +478,16 @@ class TemplateLoadView(PublicView):
             i = 1
             while row["Category " + str(i)]:
                 query += (
-                    ", a.category_" + str(i) + " = '" + row["Category " + str(i)] + "' "
+                    ", a.category_" + str(i) + " = '" + str(row["Category " + str(i)]) + "' "
                 )
                 i += 1
 
             query += " RETURN a "
-            db.run(query)
+            cursor = db.run(query)
+            ## need to check if the id created has been used or if term was already existing
+            if not row["Scale ID"]:
+                if scale_id != cursor.single()["a"]["id"]:
+                    term_ID -= 1
 
             ## add relationship
             query = (

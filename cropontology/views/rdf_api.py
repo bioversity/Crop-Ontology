@@ -218,20 +218,29 @@ class RDFCleanView(PublicView):
                 g.add(
                     (trait_uri, DCTERMS.source, Literal(an_item["trait"]["trait_xref"]))
                 )
-            g.add(
-                (
-                    trait_uri,
-                    RDFS.subClassOf,
-                    URIRef(NS + an_item["trait"]["trait_class"].replace(" ", "_")),
+            if "trait_class" in an_item["trait"]:
+                g.add(
+                    (
+                        trait_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + an_item["trait"]["trait_class"].replace(" ", "_")),
+                    )
                 )
-            )
-            g.add(
-                (
-                    URIRef(NS + an_item["trait"]["trait_class"].replace(" ", "_")),
-                    RDFS.subClassOf,
-                    URIRef(NS + "Trait"),
+                g.add(
+                    (
+                        URIRef(NS + an_item["trait"]["trait_class"].replace(" ", "_")),
+                        RDFS.subClassOf,
+                        URIRef(NS + "Trait"),
+                    )
                 )
-            )
+            else:
+                g.add(
+                    (
+                        trait_uri,
+                        RDFS.subClassOf,
+                        URIRef(NS + "Trait"),
+                    )
+                )
             ## create links
             br = BNode()
             g.add((br, RDF.type, OWL.Restriction))
