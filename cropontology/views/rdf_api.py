@@ -815,3 +815,99 @@ class UriView(PublicView):
         response.text = g.serialize(format="pretty-xml").decode("utf-8")
         db.close()
         return response
+
+
+class StatView(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),  # application/x-yaml
+        ]
+        response = Response(headerlist=headers, status=200)
+
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        ontology_collection = ontology_db["ontologies"]
+        ontologies = list(ontology_collection.find().sort([("ontology_name", 1)]))
+
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        ret = []
+        names = []
+        for ontology in ontologies:
+            if ontology["category"] == "300-499 Phenotype and Trait Ontology":
+                if "CO_" in ontology["ontology_id"]:
+                    onto_id = ontology["ontology_id"]
+                    onto_name = ontology["ontology_name"]
+
+                    names.append(onto_id + " " + onto_name)
+
+                    query = "MATCH (n {ontology_id:'" + onto_id + "'}) RETURN count (n)"
+                    count_tot = db.run(query).single().value()
+                    query = (
+                        "MATCH (n {ontology_id:'"
+                        + onto_id
+                        + "', term_type:'variable'}) RETURN count (n)"
+                    )
+                    count_var = db.run(query).single().value()
+                    query = (
+                        "MATCH (n {ontology_id:'"
+                        + onto_id
+                        + "', term_type:'trait'}) RETURN count (n)"
+                    )
+                    count_trait = db.run(query).single().value()
+                    query = (
+                        "MATCH (n {ontology_id:'"
+                        + onto_id
+                        + "', term_type:'method'}) RETURN count (n)"
+                    )
+                    count_method = db.run(query).single().value()
+                    query = (
+                        "MATCH (n {ontology_id:'"
+                        + onto_id
+                        + "', term_type:'scale'}) RETURN count (n)"
+                    )
+                    count_scale = db.run(query).single().value()
+
+                    ret.append(
+                        {
+                            "Ontology ID": onto_id,
+                            "Ontology name": onto_name,
+                            "Number of terms": count_tot,
+                            "Number of variables": count_var,
+                            "Number of traits": count_trait,
+                            "Number of methods": count_method,
+                            "Number of scales": count_scale,
+                        }
+                    )
+
+        query = "MATCH (n {term_type:'variable'}) RETURN count (n)"
+        count_var = db.run(query).single().value()
+        query = "MATCH (n {term_type:'trait'}) RETURN count (n)"
+        count_trait = db.run(query).single().value()
+        query = "MATCH (n {term_type:'method'}) RETURN count (n)"
+        count_method = db.run(query).single().value()
+        query = "MATCH (n {term_type:'scale'}) RETURN count (n)"
+        count_scale = db.run(query).single().value()
+
+        count_tot = count_scale + count_method + count_var + count_trait
+        summmary_all_crops = {
+            "Total number of terms": count_tot,
+            "Total number of variables": count_var,
+            "Total number of traits": count_trait,
+            "Total number of methods": count_method,
+            "Total number of scales": count_scale,
+            "Crops": names,
+            "Number of ontologies": len(names),
+        }
+
+        result = {"summary CO crops": summmary_all_crops, "summary per crop": ret}
+
+        json_data = to_json(result)
+        response.text = json_data
+        return response

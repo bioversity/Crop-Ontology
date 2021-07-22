@@ -48,7 +48,7 @@ class TemplateLoadView(PublicView):
         ## fill na with empty string
         td.fillna("", inplace=True)
         ## replace special characters that might fail queries
-        td.replace({"\"":"", "'":""}, regex=True, inplace=True)
+        td.replace({'"': "", "'": ""}, regex=True, inplace=True)
 
         term_ID = 0  ## to be used when an ID is empty
 
@@ -114,7 +114,9 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Variable{name: '"
                 + row["Variable name"]
-                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Variable, a.id = '"
+                + "', ontology_id: '"
+                + ontology_id
+                + "'}) ON CREATE SET a:Variable, a.id = '"
                 + var_id
                 + "', a.variable_id = '"
                 + var_id
@@ -211,7 +213,9 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Trait{name:'"
                 + row["Trait name"]
-                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Trait, a.id = '"
+                + "', ontology_id: '"
+                + ontology_id
+                + "'}) ON CREATE SET a:Trait, a.id = '"
                 + trait_id
                 + "', a.trait_id = '"
                 + trait_id
@@ -235,7 +239,7 @@ class TemplateLoadView(PublicView):
             )
             #### other fieds - need to check if exist
             if row["Trait class"]:
-                query += ", a.trait_class = '"+row["Trait class"] + "' "
+                query += ", a.trait_class = '" + row["Trait class"] + "' "
             if row["Trait description"]:
                 query += ", a.trait_description = '" + row["Trait description"] + "' "
             if row["Trait synonyms"]:
@@ -283,7 +287,7 @@ class TemplateLoadView(PublicView):
             )
             #### other fieds - need to check if exist
             if row["Trait class"]:
-                query += ", a.trait_class = '"+row["Trait class"] + "' "
+                query += ", a.trait_class = '" + row["Trait class"] + "' "
             if row["Trait description"]:
                 query += ", a.trait_description = '" + row["Trait description"] + "' "
             if row["Trait synonyms"]:
@@ -326,7 +330,9 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Method{name: '"
                 + row["Method name"]
-                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Method, a.id = '"
+                + "', ontology_id: '"
+                + ontology_id
+                + "'}) ON CREATE SET a:Method, a.id = '"
                 + method_id
                 + "', a.method_id = '"
                 + method_id
@@ -350,7 +356,7 @@ class TemplateLoadView(PublicView):
             )
             #### other fieds - need to check if exist
             if row["Method class"]:
-                query += ", a.method_class = '"+row["Method class"] + "' "
+                query += ", a.method_class = '" + row["Method class"] + "' "
             if row["Method description"]:
                 query += ", a.method_description = '" + row["Method description"] + "' "
             if row["Formula"]:
@@ -380,7 +386,7 @@ class TemplateLoadView(PublicView):
             )
             #### other fieds - need to check if exist
             if row["Method class"]:
-                query += ", a.method_class = '"+row["Method class"] + "' "
+                query += ", a.method_class = '" + row["Method class"] + "' "
             if row["Method description"]:
                 query += ", a.method_description = '" + row["Method description"] + "' "
             if row["Formula"]:
@@ -405,7 +411,9 @@ class TemplateLoadView(PublicView):
             query = (
                 "MERGE (a:Scale {name: '"
                 + row["Scale name"]
-                + "', ontology_id: '"+ontology_id+"'}) ON CREATE SET a:Scale, a.id = '"
+                + "', ontology_id: '"
+                + ontology_id
+                + "'}) ON CREATE SET a:Scale, a.id = '"
                 + scale_id
                 + "', a.scale_id = '"
                 + scale_id
@@ -429,7 +437,7 @@ class TemplateLoadView(PublicView):
             )
             #### other fieds - need to check if exist
             if row["Scale class"]:
-                query += ", a.scale_class = '"+row["Scale class"] + "' "
+                query += ", a.scale_class = '" + row["Scale class"] + "' "
             if row["Decimal places"]:
                 query += ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
             if row["Lower limit"]:
@@ -441,7 +449,11 @@ class TemplateLoadView(PublicView):
             i = 1
             while row["Category " + str(i)]:
                 query += (
-                    ", a.category_" + str(i) + " = '" + str(row["Category " + str(i)]) + "' "
+                    ", a.category_"
+                    + str(i)
+                    + " = '"
+                    + str(row["Category " + str(i)])
+                    + "' "
                 )
                 i += 1
             ## ON MATCH
@@ -466,7 +478,7 @@ class TemplateLoadView(PublicView):
             )
             #### other fieds - need to check if exist
             if row["Scale class"]:
-                query += ", a.scale_class = '"+row["Scale class"] + "' "
+                query += ", a.scale_class = '" + row["Scale class"] + "' "
             if row["Decimal places"]:
                 query += ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
             if row["Lower limit"]:
@@ -478,7 +490,11 @@ class TemplateLoadView(PublicView):
             i = 1
             while row["Category " + str(i)]:
                 query += (
-                    ", a.category_" + str(i) + " = '" + str(row["Category " + str(i)]) + "' "
+                    ", a.category_"
+                    + str(i)
+                    + " = '"
+                    + str(row["Category " + str(i)])
+                    + "' "
                 )
                 i += 1
 
