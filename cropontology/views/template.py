@@ -142,8 +142,8 @@ class TemplateLoadView(PublicView):
                         "language": row["Language"],
                         "term_type": "term",
                     }  # Root
-                    if not term_index.term_exists(ontology_id):
-                        term_index.add_term(ontology_id, es_data)
+                    if not term_index.term_exists(ontology_id + ":ROOT"):
+                        term_index.add_term(ontology_id + ":ROOT", es_data)
 
                 # create variable
                 # check if ID is empty
