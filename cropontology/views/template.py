@@ -661,6 +661,40 @@ class TemplateLoadView(PublicView):
 
                 query += " RETURN a "
                 cursor = db.run(query)
+
+                es_data = {
+                    "ontology_id": ontology_id,
+                    "scale_id": scale_id,
+                    "ontology_name": row["Crop"],
+                    "name": row["Scale name"],
+                    "scale_name": row["Scale name"],
+                    "root": "false",
+                    "obsolete": "false",
+                    "created_at": date,
+                    "language": row["Language"],
+                    "term_type": "scale",
+                }
+                if row["Scale class"]:
+                    es_data["scale_class"] = row["Scale class"]
+                if row["Decimal places"]:
+                    es_data["decimal_places"] = str(row["Decimal places"])
+                if row["Lower limit"]:
+                    es_data["lower_limit"] = str(row["Lower limit"])
+                if row["Upper limit"]:
+                    es_data["upper_limit"] = str(row["Upper limit"])
+                if row["Scale Xref"]:
+                    es_data["scale_xref"] = row["Scale Xref"]
+
+                i = 1
+                while row["Category {}".format(i)]:
+                    es_data["category_{}".format(i)] = str(row["Category {}".format(i)])
+                    i += 1
+
+                if not term_index.term_exists(scale_id):
+                    term_index.add_term(scale_id, es_data)
+                else:
+                    term_index.update_term(scale_id, es_data)
+
                 # need to check if the id created has been used or if term was already existing
                 if not row["Scale ID"]:
                     if scale_id != cursor.single()["a"]["id"]:
