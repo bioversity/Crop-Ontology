@@ -248,6 +248,39 @@ class TemplateLoadView(PublicView):
                 query += " RETURN a "
                 cursor = db.run(query)
 
+                es_data = {
+                    "ontology_id": ontology_id,
+                    "variable_id": var_id,
+                    "ontology_name": row["Crop"],
+                    "crop": row["Crop"],
+                    "name": row["Variable name"],
+                    "variable_name": row["Variable name"],
+                    "root": "false",
+                    "obsolete": "false",
+                    "created_at": date,
+                    "language": row["Language"],
+                    "term_type": "variable",
+                }  # Root
+                if row["Variable synonyms"]:
+                    es_data["variable_synonyms"] = row["Variable synonyms"]
+                if row["Context of use"]:
+                    es_data["context_of_use"] = row["Context of use"]
+                if row["Growth stage"]:
+                    es_data["growth_stage"] = row["Growth stage"]
+                if row["Variable status"]:
+                    es_data["variable_status"] = ["Variable status"]
+                if row["Variable Xref"]:
+                    es_data["variable_xref"] = ["Variable Xref"]
+                if row["Institution"]:
+                    es_data["institution"] = row["Institution"]
+                if row["Scientist"]:
+                    es_data["scientist"] = row["Scientist"]
+
+                if not term_index.term_exists(var_id):
+                    term_index.add_term(var_id, es_data)
+                else:
+                    term_index.update_term(var_id, es_data)
+
                 # need to check if the id created has been used or if term was already existing
                 if not row["Variable ID"]:
                     if var_id != cursor.single()["a"]["id"]:
