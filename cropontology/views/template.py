@@ -780,6 +780,25 @@ class TemplateLoadView(PublicView):
                     + " a.term_type = 'term' RETURN a"
                 )
                 db.run(query)
+
+                es_data = {
+                    "ontology_id": ontology_id,
+                    "ontology_name": row["Crop"],
+                    "name": row["Trait class"],
+                    "root": "false",
+                    "obsolete": "false",
+                    "created_at": date,
+                    "language": row["Language"],
+                    "term_type": "term",
+                }
+
+                if not term_index.term_exists(ontology_id + ":" + row["Trait class"]):
+                    term_index.add_term(ontology_id + ":" + row["Trait class"], es_data)
+                else:
+                    term_index.update_term(
+                        ontology_id + ":" + row["Trait class"], es_data
+                    )
+
                 query = (
                     "MATCH (a:Trait), (b:Term) "
                     + "WHERE a.id = '"
