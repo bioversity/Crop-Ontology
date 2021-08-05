@@ -277,7 +277,8 @@ def _get_term_search_dict(term_id):
     :param term_id: The Term to search if it exists
     :return: A dict that will be passes to ES
     """
-    _dict = {"query": {"terms": {"_id": [term_id]}}}
+    _dict = {"query": {"bool": {"must": {"term": {"_id": term_id}}}}}
+    # _dict = {"query": {"terms": {"_id": [term_id]}}}
     return _dict
 
 

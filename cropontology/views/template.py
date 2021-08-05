@@ -1,13 +1,14 @@
 from .classes import PublicView
 from neo4j import GraphDatabase
 import pandas
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from datetime import datetime
 import os
 import logging
 import uuid
 import shutil
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
+import pymongo
 
 log = logging.getLogger("cropontology")
 
@@ -15,7 +16,17 @@ log = logging.getLogger("cropontology")
 class TemplateLoadView(PublicView):
     def process_view(self):
         if self.request.method == "GET":
-            return {}
+            ontology_id = self.request.matchdict["ontology_id"]
+
+            mongo_url = self.request.registry.settings.get("mongo.url")
+            mongo_client = pymongo.MongoClient(mongo_url)
+            ontology_db = mongo_client["ontologies"]
+            ontology_collection = ontology_db["ontologies"]
+            ontology_data = ontology_collection.find_one({"ontology_id": ontology_id})
+            mongo_client.close()
+            if ontology_data is None:
+                raise HTTPNotFound()
+            return {"ontology_data": ontology_data}
 
         if self.request.method == "POST":
             repository_dir = self.request.registry.settings["repository.path"]
