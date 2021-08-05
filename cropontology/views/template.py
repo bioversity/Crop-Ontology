@@ -436,10 +436,10 @@ class TemplateLoadView(PublicView):
                 if row["Trait Xref"]:
                     es_data["trait_xref"] = row["Trait Xref"]
 
-                if not term_index.term_exists(var_id):
-                    term_index.add_term(var_id, es_data)
+                if not term_index.term_exists(trait_id):
+                    term_index.add_term(trait_id, es_data)
                 else:
-                    term_index.update_term(var_id, es_data)
+                    term_index.update_term(trait_id, es_data)
 
                 # need to check if the id created has been used or if term was already existing
                 if not row["Trait ID"]:
@@ -526,6 +526,33 @@ class TemplateLoadView(PublicView):
 
                 query += " RETURN a "
                 cursor = db.run(query)
+
+                es_data = {
+                    "ontology_id": ontology_id,
+                    "method_id": method_id,
+                    "ontology_name": row["Crop"],
+                    "name": row["Method name"],
+                    "method_name": row["Method name"],
+                    "root": "false",
+                    "obsolete": "false",
+                    "created_at": date,
+                    "language": row["Language"],
+                    "term_type": "method",
+                }
+                if row["Method class"]:
+                    es_data["method_class"] = row["Method class"]
+                if row["Method description"]:
+                    es_data["method_description"] = row["Method description"]
+                if row["Formula"]:
+                    es_data["formula"] = row["Formula"]
+                if row["Method reference"]:
+                    es_data["method_reference"] = row["Method reference"]
+
+                if not term_index.term_exists(method_id):
+                    term_index.add_term(method_id, es_data)
+                else:
+                    term_index.update_term(method_id, es_data)
+
                 # need to check if the id created has been used or if term was already existing
                 if not row["Method ID"]:
                     if method_id != cursor.single()["a"]["id"]:
