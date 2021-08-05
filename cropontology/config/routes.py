@@ -60,6 +60,8 @@ from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView, Stat
 
 from ..views.template import TemplateLoadView
 
+from ..views.delete import DeleteOntologyView, DeleteTermView
+
 from ..views.users import (
     APIUserSearchSelect2,
     UsersListView,
@@ -400,6 +402,17 @@ def load_routes(config):
         add_route(
             "load_template", "/load/{ontology_id}", TemplateLoadView, "add_terms.jinja2"
         )
+    )
+
+    # Here come the delete ontology route
+    routes.append(
+        add_route(
+            "delete_ontology", "/delete-onto/{ontology_id}", DeleteOntologyView, None
+        )
+    )
+    # Here come the delete term view
+    routes.append(
+        add_route("delete_term", "/delete-term/{term_id}", DeleteTermView, None)
     )
 
     # Users API
