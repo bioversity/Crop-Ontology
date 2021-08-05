@@ -1,0 +1,43 @@
+{% extends 'page.jinja2' %}
+{% import 'macros/form.jinja2' as form %}
+
+{% block main_container %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <form id="form_upload_form" role="form" method="post" enctype="multipart/form-data" action="{{ request.url }}">
+                        {{ form.secure_form(request) }}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="exampleInputFile">{{ _('TD Excel file (xls / xlsx)') }}</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input id="xlsx" accept="*.xlsx" name="xlsx" type="file" class="custom-file-input">
+                                        <label class="custom-file-label" for="xlsx">Choose file</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">{{ _('Submit file') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    {% jsresource request,'main_library','bs-custom-file-input' %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+        });
+    </script>
+{% endblock scripts %}
+

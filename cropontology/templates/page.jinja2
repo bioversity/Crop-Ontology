@@ -44,6 +44,9 @@
         {% jsresource request,'main_library','adminlte' %}
         <script>
             $(document).ready(function() {
+
+                {% include 'snippets/pop_flash_js.jinja2' %}
+
                 var selectedLanguage = readCookie('_LOCALE_');
                 if (selectedLanguage != null)
                     $('#language').val(selectedLanguage);

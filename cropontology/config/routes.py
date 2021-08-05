@@ -397,7 +397,9 @@ def load_routes(config):
 
     # Here come the upload template routes
     routes.append(
-        add_route("load_template", "/load/{ontology_id}", TemplateLoadView, None)
+        add_route(
+            "load_template", "/load/{ontology_id}", TemplateLoadView, "add_terms.jinja2"
+        )
     )
 
     # Users API

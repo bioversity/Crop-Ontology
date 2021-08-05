@@ -122,3 +122,11 @@ def create_resources(apppath, config):
         "js/plugins/menu_editor/jquery-menu-editor.min.js",
         "icon_picker",
     )
+
+    # Input file
+    r.add_js_resource(
+        "main_library",
+        "bs-custom-file-input",
+        "js/plugins/bs-custom-file-input/bs-custom-file-input.js",
+        None,
+    )

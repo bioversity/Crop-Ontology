@@ -1,0 +1,22 @@
+{% set messageData = request.session.pop_flash() %}
+{% if messageData|length > 0 %}
+    messageData = '{{ messageData[0] }}';
+    let btn_type = "success"
+    let idx = messageData.indexOf("|");
+    if (idx >= 0)
+    {
+        let btn_str = messageData.substr(messageData.length - (messageData.length-idx-1));
+        if (btn_str === "info")
+            btn_type = "info";
+        if (btn_str === "warning")
+            btn_type = "warning";
+        if (btn_str === "error")
+            btn_type = "error";
+        messageData = messageData.substr(0,idx);
+    }
+    swal({
+        title: 'FormShare',
+        text: messageData,
+        type: btn_type
+    });
+{% endif %}
