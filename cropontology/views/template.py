@@ -402,6 +402,45 @@ class TemplateLoadView(PublicView):
 
                 query += " RETURN a "
                 cursor = db.run(query)
+
+                es_data = {
+                    "ontology_id": ontology_id,
+                    "trait_id": trait_id,
+                    "ontology_name": row["Crop"],
+                    "name": row["Trait name"],
+                    "trait_name": row["Trait name"],
+                    "root": "false",
+                    "obsolete": "false",
+                    "created_at": date,
+                    "language": row["Language"],
+                    "term_type": "trait",
+                }
+                if row["Trait class"]:
+                    es_data["trait_class"] = row["Trait class"]
+                if row["Trait description"]:
+                    es_data["trait_description"] = row["Trait description"]
+                if row["Trait synonyms"]:
+                    es_data["trait_synonym"] = row["Trait synonyms"]
+                if row["Main trait abbreviation"]:
+                    es_data["main_trait_abbreviation"] = row["Main trait abbreviation"]
+                if row["Alternative trait abbreviations"]:
+                    es_data["alternative_trait_abbreviations"] = row[
+                        "Alternative trait abbreviations"
+                    ]
+                if row["Entity"]:
+                    es_data["entity"] = row["Entity"]
+                if row["Attribute"]:
+                    es_data["attribute"] = row["Attribute"]
+                if row["Trait status"]:
+                    es_data["trait_status"] = row["Trait status"]
+                if row["Trait Xref"]:
+                    es_data["trait_xref"] = row["Trait Xref"]
+
+                if not term_index.term_exists(var_id):
+                    term_index.add_term(var_id, es_data)
+                else:
+                    term_index.update_term(var_id, es_data)
+
                 # need to check if the id created has been used or if term was already existing
                 if not row["Trait ID"]:
                     if trait_id != cursor.single()["a"]["id"]:
