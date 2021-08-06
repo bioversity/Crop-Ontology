@@ -407,7 +407,10 @@ def load_routes(config):
     # Here come the delete ontology route
     routes.append(
         add_route(
-            "delete_ontology", "/delete-onto/{ontology_id}", DeleteOntologyView, None
+            "delete_ontology",
+            "/delete-onto/{ontology_id}",
+            DeleteOntologyView,
+            "remove_ontology.jinja2",
         )
     )
     # Here come the delete term view

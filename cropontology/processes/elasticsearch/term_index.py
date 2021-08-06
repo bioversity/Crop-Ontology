@@ -282,6 +282,16 @@ def _get_term_search_dict(term_id):
     return _dict
 
 
+def _get_ontology_search_dict(ontology_id):
+    """
+    Constructs a ES search that will be used to search Terms in the index by ontology ID
+    :param ontology_id: The Ontology ID to search if it exists
+    :return: A dict that will be passes to ES
+    """
+    _dict = {"query": {"match": {"ontology_id": ontology_id}}}
+    return _dict
+
+
 def get_term_index_manager(request):
     return TermIndexManager(request.registry.settings)
 
@@ -445,6 +455,23 @@ class TermIndexManager(object):
                 raise RequestError("Cannot connect to ElasticSearch")
         else:
             raise TermNotExistError()
+
+    def remove_ontology(self, ontology_id):
+        """
+        Removes an Term from the index
+        :param ontology_id: The Ontology to be removed.
+        :return: Bool
+        """
+
+        connection = self.create_connection()
+        if connection is not None:
+            connection.delete_by_query(
+                index=self.index_name,
+                body=_get_ontology_search_dict(ontology_id),
+            )
+            return True
+        else:
+            raise RequestError("Cannot connect to ElasticSearch")
 
     def update_term(self, term_id, data_dict):
         """

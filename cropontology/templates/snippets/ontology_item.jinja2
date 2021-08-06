@@ -36,7 +36,11 @@
                 <a class="btn btn-default btn-sm" href="{{ request.route_url('load_template', ontology_id=ontology.ontology_id) }}">
                 <i title="Upload new terms" class="fas fa-upload">
                 </i>
-            </a>
+                </a>
+                <a class="btn btn-default btn-sm" href="{{ request.route_url('delete_ontology', ontology_id=ontology.ontology_id) }}">
+                <i style="color: red" title="Delete ontology" class="fas fa-trash">
+                </i>
+                </a>
             {% endif %}
         {% endif %}
     </td>
