@@ -42,6 +42,13 @@
                 </i>
                 </a>
             {% endif %}
+        {% else %}
+            {% if userLogged %}
+                <a class="btn btn-default btn-sm" href="{{ request.route_url('delete_ontology', ontology_id=ontology.ontology_id) }}">
+                <i style="color: red" title="Delete ontology" class="fas fa-trash">
+                </i>
+                </a>
+            {% endif %}
         {% endif %}
     </td>
 </tr>
