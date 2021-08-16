@@ -248,7 +248,7 @@
                     maxValue: {{ grandTotal }},
                     width: 10,
                     text: function (value) {
-                        return {{ ((totalinqparam*100)/grandTotal)|round }} + '%';
+                        return {{ ((totalinqparam*100)/grandTotal)|round(1) }} + '%';
                     },
                     colors: ['#ae6cb0', '#f4f4f4'],
                     duration: 400,
