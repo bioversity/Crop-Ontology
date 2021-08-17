@@ -1,11 +1,60 @@
-from .classes import PublicView
+from .classes import PublicView, PrivateView
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 import pymongo
 import json
-from webhelpers2.html import literal
 from neo4j import GraphDatabase
 import requests
 from pyramid.response import Response
+import datetime
+
+
+class CreateOntology(PrivateView):
+    def process_view(self):
+        if self.request.method == "POST":
+            form_data = self.get_post_dict()
+            if form_data["ontology_id"] != "":
+                if form_data["ontology_desc"] != "":
+                    if form_data["ontology_name"] != "":
+                        mongo_url = self.request.registry.settings.get("mongo.url")
+                        mongo_client = pymongo.MongoClient(mongo_url)
+                        ontology_db = mongo_client["ontologies"]
+                        ontology_collection = ontology_db["ontologies"]
+                        res = ontology_collection.find_one(
+                            {"ontology_id": form_data["ontology_id"]}
+                        )
+                        if res is None:
+                            ontology_data = {
+                                "ontology_summary": form_data["ontology_desc"],
+                                "ontology_id": form_data["ontology_id"],
+                                "created_at": datetime.datetime.now(),
+                                "user_key": self.userID,
+                                "ontology_name": form_data["ontology_name"],
+                                "category": "300-499 Phenotype and Trait Ontology",
+                                "ontology_type": "trait",
+                            }
+                            ontology_collection.insert_one(ontology_data)
+                            self.request.session.flash(
+                                self._("The ontology was created successfully")
+                            )
+                            self.returnRawViewResult = True
+                            return HTTPFound(location=self.request.route_url("home"))
+                        else:
+                            self.append_to_errors(
+                                self._("The ontology ID already exists")
+                            )
+                    else:
+                        self.append_to_errors(
+                            self._("The ontology name cannot be empty")
+                        )
+                else:
+                    self.append_to_errors(
+                        self._("The ontology description cannot be empty")
+                    )
+            else:
+                self.append_to_errors(self._("The ontology ID cannot be empty"))
+        else:
+            form_data = {}
+        return {"form_data": form_data}
 
 
 class OntologyView(PublicView):

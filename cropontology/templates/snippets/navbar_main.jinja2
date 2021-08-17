@@ -29,6 +29,9 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{{ _('Site maintenance') }}</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                         {% if activeUser.super %}
+                            <li><a href="{{ request.route_url('create_ontology') }}" class="dropdown-item">{{ _('Create new ontology') }}</a></li>
+                        {% endif %}
+                        {% if activeUser.super %}
                             <li><a href="{{ request.route_url('page_list') }}" class="dropdown-item">{{ _('Pages') }}</a></li>
                         {% endif %}
                         <li><a href="{{ request.route_url('section_list') }}" class="dropdown-item">{{ _('Sections') }}</a></li>

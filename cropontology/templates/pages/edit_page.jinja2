@@ -12,6 +12,7 @@
             <div class="card-header">
                 <h5 class="card-title m-0">{{ _('Current content of ') }} {{ form_data.page_desc }}</h5>
             </div>
+            {{ form.display_errors(errors) }}
             <form role="form" method="post" action="{{ request.url }}">
                 {{ form.secure_form(request) }}
                 <div class="card-body">

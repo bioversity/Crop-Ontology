@@ -47,7 +47,7 @@ from ..views.sections import (
     SectionRemoveUserView,
 )
 
-from ..views.ontology import OntologyView, JSONDataView, OntologyRDFView
+from ..views.ontology import OntologyView, JSONDataView, CreateOntology
 from ..views.api import APIDocView
 from ..views.brapi import (
     BRAPITraitsView,
@@ -248,6 +248,15 @@ def load_routes(config):
             "/ontology/{ontology_id}/rdf",
             RDFCleanView,
             None,
+        )
+    )
+
+    routes.append(
+        add_route(
+            "create_ontology",
+            "/ontologies/create",
+            CreateOntology,
+            "ontology/add_ontology.jinja2",
         )
     )
 

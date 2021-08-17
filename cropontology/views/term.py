@@ -45,6 +45,9 @@ class TermDetailsView(PublicView):
         es_query = {"query": {"match_phrase": {"term_id": term_id}}}
         res, hits = index_manager.free_query(es_query)
         if hits == 0:
+            print("****************************1111")
+            print("Not hits for {}".format(term_id))
+            print("****************************1111")
             raise HTTPNotFound()
         results = []
         ontology_id = None

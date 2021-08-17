@@ -2,7 +2,7 @@
 {% import 'macros/form.jinja2' as form %}
 
 {% block breadcrums %}
-    {% include 'sections/snippets/breadcrums_add.jinja2' %}
+    {% include 'ontology/snippets/breadcrums_add.jinja2' %}
 {% endblock breadcrums %}
 
 {% block main_container %}
@@ -10,7 +10,7 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title m-0">{{ _('Information for the new section') }}</h5>
+                <h5 class="card-title m-0">{{ _('Information for the new ontology') }}</h5>
             </div>
             {{ form.display_errors(errors) }}
             <form role="form" method="post" action="{{ request.url }}">
@@ -18,15 +18,19 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label for="exampleInputEmail1">{{ _('ID') }}</label>
-                        <input type="text" class="form-control" name="section_id" value="{{ form_data.section_id }}" placeholder="{{ _('Enter section ID') }}">
+                        <input type="text" class="form-control" name="ontology_id" value="{{ form_data.ontology_id }}" placeholder="{{ _('Enter ontology ID') }}">
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">{{ _('Name') }}</label>
+                        <input type="text" class="form-control" name="ontology_name" value="{{ form_data.ontology_name }}" placeholder="{{ _('Enter a description') }}">
+                    </div>
+                    <div class="form-group">
                         <label for="exampleInputEmail1">{{ _('Description') }}</label>
-                        <input type="text" class="form-control" name="section_desc" value="{{ form_data.section_desc }}" placeholder="{{ _('Enter description') }}">
+                        <textarea class="form-control" name="ontology_desc">{{ form_data.ontology_desc }}</textarea>
                     </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">{{ _('Add section') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ _('Add ontology') }}</button>
                 </div>
             </form>
         </div>

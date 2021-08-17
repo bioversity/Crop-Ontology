@@ -152,6 +152,7 @@ class TemplateLoadView(PublicView):
                         "created_at": date,
                         "language": row["Language"],
                         "term_type": "term",
+                        "term_id": ontology_id + ":ROOT",
                     }  # Root
                     if not term_index.term_exists(ontology_id + ":ROOT"):
                         term_index.add_term(ontology_id + ":ROOT", es_data)
@@ -271,6 +272,7 @@ class TemplateLoadView(PublicView):
                     "created_at": date,
                     "language": row["Language"],
                     "term_type": "variable",
+                    "term_id": var_id,
                 }  # Root
                 if row["Variable synonyms"]:
                     es_data["variable_synonyms"] = row["Variable synonyms"]
@@ -425,6 +427,7 @@ class TemplateLoadView(PublicView):
                     "created_at": date,
                     "language": row["Language"],
                     "term_type": "trait",
+                    "term_id": trait_id,
                 }
                 if row["Trait class"]:
                     es_data["trait_class"] = row["Trait class"]
@@ -549,6 +552,7 @@ class TemplateLoadView(PublicView):
                     "created_at": date,
                     "language": row["Language"],
                     "term_type": "method",
+                    "term_id": method_id,
                 }
                 if row["Method class"]:
                     es_data["method_class"] = row["Method class"]
@@ -684,6 +688,7 @@ class TemplateLoadView(PublicView):
                     "created_at": date,
                     "language": row["Language"],
                     "term_type": "scale",
+                    "term_id": scale_id,
                 }
                 if row["Scale class"]:
                     es_data["scale_class"] = row["Scale class"]
@@ -801,6 +806,7 @@ class TemplateLoadView(PublicView):
                     "created_at": date,
                     "language": row["Language"],
                     "term_type": "term",
+                    "term_id": ontology_id + ":" + row["Trait class"],
                 }
 
                 if not term_index.term_exists(ontology_id + ":" + row["Trait class"]):

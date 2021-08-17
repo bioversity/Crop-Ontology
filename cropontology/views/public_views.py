@@ -51,7 +51,10 @@ class HomeView(PublicView):
             roots = []
             for an_item in cursor:
                 roots.append(an_item["p.id"])
-            an_ontology["root"] = roots[0]
+            if len(roots) > 0:
+                an_ontology["root"] = roots[0]
+            else:
+                an_ontology["root"] = "None"
             if an_ontology["category"] not in categories:
                 categories.append(an_ontology["category"])
         result = []
