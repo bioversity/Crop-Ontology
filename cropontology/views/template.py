@@ -17,7 +17,6 @@ class TemplateLoadView(PublicView):
     def process_view(self):
         if self.request.method == "GET":
             ontology_id = self.request.matchdict["ontology_id"]
-
             mongo_url = self.request.registry.settings.get("mongo.url")
             mongo_client = pymongo.MongoClient(mongo_url)
             ontology_db = mongo_client["ontologies"]
@@ -29,6 +28,16 @@ class TemplateLoadView(PublicView):
             return {"ontology_data": ontology_data}
 
         if self.request.method == "POST":
+            ontology_id = self.request.matchdict["ontology_id"]
+            mongo_url = self.request.registry.settings.get("mongo.url")
+            mongo_client = pymongo.MongoClient(mongo_url)
+            ontology_db = mongo_client["ontologies"]
+            ontology_collection = ontology_db["ontologies"]
+            ontology_data = ontology_collection.find_one({"ontology_id": ontology_id})
+            mongo_client.close()
+            if ontology_data is None:
+                raise HTTPNotFound()
+
             repository_dir = self.request.registry.settings["repository.path"]
             uid = str(uuid.uuid4())
             paths = ["tmp", uid]
@@ -42,9 +51,13 @@ class TemplateLoadView(PublicView):
                 if slash_index >= 0:
                     input_file_name = input_file_name[slash_index + 1 :]
             except Exception as e:
-                log.error("The post xlsx elements is empty. Error {}".format(str(e)))
-                self.errors.append("No file was attached")
-                return {}
+                log.error("Error while reading XLS. Error: {}".format(str(e)))
+                self.errors.append(
+                    "There was an error while reading your file. Error: {}".format(
+                        str(e)
+                    )
+                )
+                return {"ontology_data": ontology_data}
 
             input_file_name = input_file_name.replace(" ", "_")
             paths = ["tmp", uid, input_file_name.lower()]
@@ -65,9 +78,6 @@ class TemplateLoadView(PublicView):
 
             term_index = get_term_index_manager(self.request)
 
-            # should be coming from the form
-            ontology_id = self.request.matchdict["ontology_id"]
-
             #  read excel file - should read file uploaded
             #  CHANGE HERE
             try:
@@ -75,7 +85,7 @@ class TemplateLoadView(PublicView):
             except Exception as e:
                 log.error("Unable to read Excel File. Error: {}".format(str(e)))
                 self.errors.append("Unable to read Excel File")
-                return {}
+                return {"ontology_data": ontology_data}
 
             #  check that names are never empty - RETURN error if they are
             nan_cols = [i for i in td.columns if td[i].isnull().any()]
@@ -86,7 +96,7 @@ class TemplateLoadView(PublicView):
                 or "Scale name" in nan_cols
             ):
                 self.errors.append("Names should not be empty")
-                return {}
+                return {"ontology_data": ontology_data}
 
             # fill na with empty string
             td.fillna("", inplace=True)
@@ -116,7 +126,7 @@ class TemplateLoadView(PublicView):
                     self.errors.append(
                         "check that IDs are formatted as follow: CO_XXX:XXXXXXX"
                     )
-                    return {}
+                    return {"ontology_data": ontology_data}
 
             # parse the file
             for index, row in td.iterrows():

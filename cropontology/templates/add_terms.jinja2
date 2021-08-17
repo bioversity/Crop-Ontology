@@ -33,6 +33,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <h2 style="margin-left: 38px">Upload new terms into ontology "{{ ontology_data.ontology_name }}" ({{ ontology_data.ontology_id }})</h2>
+                {{ form.display_errors(errors) }}
                 <div class="card-body">
                     <form class="require_busy" id="form_upload_form" role="form" method="post" enctype="multipart/form-data" action="{{ request.url }}">
                         {{ form.secure_form(request) }}
