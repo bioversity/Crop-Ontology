@@ -270,6 +270,14 @@ class TemplateLoadView(PublicView):
                 query += " RETURN a "
                 cursor = db.run(query)
 
+                ## check if it was a on create or on match
+                # need to check if the id created has been used or if term was already existing
+                variable_id = cursor.single()["a"]["id"]
+                if not row["Variable ID"]:
+                    if var_id != variable_id:
+                        term_id -= 1
+                        var_id = variable_id
+
                 es_data = {
                     "ontology_id": ontology_id,
                     "variable_id": var_id,
@@ -303,11 +311,6 @@ class TemplateLoadView(PublicView):
                     term_index.add_term(var_id, es_data)
                 else:
                     term_index.update_term(var_id, es_data)
-
-                # need to check if the id created has been used or if term was already existing
-                if not row["Variable ID"]:
-                    if var_id != cursor.single()["a"]["id"]:
-                        term_id -= 1
 
                 # create trait
                 trait_id = row["Trait ID"]
@@ -426,6 +429,14 @@ class TemplateLoadView(PublicView):
                 query += " RETURN a "
                 cursor = db.run(query)
 
+                ## check if it was a on create or on match
+                # need to check if the id created has been used or if term was already existing
+                tr_id = cursor.single()["a"]["id"]
+                if not row["Trait ID"]:
+                    if trait_id != tr_id:
+                        term_id -= 1
+                        trait_id = tr_id
+
                 es_data = {
                     "ontology_id": ontology_id,
                     "trait_id": trait_id,
@@ -464,11 +475,6 @@ class TemplateLoadView(PublicView):
                     term_index.add_term(trait_id, es_data)
                 else:
                     term_index.update_term(trait_id, es_data)
-
-                # need to check if the id created has been used or if term was already existing
-                if not row["Trait ID"]:
-                    if trait_id != cursor.single()["a"]["id"]:
-                        term_id -= 1
 
                 # create method
                 method_id = row["Method ID"]
@@ -551,6 +557,14 @@ class TemplateLoadView(PublicView):
                 query += " RETURN a "
                 cursor = db.run(query)
 
+                ## check if it was a on create or on match
+                # need to check if the id created has been used or if term was already existing
+                meth_id = cursor.single()["a"]["id"]
+                if not row["Method ID"]:
+                    if method_id != meth_id:
+                        term_id -= 1
+                        method_id = meth_id
+
                 es_data = {
                     "ontology_id": ontology_id,
                     "method_id": method_id,
@@ -577,11 +591,6 @@ class TemplateLoadView(PublicView):
                     term_index.add_term(method_id, es_data)
                 else:
                     term_index.update_term(method_id, es_data)
-
-                # need to check if the id created has been used or if term was already existing
-                if not row["Method ID"]:
-                    if method_id != cursor.single()["a"]["id"]:
-                        term_id -= 1
 
                 # create scale
                 scale_id = row["Scale ID"]
@@ -687,6 +696,14 @@ class TemplateLoadView(PublicView):
                 query += " RETURN a "
                 cursor = db.run(query)
 
+                ## check if it was a on create or on match
+                # need to check if the id created has been used or if term was already existing
+                sc_id = cursor.single()["a"]["id"]
+                if not row["Scale ID"]:
+                    if scale_id != sc_id:
+                        term_id -= 1
+                        scale_id = sc_id
+
                 es_data = {
                     "ontology_id": ontology_id,
                     "scale_id": scale_id,
@@ -720,11 +737,6 @@ class TemplateLoadView(PublicView):
                     term_index.add_term(scale_id, es_data)
                 else:
                     term_index.update_term(scale_id, es_data)
-
-                # need to check if the id created has been used or if term was already existing
-                if not row["Scale ID"]:
-                    if scale_id != cursor.single()["a"]["id"]:
-                        term_id -= 1
 
                 # add relationship
                 query = (
