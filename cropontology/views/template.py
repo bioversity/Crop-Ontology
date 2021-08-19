@@ -9,6 +9,7 @@ import uuid
 import shutil
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 import pymongo
+import numpy
 
 log = logging.getLogger("cropontology")
 
@@ -87,6 +88,10 @@ class TemplateLoadView(PublicView):
                 self.errors.append("Unable to read Excel File")
                 return {"ontology_data": ontology_data}
 
+            ## remove empty row
+            td.replace(r'^\s*$', numpy.nan, regex=True, inplace=True)
+            td.dropna(how="all", inplace=True)
+
             #  check that names are never empty - RETURN error if they are
             nan_cols = [i for i in td.columns if td[i].isnull().any()]
             if (
@@ -95,7 +100,7 @@ class TemplateLoadView(PublicView):
                 or "Method name" in nan_cols
                 or "Scale name" in nan_cols
             ):
-                self.errors.append("Names should not be empty")
+                self.errors.append("Variable, trait, method or scale names should not be empty")
                 return {"ontology_data": ontology_data}
 
             # fill na with empty string
