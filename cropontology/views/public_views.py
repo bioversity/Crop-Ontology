@@ -45,18 +45,21 @@ class HomeView(PublicView):
             query = (
                 'match(p {ontology_id: "'
                 + an_ontology["ontology_id"]
-                + '", root: True}) return p.id'
+                + '", root: True}) match (variable:Variable {ontology_id: "'+an_ontology["ontology_id"]+'"}) return p.id, count(variable) as var'
             )
             cursor = db.run(query)
             roots = []
+            count = 0
             for an_item in cursor:
                 roots.append(an_item["p.id"])
+                count = an_item["var"]
             if len(roots) > 0:
                 an_ontology["root"] = roots[0]
             else:
                 an_ontology["root"] = "None"
             if an_ontology["category"] not in categories:
                 categories.append(an_ontology["category"])
+            an_ontology["variable"] = count
         result = []
         for a_category in categories:
             parts = a_category.split(" ")
