@@ -72,6 +72,11 @@
                         {% if userLogged %}
                             <button type="button" onclick="location.href='{{ request.route_url('term_edit',termid=term_id) }}';" class="btn btn-primary btn-xs">{{ _('Edit term') }}</button>
                         {% endif %}
+                        {% if is_variable %}
+                            {{ _('Trait') }}: <a href="{{ request.route_url('term_details', termid=variable_parents.trait_id) }}">{{ variable_parents.trait_name }}</a> <br/>
+                            {{ _('Method') }}: <a href="{{ request.route_url('term_details', termid=variable_parents.method_id) }}">{{ variable_parents.method_name }}</a> <br/>
+                            {{ _('Scale') }}: <a href="{{ request.route_url('term_details', termid=variable_parents.scale_id) }}">{{ variable_parents.scale_name }}</a> <br/>
+                        {% endif %}
                         <table class="table table-hover">
                             <thead>
                             <tr>

@@ -31,6 +31,38 @@ class TermDetailsView(PublicView):
         driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
         db = driver.session()
 
+        query = "MATCH (node {id: '" + term_id + "'}) return node.term_type"
+        cursor = db.run(query)
+        term_type = ""
+        for an_item in cursor:
+            term_type = an_item["node.term_type"]
+            break
+        is_variable = False
+        variable_parents = {}
+        if term_type == "variable":
+            is_variable = True
+            query = (
+                "match (variable:Variable{id:'"
+                + term_id
+                + "'})-[:VARIABLE_OF]->(trait:Trait) "
+                "match (variable:Variable{id:'"
+                + term_id
+                + "'})-[:VARIABLE_OF]->(method:Method) "
+                "match (variable:Variable{id:'"
+                + term_id
+                + "'})-[:VARIABLE_OF]->(scale:Scale) "
+                "return trait.id, trait.name, method.id, method.name, scale.id, scale.name"
+            )
+            cursor = db.run(query)
+            for an_item in cursor:
+                variable_parents["trait_id"] = an_item["trait.id"]
+                variable_parents["trait_name"] = an_item["trait.name"]
+                variable_parents["method_id"] = an_item["method.id"]
+                variable_parents["method_name"] = an_item["method.name"]
+                variable_parents["scale_id"] = an_item["scale.id"]
+                variable_parents["scale_name"] = an_item["scale.name"]
+                break
+
         query = (
             'Match (trait {id:"'
             + term_id
@@ -62,6 +94,8 @@ class TermDetailsView(PublicView):
             "with_tree": with_tree,
             "variables": variables,
             "ontology_id": ontology_id,
+            "is_variable": is_variable,
+            "variable_parents": variable_parents,
         }
 
 
