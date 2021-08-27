@@ -249,31 +249,87 @@ class TreeView(PublicView):
                     )
                 tree_array.append(tree_dict)
         else:
-            query = (
-                'MATCH (parent {id:"'
-                + node_id
-                + '"})<-[]-(child {ontology_id: "'
-                + ontology_id
-                + '"}) WHERE child.term_type <> "variable" '
-                'AND (child.is_obsolete <> "true" OR child.is_obsolete is null) RETURN '
-                "DISTINCT child.id, child.term_type, child.name "
-                "ORDER BY child.name"
-            )
+            query = "MATCH (node {id: '" + node_id + "'}) return node.term_type"
             cursor = db.run(query)
+            term_type = ""
             for an_item in cursor:
-                if an_item["child.id"] != term_id and an_item["child.id"] != node_id:
-                    has_children = True
-                    if count_children(db, an_item["child.id"], ontology_id) == 0:
-                        has_children = False
-                    tree_array.append(
-                        {
-                            "text": an_item["child.name"],
-                            "children": has_children,
-                            "id": an_item["child.id"],
-                            "type": an_item["child.term_type"],
-                            "icon": get_icon(self.request, an_item["child.term_type"]),
-                        }
+                term_type = an_item["node.term_type"]
+                break
+            if term_type != "method":
+                query = (
+                    'MATCH (parent {id:"'
+                    + node_id
+                    + '"})<-[]-(child {ontology_id: "'
+                    + ontology_id
+                    + '"}) WHERE child.term_type <> "variable" '
+                    'AND (child.is_obsolete <> "true" OR child.is_obsolete is null) RETURN '
+                    "DISTINCT child.id, child.term_type, child.name "
+                    "ORDER BY child.name"
+                )
+                cursor = db.run(query)
+                for an_item in cursor:
+                    if (
+                        an_item["child.id"] != term_id
+                        and an_item["child.id"] != node_id
+                    ):
+                        has_children = True
+                        if count_children(db, an_item["child.id"], ontology_id) == 0:
+                            has_children = False
+                        tree_array.append(
+                            {
+                                "text": an_item["child.name"],
+                                "children": has_children,
+                                "id": an_item["child.id"],
+                                "type": an_item["child.term_type"],
+                                "icon": get_icon(
+                                    self.request, an_item["child.term_type"]
+                                ),
+                            }
+                        )
+            else:
+                query = (
+                    "match(parent)<-[]-(child {id: '" + node_id + "'}) return parent.id"
+                )
+                cursor = db.run(query)
+                parent_id = ""
+                for an_item in cursor:
+                    parent_id = an_item["parent.id"]
+                    break
+                if parent_id != "":
+                    query = (
+                        'MATCH (method:Method{id:"'
+                        + node_id
+                        + '"})<-[:VARIABLE_OF]-(variable:Variable) '
+                        'MATCH (variable)-[:VARIABLE_OF]->(trait:Trait{id:"'
+                        + parent_id
+                        + '"}) '
+                        "MATCH (variable)-[:VARIABLE_OF]->(scale:Scale) "
+                        'WHERE (scale.is_obsolete <> "true" OR scale.is_obsolete is null) '
+                        "return scale.id, scale.term_type, scale.name ORDER BY scale.name"
                     )
+                    cursor = db.run(query)
+                    for an_item in cursor:
+                        if (
+                            an_item["scale.id"] != term_id
+                            and an_item["scale.id"] != node_id
+                        ):
+                            has_children = True
+                            if (
+                                count_children(db, an_item["scale.id"], ontology_id)
+                                == 0
+                            ):
+                                has_children = False
+                            tree_array.append(
+                                {
+                                    "text": an_item["scale.name"],
+                                    "children": has_children,
+                                    "id": an_item["scale.id"],
+                                    "type": an_item["scale.term_type"],
+                                    "icon": get_icon(
+                                        self.request, an_item["scale.term_type"]
+                                    ),
+                                }
+                            )
         db.close()
         self.returnRawViewResult = True
         return tree_array

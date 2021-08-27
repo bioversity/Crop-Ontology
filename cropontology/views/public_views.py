@@ -45,7 +45,9 @@ class HomeView(PublicView):
             query = (
                 'match(p {ontology_id: "'
                 + an_ontology["ontology_id"]
-                + '", root: True}) match (variable:Variable {ontology_id: "'+an_ontology["ontology_id"]+'"}) return p.id, count(variable) as var'
+                + '", root: True}) match (variable:Variable {ontology_id: "'
+                + an_ontology["ontology_id"]
+                + '"}) return p.id, count(variable) as var'
             )
             cursor = db.run(query)
             roots = []
