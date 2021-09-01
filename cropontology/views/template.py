@@ -10,6 +10,9 @@ import shutil
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 import pymongo
 import numpy
+from pyramid.response import Response
+import json
+
 
 log = logging.getLogger("cropontology")
 
@@ -114,6 +117,16 @@ class TemplateLoadView(PublicView):
 
             date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
 
+            ## VERSIONING 
+            ## if ontology exists, make a copy of the ontology
+            query = (
+                "MATCH (n{ontology_id:'"
+                + ontology_id
+                + "'}) SET n.ontology_id = '"+ontology_id+"_"+date+"', n.term_id=n.id REMOVE n.id return n "
+            )
+            db.run(query)
+            ## END VERSIONING
+
             # check if ontology exists and get last term ID used
             query = (
                 "MATCH (n{ontology_id:'"
@@ -142,7 +155,9 @@ class TemplateLoadView(PublicView):
                     query = (
                         "MERGE (a:Term{id: '"
                         + ontology_id
-                        + ":ROOT'}) ON CREATE SET a:Term, a.id = '"
+                        + ":ROOT', ontology_id: '"
+                        + ontology_id
+                        + "'}) ON CREATE SET a:Term, a.id = '"
                         + ontology_id
                         + ":ROOT', a.ontology_id = '"
                         + ontology_id
@@ -872,3 +887,153 @@ class TemplateLoadView(PublicView):
             self.request.session.flash(self._("The file was uploaded successfully"))
             self.returnRawViewResult = True
             return HTTPFound(location=self.request.route_url("home"))
+
+
+class OntologyVersionView(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+
+        ontology_id = self.request.matchdict["ontology_id"]
+        
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        query = (
+            "MATCH (n) WHERE n.ontology_id CONTAINS '"+ontology_id+"'  RETURN DISTINCT n.ontology_id ORDER BY n.ontology_id DESC"
+            )
+
+        cursor = db.run(query)
+
+        ret = {}
+
+        for an_item in cursor:
+            if len(an_item["n.ontology_id"].split("_")) > 2:
+                ret["version "+an_item["n.ontology_id"].split("_")[-1]] = an_item["n.ontology_id"]
+            else:
+                ret["current version"] = an_item["n.ontology_id"]
+
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),
+        ]
+        response = Response(headerlist=headers, status=200)
+        json_data = json.dumps(ret, indent=4, default=str)
+        response.text = json_data
+        return response
+
+class CompareVersionView(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+
+        ##these are ontology IDs
+        version2 = self.request.matchdict["current"]
+        version1 = self.request.matchdict["old"]
+
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        ## results
+        ret = {}
+        ## are two old versions compared
+        old = False
+
+        ## check id IDs have disapeared/appeared
+        ids_v1 = []
+        ids_v2 = []
+        query = (
+            "MATCH (n) WHERE n.ontology_id ='"+version1+"' return n.term_id ORDER BY n.term_id DESC"
+            )
+        cursor = db.run(query)
+        for an_item in cursor:
+            ids_v1.append(an_item["n.term_id"])
+
+        query = (
+            "MATCH (n) WHERE n.ontology_id ='"+version2+"' return n.id ORDER BY n.id DESC"
+            )
+        cursor = db.run(query)
+        for an_item in cursor:
+           ids_v2.append(an_item["n.id"])
+
+        if None in ids_v2:
+            ## comparing 2 old version
+            old = True
+            query = (
+            "MATCH (n) WHERE n.ontology_id ='"+version2+"' return n.term_id ORDER BY n.term_id DESC"
+            )
+            cursor = db.run(query)
+            for an_item in cursor:
+               ids_v2.append(an_item["n.term_id"])
+
+        ## IDs that have disapeared between the new and the old versions
+        one_not_two = set(ids_v1).difference(ids_v2)
+        ret['IDs deleted'] = list(one_not_two)
+
+        ## IDs created in the new version
+        two_not_one = set(ids_v2).difference(ids_v1)
+        ret['IDs created'] = list(two_not_one)
+
+        ## IDs in common
+        common = set(ids_v1).intersection(ids_v1)
+        diffs = {}
+        for e in common:
+            if old:
+                query = (
+                    "MATCH (n{term_id:'"+e+"',ontology_id:'"+version1+"'}) "
+                    + "MATCH (m{term_id:'"+e+"',ontology_id:'"+version2+"'}) "
+                    + "WITH n,m "
+                    + "RETURN apoc.diff.nodes(n,m)"
+                    )
+            else:
+                query = (
+                    "MATCH (n{term_id:'"+e+"',ontology_id:'"+version1+"'}) "
+                    + "MATCH (m{id:'"+e+"',ontology_id:'"+version2+"'}) "
+                    + "WITH n,m "
+                    + "RETURN apoc.diff.nodes(n,m)"
+                    )
+            cursor = db.run(query)
+            for an_item in cursor:
+                leftOnly, rightOnly, different = None, None, None
+
+                if "leftOnly" in an_item["apoc.diff.nodes(n,m)"]:
+                    if "id" in an_item["apoc.diff.nodes(n,m)"]["leftOnly"]:
+                        an_item["apoc.diff.nodes(n,m)"]["leftOnly"].pop('id')
+                    if "term_id" in an_item["apoc.diff.nodes(n,m)"]["leftOnly"]:
+                        an_item["apoc.diff.nodes(n,m)"]["leftOnly"].pop('term_id')
+                    if an_item["apoc.diff.nodes(n,m)"]["leftOnly"]:
+                        leftOnly  = an_item["apoc.diff.nodes(n,m)"]["leftOnly"]
+                if "rightOnly" in  an_item["apoc.diff.nodes(n,m)"]:
+                    if "id" in an_item["apoc.diff.nodes(n,m)"]["rightOnly"]:
+                        an_item["apoc.diff.nodes(n,m)"]["rightOnly"].pop('id')
+                    if "term_id" in an_item["apoc.diff.nodes(n,m)"]["rightOnly"]:
+                        an_item["apoc.diff.nodes(n,m)"]["rightOnly"].pop('term_id')
+                    if an_item["apoc.diff.nodes(n,m)"]["rightOnly"]:
+                        rightOnly = an_item["apoc.diff.nodes(n,m)"]["rightOnly"]
+                if "different" in an_item["apoc.diff.nodes(n,m)"]:
+                    if "ontology_id" in an_item["apoc.diff.nodes(n,m)"]["different"]:
+                        an_item["apoc.diff.nodes(n,m)"]["different"].pop('ontology_id')
+                    if "created_at" in an_item["apoc.diff.nodes(n,m)"]["different"]:
+                        an_item["apoc.diff.nodes(n,m)"]["different"].pop('created_at')
+                    if an_item["apoc.diff.nodes(n,m)"]["different"]:
+                        different = an_item["apoc.diff.nodes(n,m)"]["different"]  
+
+                if leftOnly or rightOnly or different:
+                    diffs[e] = {}
+                    diffs[e] = {
+                        "old version (left)": leftOnly,
+                        "new version (right)": rightOnly,
+                        "attributes updated": different
+                    }
+        ret['changes'] = diffs  
+
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),
+        ]
+        response = Response(headerlist=headers, status=200)
+        json_data = json.dumps(ret, indent=4, default=str)
+        response.text = json_data
+        return response

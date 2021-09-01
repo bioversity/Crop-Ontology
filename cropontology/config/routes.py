@@ -58,7 +58,7 @@ from ..views.brapi import (
 
 from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView, StatView
 
-from ..views.template import TemplateLoadView
+from ..views.template import TemplateLoadView, OntologyVersionView, CompareVersionView
 
 from ..views.delete import DeleteOntologyView, DeleteTermView
 
@@ -410,6 +410,20 @@ def load_routes(config):
     routes.append(
         add_route(
             "load_template", "/load/{ontology_id}", TemplateLoadView, "add_terms.jinja2"
+        )
+    )
+
+    # Here come the get ontology versions routes
+    routes.append(
+        add_route(
+            "get_onto_version", "/version/{ontology_id}", OntologyVersionView, None
+        )
+    )
+
+    # Here come the get compare versions routes
+    routes.append(
+        add_route(
+            "compare_version", "/compare/{current}/{old}", CompareVersionView, None
         )
     )
 
