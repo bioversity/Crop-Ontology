@@ -88,7 +88,7 @@ class TemplateLoadView(PublicView):
                 td = pandas.read_excel(file_name, sheet_name="Template for submission")
             except Exception as e:
                 log.error("Unable to read Excel File. Error: {}".format(str(e)))
-                self.errors.append("Unable to read Excel File")
+                self.errors.append("Unable to read Excel File. Please check that the data are in a sheet named 'Template for submission'")
                 return {"ontology_data": ontology_data}
 
             ## remove empty row
