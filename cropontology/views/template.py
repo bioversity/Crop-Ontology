@@ -12,6 +12,7 @@ import pymongo
 import numpy
 from pyramid.response import Response
 import json
+import time
 
 
 log = logging.getLogger("cropontology")
@@ -88,7 +89,9 @@ class TemplateLoadView(PublicView):
                 td = pandas.read_excel(file_name, sheet_name="Template for submission")
             except Exception as e:
                 log.error("Unable to read Excel File. Error: {}".format(str(e)))
-                self.errors.append("Unable to read Excel File. Please check that the data are in a sheet named 'Template for submission'")
+                self.errors.append(
+                    "Unable to read Excel File. Please check that the data are in a sheet named 'Template for submission'"
+                )
                 return {"ontology_data": ontology_data}
 
             ## remove empty row
@@ -117,16 +120,6 @@ class TemplateLoadView(PublicView):
 
             date = datetime.today().strftime("%Y-%m-%d-%H:%M:%S")
 
-            ## VERSIONING 
-            ## if ontology exists, make a copy of the ontology
-            query = (
-                "MATCH (n{ontology_id:'"
-                + ontology_id
-                + "'}) SET n.ontology_id = '"+ontology_id+"_"+date+"', n.term_id=n.id REMOVE n.id return n "
-            )
-            db.run(query)
-            ## END VERSIONING
-
             # check if ontology exists and get last term ID used
             query = (
                 "MATCH (n{ontology_id:'"
@@ -137,7 +130,7 @@ class TemplateLoadView(PublicView):
             for nid in cursor:
                 try:
                     term_id = int(nid[0].split(":")[1])
-                    if nid[0].split(":")[0] != "CO":
+                    if nid[0].split("_")[0] != "CO":
                         continue
                     break
                 except ValueError:
@@ -148,8 +141,23 @@ class TemplateLoadView(PublicView):
                     )
                     return {"ontology_data": ontology_data}
 
+            ## VERSIONING
+            ## if ontology exists, archive the ontology
+            query = (
+                "MATCH (n{ontology_id:'"
+                + ontology_id
+                + "'}) SET n.ontology_id = '"
+                + ontology_id
+                + "_"
+                + date
+                + "', n.term_id=n.id REMOVE n.id return n "
+            )
+            db.run(query)
+            ## END VERSIONING
+
             # parse the file
             for index, row in td.iterrows():
+                time.sleep(2)
                 if index == 0:
                     # add the root if not exists
                     query = (
@@ -662,14 +670,15 @@ class TemplateLoadView(PublicView):
                 if row["Scale Xref"]:
                     query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
                 i = 1
-                while row["Category " + str(i)]:
-                    query += (
-                        ", a.category_"
-                        + str(i)
-                        + " = '"
-                        + str(row["Category " + str(i)])
-                        + "' "
-                    )
+                while "Category " + str(i) in row:
+                    if row["Category " + str(i)]:
+                        query += (
+                            ", a.category_"
+                            + str(i)
+                            + " = '"
+                            + str(row["Category " + str(i)])
+                            + "' "
+                        )
                     i += 1
                 # ON MATCH
                 query += (
@@ -705,14 +714,15 @@ class TemplateLoadView(PublicView):
                 if row["Scale Xref"]:
                     query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
                 i = 1
-                while row["Category " + str(i)]:
-                    query += (
-                        ", a.category_"
-                        + str(i)
-                        + " = '"
-                        + str(row["Category " + str(i)])
-                        + "' "
-                    )
+                while "Category " + str(i) in row:
+                    if row["Category " + str(i)]:
+                        query += (
+                            ", a.category_"
+                            + str(i)
+                            + " = '"
+                            + str(row["Category " + str(i)])
+                            + "' "
+                        )
                     i += 1
 
                 query += " RETURN a "
@@ -751,8 +761,11 @@ class TemplateLoadView(PublicView):
                     es_data["scale_xref"] = row["Scale Xref"]
 
                 i = 1
-                while row["Category {}".format(i)]:
-                    es_data["category_{}".format(i)] = str(row["Category {}".format(i)])
+                while "Category {}".format(i) in row:
+                    if row["Category {}".format(i)]:
+                        es_data["category_{}".format(i)] = str(
+                            row["Category {}".format(i)]
+                        )
                     i += 1
 
                 if not term_index.term_exists(scale_id):
@@ -894,7 +907,7 @@ class OntologyVersionView(PublicView):
         self.returnRawViewResult = True
 
         ontology_id = self.request.matchdict["ontology_id"]
-        
+
         neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
         neo4j_user = self.request.registry.settings["neo4j.user"]
         neo4j_password = self.request.registry.settings["neo4j.password"]
@@ -902,8 +915,10 @@ class OntologyVersionView(PublicView):
         db = driver.session()
 
         query = (
-            "MATCH (n) WHERE n.ontology_id CONTAINS '"+ontology_id+"'  RETURN DISTINCT n.ontology_id ORDER BY n.ontology_id DESC"
-            )
+            "MATCH (n) WHERE n.ontology_id CONTAINS '"
+            + ontology_id
+            + "'  RETURN DISTINCT n.ontology_id ORDER BY n.ontology_id DESC"
+        )
 
         cursor = db.run(query)
 
@@ -911,7 +926,9 @@ class OntologyVersionView(PublicView):
 
         for an_item in cursor:
             if len(an_item["n.ontology_id"].split("_")) > 2:
-                ret["version "+an_item["n.ontology_id"].split("_")[-1]] = an_item["n.ontology_id"]
+                ret["version " + an_item["n.ontology_id"].split("_")[-1]] = an_item[
+                    "n.ontology_id"
+                ]
             else:
                 ret["current version"] = an_item["n.ontology_id"]
 
@@ -922,6 +939,7 @@ class OntologyVersionView(PublicView):
         json_data = json.dumps(ret, indent=4, default=str)
         response.text = json_data
         return response
+
 
 class CompareVersionView(PublicView):
     def process_view(self):
@@ -946,36 +964,42 @@ class CompareVersionView(PublicView):
         ids_v1 = []
         ids_v2 = []
         query = (
-            "MATCH (n) WHERE n.ontology_id ='"+version1+"' return n.term_id ORDER BY n.term_id DESC"
-            )
+            "MATCH (n) WHERE n.ontology_id ='"
+            + version1
+            + "' return n.term_id ORDER BY n.term_id DESC"
+        )
         cursor = db.run(query)
         for an_item in cursor:
             ids_v1.append(an_item["n.term_id"])
 
         query = (
-            "MATCH (n) WHERE n.ontology_id ='"+version2+"' return n.id ORDER BY n.id DESC"
-            )
+            "MATCH (n) WHERE n.ontology_id ='"
+            + version2
+            + "' return n.id ORDER BY n.id DESC"
+        )
         cursor = db.run(query)
         for an_item in cursor:
-           ids_v2.append(an_item["n.id"])
+            ids_v2.append(an_item["n.id"])
 
         if None in ids_v2:
             ## comparing 2 old version
             old = True
             query = (
-            "MATCH (n) WHERE n.ontology_id ='"+version2+"' return n.term_id ORDER BY n.term_id DESC"
+                "MATCH (n) WHERE n.ontology_id ='"
+                + version2
+                + "' return n.term_id ORDER BY n.term_id DESC"
             )
             cursor = db.run(query)
             for an_item in cursor:
-               ids_v2.append(an_item["n.term_id"])
+                ids_v2.append(an_item["n.term_id"])
 
         ## IDs that have disapeared between the new and the old versions
         one_not_two = set(ids_v1).difference(ids_v2)
-        ret['IDs deleted'] = list(one_not_two)
+        ret["IDs deleted"] = list(one_not_two)
 
         ## IDs created in the new version
         two_not_one = set(ids_v2).difference(ids_v1)
-        ret['IDs created'] = list(two_not_one)
+        ret["IDs created"] = list(two_not_one)
 
         ## IDs in common
         common = set(ids_v1).intersection(ids_v1)
@@ -983,52 +1007,68 @@ class CompareVersionView(PublicView):
         for e in common:
             if old:
                 query = (
-                    "MATCH (n{term_id:'"+e+"',ontology_id:'"+version1+"'}) "
-                    + "MATCH (m{term_id:'"+e+"',ontology_id:'"+version2+"'}) "
+                    "MATCH (n{term_id:'"
+                    + e
+                    + "',ontology_id:'"
+                    + version1
+                    + "'}) "
+                    + "MATCH (m{term_id:'"
+                    + e
+                    + "',ontology_id:'"
+                    + version2
+                    + "'}) "
                     + "WITH n,m "
                     + "RETURN apoc.diff.nodes(n,m)"
-                    )
+                )
             else:
                 query = (
-                    "MATCH (n{term_id:'"+e+"',ontology_id:'"+version1+"'}) "
-                    + "MATCH (m{id:'"+e+"',ontology_id:'"+version2+"'}) "
+                    "MATCH (n{term_id:'"
+                    + e
+                    + "',ontology_id:'"
+                    + version1
+                    + "'}) "
+                    + "MATCH (m{id:'"
+                    + e
+                    + "',ontology_id:'"
+                    + version2
+                    + "'}) "
                     + "WITH n,m "
                     + "RETURN apoc.diff.nodes(n,m)"
-                    )
+                )
             cursor = db.run(query)
             for an_item in cursor:
                 leftOnly, rightOnly, different = None, None, None
 
                 if "leftOnly" in an_item["apoc.diff.nodes(n,m)"]:
                     if "id" in an_item["apoc.diff.nodes(n,m)"]["leftOnly"]:
-                        an_item["apoc.diff.nodes(n,m)"]["leftOnly"].pop('id')
+                        an_item["apoc.diff.nodes(n,m)"]["leftOnly"].pop("id")
                     if "term_id" in an_item["apoc.diff.nodes(n,m)"]["leftOnly"]:
-                        an_item["apoc.diff.nodes(n,m)"]["leftOnly"].pop('term_id')
+                        an_item["apoc.diff.nodes(n,m)"]["leftOnly"].pop("term_id")
                     if an_item["apoc.diff.nodes(n,m)"]["leftOnly"]:
-                        leftOnly  = an_item["apoc.diff.nodes(n,m)"]["leftOnly"]
-                if "rightOnly" in  an_item["apoc.diff.nodes(n,m)"]:
+                        leftOnly = an_item["apoc.diff.nodes(n,m)"]["leftOnly"]
+                if "rightOnly" in an_item["apoc.diff.nodes(n,m)"]:
                     if "id" in an_item["apoc.diff.nodes(n,m)"]["rightOnly"]:
-                        an_item["apoc.diff.nodes(n,m)"]["rightOnly"].pop('id')
+                        an_item["apoc.diff.nodes(n,m)"]["rightOnly"].pop("id")
                     if "term_id" in an_item["apoc.diff.nodes(n,m)"]["rightOnly"]:
-                        an_item["apoc.diff.nodes(n,m)"]["rightOnly"].pop('term_id')
+                        an_item["apoc.diff.nodes(n,m)"]["rightOnly"].pop("term_id")
                     if an_item["apoc.diff.nodes(n,m)"]["rightOnly"]:
                         rightOnly = an_item["apoc.diff.nodes(n,m)"]["rightOnly"]
                 if "different" in an_item["apoc.diff.nodes(n,m)"]:
                     if "ontology_id" in an_item["apoc.diff.nodes(n,m)"]["different"]:
-                        an_item["apoc.diff.nodes(n,m)"]["different"].pop('ontology_id')
+                        an_item["apoc.diff.nodes(n,m)"]["different"].pop("ontology_id")
                     if "created_at" in an_item["apoc.diff.nodes(n,m)"]["different"]:
-                        an_item["apoc.diff.nodes(n,m)"]["different"].pop('created_at')
+                        an_item["apoc.diff.nodes(n,m)"]["different"].pop("created_at")
                     if an_item["apoc.diff.nodes(n,m)"]["different"]:
-                        different = an_item["apoc.diff.nodes(n,m)"]["different"]  
+                        different = an_item["apoc.diff.nodes(n,m)"]["different"]
 
                 if leftOnly or rightOnly or different:
                     diffs[e] = {}
                     diffs[e] = {
                         "old version (left)": leftOnly,
                         "new version (right)": rightOnly,
-                        "attributes updated": different
+                        "attributes updated": different,
                     }
-        ret['changes'] = diffs  
+        ret["changes"] = diffs
 
         headers = [
             ("Content-Type", "application/json; charset=utf-8"),
