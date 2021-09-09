@@ -316,7 +316,7 @@ class BRAPIVariablesView(PublicView):
                         "xref": scale["scale_xref"],
                         "validValues": {
                             "min": scale["lower_limit"],
-                            "max": scale["upper limit"],
+                            "max": scale["upper_limit"],
                             "categories": categories,
                         },
                     }

@@ -88,6 +88,182 @@ class TermDetailsView(PublicView):
                 ontology_id = value
             results.append({"key": key, "value": value})
 
+        ## sort results and don't keep all the keys
+        if [r["value"] for r in results if r["key"] == "term_type"][0] == "Term":
+            remove = ["obsolete", "name", "term_type"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = ["term_id", "ontology_id", "ontology_name", "language"]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "term":
+            remove = ["obsolete", "root", "term_type"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "term_id",
+                "name",
+                "ontology_id",
+                "ontology_name",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "trait":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "trait_id",
+                "trait_name",
+                "ontology_id",
+                "ontology_name",
+                "trait_class",
+                "trait_description",
+                "trait_synonyms",
+                "trait_synonym",
+                "main_trait_abbreviation",
+                "alternative_abbreviation",
+                "entity",
+                "attribute",
+                "trait_statuss",
+                "trait_xref",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "Trait":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "trait_id",
+                "trait_name",
+                "ontology_id",
+                "ontology_name",
+                "trait_class",
+                "trait_description",
+                "trait_synonyms",
+                "trait_synonym",
+                "main_trait_abbreviation",
+                "alternative_abbreviation",
+                "entity",
+                "attribute",
+                "trait_statuss",
+                "trait_xref",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "method":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "method_id",
+                "method_name",
+                "ontology_id",
+                "ontology_name",
+                "method_class",
+                "method_description",
+                "formula",
+                "method_reference",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "Method":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "method_id",
+                "method_name",
+                "ontology_id",
+                "ontology_name",
+                "method_class",
+                "method_description",
+                "formula",
+                "method_reference",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "scale":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            categories = ["category_" + str(i) for i in range(1, 100)]
+            sortItem = (
+                [
+                    "scale_id",
+                    "scale_name",
+                    "ontology_id",
+                    "ontology_name",
+                    "scale_class",
+                    "decimal_places",
+                    "lower_limit",
+                    "upper_limit",
+                    "scale_xref",
+                ]
+                + categories
+                + ["language", "created_at"]
+            )
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "Scale":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            categories = ["category_" + str(i) for i in range(1, 100)]
+            sortItem = (
+                [
+                    "scale_id",
+                    "scale_name",
+                    "ontology_id",
+                    "ontology_name",
+                    "scale_class",
+                    "decimal_places",
+                    "lower_limit",
+                    "upper_limit",
+                    "scale_xref",
+                ]
+                + categories
+                + ["language", "created_at"]
+            )
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "variable":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "variable_id",
+                "variable_name",
+                "ontology_id",
+                "ontology_name",
+                "variable_synonyms",
+                "context_of_use",
+                "growth_stage",
+                "variable_status",
+                "variable_xref",
+                "institution",
+                "scientist",
+                "date",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+        elif [r["value"] for r in results if r["key"] == "term_type"][0] == "Variable":
+            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            results[:] = [r for r in results if r["key"] not in remove]
+            sortItem = [
+                "variable_id",
+                "variable_name",
+                "ontology_id",
+                "ontology_name",
+                "variable_synonyms",
+                "context_of_use",
+                "growth_stage",
+                "variable_status",
+                "variable_xref",
+                "institution",
+                "scientist",
+                "date",
+                "crop",
+                "language",
+                "created_at",
+            ]
+            results = sorted(results, key=lambda k: sortItem.index(k["key"]))
+
         return {
             "results": results,
             "term_id": term_id,
