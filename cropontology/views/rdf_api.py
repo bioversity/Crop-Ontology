@@ -534,7 +534,9 @@ class ExcelView(PublicView):
         paths = ["tmp", str(uuid.uuid4()) + ".xlsx"]
         excel_file = os.path.join(repository_path, *paths)
 
-        pandas.DataFrame.from_dict(results).to_excel(excel_file, index=False)
+        pandas.DataFrame.from_dict(results).to_excel(
+            excel_file, index=False, sheet_name="Template for submission"
+        )
 
         response = FileResponse(
             excel_file,
