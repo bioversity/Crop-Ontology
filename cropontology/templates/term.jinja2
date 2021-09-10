@@ -86,10 +86,17 @@
                             </thead>
                             <tbody>
                             {% for a_result in results %}
-                                <tr>
-                                    <td>{{ a_result.key }}</td>
-                                    <td>{{ a_result.value }}</td>
-                                </tr>
+                                {% if a_result.key=="trait_id" or a_result.key=="method_id" or a_result.key=="scale_id" or a_result.key=="variable_id" %}
+                                    <tr>
+                                        <td>{{ a_result.key }}</td>
+                                        <td><a href="{{ request.route_url('uri_term', term_id=a_result.value) }}">{{ a_result.value }}</a></td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td>{{ a_result.key }}</td>
+                                        <td>{{ a_result.value }}</td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>

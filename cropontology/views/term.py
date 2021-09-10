@@ -238,6 +238,7 @@ class TermDetailsView(PublicView):
                 "institution",
                 "scientist",
                 "date",
+                "crop",
                 "language",
                 "created_at",
             ]
