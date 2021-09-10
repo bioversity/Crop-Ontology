@@ -91,6 +91,23 @@
                                         <td>{{ a_result.key }}</td>
                                         <td><a href="{{ request.route_url('uri_term', term_id=a_result.value) }}">{{ a_result.value }}</a></td>
                                     </tr>
+                                {% elif a_result.key=="trait_xref" %}
+                                    <tr>
+                                        <td>{{ a_result.key }}</td>
+                                        <td>
+                                            {% for l in a_result.value.split(",") %}
+                                                {% if "PATO:" in l %}
+                                                    <a target='_blank' href="http://purl.obolibrary.org/obo/{{l.replace(":","_").strip()}}">{{ l }}</a>
+                                                {% elif "PO:" in l or "TO:" in l %}
+                                                    <a target='_blank' href="http://browser.planteome.org/amigo/term/{{l.strip()}}">{{ l }}</a>
+                                                {% elif ":" in l %}
+                                                    <a target='_blank' href="http://purl.obolibrary.org/obo/{{l.replace(":","_").strip()}}">{{ l }}</a>
+                                                {% else %}
+                                                    {{ l }}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
                                 {% else %}
                                     <tr>
                                         <td>{{ a_result.key }}</td>
@@ -172,5 +189,6 @@
             }
             click_variables();
         </script>
+
     {% endif %}
 {% endblock %}
