@@ -13,7 +13,7 @@
             {% block title %}
                 <title>{{ _('Crop Ontology Curation tool') }}</title>
             {% endblock title %}
-            {% block icon %}
+            {% block icon %}    
                 <link rel="shortcut icon" href="{{ request.url_for_static('co_ico.ico') }}" />
             {% endblock  icon%}
 
@@ -32,6 +32,8 @@
         {% block body %}
 
         {% endblock body %}
+        <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" integrity="sha384-SlE991lGASHoBfWbelyBPLsUlwY1GwNDJo3jSJO04KZ33K2bwfV9YBauFfnzvynJ" crossorigin="anonymous"></script>
+
         </body>
     {% endblock body_tag %}
 {% endblock html %}
