@@ -506,7 +506,7 @@ class ExcelView(PublicView):
                 "Scale class": an_item["scale"]["scale_class"],
                 "Decimal places": an_item["scale"]["decimal_places"],
                 "Lower limit": an_item["scale"]["lower_limit"],
-                "Upper limit": an_item["scale"]["upper limit"],
+                "Upper limit": an_item["scale"]["upper_limit"],
                 "Scale Xref": an_item["scale"]["scale_xref"],
             }
 
