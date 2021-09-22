@@ -255,6 +255,8 @@ class TemplateLoadView(PublicView):
                     query += ", a.institution = '" + row["Institution"] + "' "
                 if row["Scientist"]:
                     query += ", a.scientist = '" + row["Scientist"] + "' "
+                if row["Date"]:
+                    query += ", a.date = '" + row["Date"] + "' "
 
                 # ON MATCH
                 query += (
@@ -296,6 +298,8 @@ class TemplateLoadView(PublicView):
                     query += ", a.institution = '" + row["Institution"] + "' "
                 if row["Scientist"]:
                     query += ", a.scientist = '" + row["Scientist"] + "' "
+                if row["Date"]:
+                    query += ", a.date = '" + row["Date"] + "' "
 
                 query += " RETURN a "
                 cursor = db.run(query)
@@ -336,6 +340,8 @@ class TemplateLoadView(PublicView):
                     es_data["institution"] = row["Institution"]
                 if row["Scientist"]:
                     es_data["scientist"] = row["Scientist"]
+                if row["Date"]:
+                    es_data["date"] = row["Date"]
 
                 if not term_index.term_exists(var_id):
                     term_index.add_term(var_id, es_data)
@@ -627,106 +633,208 @@ class TemplateLoadView(PublicView):
                 if not scale_id:
                     scale_id = ontology_id + ":" + str(term_id + 1).zfill(7)
                     term_id += 1
-                # ON CREATE
-                # mandatory fields
-                query = (
-                    "MERGE (a:Scale {name: '"
-                    + row["Scale name"]
-                    + "', ontology_id: '"
-                    + ontology_id
-                    + "'}) ON CREATE SET a:Scale, a.id = '"
-                    + scale_id
-                    + "', a.scale_id = '"
-                    + scale_id
-                    + "', "
-                    + " a.ontology_id = '"
-                    + ontology_id
-                    + "' , a.ontology_name = '"
-                    + row["Crop"]
-                    + "' , "
-                    + " a.name = '"
-                    + row["Scale name"]
-                    + "' , a.scale_name = '"
-                    + row["Scale name"]
-                    + "' ,"
-                    " a.created_at = '"
-                    + date
-                    + "' , a.language = '"
-                    + row["Language"]
-                    + "' , "
-                    + " a.term_type = 'scale' "
-                )
-                # other fieds - need to check if exist
-                if row["Scale class"]:
-                    query += ", a.scale_class = '" + row["Scale class"] + "' "
-                if row["Decimal places"]:
-                    query += (
-                        ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
+                    # ON CREATE
+                    # mandatory fields
+                    query = (
+                        "MERGE (a:Scale {name: '"
+                        + row["Scale name"]
+                        + "', ontology_id: '"
+                        + ontology_id
+                        + "'}) ON CREATE SET a:Scale, a.id = '"
+                        + scale_id
+                        + "', a.scale_id = '"
+                        + scale_id
+                        + "', "
+                        + " a.ontology_id = '"
+                        + ontology_id
+                        + "' , a.ontology_name = '"
+                        + row["Crop"]
+                        + "' , "
+                        + " a.name = '"
+                        + row["Scale name"]
+                        + "' , a.scale_name = '"
+                        + row["Scale name"]
+                        + "' ,"
+                        " a.created_at = '"
+                        + date
+                        + "' , a.language = '"
+                        + row["Language"]
+                        + "' , "
+                        + " a.term_type = 'scale' "
                     )
-                if row["Lower limit"]:
-                    query += ", a.lower_limit = '" + str(row["Lower limit"]) + "' "
-                if row["Upper limit"]:
-                    query += ", a.upper_limit = '" + str(row["Upper limit"]) + "' "
-                if row["Scale Xref"]:
-                    query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
-                i = 1
-                while "Category " + str(i) in row:
-                    if row["Category " + str(i)]:
+                    # other fieds - need to check if exist
+                    if row["Scale class"]:
+                        query += ", a.scale_class = '" + row["Scale class"] + "' "
+                    if row["Decimal places"]:
                         query += (
-                            ", a.category_"
-                            + str(i)
-                            + " = '"
-                            + str(row["Category " + str(i)])
-                            + "' "
+                            ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
                         )
-                    i += 1
-                # ON MATCH
-                query += (
-                    " ON MATCH SET "
-                    + " a.ontology_id = '"
-                    + ontology_id
-                    + "' , a.ontology_name = '"
-                    + row["Crop"]
-                    + "' , "
-                    + " a.name = '"
-                    + row["Scale name"]
-                    + "' , a.scale_name = '"
-                    + row["Scale name"]
-                    + "' ,"
-                    " a.created_at = '"
-                    + date
-                    + "' , a.language = '"
-                    + row["Language"]
-                    + "' , "
-                    + " a.term_type = 'scale' "
-                )
-                # other fieds - need to check if exist
-                if row["Scale class"]:
-                    query += ", a.scale_class = '" + row["Scale class"] + "' "
-                if row["Decimal places"]:
+                    if row["Lower limit"]:
+                        query += ", a.lower_limit = '" + str(row["Lower limit"]) + "' "
+                    if row["Upper limit"]:
+                        query += ", a.upper_limit = '" + str(row["Upper limit"]) + "' "
+                    if row["Scale Xref"]:
+                        query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
+                    i = 1
+                    while "Category " + str(i) in row:
+                        if row["Category " + str(i)]:
+                            query += (
+                                ", a.category_"
+                                + str(i)
+                                + " = '"
+                                + str(row["Category " + str(i)])
+                                + "' "
+                            )
+                        i += 1
+                    # ON MATCH
                     query += (
-                        ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
+                        " ON MATCH SET "
+                        + " a.ontology_id = '"
+                        + ontology_id
+                        + "' , a.ontology_name = '"
+                        + row["Crop"]
+                        + "' , "
+                        + " a.name = '"
+                        + row["Scale name"]
+                        + "' , a.scale_name = '"
+                        + row["Scale name"]
+                        + "' ,"
+                        " a.created_at = '"
+                        + date
+                        + "' , a.language = '"
+                        + row["Language"]
+                        + "' , "
+                        + " a.term_type = 'scale' "
                     )
-                if row["Lower limit"]:
-                    query += ", a.lower_limit = '" + str(row["Lower limit"]) + "' "
-                if row["Upper limit"]:
-                    query += ", a.upper_limit = '" + str(row["Upper limit"]) + "' "
-                if row["Scale Xref"]:
-                    query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
-                i = 1
-                while "Category " + str(i) in row:
-                    if row["Category " + str(i)]:
+                    # other fieds - need to check if exist
+                    if row["Scale class"]:
+                        query += ", a.scale_class = '" + row["Scale class"] + "' "
+                    if row["Decimal places"]:
                         query += (
-                            ", a.category_"
-                            + str(i)
-                            + " = '"
-                            + str(row["Category " + str(i)])
-                            + "' "
+                            ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
                         )
-                    i += 1
+                    if row["Lower limit"]:
+                        query += ", a.lower_limit = '" + str(row["Lower limit"]) + "' "
+                    if row["Upper limit"]:
+                        query += ", a.upper_limit = '" + str(row["Upper limit"]) + "' "
+                    if row["Scale Xref"]:
+                        query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
+                    i = 1
+                    while "Category " + str(i) in row:
+                        if row["Category " + str(i)]:
+                            query += (
+                                ", a.category_"
+                                + str(i)
+                                + " = '"
+                                + str(row["Category " + str(i)])
+                                + "' "
+                            )
+                        i += 1
 
-                query += " RETURN a "
-                cursor = db.run(query)
+                    query += " RETURN a "
+                    cursor = db.run(query)
+                else:
+                    # ON CREATE
+                    # mandatory fields
+                    query = (
+                        "MERGE (a:Scale {id: '"
+                        + row["Scale ID"]
+                        + "', ontology_id: '"
+                        + ontology_id
+                        + "'}) ON CREATE SET a:Scale, a.id = '"
+                        + scale_id
+                        + "', a.scale_id = '"
+                        + scale_id
+                        + "', "
+                        + " a.ontology_id = '"
+                        + ontology_id
+                        + "' , a.ontology_name = '"
+                        + row["Crop"]
+                        + "' , "
+                        + " a.name = '"
+                        + row["Scale name"]
+                        + "' , a.scale_name = '"
+                        + row["Scale name"]
+                        + "' ,"
+                        " a.created_at = '"
+                        + date
+                        + "' , a.language = '"
+                        + row["Language"]
+                        + "' , "
+                        + " a.term_type = 'scale' "
+                    )
+                    # other fieds - need to check if exist
+                    if row["Scale class"]:
+                        query += ", a.scale_class = '" + row["Scale class"] + "' "
+                    if row["Decimal places"]:
+                        query += (
+                            ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
+                        )
+                    if row["Lower limit"]:
+                        query += ", a.lower_limit = '" + str(row["Lower limit"]) + "' "
+                    if row["Upper limit"]:
+                        query += ", a.upper_limit = '" + str(row["Upper limit"]) + "' "
+                    if row["Scale Xref"]:
+                        query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
+                    i = 1
+                    while "Category " + str(i) in row:
+                        if row["Category " + str(i)]:
+                            query += (
+                                ", a.category_"
+                                + str(i)
+                                + " = '"
+                                + str(row["Category " + str(i)])
+                                + "' "
+                            )
+                        i += 1
+                    # ON MATCH
+                    query += (
+                        " ON MATCH SET "
+                        + " a.ontology_id = '"
+                        + ontology_id
+                        + "' , a.ontology_name = '"
+                        + row["Crop"]
+                        + "' , "
+                        + " a.name = '"
+                        + row["Scale name"]
+                        + "' , a.scale_name = '"
+                        + row["Scale name"]
+                        + "' ,"
+                        " a.created_at = '"
+                        + date
+                        + "' , a.language = '"
+                        + row["Language"]
+                        + "' , "
+                        + " a.term_type = 'scale' "
+                    )
+                    # other fieds - need to check if exist
+                    if row["Scale class"]:
+                        query += ", a.scale_class = '" + row["Scale class"] + "' "
+                    if row["Decimal places"]:
+                        query += (
+                            ", a.decimal_places = '" + str(row["Decimal places"]) + "' "
+                        )
+                    if row["Lower limit"]:
+                        query += ", a.lower_limit = '" + str(row["Lower limit"]) + "' "
+                    if row["Upper limit"]:
+                        query += ", a.upper_limit = '" + str(row["Upper limit"]) + "' "
+                    if row["Scale Xref"]:
+                        query += ", a.scale_xref = '" + row["Scale Xref"] + "' "
+                    i = 1
+                    while "Category " + str(i) in row:
+                        if row["Category " + str(i)]:
+                            query += (
+                                ", a.category_"
+                                + str(i)
+                                + " = '"
+                                + str(row["Category " + str(i)])
+                                + "' "
+                            )
+                        i += 1
+
+                    query += " RETURN a "
+                    cursor = db.run(query)
+
 
                 ## check if it was a on create or on match
                 # need to check if the id created has been used or if term was already existing
