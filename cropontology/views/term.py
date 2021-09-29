@@ -107,7 +107,7 @@ class TermDetailsView(PublicView):
             ]
             results = sorted(results, key=lambda k: sortItem.index(k["key"]))
         elif [r["value"] for r in results if r["key"] == "term_type"][0] == "trait":
-            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            remove = ["obsolete", "root", "term_type", "name", "term_id", "ibfieldbook"]
             results[:] = [r for r in results if r["key"] not in remove]
             sortItem = [
                 "trait_id",
@@ -129,7 +129,7 @@ class TermDetailsView(PublicView):
             ]
             results = sorted(results, key=lambda k: sortItem.index(k["key"]))
         elif [r["value"] for r in results if r["key"] == "term_type"][0] == "Trait":
-            remove = ["obsolete", "root", "term_type", "name", "term_id"]
+            remove = ["obsolete", "root", "term_type", "name", "term_id", "ibfieldbook"]
             results[:] = [r for r in results if r["key"] not in remove]
             sortItem = [
                 "trait_id",
