@@ -139,23 +139,23 @@
                         <div class="post">
                             - In ontology: {{ result.ontology_name }}<br/>
                             <a href="{{ request.route_url('term_details', termid=result.term_id) }}">{{ result.term_id }}</a>
-                            {% if result.term_type == "Term" %}
+                            {% if result.term_type == "Term" or result.term_type == "term" %}
                                 <span class="badge" style="background: #778899; color: white">Term</span>
                                 {{ result.name }}
                             {% endif %}
-                            {% if result.term_type == "Trait" %}
+                            {% if result.term_type == "Trait" or result.term_type == "trait" %}
                                 <span class="badge badge-success">Trait</span>
                                 {{ result.trait_name }}
                             {% endif %}
-                            {% if result.term_type == "Method" %}
+                            {% if result.term_type == "Method" or result.term_type == "method" %}
                                 <span class="badge badge-warning">Method</span>
                                 {{ result.method_name }}
                             {% endif %}
-                            {% if result.term_type == "Scale" %}
+                            {% if result.term_type == "Scale" or result.term_type == "scale" %}
                                 <span class="badge badge-primary">Scale</span>
                                 {{ result.scale_name }}
                             {% endif %}
-                            {% if result.term_type == "Variable" %}
+                            {% if result.term_type == "Variable" or result.term_type == "variable" %}
                                 <span class="badge badge-danger">Variable</span>
                                 {{ result.variable_name }}<br/>
                                 {{ _('Related traits') }}: {% for a_trait in result.parent_traits %}<a href="{{ request.route_url('term_details', termid=a_trait.term_id) }}">{{ a_trait.term_name }}</a> -- {% endfor %}<br/>
