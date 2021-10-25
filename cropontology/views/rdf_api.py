@@ -42,13 +42,13 @@ class MetadataView(PublicView):
                     ret += (
                         " - id: " + onto_id + "\n"
                         "   title: " + onto_name + " ontology\n"
-                        "   uri: http://127.0.0.1:5900/ontology/"
+                        "   uri: http://cropontology.org/ontology/"
                         + onto_id
                         + "/"
                         + onto_name
                         + "\n"
                         '   description: "' + onto_description + '"' + "\n"
-                        "   homepage: http://127.0.0.1:5900/ontology/"
+                        "   homepage: http://cropontology.org/ontology/"
                         + onto_id
                         + "/"
                         + onto_name
@@ -64,7 +64,7 @@ class MetadataView(PublicView):
                         "     - http://www.cropontology.org/rdf/scale_of\n"
                         "   base_uri:\n"
                         "     - http://www.cropontology.org/rdf/" + onto_id + "\n"
-                        "   ontology_purl : http://127.0.0.1:5900/ontology/"
+                        "   ontology_purl : http://cropontology.org/ontology/"
                         + onto_id
                         + "/"
                         + onto_name
