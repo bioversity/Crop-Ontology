@@ -32,7 +32,7 @@ class MetadataView(PublicView):
         ontologies = list(ontology_collection.find().sort([("ontology_name", 1)]))
 
         ret = '"@context":\n' "ontologies:\n"
-
+        home_url = self.request.route_url("home")
         for ontology in ontologies:
             if ontology["category"] == "300-499 Phenotype and Trait Ontology":
                 if "CO_" in ontology["ontology_id"]:
@@ -42,13 +42,13 @@ class MetadataView(PublicView):
                     ret += (
                         " - id: " + onto_id + "\n"
                         "   title: " + onto_name + " ontology\n"
-                        "   uri: http://cropontology.org/ontology/"
+                        "   uri: {}ontology/".format(home_url)
                         + onto_id
                         + "/"
                         + onto_name
                         + "\n"
                         '   description: "' + onto_description + '"' + "\n"
-                        "   homepage: http://cropontology.org/ontology/"
+                        "   homepage: {}ontology/".format(home_url)
                         + onto_id
                         + "/"
                         + onto_name
@@ -58,13 +58,13 @@ class MetadataView(PublicView):
                         "     - http://www.w3.org/2004/02/skos/core#definition\n"
                         "   synonym_property:\n"
                         "     - http://www.w3.org/2004/02/skos/core#altLabel\n"
-                        "     - http://www.cropontology.org/rdf/acronym\n"
+                        "     - {}rdf/acronym\n"
                         "   hierarchical_property:\n"
-                        "     - http://www.cropontology.org/rdf/method_of\n"
-                        "     - http://www.cropontology.org/rdf/scale_of\n"
+                        "     - {}rdf/method_of\n"
+                        "     - {}rdf/scale_of\n"
                         "   base_uri:\n"
-                        "     - http://www.cropontology.org/rdf/" + onto_id + "\n"
-                        "   ontology_purl : http://cropontology.org/ontology/"
+                        "     - {}rdf/".format(home_url, home_url, home_url, home_url) + onto_id + "\n"
+                        "   ontology_purl : {}ontology/".format(home_url)
                         + onto_id
                         + "/"
                         + onto_name
@@ -95,7 +95,8 @@ class RDFCleanView(PublicView):
         ## create graph
         g = Graph()
         ## define namespace
-        NS = "http://www.cropontology.org/rdf/"
+        home_url = self.request.route_url("home")
+        NS = "{}rdf/".format(home_url)
 
         ## create properties
         variable_of = URIRef(NS + "variable_of")
@@ -566,7 +567,8 @@ class UriView(PublicView):
         ## create graph
         g = Graph()
         ## define namespace
-        NS = "http://www.cropontology.org/rdf/"
+        home_url = self.request.route_url("home")
+        NS = "{}rdf/".format(home_url)
 
         ## create properties
         variable_of = URIRef(NS + "variable_of")
