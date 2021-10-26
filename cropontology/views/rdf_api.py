@@ -63,7 +63,9 @@ class MetadataView(PublicView):
                         "     - {}rdf/method_of\n"
                         "     - {}rdf/scale_of\n"
                         "   base_uri:\n"
-                        "     - {}rdf/".format(home_url, home_url, home_url, home_url) + onto_id + "\n"
+                        "     - {}rdf/".format(home_url, home_url, home_url, home_url)
+                        + onto_id
+                        + "\n"
                         "   ontology_purl : {}ontology/".format(home_url)
                         + onto_id
                         + "/"
