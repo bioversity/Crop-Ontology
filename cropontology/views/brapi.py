@@ -167,14 +167,14 @@ class BRAPITraitsView(PublicView):
                         ret_result["observationVariables"].append(a_variable["id"])
                     ret["result"].append(ret_result)
         else:
-            query = "match (trait:Trait) return count(trait) as total_traits"
+            query = "match (trait:Trait) where ((not (trait.trait_status =~ '(?i).*obsolete.*')) or (not (EXISTS(trait.trait_status))) and (not (trait.ontology_id =~ '(?i).*-.*'))) return count(trait) as total_traits"
             cursor = db.run(query)
             result = get_neo_result(cursor, "total_traits")
             total_traits = result[0]
             item_collection = range(total_traits)
             a_page = paginate.Page(item_collection, current_page, page_size)
             query = (
-                "match (trait:Trait) where (not trait.trait_status =~ '(?i).*obsolete.*' or NOT EXISTS(trait.trait_status)) return trait SKIP "
+                "match (trait:Trait) where ((not (trait.trait_status =~ '(?i).*obsolete.*')) or (not (EXISTS(trait.trait_status))) and (not (trait.ontology_id =~ '(?i).*-.*'))) return trait SKIP "
                 + str(a_page.first_item - 1)
                 + " LIMIT "
                 + str(page_size)
@@ -354,7 +354,8 @@ class BRAPIVariablesView(PublicView):
                     query = (
                         'match (variable:Variable {ontology_id: "'
                         + variable_id
-                        + '"}) where (not variable.variable_status =~ "(?i).*obsolete.*" or NOT EXISTS(variable.variable_status)) return count(variable) as total_variables'
+                        + '"}) where (where ((not (variable.variable_status =~ "(?i).*obsolete.*")) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ "(?i).*-.*"))) return count(variable) as total_variables'
+
                     )
                     cursor = db.run(query)
                     result = get_neo_result(cursor, "total_variables")
@@ -364,7 +365,7 @@ class BRAPIVariablesView(PublicView):
                     query = (
                         'match (variable:Variable {ontology_id: "'
                         + variable_id
-                        + '"}) where (not variable.variable_status =~ "(?i).*obsolete.*" or NOT EXISTS(variable.variable_status)) return variable SKIP '
+                        + '"}) where ((not (variable.variable_status =~ "(?i).*obsolete.*")) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ "(?i).*-.*"))) return variable SKIP '
                         + str(a_page.first_item - 1)
                         + " LIMIT "
                         + str(page_size)
@@ -455,7 +456,7 @@ class BRAPIVariablesView(PublicView):
                         ret["result"].append(ret_result)
         else:
             query = (
-                "match (variable:Variable) return count(variable) as total_variables"
+                "match (variable:Variable) where ((not (variable.variable_status =~ '(?i).*obsolete.*')) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ '(?i).*-.*'))) return count(variable) as total_variables"
             )
             cursor = db.run(query)
             result = get_neo_result(cursor, "total_variables")
@@ -463,7 +464,7 @@ class BRAPIVariablesView(PublicView):
             item_collection = range(total_variables)
             a_page = paginate.Page(item_collection, current_page, page_size)
             query = (
-                "match (variable:Variable) where (not variable.variable_status =~ '(?i).*obsolete.*' or NOT EXISTS(variable.variable_status)) return variable SKIP "
+                "match (variable:Variable) where ((not (variable.variable_status =~ '(?i).*obsolete.*')) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ '(?i).*-.*'))) return variable SKIP "
                 + str(a_page.first_item - 1)
                 + " LIMIT "
                 + str(page_size)
