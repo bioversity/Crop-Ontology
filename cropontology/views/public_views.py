@@ -138,14 +138,6 @@ class ErrorView(PublicView):
                 user = user_authorized
 
         if user is None:
-            policy = get_policy(self.request, "assistant")
-            login_data = policy.authenticated_userid(self.request)
-            if login_data is not None:
-                login_data = literal_eval(login_data)
-                if login_data["group"] == "collaborator":
-                    user = login_data["login"]
-
-        if user is None:
             user = "Unknown"
         log.error(
             "Server Error in URL {}.\nAccount: {}\nError: \n{}".format(
