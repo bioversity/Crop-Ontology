@@ -297,7 +297,7 @@ class TemplateLoadView(PublicView):
                     + "') WHEN '' THEN null ELSE '"
                     + row["Scientist"]
                     + "' END "
-                    + "SET a.data = CASE trim('"
+                    + "SET a.date = CASE trim('"
                     + str(row["Date"])
                     + "') WHEN '' THEN null ELSE '"
                     + str(row["Date"])
@@ -397,7 +397,7 @@ class TemplateLoadView(PublicView):
                     + "') WHEN '' THEN null ELSE '"
                     + row["Alternative trait abbreviations"]
                     + "' END "
-                    + "SET a.Entity = CASE trim('"
+                    + "SET a.entity = CASE trim('"
                     + row["Entity"]
                     + "') WHEN '' THEN null ELSE '"
                     + row["Entity"]

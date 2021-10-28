@@ -492,7 +492,7 @@ class ExcelView(PublicView):
                 "Trait synonyms": an_item["trait"]["trait_synonym"],
                 "Main trait abbreviation": an_item["trait"]["main_trait_abbreviation"],
                 "Alternative trait abbreviations": an_item["trait"][
-                    "alternative_abbreviation"
+                    "alternative_trait_abbreviations"
                 ],
                 "Entity": an_item["trait"]["entity"],
                 "Attribute": an_item["trait"]["attribute"],
