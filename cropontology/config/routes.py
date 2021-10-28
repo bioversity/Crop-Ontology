@@ -60,7 +60,7 @@ from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView, Stat
 
 from ..views.template import TemplateLoadView, OntologyVersionView, CompareVersionView
 
-from ..views.delete import DeleteOntologyView, DeleteTermView
+from ..views.delete import DeleteOntologyView, DeleteTermView, UpdateDBView
 
 from ..views.users import (
     APIUserSearchSelect2,
@@ -439,6 +439,11 @@ def load_routes(config):
     # Here come the delete term view
     routes.append(
         add_route("delete_term", "/delete-term/{term_id}", DeleteTermView, None)
+    )
+
+    # Here come the delete term view
+    routes.append(
+        add_route("update_db", "/update-db", UpdateDBView, None)
     )
 
     # Users API
