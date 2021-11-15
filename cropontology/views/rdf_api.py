@@ -42,9 +42,9 @@ class MetadataView(PublicView):
                     ret += (
                         " - id: " + onto_id + "\n"
                         "   title: " + onto_name + " ontology\n"
-                        "   uri: {}rdf/".format(home_url)
+                        "   uri: {}term/".format(home_url)
                         + onto_id
-                        + "\n"
+                        + ":ROOT\n"
                         '   description: "' + onto_description + '"' + "\n"
                         "   homepage: {}term/".format(home_url)
                         + onto_id
