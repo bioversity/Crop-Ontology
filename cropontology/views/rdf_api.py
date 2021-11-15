@@ -42,17 +42,13 @@ class MetadataView(PublicView):
                     ret += (
                         " - id: " + onto_id + "\n"
                         "   title: " + onto_name + " ontology\n"
-                        "   uri: {}ontology/".format(home_url)
+                        "   uri: {}rdf/".format(home_url)
                         + onto_id
-                        + "/"
-                        + onto_name
                         + "\n"
                         '   description: "' + onto_description + '"' + "\n"
-                        "   homepage: {}ontology/".format(home_url)
+                        "   homepage: {}term/".format(home_url)
                         + onto_id
-                        + "/"
-                        + onto_name
-                        + "\n"
+                        + ":ROOT\n"
                         "   mailing_list: helpdesk@cropontology-curationtool.org\n"
                         "   definition_property:\n"
                         "     - http://www.w3.org/2004/02/skos/core#definition\n"
