@@ -854,25 +854,25 @@ class StatView(PublicView):
                     query = (
                         "MATCH (n {ontology_id:'"
                         + onto_id
-                        + "', term_type:'variable'}) RETURN count (n)"
+                        + "', term_type:'variable'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
                     )
                     count_var = db.run(query).single().value()
                     query = (
                         "MATCH (n {ontology_id:'"
                         + onto_id
-                        + "', term_type:'trait'}) RETURN count (n)"
+                        + "', term_type:'trait'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
                     )
                     count_trait = db.run(query).single().value()
                     query = (
                         "MATCH (n {ontology_id:'"
                         + onto_id
-                        + "', term_type:'method'}) RETURN count (n)"
+                        + "', term_type:'method'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
                     )
                     count_method = db.run(query).single().value()
                     query = (
                         "MATCH (n {ontology_id:'"
                         + onto_id
-                        + "', term_type:'scale'}) RETURN count (n)"
+                        + "', term_type:'scale'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
                     )
                     count_scale = db.run(query).single().value()
 
@@ -888,13 +888,13 @@ class StatView(PublicView):
                         }
                     )
 
-        query = "MATCH (n {term_type:'variable'}) RETURN count (n)"
+        query = "MATCH (n {term_type:'variable'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
         count_var = db.run(query).single().value()
-        query = "MATCH (n {term_type:'trait'}) RETURN count (n)"
+        query = "MATCH (n {term_type:'trait'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
         count_trait = db.run(query).single().value()
-        query = "MATCH (n {term_type:'method'}) RETURN count (n)"
+        query = "MATCH (n {term_type:'method'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
         count_method = db.run(query).single().value()
-        query = "MATCH (n {term_type:'scale'}) RETURN count (n)"
+        query = "MATCH (n {term_type:'scale'}) WHERE (not (n.ontology_id =~ '(?i).*-.*')) RETURN count (n)"
         count_scale = db.run(query).single().value()
 
         count_tot = count_scale + count_method + count_var + count_trait
