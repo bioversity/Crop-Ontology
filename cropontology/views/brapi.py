@@ -354,8 +354,7 @@ class BRAPIVariablesView(PublicView):
                     query = (
                         'match (variable:Variable {ontology_id: "'
                         + variable_id
-                        + '"}) where (where ((not (variable.variable_status =~ "(?i).*obsolete.*")) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ "(?i).*-.*"))) return count(variable) as total_variables'
-
+                        + '"}) where ((not (variable.variable_status =~ "(?i).*obsolete.*")) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ "(?i).*-.*"))) return count(variable) as total_variables'
                     )
                     cursor = db.run(query)
                     result = get_neo_result(cursor, "total_variables")
@@ -434,30 +433,29 @@ class BRAPIVariablesView(PublicView):
                         }
 
                         scale = get_scale(db, a_variable["id"])
-                        categories = []
-                        i = 1
-                        while scale["category_" + str(i)]:
-                            categories.append(scale["category_" + str(i)])
-                            i += 1
+                        if scale:
+                            categories = []
+                            i = 1
+                            while scale["category_" + str(i)]:
+                                categories.append(scale["category_" + str(i)])
+                                i += 1
 
-                        ret_result["scale"] = {
-                            "scaleDbId": scale["id"],
-                            "name": scale["name"],
-                            "dataType": scale["scale_class"],
-                            "decimalPlaces": scale["decimal_places"],
-                            "xref": scale["scale_xref"],
-                            "validValues": {
-                                "min": scale["lower_limit"],
-                                "max": scale["upper limit"],
-                                "categories": categories,
-                            },
-                        }
+                            ret_result["scale"] = {
+                                "scaleDbId": scale["id"],
+                                "name": scale["name"],
+                                "dataType": scale["scale_class"],
+                                "decimalPlaces": scale["decimal_places"],
+                                "xref": scale["scale_xref"],
+                                "validValues": {
+                                    "min": scale["lower_limit"],
+                                    "max": scale["upper limit"],
+                                    "categories": categories,
+                                },
+                            }
 
                         ret["result"].append(ret_result)
         else:
-            query = (
-                "match (variable:Variable) where ((not (variable.variable_status =~ '(?i).*obsolete.*')) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ '(?i).*-.*'))) return count(variable) as total_variables"
-            )
+            query = "match (variable:Variable) where ((not (variable.variable_status =~ '(?i).*obsolete.*')) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ '(?i).*-.*'))) return count(variable) as total_variables"
             cursor = db.run(query)
             result = get_neo_result(cursor, "total_variables")
             total_variables = result[0]

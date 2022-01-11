@@ -42,13 +42,9 @@ class MetadataView(PublicView):
                     ret += (
                         " - id: " + onto_id + "\n"
                         "   title: " + onto_name + " ontology\n"
-                        "   uri: {}term/".format(home_url)
-                        + onto_id
-                        + ":ROOT\n"
+                        "   uri: {}term/".format(home_url) + onto_id + ":ROOT\n"
                         '   description: "' + onto_description + '"' + "\n"
-                        "   homepage: {}term/".format(home_url)
-                        + onto_id
-                        + ":ROOT\n"
+                        "   homepage: {}term/".format(home_url) + onto_id + ":ROOT\n"
                         "   mailing_list: helpdesk@cropontology-curationtool.org\n"
                         "   definition_property:\n"
                         "     - http://www.w3.org/2004/02/skos/core#definition\n"
@@ -914,6 +910,7 @@ class StatView(PublicView):
         response.text = json_data
         return response
 
+
 class GetOntologies(PublicView):
     def process_view(self):
         self.returnRawViewResult = True
@@ -945,14 +942,16 @@ class GetOntologies(PublicView):
                 query = "MATCH (n {ontology_id:'" + onto_id + "'}) RETURN count (n)"
                 count_tot = db.run(query).single().value()
 
-                ret.append({
-                    "ontology_id": onto_id,
-                    "ontology_name":onto_name,
-                    "ontology_summary": ontology_summary,
-                    "total_terms": count_tot,
-                    "onto_type": ontology_type
-                    })
-         
+                ret.append(
+                    {
+                        "ontology_id": onto_id,
+                        "ontology_name": onto_name,
+                        "ontology_summary": ontology_summary,
+                        "total_terms": count_tot,
+                        "onto_type": ontology_type,
+                    }
+                )
+
         json_data = to_json(ret)
         response.text = json_data
         return response

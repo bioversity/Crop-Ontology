@@ -116,7 +116,7 @@ class TemplateLoadView(PublicView):
             # replace special characters that might fail queries
             td.replace({'"': "", "'": ""}, regex=True, inplace=True)
             ## all the columns have the same dtype
-            td = td.astype('object')
+            td = td.astype("object")
 
             term_id = 0  # to be used when an ID is empty
 

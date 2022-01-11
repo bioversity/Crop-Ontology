@@ -56,7 +56,14 @@ from ..views.brapi import (
     BRAPIVariablesView,
 )
 
-from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView, StatView, GetOntologies
+from ..views.rdf_api import (
+    MetadataView,
+    RDFCleanView,
+    ExcelView,
+    UriView,
+    StatView,
+    GetOntologies,
+)
 
 from ..views.template import TemplateLoadView, OntologyVersionView, CompareVersionView
 
