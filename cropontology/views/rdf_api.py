@@ -913,3 +913,46 @@ class StatView(PublicView):
         json_data = to_json(result)
         response.text = json_data
         return response
+
+class GetOntologies(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),  # application/x-yaml
+        ]
+        response = Response(headerlist=headers, status=200)
+
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        ontology_collection = ontology_db["ontologies"]
+        ontologies = list(ontology_collection.find().sort([("ontology_name", 1)]))
+
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        ret = []
+        names = []
+        for ontology in ontologies:
+            if ontology["category"] == "300-499 Phenotype and Trait Ontology":
+                onto_id = ontology["ontology_id"]
+                onto_name = ontology["ontology_name"]
+                ontology_summary = ontology["ontology_summary"]
+                ontology_type = "TDV5"
+                query = "MATCH (n {ontology_id:'" + onto_id + "'}) RETURN count (n)"
+                count_tot = db.run(query).single().value()
+
+                ret.append({
+                    "ontology_id": onto_id,
+                    "ontology_name":onto_name,
+                    "ontology_summary": ontology_summary,
+                    "total_terms": count_tot,
+                    "onto_type": ontology_type
+                    })
+         
+        json_data = to_json(ret)
+        response.text = json_data
+        return response

@@ -56,7 +56,7 @@ from ..views.brapi import (
     BRAPIVariablesView,
 )
 
-from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView, StatView
+from ..views.rdf_api import MetadataView, RDFCleanView, ExcelView, UriView, StatView, GetOntologies
 
 from ..views.template import TemplateLoadView, OntologyVersionView, CompareVersionView
 
@@ -397,6 +397,9 @@ def load_routes(config):
 
     # Here comes the CO API routes
     routes.append(add_route("api_stat", "/ontos_stats", StatView, None))
+
+    # Here comes the CO API routes
+    routes.append(add_route("get_ontologies", "/get-ontologies", GetOntologies, None))
 
     # Here comes the dereferenceable URIs routes
     routes.append(add_route("uri_term", "/rdf/{term_id}", UriView, None))
