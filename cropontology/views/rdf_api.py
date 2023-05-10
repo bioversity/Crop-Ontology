@@ -341,7 +341,7 @@ class RDFCleanView(PublicView):
                 i += 1
             for s in categories:
                 try:
-                    if re.match(r"\[\d+\]", s):
+                    if re.match(r"\[^\d+\]", s):
                         cat = re.findall(r"\d+", s)
                         g.add(
                             (
@@ -375,7 +375,7 @@ class RDFCleanView(PublicView):
                         g.add(
                             (
                                 URIRef(
-                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip().replace(" ", "_")
                                 ),
                                 RDFS.subClassOf,
                                 scale_uri,
@@ -384,7 +384,7 @@ class RDFCleanView(PublicView):
                         g.add(
                             (
                                 URIRef(
-                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip().replace(" ", "_")
                                 ),
                                 RDFS.label,
                                 Literal(cat[1].strip(), lang="en"),
@@ -393,7 +393,7 @@ class RDFCleanView(PublicView):
                         g.add(
                             (
                                 URIRef(
-                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip()
+                                    NS + an_item["scale"]["id"] + "/" + cat[0].strip().replace(" ", "_")
                                 ),
                                 SKOS.altLabel,
                                 Literal(cat[0].strip(), lang="en"),
@@ -419,7 +419,7 @@ class RDFCleanView(PublicView):
             g.add((br, OWL.someValuesFrom, method_uri))
             g.add((scale_uri, RDFS.subClassOf, br))
 
-        response.text = g.serialize(format="pretty-xml").decode("utf-8")
+        response.text = g.serialize(format="pretty-xml")
         db.close()
         return response
 
