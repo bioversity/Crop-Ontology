@@ -574,38 +574,52 @@ class TemplateLoadView(PublicView):
                     + "') WHEN '' THEN null ELSE '"
                     + row["Scale class"]
                     + "' END "
-                    + "SET a.decimal_places = CASE trim('"
-                    + str(row["Decimal places"])
-                    + "') WHEN '' THEN null ELSE '"
-                    + str(row["Decimal places"])
-                    + "' END "
-                    + "SET a.lower_limit = CASE trim('"
-                    + str(row["Lower limit"])
-                    + "') WHEN '' THEN null ELSE '"
-                    + str(row["Lower limit"])
-                    + "' END "
-                    + "SET a.upper_limit = CASE trim('"
-                    + str(row["Upper limit"])
-                    + "') WHEN '' THEN null ELSE '"
-                    + str(row["Upper limit"])
-                    + "' END "
+                    ##+ "SET a.decimal_places = CASE trim('"
+                    ##+ str(row["Decimal places"])
+                    ##+ "') WHEN '' THEN null ELSE '"
+                    ##+ str(row["Decimal places"])
+                    ##+ "' END "
+                    ##+ "SET a.lower_limit = CASE trim('"
+                    ##+ str(row["Lower limit"])
+                    ##+ "') WHEN '' THEN null ELSE '"
+                    ##+ str(row["Lower limit"])
+                    ##+ "' END "
+                    ##+ "SET a.upper_limit = CASE trim('"
+                    ##+ str(row["Upper limit"])
+                    ##+ "') WHEN '' THEN null ELSE '"
+                    ##+ str(row["Upper limit"])
+                    ##+ "' END "
                     + "SET a.scale_xref = CASE trim('"
                     + str(row["Scale Xref"])
                     + "') WHEN '' THEN null ELSE '"
                     + str(row["Scale Xref"])
                     + "' END "
                 )
-                i = 1
-                while "Category " + str(i) in row:
-                    if row["Category " + str(i)]:
-                        query += (
-                            "SET a.category_"
-                            + str(i)
-                            + " = '"
-                            + str(row["Category " + str(i)])
-                            + "' "
-                        )
-                    i += 1
+                ## old vs new TD 5
+                if "Category 1" in row:
+                    i = 1
+                    while "Category " + str(i) in row:
+                        if row["Category " + str(i)]:
+                            query += (
+                                "SET a.category_"
+                                + str(i)
+                                + " = '"
+                                + str(row["Category " + str(i)])
+                                + "' "
+                            )
+                        i += 1
+                else: 
+                    i = 1
+                    while "Cat " + str(i) + " code" in row:
+                        if row["Cat " + str(i) + " code"]:
+                            query += (
+                                "SET a.category_"
+                                + str(i)
+                                + " = '"
+                                + str(row["Cat " + str(i) + " code"]) + "=" + str(row["Cat " + str(i) + " description"])
+                                + "' "
+                            )
+                        i += 1
                 cursor = db.run(query)
                 es_data = {
                     "ontology_id": ontology_id,
@@ -622,22 +636,32 @@ class TemplateLoadView(PublicView):
                 }
                 if row["Scale class"]:
                     es_data["scale_class"] = row["Scale class"]
-                if row["Decimal places"]:
-                    es_data["decimal_places"] = str(row["Decimal places"])
-                if row["Lower limit"]:
-                    es_data["lower_limit"] = str(row["Lower limit"])
-                if row["Upper limit"]:
-                    es_data["upper_limit"] = str(row["Upper limit"])
+                ##if row["Decimal places"]:
+                    ##es_data["decimal_places"] = str(row["Decimal places"])
+                ##if row["Lower limit"]:
+                    ##es_data["lower_limit"] = str(row["Lower limit"])
+                ##if row["Upper limit"]:
+                    ##es_data["upper_limit"] = str(row["Upper limit"])
                 if row["Scale Xref"]:
                     es_data["scale_xref"] = row["Scale Xref"]
 
-                i = 1
-                while "Category {}".format(i) in row:
-                    if row["Category {}".format(i)]:
-                        es_data["category_{}".format(i)] = str(
-                            row["Category {}".format(i)]
-                        )
-                    i += 1
+                
+                if "Category 1" in row:
+                    i = 1
+                    while "Category {}".format(i) in row:
+                        if row["Category {}".format(i)]:
+                            es_data["category_{}".format(i)] = str(
+                                row["Category {}".format(i)]
+                            )
+                        i += 1
+                else:
+                    i = 1
+                    while "Cat " + str(i) + " code" in row:
+                        if row["Cat " + str(i) + " code"]:
+                            es_data["category_{}".format(i)] = str(
+                                str(row["Cat " + str(i) + " code"]) + "=" + str(row["Cat " + str(i) + " description"])
+                            )
+                        i += 1
 
                 if not term_index.term_exists(row["Scale ID"]):
                     term_index.add_term(row["Scale ID"], es_data)
