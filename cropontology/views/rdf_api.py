@@ -341,7 +341,7 @@ class RDFCleanView(PublicView):
                 i += 1
             for s in categories:
                 try:
-                    if re.match(r"\[^\d+\]", s):
+                    if re.match(r"\[\d+\]", s):
                         cat = re.findall(r"\d+", s)
                         g.add(
                             (
@@ -419,7 +419,7 @@ class RDFCleanView(PublicView):
             g.add((br, OWL.someValuesFrom, method_uri))
             g.add((scale_uri, RDFS.subClassOf, br))
 
-        response.text = g.serialize(format="pretty-xml")
+        response.text = g.serialize(format="pretty-xml").decode("utf-8")
         db.close()
         return response
 
