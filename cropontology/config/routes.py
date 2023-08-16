@@ -258,6 +258,9 @@ def load_routes(config):
         )
     )
 
+    # Here comes the dereferenceable URIs routes
+    routes.append(add_route("base_uri", "/rdf/{ontology_id}.owl", RDFCleanView, None))
+
     routes.append(
         add_route(
             "create_ontology",

@@ -413,7 +413,10 @@ class RDFCleanView(PublicView):
             g.add((br, OWL.someValuesFrom, method_uri))
             g.add((scale_uri, RDFS.subClassOf, br))
 
-        response.text = g.serialize(format="pretty-xml").decode("utf-8")
+        try:
+            response.text = g.serialize(format="pretty-xml").decode("utf-8")
+        except:
+            response.text = g.serialize(format="pretty-xml")
         db.close()
         return response
 
@@ -804,7 +807,10 @@ class UriView(PublicView):
                     g.add((br, OWL.someValuesFrom, URIRef(NS + item["scale.id"])))
                     g.add((var_uri, RDFS.subClassOf, br))
 
-        response.text = g.serialize(format="pretty-xml").decode("utf-8")
+        try:
+            response.text = g.serialize(format="pretty-xml").decode("utf-8")
+        except:
+            response.text = g.serialize(format="pretty-xml")
         db.close()
         return response
 
