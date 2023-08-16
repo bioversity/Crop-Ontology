@@ -42,27 +42,21 @@ class MetadataView(PublicView):
                     ret += (
                         " - id: " + onto_id + "\n"
                         "   title: " + onto_name + " ontology\n"
-                        "   uri: {}term/".format(home_url) + onto_id + ":ROOT\n"
-                        '   description: "' + onto_description + '"' + "\n"
-                        "   homepage: {}term/".format(home_url) + onto_id + ":ROOT\n"
+                        "   uri: http://cropontology.org/rdf/" + onto_id + ".owl\n"
+                        '   description: "' + onto_description.replace("\n", " ") + '"' + "\n"
+                        "   homepage: http://cropontology.org/term/" + onto_id + ":ROOT\n"
                         "   mailing_list: helpdesk@cropontology-curationtool.org\n"
                         "   definition_property:\n"
                         "     - http://www.w3.org/2004/02/skos/core#definition\n"
                         "   synonym_property:\n"
                         "     - http://www.w3.org/2004/02/skos/core#altLabel\n"
-                        "     - {}rdf/acronym\n"
+                        "     - http://cropontology.org/rdf/acronym\n"
                         "   hierarchical_property:\n"
-                        "     - {}rdf/method_of\n"
-                        "     - {}rdf/scale_of\n"
+                        "     - http://cropontology.org/rdf/method_of\n"
+                        "     - http://cropontology.org/rdf/scale_of\n"
                         "   base_uri:\n"
-                        "     - {}rdf/".format(home_url, home_url, home_url, home_url)
-                        + onto_id
-                        + "\n"
-                        "   ontology_purl : {}ontology/".format(home_url)
-                        + onto_id
-                        + "/"
-                        + onto_name
-                        + "/owl\n"
+                        "     - http://cropontology.org/rdf/"+ onto_id +"\n"
+                        "   ontology_purl : http://cropontology.org/rdf/"+ onto_id + ".owl\n"
                     )
 
         # json_data = to_json(ret)
@@ -813,7 +807,6 @@ class UriView(PublicView):
         response.text = g.serialize(format="pretty-xml").decode("utf-8")
         db.close()
         return response
-
 
 class StatView(PublicView):
     def process_view(self):
