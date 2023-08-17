@@ -230,6 +230,7 @@ class TermDetailsView(PublicView):
             sortItem = [
                 "variable_id",
                 "variable_name",
+                "variable_label",
                 "ontology_id",
                 "ontology_name",
                 "variable_synonyms",
@@ -251,6 +252,7 @@ class TermDetailsView(PublicView):
             sortItem = [
                 "variable_id",
                 "variable_name",
+                "variable_label",
                 "ontology_id",
                 "ontology_name",
                 "variable_synonyms",
