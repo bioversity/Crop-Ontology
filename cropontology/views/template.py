@@ -326,9 +326,9 @@ class TemplateLoadView(PublicView):
                 if row["Growth stage"]:
                     es_data["growth_stage"] = row["Growth stage"]
                 if row["Variable status"]:
-                    es_data["variable_status"] = ["Variable status"]
+                    es_data["variable_status"] = row["Variable status"]
                 if row["Variable Xref"]:
-                    es_data["variable_xref"] = ["Variable Xref"]
+                    es_data["variable_xref"] = row["Variable Xref"]
                 if row["Institution"]:
                     es_data["institution"] = row["Institution"]
                 if row["Scientist"]:
