@@ -1,30 +1,39 @@
+import datetime
 import logging
 import re
+import secrets
 import traceback
 import uuid
 from ast import literal_eval
+
+import pymongo
 import validators
 from formencode.variabledecode import variable_decode
+from jinja2 import ext
+from neo4j import GraphDatabase
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from pyramid.security import remember
 from pyramid.session import check_csrf_token
+
 import cropontology.plugins as p
 from cropontology.config.encdecdata import encode_data
 from cropontology.processes.avatar import Avatar
-from .classes import PublicView
-from ..config.auth import get_user_data
+from .classes import PublicView, SendEmailMixin
+from ..config.auth import get_user_data, getUserByEmail, setPasswordResetToken, resetKeyExists, resetPassword, \
+    get_user_by_reset_key
+from ..config.jinja_extensions import jinjaEnv, extendThis
+from ..plugins.helpers import readble_date
 from ..processes.db import (
     register_user,
     update_last_login,
 )
-import pymongo
-import datetime
-from neo4j import GraphDatabase
 
 log = logging.getLogger("cropontology")
 
+def render_template(template_filename, context):
+    return jinjaEnv.get_template(template_filename).render(context)
 
 class HomeView(PublicView):
     def process_view(self):
@@ -221,6 +230,138 @@ class LoginView(PublicView):
                 )
         return {"next": next_page}
 
+
+class RecoverPasswordView(PublicView, SendEmailMixin):
+
+    def send_password_email(self, email_to, reset_token, reset_key, user_dict):
+        jinjaEnv.add_extension(ext.i18n)
+        jinjaEnv.add_extension(extendThis)
+        _ = self.request.translate
+        email_from = self.request.registry.settings.get("email.from", None)
+
+        if email_from is None:
+            log.error(
+                "Crop Ontology has no email settings in place. Email service is disabled."
+            )
+            return False
+        if email_from == "":
+            return False
+        date_string = readble_date(datetime.datetime.now(), self.request.locale_name)
+        reset_url = self.request.route_url("reset_password", reset_key=reset_key)
+        text = render_template(
+            "email/recover_email.jinja2",
+            {
+                "recovery_date": date_string,
+                "reset_token": reset_token,
+                "user_dict": user_dict,
+                "reset_url": reset_url,
+                "_": _,
+            },
+        )
+
+        self.send_email(email_from, email_to, "Crop Ontology - Password reset request", text, user_dict.name)
+
+    def process_view(self):
+        # If we logged in then go to dashboard
+        policy = get_policy(self.request, "main")
+        login = policy.authenticated_userid(self.request)
+        currentUser = get_user_data(login, self.request)
+        if currentUser is not None:
+            raise HTTPNotFound()
+
+        error_summary = {}
+        if "submit" in self.request.POST:
+            email = self.request.POST.get("user_email", None)
+            if email is not None:
+                user, password = getUserByEmail(email, self.request)
+                if user is not None:
+
+                    reset_key = str(uuid.uuid4())
+                    reset_token = secrets.token_hex(16)
+                    setPasswordResetToken(
+                        self.request, user.login, reset_key, reset_token
+                    )
+                    self.send_password_email(user.email, reset_token, reset_key, user)
+                    self.returnRawViewResult = True
+                    return HTTPFound(location=self.request.route_url("login"))
+                else:
+                    error_summary["email"] = self._(
+                        "Cannot find an user with such email address"
+                    )
+            else:
+                error_summary["email"] = self._("You need to provide an email address")
+
+        return {"error_summary": error_summary}
+
+
+class ResetPasswordView(PublicView):
+    def process_view(self):
+
+        error_summary = {}
+        dataworking = {}
+
+        reset_key = self.request.matchdict["reset_key"]
+
+        if not resetKeyExists(self.request, reset_key):
+            raise HTTPNotFound()
+
+        if self.request.method == "POST":
+
+            safe = check_csrf_token(self.request, raises=False)
+
+            if not safe:
+                raise HTTPNotFound()
+
+            dataworking = self.get_post_dict()
+            new_password = dataworking["password"].strip()
+            new_password2 = dataworking["password2"].strip()
+            reset_token = dataworking["reset_token"]
+            user = get_user_by_reset_key(self.request, reset_token)
+
+            if user is not None:
+                user = get_user_data(user.user_id, self.request)
+                if user.userData["user_password_reset_key"] == reset_key:
+                    if user.userData["user_password_reset_token"] == reset_token:
+                        if (
+                                user.userData["user_password_reset_expires_on"]
+                                > datetime.datetime.now()
+                        ):
+                            if new_password != "":
+                                if new_password == new_password2:
+                                    new_password = encode_data(
+                                        self.request, new_password
+                                    )
+                                    resetPassword(
+                                        self.request,
+                                        user.userData["user_name"],
+                                        reset_key,
+                                        reset_token,
+                                        new_password,
+                                    )
+                                    self.returnRawViewResult = True
+                                    return HTTPFound(
+                                        location=self.request.route_url("login")
+                                    )
+                                else:
+                                    error_summary = {
+                                        "Error": self._(
+                                            "The password and the confirmation are not the same"
+                                        )
+                                    }
+                            else:
+                                error_summary = {
+                                    "Error": self._("The password cannot be empty")
+                                }
+                        else:
+                            error_summary = {"Error": self._("Invalid token")}
+                    else:
+                        error_summary = {"Error": self._("Invalid token")}
+                else:
+                    error_summary = {"Error": self._("Invalid key")}
+            else:
+                error_summary = {"Error": self._("User does not exist")}
+
+        return {"error_summary": error_summary, "dataworking": dataworking}
 
 class RefreshSessionView(PublicView):
     def process_view(self):

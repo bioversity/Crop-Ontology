@@ -269,9 +269,17 @@ class TermDetailsView(PublicView):
             ]
             results = sorted(results, key=lambda k: sortItem.index(k["key"]))
 
+        ontology_name = ''
+        if results:
+            for item in results:
+                if item.get('key') == 'ontology_name':
+                    ontology_name = item.get('value')
+                    break
+
         return {
             "results": results,
             "term_id": term_id,
+            "ontology_name": ontology_name,
             "with_tree": with_tree,
             "variables": variables,
             "ontology_id": ontology_id,

@@ -7,24 +7,8 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body">
-                <form class="form-inline ml-12" method="post" action="{{ request.route_url('search') }}">
-                    <div class="input-group" style="width: 100%">
-                        <input class="form-control form-control-navbar" name="searchtext" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-navbar" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
+{% include 'snippets/search_ontology.jinja2' %}
 
 <div class="row">
     <div class="col-lg-12">

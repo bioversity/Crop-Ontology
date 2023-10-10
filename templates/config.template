@@ -33,6 +33,14 @@ redis.sessions.cookie_name = cropontology_session
 redis.sessions.host = localhost
 redis.sessions.port = 6379
 
+
+email.server = smtp.serve
+email.user = mail@mail.com
+email.password = password
+email.from = mail@mail.com
+github_token = githbub_token
+
+
 # By default, the toolbar only appears for clients from IP addresses
 # '127.0.0.1' and '::1'.
 # debugtoolbar.hosts = 127.0.0.1 ::1

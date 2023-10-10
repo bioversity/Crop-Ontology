@@ -2,6 +2,7 @@
 <html {% block htmlattributes %}lang="{{ request.locale_name }}" {% endblock htmlattributes %}>
 {% block html %}
     <head>
+    {% include 'snippets/google_analytics.jinja2' %}
         {% block head %}
             {% block meta %}
                 <meta charset="utf-8">

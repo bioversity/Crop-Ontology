@@ -51,6 +51,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20
 Pygments==2.6.1
+PyGithub==1.59.1
 pymongo==3.11.0
 PyMySQL==1.0.2
 pyramid==1.10.4

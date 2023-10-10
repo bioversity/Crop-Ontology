@@ -184,3 +184,58 @@ def regularise_html(html):
         matches[i] = re.sub("\s{2,}", " ", match)
     html = "".join(matches)
     return html
+
+
+class extendThis(ext.Extension):
+    tags = ["extend_me"]
+
+    def __init__(self, environment):
+        ext.Extension.__init__(self, environment)
+        try:
+            self.searchpath = jinjaEnv.loader.searchpath[:]
+        except AttributeError:
+            # this isn't available on message extraction
+            pass
+
+    def parse(self, parser):
+        lineno = next(parser.stream).lineno
+        node = nodes.Extends(lineno)
+        template_file = parser.filename
+        template_path = parser.filename
+
+        # We need to have a list of template paths to look for
+        if not hasattr(self, "searchpath"):
+            return node
+
+        # First we remove the templates path from the file
+        # so to have the just the template file or a template file in a subdirectory of templates
+        for searchpath in self.searchpath:
+            template_file = template_file.replace(searchpath, "")
+
+        # Here we get the template path of the file
+        template_path = template_path.replace(template_file, "")
+
+        # Find the position of the template's path in the list of paths
+        index = -1
+        try:
+            index = self.searchpath.index(template_path)
+        except ValueError:
+            pass
+        if index == -1:
+            return node
+
+        # index is the position of the this template's path
+        # so we search down stream for the template in other paths
+        file_to_extend = ""
+        for pos in range(index + 1, len(self.searchpath)):
+            if os.path.exists(self.searchpath[pos] + template_file):
+                file_to_extend = self.searchpath[pos] + template_file
+                break
+
+        # If the file to extend from exits then set it as a template
+        if file_to_extend == "":
+            return node
+        else:
+            node.template = nodes.Const(file_to_extend)
+
+        return node

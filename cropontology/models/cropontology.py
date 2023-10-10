@@ -31,6 +31,9 @@ class User(Base):
     tags = Column(UnicodeText)
     extras = Column(UnicodeText)
 
+    user_password_reset_key = Column(Unicode(64))
+    user_password_reset_token = Column(Unicode(64))
+    user_password_reset_expires_on = Column(DateTime)
 
 class Page(Base):
     __tablename__ = "page"

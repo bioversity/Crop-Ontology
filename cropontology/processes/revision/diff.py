@@ -1,8 +1,10 @@
+import logging
 import os
 import uuid
 from subprocess import Popen, PIPE
 from bs4 import BeautifulSoup
 
+log = logging.getLogger("cropontology")
 
 def generate_diff(request, revision_id, file_a, file_b):
     repository_path = request.registry.settings.get("repository.path")
@@ -30,7 +32,7 @@ def generate_diff(request, revision_id, file_a, file_b):
     nada, stderr = p.communicate()
     final.close()
     if p.returncode == 1:
-        args = ["diff2html", "-s", "side", "-o", "stdout", "-i", "file", diff_file]
+        args = ["diff2html", "-s", "side", "-o", "stdout", "-i", "file", '--', diff_file] # this fix depends of the diff2html version
 
         final = open(html_file, "w")
         p = Popen(args, stdout=final, stderr=PIPE)

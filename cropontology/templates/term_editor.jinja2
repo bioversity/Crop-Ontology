@@ -20,16 +20,22 @@
                                 <tbody>
                                 {% for a_key in keys %}
                                     <tr>
-                                        <td>{{ a_key.name }}</td>
+                                        {% if a_key.name == 'name' %}
+                                            <td>{{ a_key.name }} <small><em>(This is the name in navigation tree)</em></small></td>
+                                        {% else %}
+                                            <td>{{ a_key.name }}</td>
+                                        {% endif %}
                                         {% if a_key.read_only == False %}
                                             {% if a_key.type == "text" %}
-                                                <td><input type="text" name="{{ a_key.name }}" value="{{ a_key.value }}"></td>
+                                                <td><input type="text" name="{{ a_key.name }}"
+                                                           value="{{ a_key.value }}"></td>
                                             {% endif %}
                                             {% if a_key.type == "options" %}
                                                 <td>
                                                     <select name="{{ a_key.name }}">
                                                         {% for an_option in a_key.options %}
-                                                            <option value="{{ an_option.code }}" {% if an_option.code == a_key.value %}selected{% endif %}>{{ an_option.desc }}</option>
+                                                            <option value="{{ an_option.code }}"
+                                                                    {% if an_option.code == a_key.value %}selected{% endif %}>{{ an_option.desc }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>

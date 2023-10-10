@@ -1,4 +1,7 @@
+import datetime
+
 import validators
+from dateutil.relativedelta import relativedelta
 from sqlalchemy import func
 
 from cropontology.models import User as userModel
@@ -107,3 +110,64 @@ def check_login(user, password, request):
             return True
         else:
             return False
+
+
+def getUserByEmail(email, request):
+    result = (
+        request.dbsession.query(userModel)
+        .filter(userModel.user_email == email)
+        .filter(userModel.user_active == 1)
+        .first()
+    )
+
+    if result is not None:
+        return (
+            User(map_from_schema(result)),
+            decode_data(request, result.user_password.encode()),
+        )
+    return None, None
+
+
+def setPasswordResetToken(request, userName, reset_key, reset_token):
+    token_expires_on = datetime.datetime.now() + relativedelta(hours=+24)
+    request.dbsession.query(userModel).filter(userModel.user_id == userName).update(
+        {
+            "user_password_reset_key": reset_key,
+            "user_password_reset_token": reset_token,
+            "user_password_reset_expires_on": token_expires_on,
+        }
+    )
+
+
+def resetKeyExists(request, reset_key):
+    res = (
+        request.dbsession.query(userModel)
+        .filter(userModel.user_password_reset_key == reset_key)
+        .first()
+    )
+    if res is not None:
+        return True
+    return False
+
+
+def resetPassword(request, user_id, reset_key, reset_token, new_password):
+    request.dbsession.query(userModel).filter(userModel.user_name == user_id).filter(
+        userModel.user_password_reset_key == reset_key
+    ).filter(userModel.user_password_reset_token == reset_token).update(
+        {
+            "user_password_reset_key": None,
+            "user_password_reset_token": None,
+            "user_password_reset_expires_on": None,
+            "user_password": new_password,
+        }
+    )
+
+
+def get_user_by_reset_key(request, reset_token):
+    result = (
+        request.dbsession.query(userModel)
+        .filter(userModel.user_password_reset_token == reset_token)
+        .filter(userModel.user_active == 1)
+        .first()
+    )
+    return result or None
