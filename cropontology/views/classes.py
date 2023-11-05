@@ -33,6 +33,9 @@ from cropontology.processes.db import (
 )
 from .. import plugins as p
 from ..config.auth import get_user_data
+from cropontology.models import OntologyManageAccess
+from cropontology.processes.db.user import get_user_by_user_id
+
 
 log = logging.getLogger("cropontology")
 
@@ -417,7 +420,7 @@ class SendEmailMixin(object):
         smtp_server = self.smtp_server
 
         if not smtp_server:
-            print('Cannot send emails')
+            log.error('Cannot send emails')
             return
 
         msg = MIMEText(body.encode("utf-8"), "plain", "utf-8")
@@ -437,4 +440,49 @@ class SendEmailMixin(object):
             server.quit()
 
         except Exception as e:
-            print(str(e))
+            log.error(f'SendEmailMixin error: {e}')
+
+
+class OntologyManageAccessUtilsMixin(object):
+
+    def get_manager_access(self, user_id):
+        ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
+            OntologyManageAccess.user_id == user_id).all()
+        result = []
+        for access in ontology_manager_access:
+            result.append(access.ontology_id)
+        return result
+
+
+class RevisionStatusChangeEmailMixin(SendEmailMixin):
+
+    def _send_email(self, text, email_to, subject, target):
+        from cropontology.config.jinja_extensions import jinjaEnv, extendThis
+        from jinja2 import ext
+        jinjaEnv.add_extension(ext.i18n)
+        jinjaEnv.add_extension(extendThis)
+        email_from = self.request.registry.settings.get("email.from", None)
+
+        self.send_email(email_from, email_to, subject, text, target)
+
+    def send_revision_status_update_email(self, created_by, current_status):
+        from cropontology.views.public_views import render_template
+
+        if not created_by:
+            return
+
+        submitter_user = get_user_by_user_id(self.request, created_by)
+        if not submitter_user:
+            return
+
+        email_to = submitter_user.user_email
+
+        text = render_template(
+            "email/term_revision_status_update.jinja2",
+            {
+                "current_status": current_status,
+                "_": self.request.translate,
+            },
+        )
+
+        self._send_email(text, email_to, "Crop Ontology - New Revisions Status Update", '')

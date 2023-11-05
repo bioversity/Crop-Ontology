@@ -1,13 +1,23 @@
 import datetime
 import uuid
 from collections import OrderedDict
-from .classes import PublicView, PrivateView
+
+from cropontology.processes.db.user import get_user_by_user_id
+from cropontology.views.public_views import render_template
+from jinja2 import ext
+
+from cropontology.config.jinja_extensions import jinjaEnv, extendThis
+from cropontology.plugins.helpers import readble_date
+
+from cropontology.views.classes import PublicView, PrivateView, SendEmailMixin, OntologyManageAccessUtilsMixin, \
+    RevisionStatusChangeEmailMixin
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from neo4j import GraphDatabase
 import pymongo
 import os
 import json
 from webhelpers2.html import literal
+from cropontology.models import OntologyManageAccess
 from cropontology.processes.revision.diff import generate_diff
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 import logging
@@ -288,7 +298,48 @@ class TermDetailsView(PublicView):
         }
 
 
-class TermEditorView(PrivateView):
+class TermEditorView(PrivateView, SendEmailMixin):
+
+    def _send_email(self, text, email_to, subject, target):
+        jinjaEnv.add_extension(ext.i18n)
+        jinjaEnv.add_extension(extendThis)
+        email_from = self.request.registry.settings.get("email.from", None)
+
+        self.send_email(email_from, email_to, subject, text, target)
+
+    def send_term_revisions_notification_email(self, email_to, user_name):
+        reset_url = self.request.route_url("revisions")
+        text = render_template(
+            "email/term_revisions_notification_email.jinja2",
+            {
+                "revisions_url": reset_url,
+                "_": self.request.translate,
+            },
+        )
+
+        self._send_email(text, email_to, "Crop Ontology - New Revisions Request", user_name)
+
+    def send_active_user_revision_notification_email(self, user_email, userID):
+        text = render_template(
+            "email/term_revision_submitter_notification.jinja2",
+            {
+                "_": self.request.translate,
+            },
+        )
+
+        self._send_email(text, user_email, "Crop Ontology - New Revisions Submitted", '')
+
+    def send_notification_email(self):
+        termid = self.request.matchdict.get('termid').split(':')[0]
+
+        ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
+            OntologyManageAccess.ontology_id == termid).all()
+
+        for ontology in ontology_manager_access:
+            self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name)
+
+        self.send_active_user_revision_notification_email(self.user.email, self.userID)
+
     def process_view(self):
         def set_key_settings(keys):
             for a_key in keys:
@@ -389,6 +440,7 @@ class TermEditorView(PrivateView):
                 }
 
                 revisions_collection.insert_one(revision)
+                self.send_notification_email()
                 self.returnRawViewResult = True
                 return HTTPFound(location=self.request.route_url("revisions"))
             else:
@@ -397,7 +449,8 @@ class TermEditorView(PrivateView):
                 return {"keys": keys, "revision_notes": ""}
 
 
-class TermRevisionListView(PrivateView):
+class TermRevisionListView(PrivateView, OntologyManageAccessUtilsMixin):
+
     def process_view(self):
         mongo_url = self.request.registry.settings.get("mongo.url")
         mongo_client = pymongo.MongoClient(mongo_url)
@@ -425,14 +478,18 @@ class TermRevisionListView(PrivateView):
         if status == "error":
             status_code = -2
 
-        if self.user.super == 0:
-            revision_query = {"created_by": self.userID}
-        else:
-            revision_query = {}
-            if user_to_query is not None:
-                revision_query["created_by"] = user_to_query
+        revision_query = {}
+
         if status_code is not None:
             revision_query["status"] = status_code
+
+        if self.user.super == 0:
+            ontologies_manager_access = self.get_manager_access(self.userID)
+            revision_query = {"$and": [revision_query, {"ontology_id": {'$in': ontologies_manager_access}}]}
+        else:
+            if user_to_query is not None:
+                revision_query["created_by"] = user_to_query
+
         revisions = revisions_collection.find(revision_query).sort("created_on", -1)
         return {"revisions": revisions, "status": status}
 
@@ -496,7 +553,8 @@ class CompareRevisionView(PrivateView):
             }
 
 
-class DisregardRevisionView(PrivateView):
+class DisregardRevisionView(PrivateView, RevisionStatusChangeEmailMixin):
+
     def process_view(self):
         revision_id = self.request.matchdict["revisionid"]
         mongo_url = self.request.registry.settings.get("mongo.url")
@@ -511,10 +569,13 @@ class DisregardRevisionView(PrivateView):
             new_status = {"$set": {"status": 2}}
             revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
+            created_by = revision_data.get('created_by')
+            self.send_revision_status_update_email(created_by, 'Disregarded')
+
             return HTTPFound(location=self.request.route_url("revisions"))
 
 
-class RejectRevisionView(PrivateView):
+class RejectRevisionView(PrivateView, RevisionStatusChangeEmailMixin):
     def process_view(self):
         revision_id = self.request.matchdict["revisionid"]
         mongo_url = self.request.registry.settings.get("mongo.url")
@@ -535,10 +596,13 @@ class RejectRevisionView(PrivateView):
             }
             revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
+            created_by = revision_data.get('created_by')
+            self.send_revision_status_update_email(created_by, 'Rejected')
+
             return HTTPFound(location=self.request.route_url("revisions"))
 
 
-class ApproveRevisionView(PrivateView):
+class ApproveRevisionView(PrivateView, RevisionStatusChangeEmailMixin):
     def process_view(self):
         revision_id = self.request.matchdict["revisionid"]
         mongo_url = self.request.registry.settings.get("mongo.url")
@@ -658,4 +722,7 @@ class ApproveRevisionView(PrivateView):
                 }
                 revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
+            created_by = revision_data.get('created_by')
+            self.send_revision_status_update_email(created_by, 'Approved')
+
             return HTTPFound(location=self.request.route_url("revisions"))

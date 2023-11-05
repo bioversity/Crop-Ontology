@@ -1,0 +1,14 @@
+{% block email_body %}
+    {% block email_hello %}
+        {{ _("Dear Crop Ontology Manager") }}
+    {% endblock email_hello %}
+    {% block email_message %}
+        {{ _('The review request has been confirmed and assigned to the corresponding manager. You will be notified when it is updated') }}
+
+    {% endblock email_message %}
+    {% block email_goodbye %}
+        {{ _('Regards') }},
+
+        {{ _('The Crop Ontology  team') }}
+    {% endblock email_goodbye %}
+{% endblock email_body %}

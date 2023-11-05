@@ -1,4 +1,7 @@
-from cropontology.views.classes import PrivateView
+from sqlalchemy import and_
+
+from cropontology.models import OntologyManageAccess
+from cropontology.views.classes import PrivateView, OntologyManageAccessUtilsMixin
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 import paginate
 from cropontology.processes.db import (
@@ -16,6 +19,7 @@ import validators
 import datetime
 import uuid
 import logging
+import pymongo
 
 log = logging.getLogger("cropontology")
 
@@ -203,7 +207,70 @@ class ChangePasswordView(PrivateView):
         return {}
 
 
-class EditUserView(PrivateView):
+class EditUserView(PrivateView, OntologyManageAccessUtilsMixin):
+
+    def get_ontologies(self, user_to_modify):
+        mongo_url = self.request.registry.settings.get("mongo.url")
+        mongo_client = pymongo.MongoClient(mongo_url)
+        ontology_db = mongo_client["ontologies"]
+        ontology_collection = ontology_db["ontologies"]
+        ontologies = list(ontology_collection.find().sort([("ontology_name", 1)]))
+
+        manager_access = self.get_manager_access(user_to_modify)
+        for ontology in ontologies:
+            if ontology['ontology_id'] in manager_access:
+                ontology.update({'has_manager_permission': True})
+            else:
+                ontology.update({'has_manager_permission': False})
+
+        return sorted(ontologies, key=lambda x: not x['has_manager_permission'])
+
+    def create_new_ontology_manager_access(self, user_id, ontology_id, user_to_modify):
+        ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
+            and_(OntologyManageAccess.user_id == user_id, OntologyManageAccess.ontology_id == ontology_id)).first()
+
+        if not ontology_manager_access:
+            new_ontology_manager_access = OntologyManageAccess(user_id=user_to_modify, ontology_id=ontology_id)
+            self.request.dbsession.merge(new_ontology_manager_access)
+            self.request.dbsession.flush()
+            return new_ontology_manager_access
+
+        return ontology_manager_access
+
+    def remove_manager_access(self, user_to_modify, ontology_id):
+        self.request.dbsession.query(OntologyManageAccess).filter(and_(OntologyManageAccess.user_id == user_to_modify,
+                                                                       OntologyManageAccess.ontology_id == ontology_id)).delete()
+
+    def remove_all_manager_access(self, user_to_modify):
+        manager_access = self.get_manager_access(user_to_modify)
+        for access in manager_access:
+            self.remove_manager_access(user_to_modify, access)
+
+    def sync_manager_access(self, user_to_modify, selected_ontologies):
+        manager_access = self.get_manager_access(user_to_modify)
+        for access in manager_access:
+            if access not in selected_ontologies:
+                self.remove_manager_access(user_to_modify, access)
+
+    @staticmethod
+    def _sanitize_selected_ontologies(selected_ontologies):
+        if type(selected_ontologies) is str:
+            return [selected_ontologies]
+        return selected_ontologies
+
+    def update_ontology_access(self, user_details, user_to_modify):
+        selected_ontologies = user_details.get('selected_flag')
+
+        if not selected_ontologies:
+            self.remove_all_manager_access(user_to_modify)
+            return
+
+        selected_ontologies = self._sanitize_selected_ontologies(selected_ontologies)
+        self.sync_manager_access(user_to_modify, selected_ontologies)
+
+        for selected_item in selected_ontologies:
+            self.create_new_ontology_manager_access(user_to_modify, selected_item, user_to_modify)
+
     def process_view(self):
         if self.user.super != 1:
             raise HTTPNotFound
@@ -301,6 +368,12 @@ class EditUserView(PrivateView):
                         )
                 else:
                     self.append_to_errors(self._("The password cannot be empty"))
+            if 'update_ontologies_access' in user_details.keys():
+                self.update_ontology_access(user_details, user_to_modify)
         else:
             action = None
-        return {"userid": self.userID, "userData": user_data, "action": action}
+
+        ontologies = self.get_ontologies(user_to_modify)
+        selected_ontologies = sum(1 for item in ontologies if item['has_manager_permission'])
+        return {"userid": self.userID, "userData": user_data, "action": action, 'ontologies': ontologies,
+                'selected_ontologies': selected_ontologies}

@@ -9,6 +9,7 @@ from .cropontology import (
     Page,
     Section,
     UserSection,
+    OntologyManageAccess
 )
 from .schema import *
 

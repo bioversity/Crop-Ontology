@@ -6,9 +6,7 @@
         {{ _('You have received this email because you requested us on') }} {{ recovery_date }}
         {{ _('to reset your password') }}.
 
-        {{ _('Your password reset token is') }}: {{ reset_token }}
-
-        {{ _('Go to this URL') }} {{ reset_url }} {{ _('to reset your password') }}.
+        {{ _('Go to this URL') }} {{ reset_url }}?reset_token={{ reset_token }} {{ _('to reset your password') }}.
 
         {{ _('If you did not request us to reset your password then someone or something is trying to get into our account. Please change your password immediately!') }}
     {% endblock email_message %}

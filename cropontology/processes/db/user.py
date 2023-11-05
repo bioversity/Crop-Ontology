@@ -24,6 +24,7 @@ __all__ = [
     "get_user_id_with_email",
     "get_users",
     "query_users",
+    "get_user_by_user_id"
 ]
 
 log = logging.getLogger("cropontology")
@@ -138,6 +139,19 @@ def get_user_id_with_email(request, email):
     )
     if res is not None:
         return res.user_id
+    else:
+        return None
+
+
+def get_user_by_user_id(request, user_id):
+    res = (
+        request.dbsession.query(User)
+        .filter(User.user_id == user_id)
+        .filter(User.user_active == 1)
+        .first()
+    )
+    if res is not None:
+        return res
     else:
         return None
 

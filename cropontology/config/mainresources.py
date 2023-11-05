@@ -29,6 +29,7 @@ def create_resources(apppath, config):
     r.add_js_resource(
         "main_library", "ckeditor4", "plugins/ckeditor4/ckeditor.js", None
     )
+    r.add_js_resource("main_library", "validate", "plugins/validate/jquery.validate.min.js", "jquery")
 
     # Graph CSS
     r.add_css_resource("main_library", "graph_style", "plugins/graph/style.css", None)
