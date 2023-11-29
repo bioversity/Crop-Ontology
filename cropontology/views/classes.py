@@ -465,7 +465,16 @@ class RevisionStatusChangeEmailMixin(SendEmailMixin):
 
         self.send_email(email_from, email_to, subject, text, target)
 
-    def send_revision_status_update_email(self, created_by, current_status):
+    @staticmethod
+    def get_changed_term(data):
+        default_term = 'Unknown term'
+        if data:
+            for value in data:
+                if 'new_value' in value.keys():
+                    default_term = value.get('name')
+        return default_term
+
+    def send_revision_status_update_email(self, created_by, current_status, revision_data=None):
         from cropontology.views.public_views import render_template
 
         if not created_by:
@@ -477,11 +486,16 @@ class RevisionStatusChangeEmailMixin(SendEmailMixin):
 
         email_to = submitter_user.user_email
 
+        ontology_name = revision_data.get('ontology_name')
+        term = self.get_changed_term(revision_data.get('data'))
+
         text = render_template(
             "email/term_revision_status_update.jinja2",
             {
                 "current_status": current_status,
                 "_": self.request.translate,
+                "crop_name_affected": ontology_name,
+                "id_of_the_term": term,
             },
         )
 

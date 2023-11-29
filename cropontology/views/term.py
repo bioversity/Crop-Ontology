@@ -570,7 +570,7 @@ class DisregardRevisionView(PrivateView, RevisionStatusChangeEmailMixin):
             revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
             created_by = revision_data.get('created_by')
-            self.send_revision_status_update_email(created_by, 'Disregarded')
+            self.send_revision_status_update_email(created_by, 'Disregarded', revision_data)
 
             return HTTPFound(location=self.request.route_url("revisions"))
 
@@ -597,7 +597,7 @@ class RejectRevisionView(PrivateView, RevisionStatusChangeEmailMixin):
             revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
             created_by = revision_data.get('created_by')
-            self.send_revision_status_update_email(created_by, 'Rejected')
+            self.send_revision_status_update_email(created_by, 'Rejected', revision_data)
 
             return HTTPFound(location=self.request.route_url("revisions"))
 
@@ -723,6 +723,6 @@ class ApproveRevisionView(PrivateView, RevisionStatusChangeEmailMixin):
                 revisions_collection.update_one(revision_query, new_status)
             self.returnRawViewResult = True
             created_by = revision_data.get('created_by')
-            self.send_revision_status_update_email(created_by, 'Approved')
+            self.send_revision_status_update_email(created_by, 'Approved', revision_data)
 
             return HTTPFound(location=self.request.route_url("revisions"))

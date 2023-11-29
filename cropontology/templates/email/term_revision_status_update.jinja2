@@ -1,14 +1,13 @@
 {% block email_body %}
     {% block email_hello %}
-        {{ _("Dear Crop Ontology Manager") }}
+        {{ _("Dear "+crop_name_affected+" Ontology Manager") }}
     {% endblock email_hello %}
     {% block email_message %}
-        {{ _('The status of the requested revision change, the current status is: ') }} {{ current_status }}
+        {{ _('The status of the requested term ('+ id_of_the_term +') revision change, the current status is: ') }} {{ current_status }}
 
     {% endblock email_message %}
     {% block email_goodbye %}
         {{ _('Regards') }},
-        s
-        {{ _('The Crop Ontology  team') }}
+        {{ _('The Crop Ontology Helpdesk') }}
     {% endblock email_goodbye %}
 {% endblock email_body %}

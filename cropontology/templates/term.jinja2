@@ -13,7 +13,6 @@
 
 {% block main_container %}
 
-    {% include 'snippets/search_ontology.jinja2' %}
 
     <div class="row">
         {% if request.h.has_section_content(request, ontology_id) %}
@@ -28,6 +27,8 @@
             </div>
         {% endif %}
     </div>
+
+    {% include 'snippets/search_ontology.jinja2' %}
 
     <div class="row">
         <div class="col-lg-6">

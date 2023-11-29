@@ -850,7 +850,7 @@ class TemplateLoadView(PublicView):
 
             ontology_name = ontology_data['ontology_name'].lower().replace(" ", "_")
             repo_name = f'{ontology_id}-{ontology_name}-traits'
-            file_name = f"{ontology_name}_TD.csv"
+            file_name = f"{ontology_name.title()}_TD.csv"
             paths = ["tmp", str(uuid.uuid4()) + ".csv"]
             csv_path = os.path.join(repository_path, *paths)
 
