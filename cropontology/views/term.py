@@ -317,7 +317,7 @@ class TermEditorView(PrivateView, SendEmailMixin):
             },
         )
 
-        self._send_email(text, email_to, "Crop Ontology - New Revisions Request", user_name)
+        self._send_email(text, email_to, "Crop Ontology Helpdesk - New Revisions Request", user_name)
 
     def send_active_user_revision_notification_email(self, user_email, userID):
         text = render_template(
@@ -327,7 +327,7 @@ class TermEditorView(PrivateView, SendEmailMixin):
             },
         )
 
-        self._send_email(text, user_email, "Crop Ontology - New Revisions Submitted", '')
+        self._send_email(text, user_email, "Crop Ontology Helpdesk - New Revisions Submitted", '')
 
     def send_notification_email(self):
         termid = self.request.matchdict.get('termid').split(':')[0]

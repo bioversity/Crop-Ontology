@@ -499,4 +499,4 @@ class RevisionStatusChangeEmailMixin(SendEmailMixin):
             },
         )
 
-        self._send_email(text, email_to, "Crop Ontology - New Revisions Status Update", '')
+        self._send_email(text, email_to, "Crop Ontology Helpdesk - New Revisions Status Update", '')

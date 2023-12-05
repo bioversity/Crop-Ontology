@@ -1,9 +1,9 @@
 {% block email_body %}
     {% block email_hello %}
-        {{ _("Dear "+crop_name_affected+" Ontology Manager") }}
+        {{ _("Dear "+crop_name_affected+" Ontology Curator") }}
     {% endblock email_hello %}
     {% block email_message %}
-        {{ _('The status of the requested term ('+ id_of_the_term +') revision change, the current status is: ') }} {{ current_status }}
+        {{ _('The status of the requested term ('+ id_of_the_term +') revision changed, the current status is: ') }} {{ current_status }}
 
     {% endblock email_message %}
     {% block email_goodbye %}

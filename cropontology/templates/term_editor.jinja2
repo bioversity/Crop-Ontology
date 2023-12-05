@@ -25,7 +25,7 @@
                                         {% else %}
                                             <td>{{ a_key.name }}</td>
                                         {% endif %}
-                                        {% if a_key.read_only == False %}
+                                        {% if a_key.read_only == False and a_key.name != 'trait_class' %}
                                             {% if a_key.type == "text" %}
                                                 <td><input type="text" name="{{ a_key.name }}"
                                                            value="{{ a_key.value }}"></td>
@@ -54,6 +54,12 @@
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">{{ _('Submit revision') }}</button>
+                            {% for a_key in keys %}
+                                {% if a_key.name == 'id' %}
+                                    <button onclick="location.href='{{ request.route_url('term_details',termid=a_key.value) }}';"
+                                            type="button" class="btn btn-danger">{{ _('Cancel') }}</button>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </form>
                 </div>

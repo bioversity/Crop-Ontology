@@ -259,7 +259,7 @@ class RecoverPasswordView(PublicView, SendEmailMixin):
             },
         )
 
-        self.send_email(email_from, email_to, "Crop Ontology - Password reset request", text, user_dict.name)
+        self.send_email(email_from, email_to, "Crop Ontology Helpdesk - Password reset request", text, user_dict.name)
 
     def process_view(self):
         # If we logged in then go to dashboard
@@ -283,7 +283,7 @@ class RecoverPasswordView(PublicView, SendEmailMixin):
                     )
                     self.send_password_email(user.email, reset_token, reset_key, user)
                     self.returnRawViewResult = True
-                    return HTTPFound(location=self.request.route_url("login"))
+                    return {"error_summary": error_summary, 'email_sent': True}
                 else:
                     error_summary["email"] = self._(
                         "Cannot find an user with such email address"
