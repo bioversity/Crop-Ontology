@@ -17,7 +17,7 @@ import pymongo
 import os
 import json
 from webhelpers2.html import literal
-from cropontology.models import OntologyManageAccess
+from cropontology.models import OntologyManageAccess, User
 from cropontology.processes.revision.diff import generate_diff
 from cropontology.processes.elasticsearch.term_index import get_term_index_manager
 import logging
@@ -307,13 +307,14 @@ class TermEditorView(PrivateView, SendEmailMixin):
 
         self.send_email(email_from, email_to, subject, text, target)
 
-    def send_term_revisions_notification_email(self, email_to, user_name):
+    def send_term_revisions_notification_email(self, email_to, user_name, ontology_name):
         reset_url = self.request.route_url("revisions")
         text = render_template(
             "email/term_revisions_notification_email.jinja2",
             {
                 "revisions_url": reset_url,
                 "_": self.request.translate,
+                "ontology_name": ontology_name
             },
         )
 
@@ -329,14 +330,21 @@ class TermEditorView(PrivateView, SendEmailMixin):
 
         self._send_email(text, user_email, "Crop Ontology Helpdesk - New Revisions Submitted", '')
 
-    def send_notification_email(self):
+    def send_notification_email(self, ontology_name):
         termid = self.request.matchdict.get('termid').split(':')[0]
 
         ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
             OntologyManageAccess.ontology_id == termid).all()
 
         for ontology in ontology_manager_access:
-            self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name)
+            self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name, ontology_name)
+
+        # notify all super_admins
+        super_admins = self.request.dbsession.query(User).filter(
+            User.user_super == "1").all()
+
+        for sa in super_admins:
+            self.send_term_revisions_notification_email(sa.user_email, sa.user_name, ontology_name)
 
         self.send_active_user_revision_notification_email(self.user.email, self.userID)
 
@@ -440,7 +448,7 @@ class TermEditorView(PrivateView, SendEmailMixin):
                 }
 
                 revisions_collection.insert_one(revision)
-                self.send_notification_email()
+                self.send_notification_email(ontology_name)
                 self.returnRawViewResult = True
                 return HTTPFound(location=self.request.route_url("revisions"))
             else:

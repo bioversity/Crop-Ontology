@@ -1,6 +1,6 @@
 {% block email_body %}
     {% block email_hello %}
-        {{ _("Dear Crop Ontology curator") }}
+        {{ _("Dear "+ontology_name+" Ontology Curator") }}
     {% endblock email_hello %}
     {% block email_message %}
         {{ _('You have received this email because a new term edition needs your revision') }}

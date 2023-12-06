@@ -24,6 +24,8 @@
             right: 0;
             left: 0;
             bottom: 0;
+            color: grey;
+            font-weight: 700;
         }
     </style>
 {% endblock css %}
@@ -61,7 +63,9 @@
     <div align="center" id="busy" class='busy_overlay' style="display: none;">
         <div id='busydiv'>
             <img alt="image" src="{{ request.url_for_static('busy.gif') }}" style="height: 200px; width: 200px"/>
+            The upload will take several minutes, please be patient!
         </div>
+
     </div>
 
 {% endblock %}
@@ -79,8 +83,6 @@
         $( ".require_busy" ).submit(function( event ) {
             $("#busy").show();
         });
-        {#$('.require_busy').onsubmit = function() {#}
-        {#    $("#busy").show();#}
 
     </script>
 {% endblock scripts %}
