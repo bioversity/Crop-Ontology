@@ -320,24 +320,25 @@ class TermEditorView(PrivateView, SendEmailMixin):
 
         self._send_email(text, email_to, "Crop Ontology Helpdesk - New Revisions Request", user_name)
 
-    def send_active_user_revision_notification_email(self, user_email, userID):
+    def send_active_user_revision_notification_email(self, user_email, userID, ontology_name):
         text = render_template(
             "email/term_revision_submitter_notification.jinja2",
             {
                 "_": self.request.translate,
+                "ontology_name": ontology_name
             },
         )
 
-        self._send_email(text, user_email, "Crop Ontology Helpdesk - New Revisions Submitted", '')
+        self._send_email(text, user_email, "Crop Ontology Helpdesk - New Revisions Submitted", userID)
 
     def send_notification_email(self, ontology_name):
-        termid = self.request.matchdict.get('termid').split(':')[0]
-
-        ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
-            OntologyManageAccess.ontology_id == termid).all()
-
-        for ontology in ontology_manager_access:
-            self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name, ontology_name)
+        # termid = self.request.matchdict.get('termid').split(':')[0]
+        #
+        # ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
+        #     OntologyManageAccess.ontology_id == termid).all()
+        #
+        # for ontology in ontology_manager_access:
+        #     self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name, ontology_name)
 
         # notify all super_admins
         super_admins = self.request.dbsession.query(User).filter(
@@ -346,7 +347,7 @@ class TermEditorView(PrivateView, SendEmailMixin):
         for sa in super_admins:
             self.send_term_revisions_notification_email(sa.user_email, sa.user_name, ontology_name)
 
-        self.send_active_user_revision_notification_email(self.user.email, self.userID)
+        self.send_active_user_revision_notification_email(self.user.email, self.userID, ontology_name)
 
     def process_view(self):
         def set_key_settings(keys):

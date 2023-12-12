@@ -1,6 +1,6 @@
 {% block email_body %}
     {% block email_hello %}
-        {{ _("Dear Crop Ontology Curator") }}
+        {{ _("Dear "+ontology_name+" Ontology Curator") }}
     {% endblock email_hello %}
     {% block email_message %}
         {{ _('The review request has been confirmed and assigned to the corresponding manager. You will be notified when it is updated') }}
