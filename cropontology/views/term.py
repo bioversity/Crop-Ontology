@@ -307,47 +307,70 @@ class TermEditorView(PrivateView, SendEmailMixin):
 
         self.send_email(email_from, email_to, subject, text, target)
 
-    def send_term_revisions_notification_email(self, email_to, user_name, ontology_name):
+    def send_term_revisions_notification_email(self, email_to, user_name, ontology_name, id_label, review_url):
         reset_url = self.request.route_url("revisions")
         text = render_template(
             "email/term_revisions_notification_email.jinja2",
             {
                 "revisions_url": reset_url,
                 "_": self.request.translate,
-                "ontology_name": ontology_name
+                "ontology_name": ontology_name,
+                "id_label": id_label,
+                "review_url": review_url
             },
         )
 
         self._send_email(text, email_to, "Crop Ontology Helpdesk - New Revisions Request", user_name)
 
-    def send_active_user_revision_notification_email(self, user_email, userID, ontology_name):
+    def send_active_user_revision_notification_email(self, user_email, userID, ontology_name, id_label, review_url):
         text = render_template(
             "email/term_revision_submitter_notification.jinja2",
             {
                 "_": self.request.translate,
-                "ontology_name": ontology_name
+                "ontology_name": ontology_name,
+                "id_label": id_label,
+                "review_url": review_url
             },
         )
 
         self._send_email(text, user_email, "Crop Ontology Helpdesk - New Revisions Submitted", userID)
 
-    def send_notification_email(self, ontology_name):
-        # termid = self.request.matchdict.get('termid').split(':')[0]
-        #
-        # ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
-        #     OntologyManageAccess.ontology_id == termid).all()
-        #
-        # for ontology in ontology_manager_access:
-        #     self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name, ontology_name)
+    def send_notification_email(self, ontology_name, revision):
+        termid = self.request.matchdict.get('termid').split(':')[0]
+
+        emails_sent = []
+
+        fields = [item['name'] for item in revision['data'] if 'new_value' in item]
+
+        if len(fields) == 1:
+            field = fields[0]
+        else:
+            field = ', '.join(fields)
+
+        id_label = f'{revision["for_term"]} in ontology {ontology_name}: Fields ({field})'
+
+        review_url = self.request.route_url("compare_revision", revisionid=revision['revision'])
+
+        ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
+            OntologyManageAccess.ontology_id == termid).all()
+
+        for ontology in ontology_manager_access:
+            if ontology.user.user_email not in emails_sent:
+                self.send_term_revisions_notification_email(ontology.user.user_email, ontology.user.user_name,
+                                                            ontology_name, id_label, review_url)
+                emails_sent.append(ontology.user.user_email)
 
         # notify all super_admins
+
         super_admins = self.request.dbsession.query(User).filter(
             User.user_super == "1").all()
 
         for sa in super_admins:
-            self.send_term_revisions_notification_email(sa.user_email, sa.user_name, ontology_name)
+            if sa.user_email not in emails_sent:
+                self.send_term_revisions_notification_email(sa.user_email, sa.user_name, ontology_name, id_label, review_url)
+                emails_sent.append(sa.user_email)
 
-        self.send_active_user_revision_notification_email(self.user.email, self.userID, ontology_name)
+        self.send_active_user_revision_notification_email(self.user.email, self.userID, ontology_name, id_label, review_url)
 
     def process_view(self):
         def set_key_settings(keys):
@@ -449,9 +472,9 @@ class TermEditorView(PrivateView, SendEmailMixin):
                 }
 
                 revisions_collection.insert_one(revision)
-                self.send_notification_email(ontology_name)
+                self.send_notification_email(ontology_name, revision)
                 self.returnRawViewResult = True
-                return HTTPFound(location=self.request.route_url("revisions"))
+                return HTTPFound(location=self.request.route_url("term_details", termid=term_id))
             else:
                 self.errors.append(self._("Nothing to change"))
                 set_key_settings(keys)

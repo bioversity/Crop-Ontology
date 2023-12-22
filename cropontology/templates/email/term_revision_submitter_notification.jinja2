@@ -3,7 +3,10 @@
         {{ _("Dear "+ontology_name+" Ontology Curator") }}
     {% endblock email_hello %}
     {% block email_message %}
+
         {{ _('The review request has been confirmed and assigned to the corresponding manager. You will be notified when it is updated') }}
+
+        {{ _('This is the review carried out: ') + id_label +' : ' +review_url}}
 
     {% endblock email_message %}
     {% block email_goodbye %}
