@@ -26,6 +26,8 @@ from ..views.public_views import (
     Gravatar,
     ContentView,
     APIHelpView,
+    RecoverPasswordView,
+    ResetPasswordView,
 )
 from ..views.pages import (
     PageListView,
@@ -120,6 +122,9 @@ def load_routes(config):
         add_route("refresh", "/refresh", RefreshSessionView, "generic/refresh.jinja2")
     )
     routes.append(add_route("login", "/login", LoginView, "user/login.jinja2"))
+    routes.append(add_route("recover", "/recover", RecoverPasswordView, "user/recover.jinja2"))
+    routes.append(add_route("reset_password", "/reset/{reset_key}/password", ResetPasswordView,"user/reset_password.jinja2"))
+
     # routes.append(add_route("register", "/join", RegisterView, "user/register.jinja2"))
     routes.append(add_route("logout", "/logout", log_out_view, None))
     routes.append(add_route("gravatar", "/gravatar", Gravatar, None))

@@ -7,6 +7,7 @@ from sqlalchemy import (
     Unicode,
     UnicodeText,
     ForeignKey,
+    Integer,
 )
 
 from .meta import Base
@@ -31,6 +32,9 @@ class User(Base):
     tags = Column(UnicodeText)
     extras = Column(UnicodeText)
 
+    user_password_reset_key = Column(Unicode(64))
+    user_password_reset_token = Column(Unicode(64))
+    user_password_reset_expires_on = Column(DateTime)
 
 class Page(Base):
     __tablename__ = "page"
@@ -82,3 +86,16 @@ class Menu(Base):
     menu_fixed = Column(INTEGER, server_default=text("'0'"))
     menu_content = Column(UnicodeText)
     extras = Column(UnicodeText)
+
+
+class OntologyManageAccess(Base):
+    __tablename__ = "ontologymanageaccess"
+
+    ontology_manage_access_id = Column(Integer, primary_key=True, autoincrement=True)
+
+    user_id = Column(
+        ForeignKey("user.user_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    ontology_id = Column(Unicode(50))
+    user = relationship("User")

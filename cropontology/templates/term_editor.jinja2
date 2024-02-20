@@ -20,16 +20,22 @@
                                 <tbody>
                                 {% for a_key in keys %}
                                     <tr>
-                                        <td>{{ a_key.name }}</td>
-                                        {% if a_key.read_only == False %}
+                                        {% if a_key.name == 'name' %}
+                                            <td>{{ a_key.name }} <small><em>(This is the name in navigation tree)</em></small></td>
+                                        {% else %}
+                                            <td>{{ a_key.name }}</td>
+                                        {% endif %}
+                                        {% if a_key.read_only == False and a_key.name != 'trait_class' %}
                                             {% if a_key.type == "text" %}
-                                                <td><input type="text" name="{{ a_key.name }}" value="{{ a_key.value }}"></td>
+                                                <td><input type="text" name="{{ a_key.name }}"
+                                                           value="{{ a_key.value }}"></td>
                                             {% endif %}
                                             {% if a_key.type == "options" %}
                                                 <td>
                                                     <select name="{{ a_key.name }}">
                                                         {% for an_option in a_key.options %}
-                                                            <option value="{{ an_option.code }}" {% if an_option.code == a_key.value %}selected{% endif %}>{{ an_option.desc }}</option>
+                                                            <option value="{{ an_option.code }}"
+                                                                    {% if an_option.code == a_key.value %}selected{% endif %}>{{ an_option.desc }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
@@ -48,6 +54,12 @@
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">{{ _('Submit revision') }}</button>
+                            {% for a_key in keys %}
+                                {% if a_key.name == 'id' %}
+                                    <button onclick="location.href='{{ request.route_url('term_details',termid=a_key.value) }}';"
+                                            type="button" class="btn btn-danger">{{ _('Cancel') }}</button>
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </form>
                 </div>

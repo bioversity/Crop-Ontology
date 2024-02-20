@@ -1,0 +1,18 @@
+{% block email_body %}
+    {% block email_hello %}
+        {{ _("Dear Crop ontology curator") }}
+    {% endblock email_hello %}
+    {% block email_message %}
+        {{ _('You have received this email because a new term edition needs your revision') }}
+
+        {{ _('This is the review carried out: ') + id_label +' : ' +review_url}}
+
+        {{ _('Go to this URL') }} {{ revisions_url }} {{ _(' to see all Suggested revisions') }}.
+
+    {% endblock email_message %}
+    {% block email_goodbye %}
+        {{ _('Regards') }},
+
+        {{ _('The Crop Ontology  team') }}
+    {% endblock email_goodbye %}
+{% endblock email_body %}

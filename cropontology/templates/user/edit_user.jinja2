@@ -43,16 +43,84 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                   <h5>{{ _('Change password') }}</h5>
+                    <h5>{{ _('Change password') }}</h5>
                     {% block user_password_content %}
-                    {% block password_errors %}
+                        {% block password_errors %}
+                            {% if action == "changepass" %}
+                                {{ form.display_errors(errors) }}
+                            {% endif %}
+                        {% endblock password_errors %}
+                        {% include 'user/snippets/user_password_form.jinja2' %}
+                    {% endblock user_password_content %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <form class="m-t" role="form" method="post" action="{{ request.url }}">
+                    <div class="card-body">
+                        <h5>{{ _('Allow to user manage the selected ontologies') }}
+                            {% if selected_ontologies > 0 %}
+                                ({{ selected_ontologies }}{{ _(' selected)') }}
+                            {% endif %}
+                        </h5>
+
                         {% if action == "changepass" %}
                             {{ form.display_errors(errors) }}
                         {% endif %}
-                    {% endblock password_errors %}
-                    {% include 'user/snippets/user_password_form.jinja2' %}
-                {% endblock user_password_content %}
-                </div>
+                        <table class="table" style="">
+                            <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Ontology Name</th>
+                                <th scope="col">Link</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <div style="position: relative;height: 400px;overflow: auto; display: block;">
+                            <table class="table" style="">
+                                <tbody>
+                                {% for ontology in ontologies %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                       value="{{ ontology.ontology_id }}"
+                                                       id="flexCheckDefault" name="selected_flag"
+                                                       {% if ontology.has_manager_permission %}checked{% endif %}/>
+                                            </div>
+                                        </td>
+                                        <td>{{ ontology.ontology_name }} <input type="hidden"
+                                                                                name="ontology_name"
+                                                                                value="{{ ontology.ontology_id }}"/>
+                                        </td>
+                                        <td>
+                                            <a href="{{ request.route_url("term_details", termid=ontology.ontology_id) }}:ROOT"
+                                               target="_blank">
+                                                <span {% if ontology.ontology_type == "obo" %}style="color: #4183C4"
+                                                      {% else %}style="color: #4FA359"{% endif %}>
+                                                    {{ ontology.ontology_name }}
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-danger btn-sm" type="submit"
+                                        name="update_ontologies_access">{{ _('Update ontologies management access') }}</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -12,8 +12,14 @@
 
 import json
 import logging
+import smtplib
 from ast import literal_eval
 import os
+from time import time
+from email import utils
+from email.header import Header
+from email.mime.text import MIMEText
+
 from babel import Locale
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPFound
@@ -27,6 +33,9 @@ from cropontology.processes.db import (
 )
 from .. import plugins as p
 from ..config.auth import get_user_data
+from cropontology.models import OntologyManageAccess
+from cropontology.processes.db.user import get_user_by_user_id
+
 
 log = logging.getLogger("cropontology")
 
@@ -387,3 +396,107 @@ class APIView(object):
             ).encode(),
         )
         raise response
+
+
+class SendEmailMixin(object):
+    smtp_port = 587
+
+    @property
+    def smtp_server(self):
+        return self.request.registry.settings.get(
+            "email.server", "localhost"
+        )
+
+    @property
+    def smtp_user(self):
+        return self.request.registry.settings.get("email.user")
+
+    @property
+    def smtp_password(self):
+        return self.request.registry.settings.get("email.password")
+
+    def send_email(self, from_email, to_email, subject, body, target_name=''):
+
+        smtp_server = self.smtp_server
+
+        if not smtp_server:
+            log.error('Cannot send emails')
+            return
+
+        msg = MIMEText(body.encode("utf-8"), "plain", "utf-8")
+        _subject = Header(subject.encode("utf-8"), "utf-8")
+        msg["Subject"] = _subject
+        msg["From"] = "{} <{}>".format("Crop Ontology: ", from_email)
+        msg["To"] = "{} <{}>".format(target_name, to_email)
+        msg["Date"] = utils.formatdate(time())
+        try:
+
+            server = smtplib.SMTP(smtp_server, self.smtp_port)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(self.smtp_user, self.smtp_password)
+            server.sendmail(from_email, to_email, msg.as_string())
+            server.quit()
+
+        except Exception as e:
+            log.error(f'SendEmailMixin error: {e}')
+
+
+class OntologyManageAccessUtilsMixin(object):
+
+    def get_manager_access(self, user_id):
+        ontology_manager_access = self.request.dbsession.query(OntologyManageAccess).filter(
+            OntologyManageAccess.user_id == user_id).all()
+        result = []
+        for access in ontology_manager_access:
+            result.append(access.ontology_id)
+        return result
+
+
+class RevisionStatusChangeEmailMixin(SendEmailMixin):
+
+    def _send_email(self, text, email_to, subject, target):
+        from cropontology.config.jinja_extensions import jinjaEnv, extendThis
+        from jinja2 import ext
+        jinjaEnv.add_extension(ext.i18n)
+        jinjaEnv.add_extension(extendThis)
+        email_from = self.request.registry.settings.get("email.from", None)
+
+        self.send_email(email_from, email_to, subject, text, target)
+
+    @staticmethod
+    def get_changed_term(data):
+        default_term = 'Unknown term'
+        if data:
+            for value in data:
+                if 'new_value' in value.keys():
+                    default_term = value.get('name')
+        return default_term
+
+    def send_revision_status_update_email(self, created_by, current_status, revision_data=None):
+        from cropontology.views.public_views import render_template
+
+        if not created_by:
+            return
+
+        submitter_user = get_user_by_user_id(self.request, created_by)
+        if not submitter_user:
+            return
+
+        email_to = submitter_user.user_email
+
+        ontology_name = revision_data.get('ontology_name')
+        term = self.get_changed_term(revision_data.get('data'))
+
+        text = render_template(
+            "email/term_revision_status_update.jinja2",
+            {
+                "current_status": current_status,
+                "_": self.request.translate,
+                "crop_name_affected": ontology_name,
+                "id_of_the_term": term,
+            },
+        )
+
+        self._send_email(text, email_to, "Crop Ontology Helpdesk - New Revisions Status Update", '')

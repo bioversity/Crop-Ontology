@@ -1,3 +1,5 @@
+from cropontology.utils.utils import update_github_file
+
 from .classes import PublicView
 from neo4j import GraphDatabase
 import pandas
@@ -12,8 +14,6 @@ import pymongo
 import numpy
 from pyramid.response import Response
 import json
-import time
-
 
 log = logging.getLogger("cropontology")
 
@@ -842,16 +842,23 @@ class TemplateLoadView(PublicView):
                 db.run(query)
 
             # ## save df as csv and insert
-            # repository_path = self.request.registry.settings.get("repository.path")
-            # paths = ["tmp"]
-            # temp_path = os.path.join(repository_path, *paths)
-            # if not os.path.exists(temp_path):
-            #     os.makedirs(temp_path)
+            repository_path = self.request.registry.settings.get("repository.path")
+            paths = ["tmp"]
+            temp_path = os.path.join(repository_path, *paths)
+            if not os.path.exists(temp_path):
+                os.makedirs(temp_path)
 
-            # paths = ["tmp", str(uuid.uuid4()) + ".csv"]
-            # csv = os.path.join(repository_path, *paths)
+            ontology_name = ontology_data['ontology_name'].lower().replace(" ", "_")
+            repo_name = f'{ontology_id}-{ontology_name}-traits'
+            file_name = f"{ontology_name.title()}_TD.csv"
+            paths = ["tmp", str(uuid.uuid4()) + ".csv"]
+            csv_path = os.path.join(repository_path, *paths)
 
-            # df_var.to_csv(csv, encoding='utf-8', index=False)
+            df_var.to_csv(csv_path, encoding='utf-8', index=False)
+
+            github_token = self.request.registry.settings.get("github_token")
+
+            update_github_file(csv_path, file_name, repo_name, github_token)
 
             # query = ("USING PERIODIC COMMIT 500 LOAD CSV WITH HEADERS FROM 'file:///"+csv+"' AS row "+
             #     "MERGE (m:Variable {id: row.Variable_ID, variable_id: row.Variable_ID, name: row.Variale_name,  variable_name: row.Variale_name, "+

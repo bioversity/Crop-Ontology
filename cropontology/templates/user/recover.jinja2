@@ -1,0 +1,62 @@
+{% extends "login.jinja2" %}
+{% import 'macros/form.jinja2' as form %}
+
+
+{% block css %}
+    {% cssresource request,'main_library','adminlte' %}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+{% endblock css %}
+
+{% block body %}
+
+    <div class="login-box">
+
+        <div class="login-logo">
+            <a href="{{ request.route_url('home') }}"><b>{{ _('Crop Ontology Curation Tool') }}</b></a>
+        </div>
+
+        <div class="card">
+
+            {% for key, error in error_summary.items() %}
+                <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    {{ error }}
+                </div>
+            {% endfor %}
+
+            {% if email_sent %}
+                <div class="card-body login-card-body">
+                    <p style="text-align: center;">
+                       An email with the instructions has been sent. <br> please check your email inbox
+                    </p>
+                </div>
+            {% else %}
+
+                <div class="card-body login-card-body">
+                    {% block login_errors %}
+                        {{ form.display_errors(errors) }}
+                    {% endblock login_errors %}
+                    <p class="login-box-msg">{{ _('We will send you an email with instructions') }}</p>
+
+                    <form class="m-t" role="form" method="post" action="{{ request.path }}">
+                        {{ form.secure_form(request) }}
+                        <div class="form-group">
+                            <label>{{ _("Email") }}</label>
+                            <input type="email" id="user_email" name="user_email" class="form-control"
+                                   placeholder="{{ _("Email") }}" required="" value="">
+                        </div>
+
+                        <button type="submit" name="submit" id="submit"
+                                class="btn btn-primary block full-width m-b  btn-block">{{ _("Reset") }}</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+
+
+    </div>
+    {% block scripts %}
+        {% jsresource request,'main_library','adminlte' %}
+    {% endblock %}
+
+{% endblock body %}

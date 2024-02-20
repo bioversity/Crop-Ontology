@@ -44,6 +44,8 @@
                     <div class="row">
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary btn-block">{{ _('Sign In') }}</button>
+                            <a href="{{ request.route_url('recover') }}"
+                               style="display : block;text-align : center;"><small>{{ _("Forgot username or password?") }}</small></a>
                         </div>
                     </div>
                 </form>
