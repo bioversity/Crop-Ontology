@@ -48,14 +48,22 @@ from ..views.sections import (
     SectionUsersView,
     SectionRemoveUserView,
 )
-
+ 
 from ..views.ontology import OntologyView, JSONDataView, CreateOntology
 from ..views.api import APIDocView
+
 from ..views.brapi import (
     BRAPITraitsView,
     BRAPICallsView,
     BRAPIOntologiesView,
     BRAPIVariablesView,
+)
+
+from ..views.brapi2 import (
+    BRAPIv2VariablesView,
+    BRAPIv2TraitsView,
+    BRAPIv2ServerInfoView,
+    BRAPIv2OntologiesView,
 )
 
 from ..views.rdf_api import (
@@ -400,6 +408,30 @@ def load_routes(config):
             "brapi_variable",
             "/brapi/v1/variables/{variable_id}",
             BRAPIVariablesView,
+            None,
+        )
+    )
+
+    # BrAPI Version 2
+
+    routes.append(add_route("brapi_traits_v2", "/brapi/v2/traits", BRAPIv2TraitsView, None))
+
+
+    routes.append(add_route("brapi_server_info", "/brapi/v2/serverinfo", BRAPIv2ServerInfoView, None))
+ 
+
+    routes.append(
+        add_route("brapi_ontologies_v2", "/brapi/v2/ontologies", BRAPIv2OntologiesView, None)
+    )
+
+    routes.append(
+        add_route("brapi_variables_v2", "/brapi/v2/variables", BRAPIv2VariablesView, None)
+    )
+    routes.append(
+        add_route(
+            "brapi_variable_v2",
+            "/brapi/v2/variables/{variable_id}",
+            BRAPIv2VariablesView,
             None,
         )
     )
