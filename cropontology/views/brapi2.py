@@ -129,6 +129,7 @@ def get_neo_result_join(cursor):
     results = []
     for an_item in cursor:
         result = {
+            "ontology_id": an_item["var.ontology_id"], 
             "ontology_name": an_item["var.ontology_name"], 
             "trait_class": an_item["trait.trait_class"] 
         }
@@ -295,7 +296,6 @@ class BRAPIv2TraitsView(PublicView):
         totalpages = ((total_traits) // page_size) + 1 
 
 
-        # do a full if statement w/ everything over here big bro
         if variable_id is None and common_param is None and observationVariableDbId is None and traitDbId is None and traitClass is None:
             query = "match (trait:Trait) where ((not (trait.trait_status =~ '(?i).*obsolete.*')) or (not (EXISTS(trait.trait_status))) and (not (trait.ontology_id =~ '(?i).*-.*'))) return count(trait) as total_traits"
             cursor = db.run(query)
@@ -459,41 +459,7 @@ class BRAPIv2VariablesView(PublicView):
             commonCropName = common_param,
             traitClass = traitClass,
         )
-        # include_trait_table = traitClass is not None  
-
-        # query = 'MATCH (variable' #:Variable) WHERE '
-
-        # if include_trait_table:
-        #     query += ':Variable)-[:VARIABLE_OF]->(trait:Trait) WHERE '
-
-        
-
-        # if observationVariableDbId is not None and include_trait_table is False:
-        #     query += '{id: "' + observationVariableDbId + '"}) WHERE '
-        # elif observationVariableDbId is not None and include_trait_table is True:
-        #     query += '{id: "' + observationVariableDbId + '"}) AND '
-        # elif observationVariableDbId is None and include_trait_table is False:
-        #     query += ':Variable) WHERE '        
-
-
-        # conditions = []
-
-        # if variable_id is not None:
-        #     conditions.append('variable.ontology_id = "' + variable_id + '"')
-
-        # if common_param is not None:
-        #     conditions.append('variable.crop = "' + common_param + '"')
-
-        # if include_trait_table and traitClass is not None:
-        #     conditions.append('trait.trait_class = "' + traitClass + '"')
-
-        # if conditions:
-        #     query += " AND ".join(conditions)
-        # else:
-        #     query += "1=1"
-
-        # query += ' AND ((NOT (variable.variable_status =~ "(?i).*obsolete.*")) OR (NOT (EXISTS(variable.variable_status))) AND (NOT (variable.ontology_id =~ "(?i).*-.*")))'
-
+       
         query_count = query + ' RETURN count(variable) AS total_variables'
         print(query_count)
 
@@ -503,15 +469,11 @@ class BRAPIv2VariablesView(PublicView):
         item_collection = range(total_variables)
         a_page = paginate.Page(item_collection, current_page, page_size)
         print(result)
-        
+
         query_paginated = query + ' RETURN variable'
 
-        # if include_trait_table:
-        #     query_paginated += ', trait'
 
         query_paginated += ' SKIP ' + str(a_page.first_item - 1) + " LIMIT " + str(page_size)
-
-        # make it so that it shows nothing isntead of the error
 
 
         cursor = db.run(query_paginated)
@@ -519,7 +481,6 @@ class BRAPIv2VariablesView(PublicView):
         totalpages = ((total_variables) // page_size) + 1
 
 
-        # do a full if statement w/ everything over here big bro
         if variable_id is None and common_param is None and observationVariableDbId is None and traitClass is None:
             query = "match (variable:Variable) where ((not (variable.variable_status =~ '(?i).*obsolete.*')) or (not (EXISTS(variable.variable_status))) and (not (variable.ontology_id =~ '(?i).*-.*'))) return count(variable) as total_variables"
             cursor = db.run(query)
@@ -600,17 +561,6 @@ class BRAPIv2VariablesView(PublicView):
                 "status": trait["trait_status"],
                 "additionalInfo": trait["additional_info"]
 
-                # "ontologyReference": {
-                #     "documentationLinks": [
-                #         {
-                #             "URL": "http://purl.obolibrary.org/obo/ro.owl",
-                #             "type": "OBO"
-                #         }
-                #     ],
-                #     "ontologyDbId": result["ontology_id"],
-                #     "ontologyName": result["crop"]
-                # },
-
                 # to avoid redundancy the ontologyReference variable won't be in trait only when you get variables
                 # but it will be there when the client is calling a trait by id
             }
@@ -629,16 +579,6 @@ class BRAPIv2VariablesView(PublicView):
                 "reference": method["method_reference"],
                 "additionalInfo": method["additional_info"]
 
-                # "ontologyReference": {
-                #     "documentationLinks": [
-                #         {
-                #             "URL": "http://purl.obolibrary.org/obo/ro.owl",
-                #             "type": "OBO"
-                #         }
-                #     ],
-                #     "ontologyDbId": result["ontology_id"],
-                #     "ontologyName": result["crop"]
-                # },
 
                 # to avoid redundancy the ontologyReference variable won't be in method only when you get variables
                 # but it will be there when the client is calling a method by id
@@ -666,17 +606,6 @@ class BRAPIv2VariablesView(PublicView):
                         "categories": categories,
                     },
                     "units": scale["units"],
-
-                    # "ontologyReference": {
-                    #     "documentationLinks": [
-                    #         {
-                    #             "URL": "http://purl.obolibrary.org/obo/ro.owl",
-                    #             "type": "OBO"
-                    #         }
-                    #     ],
-                    #     "ontologyDbId": result["ontology_id"],
-                    #     "ontologyName": result["crop"]
-                    # },
 
                     # to avoid redundancy the ontologyReference variable won't be in scale only when you get variables
                     # but it will be there when the client is calling a scale by id
@@ -776,20 +705,18 @@ class BRAPIv2OntologiesView(PublicView):
 
         # execute neo4j query
         # then mix and match it with the mongodb
-        # MATCH (var:Variable)-[connection:VARIABLE_OF]->(trait:Trait)
-        # RETURN var.ontology_name, trait.trait_class
-
+        
         neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
         neo4j_user = self.request.registry.settings["neo4j.user"]
         neo4j_password = self.request.registry.settings["neo4j.password"]
         # Neo4j connection details
 
-
         # setting up the neo4j connection 
         driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
         db = driver.session()
 
-        query = ("MATCH (var:Variable)-[connection:VARIABLE_OF]->(trait:Trait) RETURN var.ontology_name, trait.trait_class")
+        query = ("MATCH (var:Variable)-[connection:VARIABLE_OF]->(trait:Trait) RETURN var.ontology_name, var.ontology_id, trait.trait_class")
+       
         cursor = db.run(query)
         variables = get_neo_result_join(cursor)
 
@@ -799,8 +726,13 @@ class BRAPIv2OntologiesView(PublicView):
         for ontology in ontologies:
             total_ontologies += 1
 
+
+            # this could be CO_370 or CO_370_someVariableName_someyear
+            
+            ontology_base_id = ontology["ontology_id"][:5]
+
             associated_trait_classes = set(
-                item["trait_class"] for item in variables if item["ontology_name"] == ontology["ontology_name"]
+                item["trait_class"] for item in variables if item["ontology_id"][:5] == ontology_base_id
             )
       
             ret_result = {
@@ -838,3 +770,243 @@ class BRAPIv2OntologiesView(PublicView):
         json_data = to_json(ret)
         response.text = json_data
         return response
+
+
+class BRAPIv2VariablesSearch(PublicView):
+    def process_view(self):
+        self.returnRawViewResult = True
+
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+
+
+        driver = GraphDatabase.driver(neo4j_bolt_url, auth=(neo4j_user, neo4j_password))
+        db = driver.session()
+
+        current_page = self.request.params.get("page", "0")
+        current_page = int(current_page)
+        page_size = self.request.params.get("pageSize", "10")
+        page_size = int(page_size)
+
+       
+        ret = {
+            "@context": [
+                "https://brapi.org/jsonld/context/metadata.jsonld"
+            ],
+            "metadata": {
+                "datafiles": [],
+                "pagination": {
+                    "currentPage": current_page,
+                    "pageSize": page_size,
+                    "totalCount": 1, 
+                    "totalPages": 1
+                },
+                "status": [
+                    {
+                        "message": "Request accepted, response successful",
+                        "messageType": "INFO"
+                    }
+                ]
+            },
+            "result": {
+                "data": []
+            }
+        }
+
+        request_body = self.request.json_body
+        observation_variable_db_ids = request_body.get("observationVariableDbIds", [])
+
+        print(observation_variable_db_ids)
+
+        if not observation_variable_db_ids:
+            return Response(status=400, json_body={
+                "status": [
+                    {"message": "observationVariableDbIds is required", "messageType": "ERROR"}
+                ]
+            })
+
+        # query = "MATCH (variable:Variable) WHERE variable.variable_id IN " + str(observation_variable_db_ids) + " RETURN variable"
+        query = """
+                MATCH (variable:Variable)
+                WHERE variable.variable_id IN $observationVariableDbIds
+                RETURN variable
+                """
+
+        print(query)
+
+        cursor = db.run(query, observationVariableDbIds=observation_variable_db_ids)
+        variables = get_neo_result(cursor, "variable")
+
+        # Make sure observation_variable_db_ids is unique
+        observation_variable_db_ids = set(observation_variable_db_ids)
+
+        # removing any duplicate observationVariableDbIDs
+        unique_variables = {var['variable_id']: var for var in variables}.values()
+
+        observation_variable_db_ids = set(observation_variable_db_ids)
+
+        filtered_variables = [
+            var for var in unique_variables if var['variable_id'] in observation_variable_db_ids
+        ]
+
+        print("Length of filtered_variables:", len(filtered_variables))
+
+        ret = {
+            "metadata": {
+                "pagination": {
+                    "pageSize": page_size,
+                    "currentPage": current_page,
+                    "totalCount": len(variables),
+                    "totalPages": 1,
+                },
+                "status": [],
+                "datafiles": [],
+            },
+            "result": [],
+        }
+
+        for a_variable in filtered_variables:
+
+            ret_result = {
+                "observationVariableDbId": a_variable["variable_id"],
+                "observationVariableName": a_variable["name"],
+                "observationVariablePUI": a_variable["observationVariablePUI"],
+                "ontologyReference": {
+                    "documentationLinks": [
+                        {
+                            "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                            "type": "OBO"
+                        }
+                    ],
+                    "ontologyDbId": a_variable["ontology_id"],
+                    "ontologyName": a_variable["crop"]
+                },
+                "contextOfUse": a_variable["context_of_use"].split(",") if a_variable.get("context_of_use") else [],
+                "defaultValue": a_variable.get("default_value", None),
+                "growthStage": a_variable["growth_stage"],
+                "institution": a_variable["institution"],
+                "language": a_variable["language"],
+                "scientist": a_variable["scientist"],
+                "status": a_variable["variable_status"],
+                "synonyms": a_variable["variable_synonyms"].split(",") if a_variable.get("variable_synonyms") else [],
+                "date": a_variable["date"],
+                "crop": a_variable["crop"],
+                "defaultValue": None
+            }
+
+
+            trait = get_trait(db, a_variable["variable_id"]) 
+
+            ret_result["trait"] = {
+                "traitDbId": trait["id"],
+                "traitName": trait["name"],
+                "traitClass": trait["trait_class"],
+                "traitPUI": trait["trait_pui"],
+                "description": trait["trait_description"],
+                "synonyms": trait["trait_synonym"].split(',') if a_variable.get("trait_synonym") else [],
+                "mainAbbreviation": trait["main_trait_abbreviation"],
+                "alternativeAbbreviations": trait["alternative_abbreviation"].split(',') if a_variable.get("alternative_abbreviation") else [],
+                "entity": trait["entity"],
+                "entityPUI": trait["entityPUI"],
+                "attribute": trait["attribute"],
+                "attributePUI": trait["attributePUI"],
+                "status": trait["trait_status"],
+                "additionalInfo": trait["additional_info"]
+
+                # "ontologyReference": {
+                #     "documentationLinks": [
+                #         {
+                #             "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                #             "type": "OBO"
+                #         }
+                #     ],
+                #     "ontologyDbId": result["ontology_id"],
+                #     "ontologyName": result["crop"]
+                # },
+
+                # to avoid redundancy the ontologyReference variable won't be in trait only when you get variables
+                # but it will be there when the client is calling a trait by id
+            }
+
+            method = get_method(db, a_variable["variable_id"])
+            ret_result["method"] = {
+                "methodDbId": method["id"],
+                "methodName": method["name"],
+                "methodClass": method["method_class"],
+                "description": method["method_description"],
+                "formula": method["formula"],
+                "reference": method["method_reference"],
+                "additionalInfo": method["additional_info"]
+
+                # "ontologyReference": {
+                #     "documentationLinks": [
+                #         {
+                #             "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                #             "type": "OBO"
+                #         }
+                #     ],
+                #     "ontologyDbId": result["ontology_id"],
+                #     "ontologyName": result["crop"]
+                # },
+
+                # to avoid redundancy the ontologyReference variable won't be in method only when you get variables
+                # but it will be there when the client is calling a method by id
+
+            }
+
+
+            scale = get_scale(db, a_variable["variable_id"])
+           
+            if scale: 
+                categories = []
+                i = 1
+                while scale["category_" + str(i)]:
+                    categories.append(scale["category_" + str(i)])
+                    i += 1
+
+                ret_result["scale"] = {
+                    "scaleDbId": scale["id"],
+                    "scaleName": scale["name"],
+                    "dataType": scale["scale_class"],
+                    "decimalPlaces": scale["decimal_places"],
+                    "scalePUI": scale["scale_pui"],
+                    "validValues": {
+                        "minimumValue": scale["lower_limit"],
+                        "maximumValue": scale["upper_limit"],
+                        "categories": categories,
+                    },
+                    "units": scale["units"],
+
+                    # "ontologyReference": {
+                    #     "documentationLinks": [
+                    #         {
+                    #             "URL": "http://purl.obolibrary.org/obo/ro.owl",
+                    #             "type": "OBO"
+                    #         }
+                    #     ],
+                    #     "ontologyDbId": result["ontology_id"],
+                    #     "ontologyName": result["crop"]
+                    # },
+
+                    # to avoid redundancy the ontologyReference variable won't be in scale only when you get variables
+                    # but it will be there when the client is calling a scale by id
+                }
+
+            ret["result"].append(ret_result)
+        
+
+
+
+
+        db.close()
+
+        headers = [
+            ("Content-Type", "application/json; charset=utf-8"),
+        ]
+        response = Response(headerlist=headers, status=200)
+        json_data = to_json(ret)
+        response.text = json_data
+        return response
+
+

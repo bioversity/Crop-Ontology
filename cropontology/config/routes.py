@@ -64,6 +64,7 @@ from ..views.brapi2 import (
     BRAPIv2TraitsView,
     BRAPIv2ServerInfoView,
     BRAPIv2OntologiesView,
+    BRAPIv2VariablesSearch,
 )
 
 from ..views.rdf_api import (
@@ -434,6 +435,10 @@ def load_routes(config):
             BRAPIv2VariablesView,
             None,
         )
+    )
+
+    routes.append(
+        add_route("brapi_variables_search_v2", "/brapi/v2/search/variables", BRAPIv2VariablesSearch, None)
     )
 
     # Here comes the download (EBI/AGROPORTAL) API routes
