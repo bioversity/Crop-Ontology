@@ -742,7 +742,7 @@ class BRAPIv2OntologiesView(PublicView):
                 "version": ontology["created_at"],
                 "description": ontology["ontology_summary"],
                 "copyright": None,
-                "additional_info": {
+                "additionalInfo": {
                     "term_names": list(associated_trait_classes)
                 },
                 "licence": "CC BY-SA 4.0",
@@ -765,7 +765,9 @@ class BRAPIv2OntologiesView(PublicView):
             "result": {},
         }
 
-        ret["result"] = {"data": [a_page]}
+        # this should be formatted properly
+
+        ret["result"] = {"data": a_page}
 
         json_data = to_json(ret)
         response.text = json_data
