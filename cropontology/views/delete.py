@@ -107,3 +107,23 @@ class DeleteTermView(PublicView):
         response = Response(headerlist=headers, status=200)
         response.text = "ok"
         return response
+        
+class UpdateDBView(PublicView):
+    def process_view(self):
+        neo4j_bolt_url = self.request.registry.settings["neo4j.bolt.ulr"]
+        neo4j_user = self.request.registry.settings["neo4j.user"]
+        neo4j_password = self.request.registry.settings["neo4j.password"]
+        driver = GraphDatabase.driver(
+            neo4j_bolt_url, auth=(neo4j_user, neo4j_password)
+        )
+        db = driver.session()
+        query = (
+            "MATCH (n) SET n.entity = n.Entity REMOVE n.Entity RETURN n"
+        )
+        cursor = db.run(query)
+        query = (
+            "MATCH (n) SET n.date = n.data REMOVE n.data RETURN n"
+        )
+        cursor = db.run(query)
+        self.returnRawViewResult = True
+        return HTTPFound(location=self.request.route_url("home"))
